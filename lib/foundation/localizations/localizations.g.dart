@@ -1,6 +1,6 @@
 // DO NOT EDIT. This is code generated via package:easy_localization/generate.dart
 
-// ignore_for_file: prefer_single_quotes, avoid_renaming_method_parameters
+// ignore_for_file: prefer_single_quotes, avoid_renaming_method_parameters, constant_identifier_names
 
 import 'dart:ui';
 
@@ -14,8 +14,8 @@ class CodegenLoader extends AssetLoader{
     return Future.value(mapLocales[locale.toString()]);
   }
 
-  static const Map<String,dynamic> fr = {
+  static const Map<String,dynamic> _fr = {
   "hello": "Bonjour"
 };
-static const Map<String, Map<String,dynamic>> mapLocales = {"fr": fr};
+static const Map<String, Map<String,dynamic>> mapLocales = {"fr": _fr};
 }

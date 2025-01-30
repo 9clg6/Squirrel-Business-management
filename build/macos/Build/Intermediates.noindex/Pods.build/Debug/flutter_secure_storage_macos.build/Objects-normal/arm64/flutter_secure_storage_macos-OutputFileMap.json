@@ -5,7 +5,7 @@
     "emit-module-diagnostics" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/flutter_secure_storage_macos-master-emit-module.dia",
     "swift-dependencies" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/flutter_secure_storage_macos-master.swiftdeps"
   },
-  "/Users/clement/.pub-cache/hosted/pub.dev/flutter_secure_storage_macos-3.1.2/macos/Classes/FlutterSecureStorage.swift" : {
+  "/Users/clement/.pub-cache/hosted/pub.dev/flutter_secure_storage_macos-3.1.3/macos/Classes/FlutterSecureStorage.swift" : {
     "const-values" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/FlutterSecureStorage.swiftconstvalues",
     "dependencies" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/FlutterSecureStorage.d",
     "diagnostics" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/FlutterSecureStorage.dia",
@@ -15,7 +15,7 @@
     "swift-dependencies" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/FlutterSecureStorage.swiftdeps",
     "swiftmodule" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/FlutterSecureStorage~partial.swiftmodule"
   },
-  "/Users/clement/.pub-cache/hosted/pub.dev/flutter_secure_storage_macos-3.1.2/macos/Classes/FlutterSecureStoragePlugin.swift" : {
+  "/Users/clement/.pub-cache/hosted/pub.dev/flutter_secure_storage_macos-3.1.3/macos/Classes/FlutterSecureStoragePlugin.swift" : {
     "const-values" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/FlutterSecureStoragePlugin.swiftconstvalues",
     "dependencies" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/FlutterSecureStoragePlugin.d",
     "diagnostics" : "/Users/clement/Developer/aiir_gestion/build/macos/Build/Intermediates.noindex/Pods.build/Debug/flutter_secure_storage_macos.build/Objects-normal/arm64/FlutterSecureStoragePlugin.dia",

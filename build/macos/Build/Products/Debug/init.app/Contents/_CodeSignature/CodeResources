@@ -23,7 +23,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			1y/3pDEbP5tjgDJ6W/nIEAAJ/3o=
+			LY1+szmxdNDDHdI3i7K5COFWUrs=
 			</data>
 			<key>requirement</key>
 			<string>identifier "io.flutter.flutter.app" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: cleguy.01@gmail.com (L52SL7TUZY)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -32,7 +32,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			AZcbU2GL5eqcon96M23y0GUCiiM=
+			kjrseox8gJjr5pKxo87OF4xP1hk=
 			</data>
 			<key>requirement</key>
 			<string>identifier "io.flutter.flutter-macos" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: cleguy.01@gmail.com (L52SL7TUZY)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -41,7 +41,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			ZfoSeikIySqBV2c7BEHsuYZAZ5M=
+			A22Wxws9sgOKAUrK/S/Jr7zh5ns=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.flutter-secure-storage-macos" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: cleguy.01@gmail.com (L52SL7TUZY)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -212,7 +212,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			PCuCBrLXyetZQHQfRL2QWTamO1M=
+			oqj0RJuXSeoDum1FUcZ9AfLBRXI=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.path-provider-foundation" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: cleguy.01@gmail.com (L52SL7TUZY)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -221,7 +221,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			/v8EA9Ekl77vRoxmyrkE4ZCCZeQ=
+			74EsCWSsfRnOLf/BxFXHgZ87w0c=
 			</data>
 			<key>requirement</key>
 			<string>identifier "org.cocoapods.shared-preferences-foundation" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: cleguy.01@gmail.com (L52SL7TUZY)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -239,7 +239,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			ciK69Fz3h2N2SgH2YmLFidoUcIQ=
+			eyoE2lMyipLexNzAybug518xkFc=
 			</data>
 			<key>requirement</key>
 			<string>identifier "init.debug" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: cleguy.01@gmail.com (L52SL7TUZY)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>

@@ -12,7 +12,6 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:init/application/injection/data.module.dart' as _i35;
 import 'package:init/application/injection/domain.module.dart' as _i852;
-import 'package:init/application/injection/foundation.module.dart' as _i950;
 import 'package:init/data/local_data_source/preferences/preferences_local.data_source.dart'
     as _i88;
 import 'package:init/data/repository/preferences/preferences.repository.dart'
@@ -22,7 +21,6 @@ import 'package:init/domain/service/secure_storage.service.dart' as _i861;
 import 'package:init/domain/use_case/get_theme.use_case.dart' as _i168;
 import 'package:init/foundation/interfaces/theme.service_interface.dart'
     as _i457;
-import 'package:init/foundation/routing/app_router.dart' as _i500;
 import 'package:injectable/injectable.dart' as _i526;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -37,10 +35,8 @@ extension GetItInjectableX on _i174.GetIt {
       environmentFilter,
     );
     final domainModule = _$DomainModule();
-    final coreModule = _$CoreModule();
     final dataModule = _$DataModule();
     gh.factory<_i558.FlutterSecureStorage>(() => domainModule.storage());
-    gh.singleton<_i500.AppRouter>(() => coreModule.appRouter());
     await gh.singletonAsync<_i861.SecureStorageService>(
       () => domainModule.secureStorageService(gh<_i558.FlutterSecureStorage>()),
       preResolve: true,
@@ -64,7 +60,5 @@ extension GetItInjectableX on _i174.GetIt {
 }
 
 class _$DomainModule extends _i852.DomainModule {}
-
-class _$CoreModule extends _i950.CoreModule {}
 
 class _$DataModule extends _i35.DataModule {}

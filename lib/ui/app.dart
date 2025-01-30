@@ -30,26 +30,28 @@ class _AppState extends State<App> {
   ///
   @override
   Widget build(BuildContext context) {
-    final AppRouter appRouter = injector<AppRouter>();
     final IThemeService themeService = injector<IThemeService>();
 
-    return MediaQuery(
-      data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
-      child: ProviderScope(
-        child: MaterialApp.router(
-          routerConfig: appRouter.config(
-            includePrefixMatches: true,
+    return Builder(
+      builder: (context) {
+        return MediaQuery(
+          data:
+              MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+          child: ProviderScope(
+            child: MaterialApp.router(
+              routerConfig: appRouter,
+              debugShowCheckedModeBanner: false,
+              localizationsDelegates: context.localizationDelegates,
+              supportedLocales: context.supportedLocales,
+              darkTheme: themeService.darkTheme,
+              theme: themeService.currentTheme,
+              themeMode: themeService.themeMode,
+              locale: context.locale,
+              builder: (_, child) => child!,
+            ),
           ),
-          debugShowCheckedModeBanner: false,
-          localizationsDelegates: context.localizationDelegates,
-          supportedLocales: context.supportedLocales,
-          darkTheme: themeService.darkTheme,
-          theme: themeService.currentTheme,
-          themeMode: themeService.themeMode,
-          locale: context.locale,
-          builder: (_, child) => child!,
-        ),
-      ),
+        );
+      },
     );
   }
 }
