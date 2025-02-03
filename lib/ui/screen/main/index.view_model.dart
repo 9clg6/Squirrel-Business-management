@@ -69,12 +69,19 @@ class Index extends _$Index {
 
   /// Pin order
   void pinOrder(Order order) {
-    state = state.copyWith(
-      pinnedOrders: [
-        ...state.pinnedOrders,
-        order,
-      ],
-    );
+    if (state.pinnedOrders.contains(order)) {
+      unpinOrder(order);
+    } else {
+      state = state.copyWith(
+        pinnedOrders: [
+          ...state.pinnedOrders,
+          order,
+        ],
+        orders: [
+          ...state.orders.where((e) => e != order),
+        ],
+      );
+    }
   }
 
   /// Unpin order
@@ -82,6 +89,10 @@ class Index extends _$Index {
   void unpinOrder(Order order) {
     state = state.copyWith(
       pinnedOrders: state.pinnedOrders.where((e) => e != order).toList(),
+      orders: [
+        ...state.orders,
+        order,
+      ],
     );
   }
 
@@ -177,7 +188,7 @@ class Index extends _$Index {
           return ascending
               ? a.commission.compareTo(b.commission)
               : b.commission.compareTo(a.commission);
-        case Headers.actions:
+        default:
           return 0;
       }
     });

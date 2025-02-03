@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:init/foundation/enums/filter.enum.dart';
 import 'package:init/foundation/enums/headers.enum.dart';
 import 'package:init/foundation/extensions/date_time.extension.dart';
 import 'package:init/ui/screen/main/index.view_model.dart';
 import 'package:init/ui/screen/main/index.view_state.dart';
+import 'package:init/ui/widgets/status_card.dart';
 
 /// Main screen
 class MainScreen extends ConsumerStatefulWidget {
@@ -35,68 +35,119 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   }
 }
 
-class _Body extends ConsumerWidget {
-  const _Body();
+class _PinnedOrders extends ConsumerWidget {
+  const _PinnedOrders();
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
-    final Index viewModel = ref.read(indexProvider.notifier);
+    if (state.pinnedOrders.isEmpty) return const SizedBox();
+
     final colorScheme = Theme.of(context).colorScheme;
+    final viewModel = ref.read(indexProvider.notifier);
 
-    if (state.loading) {
-      return const SliverToBoxAdapter(
-        child: Center(child: CircularProgressIndicator()),
-      );
-    }
-
-    return SliverPadding(
-      padding: const EdgeInsets.all(10),
-      sliver: SliverToBoxAdapter(
-        child: Container(
-          decoration: BoxDecoration(
-            color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(
+              left: 22,
+              top: 22,
+              bottom: 10,
+            ),
+            child: Text(
+              "Commandes épinglées",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
           ),
-          child: SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: Column(
-              children: [
-                SizedBox(
-                  width: double.infinity,
-                  child: DataTable(
-                    showCheckboxColumn: state.showComboBox,
-                    onSelectAll: (_) {
-                      viewModel.selectAll();
-                    },
-                    columnSpacing: 46,
-                    dataTextStyle:
-                        Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                    headingTextStyle:
-                        Theme.of(context).textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w500,
-                            ),
-                    horizontalMargin: 12,
-                    columns: Headers.values
-                        .map(
-                          (e) => DataColumn(
-                            label: Text(e.label),
-                            numeric: e.isNumeric,
-                            headingRowAlignment: MainAxisAlignment.center,
-                            onSort: viewModel.sortOrders,
-                          ),
-                        )
-                        .toList(),
-                    dividerThickness: .5,
-                    rows: state.orders.map((order) {
-                      return DataRow(
-                        selected: state.selectedOrders.contains(order),
-                        onSelectChanged: (bool? value) {
-                          if (state.showComboBox) {
-                            viewModel.selectOrder(order);
-                          } else {
+          SizedBox(
+            width: double.infinity,
+            child: DataTable(
+              columnSpacing: 46,
+              border: TableBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              dataTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              headingTextStyle:
+                  Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+              showCheckboxColumn: false,
+              horizontalMargin: 12,
+              dividerThickness: .5,
+              columns: Headers.values
+                  .map((e) => DataColumn(
+                        label: Text(e.label),
+                        numeric: e.isNumeric,
+                        headingRowAlignment: MainAxisAlignment.center,
+                      ))
+                  .toList(),
+              rows: state.pinnedOrders.map((order) {
+                return DataRow(
+                  onSelectChanged: (_) {
+                    if (context.mounted) {
+                      context.pushNamed(
+                        'order-details',
+                        pathParameters: {'orderId': order.id},
+                        extra: order,
+                      );
+                    }
+                  },
+                  cells: [
+                    DataCell(
+                      Center(
+                        child: Hero(
+                          tag: 'order-${order.id}',
+                          child: Text(order.clientContact),
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: StatusCard(status: order.status),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text(order.shopName),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text(order.startDate.toDDMMYYYY()),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text(order.endDate?.toDDMMYYYY() ?? ""),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text("${order.price}€"),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text("${order.commission}€"),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: IconButton(
+                          onPressed: () {
                             if (context.mounted) {
                               context.pushNamed(
                                 'order-details',
@@ -104,91 +155,231 @@ class _Body extends ConsumerWidget {
                                 extra: order,
                               );
                             }
-                          }
-                        },
-                        cells: [
-                          DataCell(
-                            Hero(
-                              tag: 'order-${order.id}',
-                              child: Center(
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8,
-                                  ),
-                                  child: Text(
-                                    order.clientContact,
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8,
-                                  vertical: 4,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: order.status.color,
-                                  borderRadius: BorderRadius.circular(20),
-                                ),
-                                child: Text(order.status.name),
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: Text(order.shopName),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: Text(order.startDate.toDDMMYYYY()),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: Text(order.endDate?.toDDMMYYYY() ?? ""),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: Text("${order.price}€"),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: Text("${order.commission}€"),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: IconButton(
-                                onPressed: () {
-                                  if (context.mounted) {
-                                    context.pushNamed(
-                                      'order-details',
-                                      pathParameters: {'orderId': order.id},
-                                      extra: order,
-                                    );
-                                  }
-                                },
-                                icon: const Icon(Icons.open_in_new),
-                              ),
-                            ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ],
+                          },
+                          icon: const Icon(Icons.open_in_new),
+                          tooltip: "Ouvrir",
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: IconButton(
+                          onPressed: () => viewModel.pinOrder(order),
+                          icon: Icon(state.pinnedOrders.contains(order)
+                              ? Icons.push_pin
+                              : Icons.push_pin_outlined),
+                          tooltip: "Épingler",
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
             ),
           ),
+        ],
+      ),
+    );
+  }
+}
+
+class _Body extends ConsumerWidget {
+  const _Body();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IndexScreenState state = ref.watch(indexProvider);
+
+    if (state.loading) {
+      return const SliverToBoxAdapter(
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    return const SliverPadding(
+      padding: EdgeInsets.all(10),
+      sliver: SliverToBoxAdapter(
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            children: [
+              _PinnedOrders(),
+              _OrdersList(),
+            ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _OrdersList extends ConsumerWidget {
+  const _OrdersList();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final IndexScreenState state = ref.watch(indexProvider);
+    final Index viewModel = ref.read(indexProvider.notifier);
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(20),
+      ),
+      width: double.infinity,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Padding(
+            padding: EdgeInsets.only(
+              left: 22,
+              top: 22,
+              bottom: 10,
+            ),
+            child: Text(
+              "Commandes",
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+          SizedBox(
+            width: double.infinity,
+            child: DataTable(
+              columnSpacing: 46,
+              border: TableBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
+              dataTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    overflow: TextOverflow.ellipsis,
+                  ),
+              headingTextStyle:
+                  Theme.of(context).textTheme.titleSmall?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
+              showCheckboxColumn: state.showComboBox,
+              horizontalMargin: 12,
+              dividerThickness: .5,
+              onSelectAll: (_) {
+                viewModel.selectAll();
+              },
+              sortColumnIndex: state.sortColumnIndex,
+              sortAscending: state.sortAscending,
+              columns: Headers.values
+                  .map(
+                    (e) => DataColumn(
+                      label: Text(e.label),
+                      numeric: e.isNumeric,
+                      headingRowAlignment: MainAxisAlignment.center,
+                      onSort: viewModel.sortOrders,
+                    ),
+                  )
+                  .toList(),
+              rows: state.orders.map((order) {
+                return DataRow(
+                  selected: state.selectedOrders.contains(order),
+                  onSelectChanged: (bool? value) {
+                    if (state.showComboBox) {
+                      viewModel.selectOrder(order);
+                    } else {
+                      if (context.mounted) {
+                        context.pushNamed(
+                          'order-details',
+                          pathParameters: {'orderId': order.id},
+                          extra: order,
+                        );
+                      }
+                    }
+                  },
+                  cells: [
+                    DataCell(
+                      Hero(
+                        tag: 'order-${order.id}',
+                        child: Center(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 8,
+                            ),
+                            child: Text(
+                              order.clientContact,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: StatusCard(
+                          status: order.status,
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text(order.shopName),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text(order.startDate.toDDMMYYYY()),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text(order.endDate?.toDDMMYYYY() ?? ""),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text("${order.price}€"),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: Text("${order.commission}€"),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: IconButton(
+                          onPressed: () {
+                            if (context.mounted) {
+                              context.pushNamed(
+                                'order-details',
+                                pathParameters: {'orderId': order.id},
+                                extra: order,
+                              );
+                            }
+                          },
+                          icon: const Icon(Icons.open_in_new),
+                          tooltip: "Ouvrir",
+                        ),
+                      ),
+                    ),
+                    DataCell(
+                      Center(
+                        child: IconButton(
+                          onPressed: () {
+                            viewModel.pinOrder(order);
+                          },
+                          icon: Icon(
+                            state.pinnedOrders.contains(order)
+                                ? Icons.push_pin
+                                : Icons.push_pin_outlined,
+                          ),
+                          tooltip: "Épingler",
+                        ),
+                      ),
+                    ),
+                  ],
+                );
+              }).toList(),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -200,6 +391,7 @@ class _ResumeHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
+    final currentMonth = DateTime.now().month;
 
     return SliverPadding(
       padding: const EdgeInsets.all(10),
@@ -244,10 +436,46 @@ class _ResumeHeader extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Total du mois"),
+                    const Text("Total"),
                     const SizedBox(height: 10),
                     Text(
-                      "1000€",
+                      "${state.allOrder.fold(
+                            0,
+                            (sum, order) =>
+                                (sum.toDouble() + order.commission).toInt(),
+                          ).toStringAsFixed(2)} €",
+                      style: TextStyle(
+                        fontSize: 20,
+                        color: Theme.of(context).colorScheme.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 10),
+              Container(
+                width: 250,
+                height: 100,
+                padding: const EdgeInsets.all(20),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.surface,
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text("Total du mois de $currentMonth"),
+                    const SizedBox(height: 10),
+                    Text(
+                      "${state.allOrder
+                          .where(
+                              (order) => order.startDate.month == currentMonth)
+                          .fold(
+                            0,
+                            (sum, order) =>
+                                (sum.toDouble() + order.commission).toInt(),
+                          )
+                          .toStringAsFixed(2)} €",
                       style: TextStyle(
                         fontSize: 20,
                         color: Theme.of(context).colorScheme.onSurface,
@@ -279,96 +507,57 @@ class _ManagementBar extends ConsumerWidget {
     return SliverPadding(
       padding: const EdgeInsets.all(10),
       sliver: SliverToBoxAdapter(
-        child: Container(
-          padding: const EdgeInsets.all(10),
-          decoration: BoxDecoration(
-            color: colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              TextButton(
-                onPressed: viewModel.showComboBox,
-                style: TextButton.styleFrom(
-                  textStyle: const TextStyle(
-                    fontWeight: FontWeight.normal,
-                  ),
-                ),
-                child: Text(state.showComboBox ? "Masquer" : "Sélectionner"),
+        child: Align(
+          alignment: Alignment.centerRight,
+          child: IntrinsicWidth(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
               ),
-              PopupMenuButton<Filter>(
-                tooltip: "Trier",
-                child: Row(
-                  children: [
-                    Text(
-                      "Trier",
-                      style: TextStyle(color: colorScheme.primary),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: viewModel.showComboBox,
+                    style: TextButton.styleFrom(
+                      textStyle: const TextStyle(
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
-                    Icon(Icons.keyboard_arrow_down, color: colorScheme.primary),
-                  ],
-                ),
-                onSelected: (Filter value) {
-                  // Handle menu item selection
-                },
-                itemBuilder: (BuildContext context) => <PopupMenuEntry<Filter>>[
-                  const PopupMenuItem<Filter>(
-                    value: Filter.byStartDate,
-                    child: Text('Par date de début'),
+                    child:
+                        Text(state.showComboBox ? "Masquer" : "Sélectionner"),
                   ),
-                  const PopupMenuItem<Filter>(
-                    value: Filter.byEndDate,
-                    child: Text('Par date de fin'),
+                  const SizedBox(width: 10),
+                  TextButton.icon(
+                    onPressed: () {},
+                    icon: Icon(
+                      Icons.add,
+                      size: 20,
+                      color: colorScheme.onPrimary,
+                    ),
+                    label: const Text("Ajouter"),
+                    style: TextButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      foregroundColor: colorScheme.onPrimary,
+                      backgroundColor: colorScheme.primary,
+                      iconColor: colorScheme.onPrimary,
+                      padding: const EdgeInsets.symmetric(horizontal: 10),
+                    ),
                   ),
-                  const PopupMenuItem<Filter>(
-                    value: Filter.byStatus,
-                    child: Text('Par statut'),
-                  ),
-                  const PopupMenuItem<Filter>(
-                    value: Filter.byMethod,
-                    child: Text('Par méthode'),
-                  ),
-                  const PopupMenuItem<Filter>(
-                    value: Filter.byPriority,
-                    child: Text('Par priorité'),
-                  ),
-                  const PopupMenuItem<Filter>(
-                    value: Filter.byShop,
-                    child: Text('Par magasin'),
-                  ),
-                  const PopupMenuItem<Filter>(
-                    value: Filter.byPrice,
-                    child: Text('Par prix'),
-                  ),
+                  const SizedBox(width: 10),
+                  if (state.selectedOrders.isNotEmpty)
+                    TextButton.icon(
+                      onPressed: viewModel.deleteSelectedOrders,
+                      icon: const Icon(Icons.delete),
+                      label: const Text("Supprimer"),
+                    ),
                 ],
               ),
-              const SizedBox(width: 10),
-              TextButton.icon(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.add,
-                  size: 20,
-                  color: colorScheme.onPrimary,
-                ),
-                label: const Text("Ajouter"),
-                style: TextButton.styleFrom(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  foregroundColor: colorScheme.onPrimary,
-                  backgroundColor: colorScheme.primary,
-                  iconColor: colorScheme.onPrimary,
-                  padding: const EdgeInsets.symmetric(horizontal: 10),
-                ),
-              ),
-              const SizedBox(width: 10),
-              if (state.selectedOrders.isNotEmpty)
-                TextButton.icon(
-                  onPressed: viewModel.deleteSelectedOrders,
-                  icon: const Icon(Icons.delete),
-                  label: const Text("Supprimer"),
-                ),
-            ],
+            ),
           ),
         ),
       ),

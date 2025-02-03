@@ -32,6 +32,14 @@ class CustomSideBar extends StatelessWidget {
           ),
           itemTextPadding: const EdgeInsets.only(left: 30),
           selectedItemTextPadding: const EdgeInsets.only(left: 30),
+          itemPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 8,
+          ),
+          selectedItemPadding: const EdgeInsets.symmetric(
+            horizontal: 20,
+            vertical: 8,
+          ),
           itemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(color: Theme.of(context).colorScheme.surface),
@@ -39,7 +47,7 @@ class CustomSideBar extends StatelessWidget {
           selectedItemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: Theme.of(context).colorScheme.surface,
+              color: Colors.white,
             ),
             boxShadow: [
               BoxShadow(
@@ -61,6 +69,15 @@ class CustomSideBar extends StatelessWidget {
           width: 200,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
+          ),
+          textStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+          ),
+          selectedTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
           ),
         ),
         headerBuilder: (context, extended) {

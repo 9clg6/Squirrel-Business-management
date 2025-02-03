@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 
 /// Custom app bar
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -23,6 +24,23 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       backgroundColor: Theme.of(context).colorScheme.surface,
       foregroundColor: Theme.of(context).colorScheme.onSurface,
       actions: [
+        Text(
+          "Expire dans 30 jours",
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).colorScheme.onSurface,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        const SizedBox(width: 10),
+        Text(
+          const Uuid().v4(),
+          style: TextStyle(
+            fontSize: 12,
+            color: Theme.of(context).colorScheme.onSurface,
+          ),
+        ),
+        const SizedBox(width: 10),
         IconButton(
           onPressed: () {},
           icon: const Icon(

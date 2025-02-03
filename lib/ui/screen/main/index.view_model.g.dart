@@ -6,7 +6,7 @@ part of 'index.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$indexHash() => r'acf8ff7c8226bc0e3d6d574d04fc3f7a0317e3d3';
+String _$indexHash() => r'3efb058ff490aa304404930689db92644885ab76';
 
 ///
 /// [Index]

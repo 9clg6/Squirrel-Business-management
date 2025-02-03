@@ -14,6 +14,7 @@ enum Headers {
     label: 'Commission',
     isNumeric: true,
   ),
+  pinned(label: ''),
   actions(label: '');
 
   /// Constructor

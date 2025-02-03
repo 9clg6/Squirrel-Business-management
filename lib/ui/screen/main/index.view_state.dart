@@ -30,6 +30,12 @@ class IndexScreenState extends ViewStateAbs {
   /// Sort ascending
   final bool sortAscending;
 
+  /// All orders
+  List<Order> get allOrder => [
+        ...orders,
+        ...pinnedOrders,
+      ];
+
   ///
   /// Constructor
   ///
@@ -73,11 +79,11 @@ class IndexScreenState extends ViewStateAbs {
   /// Get next action date
   ///
   DateTime? get nextActionDate {
-    if (orders.isEmpty) return null;
+    if (allOrder.isEmpty) return null;
 
-    final sortedOrders = List<Order>.from(orders)
+    final sortedOrders = List<Order>.from(allOrder)
       ..sort((a, b) => a.startDate.compareTo(b.startDate));
-      
+
     return sortedOrders.first.startDate;
   }
 }
