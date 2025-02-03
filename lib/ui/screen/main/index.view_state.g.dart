@@ -11,6 +11,16 @@ abstract class _$IndexScreenStateCWProxy {
 
   IndexScreenState orders(List<Order> orders);
 
+  IndexScreenState selectedOrders(List<Order> selectedOrders);
+
+  IndexScreenState showComboBox(bool showComboBox);
+
+  IndexScreenState pinnedOrders(List<Order> pinnedOrders);
+
+  IndexScreenState sortColumnIndex(int sortColumnIndex);
+
+  IndexScreenState sortAscending(bool sortAscending);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `IndexScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -20,6 +30,11 @@ abstract class _$IndexScreenStateCWProxy {
   IndexScreenState call({
     bool? loading,
     List<Order>? orders,
+    List<Order>? selectedOrders,
+    bool? showComboBox,
+    List<Order>? pinnedOrders,
+    int? sortColumnIndex,
+    bool? sortAscending,
   });
 }
 
@@ -36,6 +51,26 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
   IndexScreenState orders(List<Order> orders) => this(orders: orders);
 
   @override
+  IndexScreenState selectedOrders(List<Order> selectedOrders) =>
+      this(selectedOrders: selectedOrders);
+
+  @override
+  IndexScreenState showComboBox(bool showComboBox) =>
+      this(showComboBox: showComboBox);
+
+  @override
+  IndexScreenState pinnedOrders(List<Order> pinnedOrders) =>
+      this(pinnedOrders: pinnedOrders);
+
+  @override
+  IndexScreenState sortColumnIndex(int sortColumnIndex) =>
+      this(sortColumnIndex: sortColumnIndex);
+
+  @override
+  IndexScreenState sortAscending(bool sortAscending) =>
+      this(sortAscending: sortAscending);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `IndexScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -46,6 +81,11 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
   IndexScreenState call({
     Object? loading = const $CopyWithPlaceholder(),
     Object? orders = const $CopyWithPlaceholder(),
+    Object? selectedOrders = const $CopyWithPlaceholder(),
+    Object? showComboBox = const $CopyWithPlaceholder(),
+    Object? pinnedOrders = const $CopyWithPlaceholder(),
+    Object? sortColumnIndex = const $CopyWithPlaceholder(),
+    Object? sortAscending = const $CopyWithPlaceholder(),
   }) {
     return IndexScreenState(
       loading == const $CopyWithPlaceholder() || loading == null
@@ -56,6 +96,26 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
           ? _value.orders
           // ignore: cast_nullable_to_non_nullable
           : orders as List<Order>,
+      selectedOrders == const $CopyWithPlaceholder() || selectedOrders == null
+          ? _value.selectedOrders
+          // ignore: cast_nullable_to_non_nullable
+          : selectedOrders as List<Order>,
+      showComboBox == const $CopyWithPlaceholder() || showComboBox == null
+          ? _value.showComboBox
+          // ignore: cast_nullable_to_non_nullable
+          : showComboBox as bool,
+      pinnedOrders == const $CopyWithPlaceholder() || pinnedOrders == null
+          ? _value.pinnedOrders
+          // ignore: cast_nullable_to_non_nullable
+          : pinnedOrders as List<Order>,
+      sortColumnIndex == const $CopyWithPlaceholder() || sortColumnIndex == null
+          ? _value.sortColumnIndex
+          // ignore: cast_nullable_to_non_nullable
+          : sortColumnIndex as int,
+      sortAscending == const $CopyWithPlaceholder() || sortAscending == null
+          ? _value.sortAscending
+          // ignore: cast_nullable_to_non_nullable
+          : sortAscending as bool,
     );
   }
 }

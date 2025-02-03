@@ -34,6 +34,37 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
           onPressed: () => context.pop(),
         ),
       ),
+      body: Hero(
+        tag: 'order-${order.id}',
+        flightShuttleBuilder: (
+          BuildContext flightContext,
+          Animation<double> animation,
+          HeroFlightDirection flightDirection,
+          BuildContext fromHeroContext,
+          BuildContext toHeroContext,
+        ) {
+          return SingleChildScrollView(
+            child: fromHeroContext.widget,
+          );
+        },
+        child: Material(
+          color: Colors.transparent,
+          child: Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'Order #${order.id}',
+                  style: Theme.of(context).textTheme.headlineSmall,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
     );
   }
 }

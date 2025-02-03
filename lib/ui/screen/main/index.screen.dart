@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:init/foundation/enums/filter.enum.dart';
+import 'package:init/foundation/enums/headers.enum.dart';
 import 'package:init/foundation/extensions/date_time.extension.dart';
 import 'package:init/ui/screen/main/index.view_model.dart';
 import 'package:init/ui/screen/main/index.view_state.dart';
@@ -40,6 +41,8 @@ class _Body extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
+    final Index viewModel = ref.read(indexProvider.notifier);
+    final colorScheme = Theme.of(context).colorScheme;
 
     if (state.loading) {
       return const SliverToBoxAdapter(
@@ -52,69 +55,138 @@ class _Body extends ConsumerWidget {
       sliver: SliverToBoxAdapter(
         child: Container(
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
           ),
-          child: ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: state.orders.length,
-            itemBuilder: (context, index) {
-              final order = state.orders[index];
-
-              return InkWell(
-                onTap: () => context.pushNamed(
-                  'order-details',
-                  extra: order,
-                  pathParameters: {'orderId': order.id},
-                ),
-                child: Container(
-                  height: 50,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 10,
-                    horizontal: 10,
-                  ),
-                  child: SingleChildScrollView(
-                    scrollDirection: Axis.horizontal,
-                    child: Row(
-                      children: [
-                        Checkbox(value: false, onChanged: (value) {}),
-                        const SizedBox(width: 32),
-                        CircleAvatar(
-                          radius: 20,
-                          backgroundColor: Colors.grey,
-                          child: Text(order.clientContact[0]),
-                        ),
-                        const SizedBox(width: 10),
-                        Container(
-                          padding: const EdgeInsets.all(5),
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: order.status.color,
-                            borderRadius: BorderRadius.circular(20),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.vertical,
+            child: Column(
+              children: [
+                SizedBox(
+                  width: double.infinity,
+                  child: DataTable(
+                    showCheckboxColumn: state.showComboBox,
+                    onSelectAll: (_) {
+                      viewModel.selectAll();
+                    },
+                    columnSpacing: 46,
+                    dataTextStyle:
+                        Theme.of(context).textTheme.bodyMedium?.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                    headingTextStyle:
+                        Theme.of(context).textTheme.titleSmall?.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                    horizontalMargin: 12,
+                    columns: Headers.values
+                        .map(
+                          (e) => DataColumn(
+                            label: Text(e.label),
+                            numeric: e.isNumeric,
+                            headingRowAlignment: MainAxisAlignment.center,
+                            onSort: viewModel.sortOrders,
                           ),
-                          child: Text(order.status.name),
-                        ),
-                        const SizedBox(width: 10),
-                        Text(order.clientContact),
-                        const SizedBox(width: 10),
-                        Text(order.shopName),
-                        const SizedBox(width: 10),
-                        Text(order.startDate.toDDMMYYYY()),
-                        const SizedBox(width: 10),
-                        Text(order.endDate?.toDDMMYYYY() ?? ""),
-                        const SizedBox(width: 10),
-                        Text("${order.price}€"),
-                        const SizedBox(width: 10),
-                        Text("${order.commission}€"),
-                        const SizedBox(width: 10),
-                        Text(order.technique),
-                      ],
-                    ),
+                        )
+                        .toList(),
+                    dividerThickness: .5,
+                    rows: state.orders.map((order) {
+                      return DataRow(
+                        selected: state.selectedOrders.contains(order),
+                        onSelectChanged: (bool? value) {
+                          if (state.showComboBox) {
+                            viewModel.selectOrder(order);
+                          } else {
+                            if (context.mounted) {
+                              context.pushNamed(
+                                'order-details',
+                                pathParameters: {'orderId': order.id},
+                                extra: order,
+                              );
+                            }
+                          }
+                        },
+                        cells: [
+                          DataCell(
+                            Hero(
+                              tag: 'order-${order.id}',
+                              child: Center(
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8,
+                                  ),
+                                  child: Text(
+                                    order.clientContact,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8,
+                                  vertical: 4,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: order.status.color,
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Text(order.status.name),
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: Text(order.shopName),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: Text(order.startDate.toDDMMYYYY()),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: Text(order.endDate?.toDDMMYYYY() ?? ""),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: Text("${order.price}€"),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: Text("${order.commission}€"),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: IconButton(
+                                onPressed: () {
+                                  if (context.mounted) {
+                                    context.pushNamed(
+                                      'order-details',
+                                      pathParameters: {'orderId': order.id},
+                                      extra: order,
+                                    );
+                                  }
+                                },
+                                icon: const Icon(Icons.open_in_new),
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
                   ),
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ),
       ),
@@ -193,14 +265,17 @@ class _ResumeHeader extends ConsumerWidget {
 }
 
 /// Management bar
-class _ManagementBar extends StatelessWidget {
+class _ManagementBar extends ConsumerWidget {
   /// Constructor
   const _ManagementBar();
 
   /// Builds the management bar
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final state = ref.watch(indexProvider);
+    final viewModel = ref.read(indexProvider.notifier);
+
     return SliverPadding(
       padding: const EdgeInsets.all(10),
       sliver: SliverToBoxAdapter(
@@ -213,6 +288,15 @@ class _ManagementBar extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
+              TextButton(
+                onPressed: viewModel.showComboBox,
+                style: TextButton.styleFrom(
+                  textStyle: const TextStyle(
+                    fontWeight: FontWeight.normal,
+                  ),
+                ),
+                child: Text(state.showComboBox ? "Masquer" : "Sélectionner"),
+              ),
               PopupMenuButton<Filter>(
                 tooltip: "Trier",
                 child: Row(
@@ -278,11 +362,12 @@ class _ManagementBar extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 10),
-              TextButton.icon(
-                onPressed: () {},
-                icon: const Icon(Icons.delete),
-                label: const Text("Supprimer"),
-              ),
+              if (state.selectedOrders.isNotEmpty)
+                TextButton.icon(
+                  onPressed: viewModel.deleteSelectedOrders,
+                  icon: const Icon(Icons.delete),
+                  label: const Text("Supprimer"),
+                ),
             ],
           ),
         ),

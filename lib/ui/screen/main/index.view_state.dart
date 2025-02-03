@@ -15,12 +15,32 @@ class IndexScreenState extends ViewStateAbs {
   /// Orders
   final List<Order> orders;
 
+  /// Selected orders
+  final List<Order> selectedOrders;
+
+  /// Show combo box
+  final bool showComboBox;
+
+  /// Pinned orders
+  final List<Order> pinnedOrders;
+
+  /// Sort column index
+  final int sortColumnIndex;
+
+  /// Sort ascending
+  final bool sortAscending;
+
   ///
   /// Constructor
   ///
   IndexScreenState(
     this.loading,
     this.orders,
+    this.selectedOrders,
+    this.showComboBox,
+    this.pinnedOrders,
+    this.sortColumnIndex,
+    this.sortAscending,
   );
 
   ///
@@ -28,7 +48,12 @@ class IndexScreenState extends ViewStateAbs {
   ///
   IndexScreenState.initial()
       : loading = true,
-        orders = [];
+        orders = [],
+        selectedOrders = [],
+        showComboBox = false,
+        pinnedOrders = [],
+        sortColumnIndex = 0,
+        sortAscending = true;
 
   ///
   /// Get props
@@ -37,6 +62,11 @@ class IndexScreenState extends ViewStateAbs {
   List<Object?> get props => <Object?>[
         loading,
         orders,
+        selectedOrders,
+        showComboBox,
+        pinnedOrders,
+        sortColumnIndex,
+        sortAscending,
       ];
 
   ///
