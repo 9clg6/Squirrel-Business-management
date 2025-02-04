@@ -7,7 +7,9 @@ part of 'order_details.view_state.dart';
 // **************************************************************************
 
 abstract class _$OrderDetailsScreenStateCWProxy {
-  OrderDetailsScreenState loading(bool? loading);
+  OrderDetailsScreenState loading(bool loading);
+
+  OrderDetailsScreenState order(Order? order);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OrderDetailsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -17,6 +19,7 @@ abstract class _$OrderDetailsScreenStateCWProxy {
   /// ````
   OrderDetailsScreenState call({
     bool? loading,
+    Order? order,
   });
 }
 
@@ -28,7 +31,10 @@ class _$OrderDetailsScreenStateCWProxyImpl
   final OrderDetailsScreenState _value;
 
   @override
-  OrderDetailsScreenState loading(bool? loading) => this(loading: loading);
+  OrderDetailsScreenState loading(bool loading) => this(loading: loading);
+
+  @override
+  OrderDetailsScreenState order(Order? order) => this(order: order);
 
   @override
 
@@ -40,12 +46,17 @@ class _$OrderDetailsScreenStateCWProxyImpl
   /// ````
   OrderDetailsScreenState call({
     Object? loading = const $CopyWithPlaceholder(),
+    Object? order = const $CopyWithPlaceholder(),
   }) {
     return OrderDetailsScreenState(
-      loading == const $CopyWithPlaceholder()
+      loading: loading == const $CopyWithPlaceholder() || loading == null
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
-          : loading as bool?,
+          : loading as bool,
+      order: order == const $CopyWithPlaceholder()
+          ? _value.order
+          // ignore: cast_nullable_to_non_nullable
+          : order as Order?,
     );
   }
 }

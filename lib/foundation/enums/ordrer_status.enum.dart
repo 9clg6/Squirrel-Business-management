@@ -11,7 +11,7 @@ enum OrderStatus {
   ),
   waitingForPaiement(
     name: "En attente de paiement",
-    color: Colors.yellow,
+    color: Colors.lightGreen,
   ),
   finished(
     name: "Réussie",

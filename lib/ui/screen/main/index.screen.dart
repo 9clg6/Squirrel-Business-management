@@ -41,10 +41,10 @@ class _PinnedOrders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
-    if (state.pinnedOrders.isEmpty) return const SizedBox();
+    final viewModel = ref.read(indexProvider.notifier);
+    if (state.orderState.pinnedOrders.isEmpty) return const SizedBox();
 
     final colorScheme = Theme.of(context).colorScheme;
-    final viewModel = ref.read(indexProvider.notifier);
 
     return Container(
       decoration: BoxDecoration(
@@ -94,7 +94,7 @@ class _PinnedOrders extends ConsumerWidget {
                         headingRowAlignment: MainAxisAlignment.center,
                       ))
                   .toList(),
-              rows: state.pinnedOrders.map((order) {
+              rows: state.orderState.pinnedOrders.map((order) {
                 return DataRow(
                   onSelectChanged: (_) {
                     if (context.mounted) {
@@ -165,9 +165,10 @@ class _PinnedOrders extends ConsumerWidget {
                       Center(
                         child: IconButton(
                           onPressed: () => viewModel.pinOrder(order),
-                          icon: Icon(state.pinnedOrders.contains(order)
-                              ? Icons.push_pin
-                              : Icons.push_pin_outlined),
+                          icon: Icon(
+                              state.orderState.pinnedOrders.contains(order)
+                                  ? Icons.push_pin
+                                  : Icons.push_pin_outlined),
                           tooltip: "Épingler",
                         ),
                       ),
@@ -259,14 +260,14 @@ class _OrdersList extends ConsumerWidget {
                   Theme.of(context).textTheme.titleSmall?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
-              showCheckboxColumn: state.showComboBox,
+              showCheckboxColumn: state.orderState.showComboBox,
               horizontalMargin: 12,
               dividerThickness: .5,
               onSelectAll: (_) {
                 viewModel.selectAll();
               },
-              sortColumnIndex: state.sortColumnIndex,
-              sortAscending: state.sortAscending,
+              sortColumnIndex: state.orderState.sortColumnIndex,
+              sortAscending: state.orderState.sortAscending,
               columns: Headers.values
                   .map(
                     (e) => DataColumn(
@@ -277,11 +278,11 @@ class _OrdersList extends ConsumerWidget {
                     ),
                   )
                   .toList(),
-              rows: state.orders.map((order) {
+              rows: state.orderState.orders.map((order) {
                 return DataRow(
-                  selected: state.selectedOrders.contains(order),
+                  selected: state.orderState.selectedOrders.contains(order),
                   onSelectChanged: (bool? value) {
-                    if (state.showComboBox) {
+                    if (state.orderState.showComboBox) {
                       viewModel.selectOrder(order);
                     } else {
                       if (context.mounted) {
@@ -366,7 +367,7 @@ class _OrdersList extends ConsumerWidget {
                             viewModel.pinOrder(order);
                           },
                           icon: Icon(
-                            state.pinnedOrders.contains(order)
+                            state.orderState.pinnedOrders.contains(order)
                                 ? Icons.push_pin
                                 : Icons.push_pin_outlined,
                           ),
@@ -415,7 +416,7 @@ class _ResumeHeader extends ConsumerWidget {
                     const Text("Prochaine action"),
                     const SizedBox(height: 10),
                     Text(
-                      state.nextActionDate?.toDDMMYYYY() ?? "",
+                      state.orderState.nextActionDate?.toDDMMYYYY() ?? "",
                       style: TextStyle(
                         fontSize: 20,
                         color: Theme.of(context).colorScheme.onSurface,
@@ -439,7 +440,7 @@ class _ResumeHeader extends ConsumerWidget {
                     const Text("Total"),
                     const SizedBox(height: 10),
                     Text(
-                      "${state.allOrder.fold(
+                      "${state.orderState.orders.fold(
                             0,
                             (sum, order) =>
                                 (sum.toDouble() + order.commission).toInt(),
@@ -467,15 +468,11 @@ class _ResumeHeader extends ConsumerWidget {
                     Text("Total du mois de $currentMonth"),
                     const SizedBox(height: 10),
                     Text(
-                      "${state.allOrder
-                          .where(
-                              (order) => order.startDate.month == currentMonth)
-                          .fold(
+                      "${state.orderState.orders.where((order) => order.startDate.month == currentMonth).fold(
                             0,
                             (sum, order) =>
                                 (sum.toDouble() + order.commission).toInt(),
-                          )
-                          .toStringAsFixed(2)} €",
+                          ).toStringAsFixed(2)} €",
                       style: TextStyle(
                         fontSize: 20,
                         color: Theme.of(context).colorScheme.onSurface,
@@ -526,8 +523,9 @@ class _ManagementBar extends ConsumerWidget {
                         fontWeight: FontWeight.normal,
                       ),
                     ),
-                    child:
-                        Text(state.showComboBox ? "Masquer" : "Sélectionner"),
+                    child: Text(state.orderState.showComboBox
+                        ? "Masquer"
+                        : "Sélectionner"),
                   ),
                   const SizedBox(width: 10),
                   TextButton.icon(
@@ -549,7 +547,7 @@ class _ManagementBar extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 10),
-                  if (state.selectedOrders.isNotEmpty)
+                  if (state.orderState.selectedOrders.isNotEmpty)
                     TextButton.icon(
                       onPressed: viewModel.deleteSelectedOrders,
                       icon: const Icon(Icons.delete),

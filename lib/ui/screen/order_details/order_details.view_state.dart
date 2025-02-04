@@ -1,4 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/ui/abstraction/view_state.abs.dart';
 
 part 'order_details.view_state.g.dart';
@@ -9,17 +10,25 @@ part 'order_details.view_state.g.dart';
 @CopyWith()
 class OrderDetailsScreenState extends ViewStateAbs {
   /// Loading state
-  final bool? loading;
+  final bool loading;
+
+  /// Order
+  final Order? order;
 
   ///
   /// Constructor
   ///
-  OrderDetailsScreenState(this.loading);
+  OrderDetailsScreenState({
+    required this.loading,
+    required this.order,
+  });
 
   ///
   /// Initial state
   ///
-  OrderDetailsScreenState.initial() : loading = true;
+  OrderDetailsScreenState.initial()
+      : loading = true,
+        order = null;
 
   ///
   /// Get props
@@ -27,5 +36,6 @@ class OrderDetailsScreenState extends ViewStateAbs {
   @override
   List<Object?> get props => <Object?>[
         loading,
+        order,
       ];
 }

@@ -17,6 +17,7 @@ import 'package:init/data/local_data_source/preferences/preferences_local.data_s
 import 'package:init/data/repository/preferences/preferences.repository.dart'
     as _i333;
 import 'package:init/data/storage/hive_secure_storage.dart' as _i323;
+import 'package:init/domain/service/order.service.dart' as _i819;
 import 'package:init/domain/service/secure_storage.service.dart' as _i861;
 import 'package:init/domain/use_case/get_theme.use_case.dart' as _i168;
 import 'package:init/foundation/interfaces/theme.service_interface.dart'
@@ -37,6 +38,7 @@ extension GetItInjectableX on _i174.GetIt {
     final domainModule = _$DomainModule();
     final dataModule = _$DataModule();
     gh.factory<_i558.FlutterSecureStorage>(() => domainModule.storage());
+    gh.singleton<_i819.OrderService>(() => domainModule.orderService());
     await gh.singletonAsync<_i861.SecureStorageService>(
       () => domainModule.secureStorageService(gh<_i558.FlutterSecureStorage>()),
       preResolve: true,

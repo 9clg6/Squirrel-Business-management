@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/ui/screen/clients/clients.screen.dart';
 import 'package:init/ui/screen/history/history.screen.dart';
 import 'package:init/ui/screen/main/index.screen.dart';
@@ -49,7 +50,9 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/order-details/:orderId',
               name: 'order-details',
-              builder: (_, state) => const OrderDetailsScreen(),
+              builder: (_, state) => OrderDetailsScreen(
+                order: state.extra! as Order,
+              ),
             ),
           ],
         ),
