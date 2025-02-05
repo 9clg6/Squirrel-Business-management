@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:init/application/providers/initializer.dart';
+import 'package:init/domain/entities/action.entity.dart';
 import 'package:init/domain/entities/order.entity.dart';
+import 'package:init/domain/service/dialog.service.dart';
 import 'package:init/domain/service/order.service.dart';
 import 'package:init/foundation/enums/ordrer_status.enum.dart';
 import 'package:init/ui/screen/order_details/order_details.view_state.dart';
@@ -14,6 +16,7 @@ part 'order_details.view_model.g.dart';
 @riverpod
 class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   late final OrderService _orderService;
+  late final DialogService _dialogService;
 
   ///
   /// Constructor
@@ -27,6 +30,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   OrderDetailsViewModel._() {
     _orderService = injector<OrderService>();
+    _dialogService = injector<DialogService>();
   }
 
   ///
@@ -60,5 +64,22 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   void updateOrderStatus(Order order, OrderStatus currentStatus) {
     _orderService.updateOrderStatus(order, currentStatus);
+  }
+
+  /// Update order priority
+  ///
+  void updateOrderPriority(Order order) {
+    _orderService.updateOrderPriority(order);
+  }
+
+  Future<void> addOrderAction() async {
+    final OrderAction? orderAction =
+        await _dialogService.showAddOrderActionDialog();
+    if (orderAction != null) {
+      _orderService.addOrderAction(
+        state.order!,
+        orderAction,
+      );
+    }
   }
 }

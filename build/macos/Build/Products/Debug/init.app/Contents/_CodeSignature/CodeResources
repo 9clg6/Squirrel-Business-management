@@ -23,7 +23,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			Tkqi7H0o/8lSsOcJasnoRQZbN74=
+			cV8LsGrtWRcKYFOWzTYXzVMuS+k=
 			</data>
 			<key>requirement</key>
 			<string>identifier "io.flutter.flutter.app" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: cleguy.01@gmail.com (L52SL7TUZY)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -32,7 +32,7 @@
 		<dict>
 			<key>cdhash</key>
 			<data>
-			MKS4JPMXCz10xXYScGkAiHgBMCc=
+			kjrseox8gJjr5pKxo87OF4xP1hk=
 			</data>
 			<key>requirement</key>
 			<string>identifier "io.flutter.flutter-macos" and anchor apple generic and certificate leaf[subject.CN] = "Apple Development: cleguy.01@gmail.com (L52SL7TUZY)" and certificate 1[field.1.2.840.113635.100.6.2.1] /* exists */</string>
@@ -269,7 +269,7 @@
 		<dict>
 			<key>hash2</key>
 			<data>
-			u9s10a2mP4SQplwsotymsEG3sF5QQ7071de5s0qC8aQ=
+			GpdETZXgVhmtlNHAlHYNCWwBo8ebgDVRL6QvAy5akPY=
 			</data>
 		</dict>
 	</dict>

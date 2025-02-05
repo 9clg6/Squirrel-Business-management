@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:init/domain/entities/action.entity.dart';
 import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/domain/state/order.state.dart';
 import 'package:init/foundation/enums/headers.enum.dart';
@@ -18,7 +19,7 @@ class OrderService {
             orders: [
               Order(
                 clientContact: 'Jean',
-                intermediaryContact: 'Boxer 1',
+                intermediaryContact: 'Intermediaire 2',
                 internalProcessingFee: 35,
                 trackId: '1234567890',
                 priority: Priority.normal,
@@ -27,12 +28,22 @@ class OrderService {
                 shopName: 'Amazon',
                 price: 1500,
                 commissionRatio: .30,
-                status: OrderStatus.pending,
-                technique: 'FTID MR QR',
+                status: OrderStatus.running,
+                technique: 'La Poste',
+                actions: [
+                  OrderAction(
+                    date: DateTime(2025, 2, 5),
+                    description: "Envoi du produit",
+                  ),
+                  OrderAction(
+                    date: DateTime(2025, 2, 20),
+                    description: "Prise d'information auprès de la boutique",
+                  ),
+                ],
               ),
               Order(
                 clientContact: 'Louis',
-                intermediaryContact: 'Boxer 2',
+                intermediaryContact: 'Intermediaire 1',
                 internalProcessingFee: 35,
                 trackId: '1234567890',
                 priority: Priority.high,
@@ -41,38 +52,77 @@ class OrderService {
                 shopName: 'Zalando',
                 price: 800,
                 commissionRatio: .30,
-                status: OrderStatus.running,
-                technique: 'FTID MR QR',
+                status: OrderStatus.pending,
+                technique: 'La Poste',
+                actions: [
+                  OrderAction(
+                    date: DateTime(2025, 2, 5),
+                    description: "Envoi du produit",
+                  ),
+                  OrderAction(
+                    date: DateTime(2025, 2, 10),
+                    description: "Prise d'information auprès de la boutique",
+                  ),
+                  OrderAction(
+                    date: DateTime(2025, 2, 20),
+                    description: "Prise d'information auprès de la boutique",
+                  ),
+                ],
               ),
             ],
           ),
         );
 
-  /// Update order status
-  ///
-  void updateOrderStatus(Order order, OrderStatus status) {
-    // Recherche par id qui est l'identifiant unique
-    var indexOrder = orderState.value.orders.indexWhere((o) => o.id == order.id);
+  /// Méthode utilitaire pour trouver un ordre et déterminer s'il est épinglé
+  (int, bool) _findOrder(Order order) {
+    var indexOrder =
+        orderState.value.orders.indexWhere((o) => o.id == order.id);
     var isPinned = false;
-    
+
     if (indexOrder == -1) {
-      indexOrder = orderState.value.pinnedOrders.indexWhere((o) => o.id == order.id);
+      indexOrder =
+          orderState.value.pinnedOrders.indexWhere((o) => o.id == order.id);
       isPinned = true;
     }
-    
+
+    return (indexOrder, isPinned);
+  }
+
+  /// Méthode utilitaire pour mettre à jour un ordre
+  void _updateOrder(Order updatedOrder, int indexOrder, bool isPinned) {
     if (indexOrder == -1) return;
-    
-    final Order updatedOrder = order.copyWith(status: status);
-    
+
     if (isPinned) {
-      final updatedPinnedOrders = List<Order>.from(orderState.value.pinnedOrders)
-        ..replaceRange(indexOrder, indexOrder + 1, [updatedOrder]);
-      orderState.value = orderState.value.copyWith(pinnedOrders: updatedPinnedOrders);
+      final updatedPinnedOrders =
+          List<Order>.from(orderState.value.pinnedOrders)
+            ..replaceRange(
+              indexOrder,
+              indexOrder + 1,
+              [updatedOrder],
+            );
+      orderState.value = orderState.value.copyWith(
+        pinnedOrders: updatedPinnedOrders,
+      );
     } else {
       final updatedOrders = List<Order>.from(orderState.value.orders)
-        ..replaceRange(indexOrder, indexOrder + 1, [updatedOrder]);
-      orderState.value = orderState.value.copyWith(orders: updatedOrders);
+        ..replaceRange(
+          indexOrder,
+          indexOrder + 1,
+          [updatedOrder],
+        );
+      orderState.value = orderState.value.copyWith(
+        orders: updatedOrders,
+      );
     }
+  }
+
+  /// Update order status
+  void updateOrderStatus(Order order, OrderStatus status) {
+    final (indexOrder, isPinned) = _findOrder(order);
+    if (indexOrder == -1) return;
+
+    final updatedOrder = order.copyWith(status: status);
+    _updateOrder(updatedOrder, indexOrder, isPinned);
   }
 
   /// Pin order
@@ -109,9 +159,18 @@ class OrderService {
   ///
   void selectOrder(Order? order) {
     if (order == null) return;
+    if (orderState.value.showComboBox == false) {
+      orderState.value = orderState.value.copyWith(
+        showComboBox: true,
+      );
+    }
     if (orderState.value.selectedOrders.contains(order)) {
       orderState.value = orderState.value.copyWith(
-        selectedOrders: orderState.value.selectedOrders..remove(order),
+        selectedOrders: [
+          ...orderState.value.selectedOrders.where(
+            (element) => element != order,
+          )
+        ],
       );
     } else {
       orderState.value = orderState.value.copyWith(
@@ -207,5 +266,31 @@ class OrderService {
       sortColumnIndex: columnIndex,
       sortAscending: ascending,
     );
+  }
+
+  /// Update order priority
+  /// Cycles through priority values: normal -> high -> urgent -> normal
+  void updateOrderPriority(Order order) {
+    final nextPriority =
+        Priority.values[(order.priority.index + 1) % Priority.values.length];
+    final updatedOrder = order.copyWith(
+      priority: nextPriority,
+    );
+
+    final (indexOrder, isPinned) = _findOrder(order);
+    _updateOrder(updatedOrder, indexOrder, isPinned);
+  }
+
+  /// Add order action
+  ///
+  void addOrderAction(Order order, OrderAction orderAction) {
+    final (indexOrder, isPinned) = _findOrder(order);
+    if (indexOrder == -1) return;
+
+    final updatedOrder = order.copyWith(
+      actions: [...order.actions, orderAction],
+    );
+
+    _updateOrder(updatedOrder, indexOrder, isPinned);
   }
 }

@@ -92,18 +92,13 @@ class _PinnedOrders extends ConsumerWidget {
                         label: Text(e.label),
                         numeric: e.isNumeric,
                         headingRowAlignment: MainAxisAlignment.center,
+                        onSort: viewModel.sortOrders,
                       ))
                   .toList(),
               rows: state.orderState.pinnedOrders.map((order) {
                 return DataRow(
                   onSelectChanged: (_) {
-                    if (context.mounted) {
-                      context.pushNamed(
-                        'order-details',
-                        pathParameters: {'orderId': order.id},
-                        extra: order,
-                      );
-                    }
+                    viewModel.navigateToDetails(order);
                   },
                   cells: [
                     DataCell(
@@ -148,13 +143,7 @@ class _PinnedOrders extends ConsumerWidget {
                       Center(
                         child: IconButton(
                           onPressed: () {
-                            if (context.mounted) {
-                              context.pushNamed(
-                                'order-details',
-                                pathParameters: {'orderId': order.id},
-                                extra: order,
-                              );
-                            }
+                            viewModel.navigateToDetails(order);
                           },
                           icon: const Icon(Icons.open_in_new),
                           tooltip: "Ouvrir",
@@ -281,6 +270,7 @@ class _OrdersList extends ConsumerWidget {
               rows: state.orderState.orders.map((order) {
                 return DataRow(
                   selected: state.orderState.selectedOrders.contains(order),
+                  onLongPress: () => viewModel.selectOrder(order),
                   onSelectChanged: (bool? value) {
                     if (state.orderState.showComboBox) {
                       viewModel.selectOrder(order);

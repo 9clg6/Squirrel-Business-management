@@ -8,6 +8,7 @@
 // coverage:ignore-file
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
+import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:init/application/injection/data.module.dart' as _i35;
@@ -17,6 +18,8 @@ import 'package:init/data/local_data_source/preferences/preferences_local.data_s
 import 'package:init/data/repository/preferences/preferences.repository.dart'
     as _i333;
 import 'package:init/data/storage/hive_secure_storage.dart' as _i323;
+import 'package:init/domain/service/dialog.service.dart' as _i218;
+import 'package:init/domain/service/navigator.service.dart' as _i641;
 import 'package:init/domain/service/order.service.dart' as _i819;
 import 'package:init/domain/service/secure_storage.service.dart' as _i861;
 import 'package:init/domain/use_case/get_theme.use_case.dart' as _i168;
@@ -38,7 +41,12 @@ extension GetItInjectableX on _i174.GetIt {
     final domainModule = _$DomainModule();
     final dataModule = _$DataModule();
     gh.factory<_i558.FlutterSecureStorage>(() => domainModule.storage());
+    gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
+        () => domainModule.provideNavigatorKey());
     gh.singleton<_i819.OrderService>(() => domainModule.orderService());
+    gh.singleton<_i641.NavigatorService>(() => domainModule.navigatorService());
+    gh.singleton<_i218.DialogService>(() => domainModule
+        .dialogService(gh<_i409.GlobalKey<_i409.NavigatorState>>()));
     await gh.singletonAsync<_i861.SecureStorageService>(
       () => domainModule.secureStorageService(gh<_i558.FlutterSecureStorage>()),
       preResolve: true,

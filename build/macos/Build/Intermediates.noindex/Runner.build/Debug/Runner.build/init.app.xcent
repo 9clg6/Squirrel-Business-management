@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>com.apple.application-identifier</key>
-	<string>VRM7RHKX6G.fr.aiirgestion</string>
+	<string>VRM7RHKX6G.fr.aiirgestion.com</string>
 	<key>com.apple.developer.team-identifier</key>
 	<string>VRM7RHKX6G</string>
 	<key>com.apple.security.app-sandbox</key>

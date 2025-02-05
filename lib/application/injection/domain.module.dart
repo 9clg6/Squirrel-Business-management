@@ -1,14 +1,22 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:init/data/repository/preferences/preferences.repository.dart';
+import 'package:init/domain/service/dialog.service.dart';
+import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
 import 'package:init/domain/service/secure_storage.service.dart';
 import 'package:init/domain/service/theme.service.dart';
 import 'package:init/domain/use_case/get_theme.use_case.dart';
 import 'package:init/foundation/interfaces/theme.service_interface.dart';
+import 'package:init/foundation/routing/app_router.dart';
 import 'package:injectable/injectable.dart';
 
 @module
 abstract class DomainModule {
+  /// Provide the navigatorKey
+  @singleton
+  GlobalKey<NavigatorState> provideNavigatorKey() => parentNavigatorKey;
+
   /// Allow to inject [ThemeService]
   @Singleton(as: IThemeService)
   @preResolve
@@ -44,4 +52,13 @@ abstract class DomainModule {
   /// Allow to inject [OrderService]
   @singleton
   OrderService orderService() => OrderService();
+
+  /// Allow to inject [DialogService]
+  @singleton
+  DialogService dialogService(GlobalKey<NavigatorState> navigatorKey) =>
+      DialogService(navigatorKey);
+
+  /// Allow to inject [NavigatorService]
+  @singleton
+  NavigatorService navigatorService() => NavigatorService();
 }

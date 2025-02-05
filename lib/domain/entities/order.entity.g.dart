@@ -33,6 +33,8 @@ abstract class _$OrderCWProxy {
 
   Order note(String? note);
 
+  Order actions(List<OrderAction>? actions);
+
   Order priority(Priority priority);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Order(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -55,6 +57,7 @@ abstract class _$OrderCWProxy {
     OrderStatus? status,
     String? technique,
     String? note,
+    List<OrderAction>? actions,
     Priority? priority,
   });
 }
@@ -110,6 +113,9 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
   Order note(String? note) => this(note: note);
 
   @override
+  Order actions(List<OrderAction>? actions) => this(actions: actions);
+
+  @override
   Order priority(Priority priority) => this(priority: priority);
 
   @override
@@ -134,6 +140,7 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
     Object? status = const $CopyWithPlaceholder(),
     Object? technique = const $CopyWithPlaceholder(),
     Object? note = const $CopyWithPlaceholder(),
+    Object? actions = const $CopyWithPlaceholder(),
     Object? priority = const $CopyWithPlaceholder(),
   }) {
     return Order(
@@ -196,6 +203,10 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
           ? _value.note
           // ignore: cast_nullable_to_non_nullable
           : note as String?,
+      actions: actions == const $CopyWithPlaceholder()
+          ? _value.actions
+          // ignore: cast_nullable_to_non_nullable
+          : actions as List<OrderAction>?,
       priority: priority == const $CopyWithPlaceholder() || priority == null
           ? _value.priority
           // ignore: cast_nullable_to_non_nullable
@@ -209,3 +220,62 @@ extension $OrderCopyWith on Order {
   // ignore: library_private_types_in_public_api
   _$OrderCWProxy get copyWith => _$OrderCWProxyImpl(this);
 }
+
+// **************************************************************************
+// JsonSerializableGenerator
+// **************************************************************************
+
+Order _$OrderFromJson(Map<String, dynamic> json) => Order(
+      id: json['id'] as String?,
+      clientContact: json['clientContact'] as String,
+      intermediaryContact: json['intermediaryContact'] as String,
+      internalProcessingFee: (json['internalProcessingFee'] as num).toDouble(),
+      trackId: json['trackId'] as String,
+      startDate: DateTime.parse(json['startDate'] as String),
+      estimatedDuration:
+          Duration(microseconds: (json['estimatedDuration'] as num).toInt()),
+      shopName: json['shopName'] as String,
+      price: (json['price'] as num).toDouble(),
+      commissionRatio: (json['commissionRatio'] as num).toDouble(),
+      status: $enumDecode(_$OrderStatusEnumMap, json['status']),
+      technique: json['technique'] as String,
+      note: json['note'] as String?,
+      actions: (json['actions'] as List<dynamic>?)
+          ?.map((e) => OrderAction.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      priority: $enumDecodeNullable(_$PriorityEnumMap, json['priority']) ??
+          Priority.normal,
+    );
+
+Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
+      'id': instance.id,
+      'clientContact': instance.clientContact,
+      'intermediaryContact': instance.intermediaryContact,
+      'internalProcessingFee': instance.internalProcessingFee,
+      'trackId': instance.trackId,
+      'startDate': instance.startDate.toIso8601String(),
+      'estimatedDuration': instance.estimatedDuration.inMicroseconds,
+      'shopName': instance.shopName,
+      'price': instance.price,
+      'commissionRatio': instance.commissionRatio,
+      'status': _$OrderStatusEnumMap[instance.status]!,
+      'technique': instance.technique,
+      'note': instance.note,
+      'priority': _$PriorityEnumMap[instance.priority]!,
+      'actions': instance.actions,
+    };
+
+const _$OrderStatusEnumMap = {
+  OrderStatus.pending: 'pending',
+  OrderStatus.running: 'running',
+  OrderStatus.waitingForPaiement: 'waitingForPaiement',
+  OrderStatus.finished: 'finished',
+  OrderStatus.failed: 'failed',
+  OrderStatus.canceled: 'canceled',
+};
+
+const _$PriorityEnumMap = {
+  Priority.low: 'low',
+  Priority.normal: 'normal',
+  Priority.high: 'high',
+};

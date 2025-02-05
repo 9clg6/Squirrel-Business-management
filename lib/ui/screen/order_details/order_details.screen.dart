@@ -3,7 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/foundation/enums/ordrer_status.enum.dart';
+import 'package:init/foundation/extensions/date_time.extension.dart';
 import 'package:init/ui/screen/order_details/order_details.view_model.dart';
+import 'package:init/ui/screen/order_details/order_details.view_state.dart';
 
 /// Order details screen
 ///
@@ -62,22 +64,47 @@ class _OrderDetailBody extends StatelessWidget {
   ///
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.all(16),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          _OrderDetailHeader(),
-          SizedBox(height: 16),
-          _OrderDetailsContent(),
+          _OrderActionsRow(),
+          const _OrderDetailHeader(),
+          const SizedBox(height: 16),
+          const _OrderDetailsContent(),
         ],
       ),
     );
   }
 }
 
+class _OrderActionsRow extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        TextButton.icon(
+          onPressed: () {
+            //TODO Confirmation dialogue
+          },
+          label: const Text(
+            "Supprimer la commande",
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+            ),
+          ),
+          icon: const Icon(Icons.delete_outline),
+        ),
+      ],
+    );
+  }
+}
+
 ///
 ///
-class _OrderDetailsContent extends ConsumerWidget {
+class _OrderDetailsContent extends StatelessWidget {
   /// Constructor
   ///
   const _OrderDetailsContent();
@@ -85,11 +112,8 @@ class _OrderDetailsContent extends ConsumerWidget {
   /// Builds the order details content
   ///
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final state = ref.watch(orderDetailsViewModelProvider);
-    final order = state.order;
 
     return Container(
       width: double.infinity,
@@ -108,84 +132,419 @@ class _OrderDetailsContent extends ConsumerWidget {
               height: 46,
               thickness: 1,
             ),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                  color: colorScheme.outline.withValues(alpha: .2),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Prochaine action",
-                    style: textTheme.labelSmall
-                        ?.copyWith(fontWeight: FontWeight.w400),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    "21/10/2025",
-                    style: textTheme.headlineMedium
-                        ?.copyWith(fontWeight: FontWeight.w400),
-                  ),
-                  const SizedBox(height: 16),
-                  Text(
-                    "Recontacter la boutique par mail",
-                    style: textTheme.bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.w400),
-                  ),
-                  const SizedBox(height: 16),
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 32,
-                      vertical: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.surface,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: colorScheme.outline.withValues(alpha: .2),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Priorité",
-                          style: textTheme.bodyLarge
-                              ?.copyWith(fontWeight: FontWeight.w400),
-                        ),
-                        const SizedBox(height: 16),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Container(
-                              width: 10,
-                              height: 10,
-                              decoration: BoxDecoration(
-                                color: order!.priority.color,
-                              ),
-                            ),
-                            const SizedBox(width: 16),
-                            Text(
-                              "Élevé",
-                              style: textTheme.bodyMedium
-                                  ?.copyWith(fontWeight: FontWeight.w400),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            const _SummaryOrder(),
+            const SizedBox(height: 16),
+            const _ActionsHistory(),
+            const SizedBox(height: 16),
+            const _OrderInformations(),
           ],
         ),
+      ),
+    );
+  }
+}
+
+class _ActionsHistory extends ConsumerWidget {
+  const _ActionsHistory();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final OrderDetailsViewModel viewModel = ref.read(orderDetailsViewModelProvider.notifier);
+    final OrderDetailsScreenState state = ref.watch(orderDetailsViewModelProvider);
+    final Order? order = state.order;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                "Historique des actions réalisées",
+                style: textTheme.labelLarge?.copyWith(
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              const SizedBox(width: 16),
+              TextButton.icon(
+                onPressed: viewModel.addOrderAction,
+                label: const Text(
+                  "Ajouter une action",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w400,
+                    fontSize: 12,
+                  ),
+                ),
+                icon: const Icon(Icons.add),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          if (order?.actions.isEmpty == true)
+            Text(
+              "Aucune action n'a été effectuée",
+              style:
+                  textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w400),
+            )
+          else ...[
+            Divider(
+              color: colorScheme.outline.withValues(alpha: .2),
+              height: 46,
+              thickness: 1,
+            ),
+            Stack(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 7),
+                  child: Container(
+                    width: 2,
+                    height: (order!.actions.length * 48.0),
+                    color: colorScheme.primary.withValues(alpha: .2),
+                  ),
+                ),
+                Column(
+                  children: order.actions.asMap().entries.map((entry) {
+                    final index = entry.key;
+                    final action = entry.value;
+                    final isFirst = index == 0;
+                    int? dayDiffBetweenActions;
+
+                    // Calculer la différence pour toutes les actions sauf la dernière (la plus récente)
+                    if (index < order.actions.length - 1) {
+                      final nextDate = order.actions[index + 1].date;
+                      dayDiffBetweenActions =
+                          action.date.difference(nextDate).inDays;
+                    }
+
+                    return SizedBox(
+                      height: 48,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          SizedBox(
+                            width: 15,
+                            height: 15,
+                            child: Container(
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: isFirst
+                                    ? colorScheme.primary
+                                    : colorScheme.primary.withValues(alpha: .2),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 10),
+                          Expanded(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Expanded(
+                                  child: Text(action.date.toDDMMYYYY()),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    action.description,
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Tooltip(
+                                    message: dayDiffBetweenActions != null
+                                        ? "Jours depuis la dernière action"
+                                        : "",
+                                    child: Text(
+                                      dayDiffBetweenActions != null
+                                          ? "+$dayDiffBetweenActions jours"
+                                          : "",
+                                      style: textTheme.bodySmall?.copyWith(
+                                        fontWeight: FontWeight.w400,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ],
+            ),
+          ],
+        ],
+      ),
+    );
+  }
+}
+
+class _OrderInformations extends ConsumerWidget {
+  const _OrderInformations();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final state = ref.watch(orderDetailsViewModelProvider);
+    final order = state.order;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Informations",
+            style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w400),
+          ),
+          Divider(
+            color: colorScheme.outline.withValues(alpha: .2),
+            height: 46,
+            thickness: 1,
+          ),
+          Row(
+            children: [
+              Expanded(
+                child: SelectableText(
+                  "Date de commande",
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SelectableText(
+                  order!.startDate.toDDMMYYYY(),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: SelectableText(
+                  "Numéro de suivi",
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SelectableText(
+                  order.trackId,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: SelectableText(
+                  "Fin de dossier prévue",
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SelectableText(
+                  order.endDate!.toDDMMYYYY(),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: SelectableText(
+                  "Méthode",
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SelectableText(
+                  order.technique,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: SelectableText(
+                  "Boutique",
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SelectableText(
+                  order.shopName,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: SelectableText(
+                  "Intermédiaire",
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SelectableText(
+                  order.intermediaryContact,
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 32),
+          Row(
+            children: [
+              Expanded(
+                child: SelectableText(
+                  "Frais",
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w400,
+                  ),
+                ),
+              ),
+              Expanded(
+                child: SelectableText(
+                  "${order.internalProcessingFee} €",
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _SummaryOrder extends ConsumerWidget {
+  const _SummaryOrder();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+    final state = ref.watch(orderDetailsViewModelProvider);
+    final order = state.order;
+    final viewModel = ref.read(orderDetailsViewModelProvider.notifier);
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            "Prochaine action",
+            style: textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w400),
+          ),
+          const SizedBox(height: 4),
+          Text(
+            "21/10/2025",
+            style:
+                textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w400),
+          ),
+          const SizedBox(height: 16),
+          Text(
+            "Recontacter la boutique par mail",
+            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400),
+          ),
+          const SizedBox(height: 16),
+          InkWell(
+            onTap: () => viewModel.updateOrderPriority(order),
+            child: MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: Tooltip(
+                verticalOffset: 50,
+                message: "Cliquez pour changer la priorité",
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 32,
+                    vertical: 16,
+                  ),
+                  decoration: BoxDecoration(
+                    color: colorScheme.surface,
+                    borderRadius: BorderRadius.circular(10),
+                    border: Border.all(
+                      color: colorScheme.outline.withValues(alpha: .2),
+                    ),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Priorité",
+                        style: textTheme.bodyLarge
+                            ?.copyWith(fontWeight: FontWeight.w400),
+                      ),
+                      const SizedBox(height: 16),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Container(
+                            width: 10,
+                            height: 10,
+                            decoration: BoxDecoration(
+                              color: order!.priority.color,
+                              borderRadius: BorderRadius.circular(2),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Text(
+                            order.priority.name,
+                            style: textTheme.bodyMedium
+                                ?.copyWith(fontWeight: FontWeight.w400),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -395,15 +754,16 @@ class _OrderDetailAppBar extends StatelessWidget
   @override
   Widget build(BuildContext context) {
     return AppBar(
+      scrolledUnderElevation: 0,
       leadingWidth: 220,
+      backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       title: const Text("Détails de la commande"),
-      leading: Padding(
-        padding: const EdgeInsets.only(top: 10),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(10),
-          onTap: context.pop,
-          child: Padding(
-            padding: const EdgeInsets.only(left: 10),
+      leading: MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          onTap: () => context.pop(),
+          child: Container(
+            padding: const EdgeInsets.only(left: 10, top: 10),
             child: Row(
               children: [
                 const Icon(Icons.arrow_back),

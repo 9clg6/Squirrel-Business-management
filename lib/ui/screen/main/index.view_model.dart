@@ -1,5 +1,6 @@
 import 'package:init/application/providers/initializer.dart';
 import 'package:init/domain/entities/order.entity.dart';
+import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
 import 'package:init/ui/screen/main/index.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -12,11 +13,13 @@ part 'index.view_model.g.dart';
 @riverpod
 class Index extends _$Index {
   late final OrderService _orderService;
+  late final NavigatorService _navigatorService;
 
   /// Constructor
   ///
   Index() {
     _orderService = injector<OrderService>();
+    _navigatorService = injector<NavigatorService>();
   }
 
   /// Build
@@ -67,5 +70,9 @@ class Index extends _$Index {
   ///
   void selectOrder(Order order) {
     _orderService.selectOrder(order);
+  }
+
+  void navigateToDetails(Order order) {
+    _navigatorService.navigateToDetails(order);
   }
 }
