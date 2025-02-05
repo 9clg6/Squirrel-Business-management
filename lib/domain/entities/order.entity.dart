@@ -35,6 +35,9 @@ class Order with EquatableMixin, SerializableMixin {
   double get commission => price * commissionRatio;
   double get margin => commission - internalProcessingFee;
   DateTime? get endDate => startDate.add(estimatedDuration);
+  DateTime? get nextActionDate => actions.isNotEmpty
+      ? actions.first.date.isAfter(DateTime.now()) ? actions.first.date : endDate
+      : endDate;
 
   /// Constructor
   ///

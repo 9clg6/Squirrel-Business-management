@@ -293,4 +293,30 @@ class OrderService {
 
     _updateOrder(updatedOrder, indexOrder, isPinned);
   }
+
+  /// Delete order action
+  ///
+  void deleteOrderAction(OrderAction action, Order order) {
+    final (indexOrder, isPinned) = _findOrder(order);
+    if (indexOrder == -1) return;
+
+    final updatedOrder = order.copyWith(
+      actions: order.actions.where((e) => e != action).toList(),
+    );
+
+    _updateOrder(updatedOrder, indexOrder, isPinned);
+  }
+
+  /// Delete order
+  ///
+  void deleteOrder(Order order) {
+    final (indexOrder, isPinned) = _findOrder(order);
+    if (indexOrder == -1) return;
+
+    orderState.value = orderState.value.copyWith(
+      orders: [
+        ...orderState.value.orders.where((e) => e != order),
+      ],
+    );
+  }
 }

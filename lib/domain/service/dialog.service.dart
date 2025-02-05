@@ -1,6 +1,7 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:init/domain/entities/action.entity.dart';
+import 'package:init/ui/dialog/confirmation_dialog.dart';
 import 'package:init/ui/screen/add_order_action/add_order_action.screen.dart';
 
 class DialogService {
@@ -47,9 +48,25 @@ class DialogService {
           return date.isAfter(DateTime.now().subtract(const Duration(days: 1)));
         },
       ),
-      
       value: [DateTime.now()],
       dialogSize: const Size(325, 400),
+    );
+  }
+
+  /// Show confirmation dialog
+  ///
+  Future<void> showConfirmationDialog(
+    String title,
+    String message,
+    Null Function() onConfirm,
+  ) {
+    return showDialog<void>(
+      context: navigatorKey.currentContext!,
+      builder: (_) => ConfirmationDialog(
+        title: title,
+        message: message,
+        onConfirm: onConfirm,
+      ),
     );
   }
 }

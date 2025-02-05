@@ -10,22 +10,21 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'order_details.view_model.g.dart';
 
-///
 /// [OrderDetailsViewModel]
-///
 @riverpod
 class OrderDetailsViewModel extends _$OrderDetailsViewModel {
+  /// Order service
   late final OrderService _orderService;
+
+  /// Dialog service
   late final DialogService _dialogService;
 
-  ///
   /// Constructor
   ///
   factory OrderDetailsViewModel() {
     return OrderDetailsViewModel._();
   }
 
-  ///
   /// Private constructor
   ///
   OrderDetailsViewModel._() {
@@ -33,7 +32,6 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
     _dialogService = injector<DialogService>();
   }
 
-  ///
   /// Build
   ///
   @override
@@ -72,6 +70,8 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
     _orderService.updateOrderPriority(order);
   }
 
+  /// Add order action
+  ///
   Future<void> addOrderAction() async {
     final OrderAction? orderAction =
         await _dialogService.showAddOrderActionDialog();
@@ -81,5 +81,26 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
         orderAction,
       );
     }
+  }
+
+  /// Delete order action
+  ///
+  void deleteOrderAction(OrderAction action) {
+    _orderService.deleteOrderAction(
+      action,
+      state.order!,
+    );
+  }
+
+  /// Delete order
+  ///
+  void deleteOrder() {
+    _dialogService.showConfirmationDialog(
+      "Supprimer la commande",
+      "Voulez-vous vraiment supprimer la commande ?\nCette action est irréversible.",
+      () {
+        _orderService.deleteOrder(state.order!);
+      },
+    );
   }
 }

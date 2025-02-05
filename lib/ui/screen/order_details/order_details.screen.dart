@@ -6,6 +6,7 @@ import 'package:init/foundation/enums/ordrer_status.enum.dart';
 import 'package:init/foundation/extensions/date_time.extension.dart';
 import 'package:init/ui/screen/order_details/order_details.view_model.dart';
 import 'package:init/ui/screen/order_details/order_details.view_state.dart';
+import 'package:init/ui/widgets/help_text.dart';
 
 /// Order details screen
 ///
@@ -64,14 +65,14 @@ class _OrderDetailBody extends StatelessWidget {
   ///
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(16),
       child: Column(
         children: [
           _OrderActionsRow(),
-          const _OrderDetailHeader(),
-          const SizedBox(height: 16),
-          const _OrderDetailsContent(),
+          _OrderDetailHeader(),
+          SizedBox(height: 16),
+          _OrderDetailsContent(),
         ],
       ),
     );
@@ -79,15 +80,17 @@ class _OrderDetailBody extends StatelessWidget {
 }
 
 class _OrderActionsRow extends ConsumerWidget {
+  const _OrderActionsRow();
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final viewModel = ref.read(orderDetailsViewModelProvider.notifier);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
         TextButton.icon(
-          onPressed: () {
-            //TODO Confirmation dialogue
-          },
+          onPressed: viewModel.deleteOrder,
           label: const Text(
             "Supprimer la commande",
             style: TextStyle(
@@ -151,8 +154,10 @@ class _ActionsHistory extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final OrderDetailsViewModel viewModel = ref.read(orderDetailsViewModelProvider.notifier);
-    final OrderDetailsScreenState state = ref.watch(orderDetailsViewModelProvider);
+    final OrderDetailsViewModel viewModel =
+        ref.read(orderDetailsViewModelProvider.notifier);
+    final OrderDetailsScreenState state =
+        ref.watch(orderDetailsViewModelProvider);
     final Order? order = state.order;
 
     return Container(
@@ -195,8 +200,11 @@ class _ActionsHistory extends ConsumerWidget {
           if (order?.actions.isEmpty == true)
             Text(
               "Aucune action n'a été effectuée",
-              style:
-                  textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w400),
+              style: textTheme.labelLarge?.copyWith(
+                fontWeight: FontWeight.w400,
+                color: colorScheme.outline.withValues(alpha: .7),
+                fontSize: 12,
+              ),
             )
           else ...[
             Divider(
@@ -231,49 +239,68 @@ class _ActionsHistory extends ConsumerWidget {
                     return SizedBox(
                       height: 48,
                       child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          SizedBox(
-                            width: 15,
-                            height: 15,
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: isFirst
-                                    ? colorScheme.primary
-                                    : colorScheme.primary.withValues(alpha: .2),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(width: 10),
                           Expanded(
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                Expanded(
-                                  child: Text(action.date.toDDMMYYYY()),
-                                ),
-                                Expanded(
-                                  child: Text(
-                                    action.description,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Tooltip(
-                                    message: dayDiffBetweenActions != null
-                                        ? "Jours depuis la dernière action"
-                                        : "",
-                                    child: Text(
-                                      dayDiffBetweenActions != null
-                                          ? "+$dayDiffBetweenActions jours"
-                                          : "",
-                                      style: textTheme.bodySmall?.copyWith(
-                                        fontWeight: FontWeight.w400,
-                                      ),
+                                SizedBox(
+                                  width: 15,
+                                  height: 15,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: isFirst
+                                          ? colorScheme.primary
+                                          : colorScheme.primary
+                                              .withValues(alpha: .2),
                                     ),
                                   ),
                                 ),
+                                const SizedBox(width: 10),
+                                Expanded(
+                                  child: Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Expanded(
+                                        child: Text(action.date.toDDMMYYYY()),
+                                      ),
+                                      Expanded(
+                                        child: Text(
+                                          action.description,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: Tooltip(
+                                          message: dayDiffBetweenActions != null
+                                              ? "Jours depuis la dernière action"
+                                              : "",
+                                          child: Text(
+                                            dayDiffBetweenActions != null
+                                                ? "+$dayDiffBetweenActions jours"
+                                                : "",
+                                            style:
+                                                textTheme.bodySmall?.copyWith(
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ],
+                            ),
+                          ),
+                          MouseRegion(
+                            cursor: SystemMouseCursors.click,
+                            child: IconButton(
+                              onPressed: () {
+                                viewModel.deleteOrderAction(action);
+                              },
+                              icon: const Icon(Icons.delete_outline),
                             ),
                           ),
                         ],
@@ -477,18 +504,23 @@ class _SummaryOrder extends ConsumerWidget {
         children: [
           Text(
             "Prochaine action",
-            style: textTheme.labelSmall?.copyWith(fontWeight: FontWeight.w400),
+            style: textTheme.labelSmall?.copyWith(
+              fontWeight: FontWeight.w400,
+            ),
           ),
           const SizedBox(height: 4),
           Text(
-            "21/10/2025",
-            style:
-                textTheme.headlineMedium?.copyWith(fontWeight: FontWeight.w400),
+            state.order!.nextActionDate?.toDDMMYYYY() ?? 'Aucune action prévue',
+            style: textTheme.headlineMedium?.copyWith(
+              fontWeight: FontWeight.w500,
+            ),
           ),
           const SizedBox(height: 16),
           Text(
             "Recontacter la boutique par mail",
-            style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w400),
+            style: textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w400,
+            ),
           ),
           const SizedBox(height: 16),
           InkWell(
@@ -544,6 +576,11 @@ class _SummaryOrder extends ConsumerWidget {
               ),
             ),
           ),
+          const SizedBox(height: 16),
+          const HelpText(
+            text:
+                "Pour changer la priorité de la commande, veuillez cliquer sur le bouton ci-dessus",
+          ),
         ],
       ),
     );
@@ -559,54 +596,65 @@ class _StatusRow extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+
     final state = ref.watch(orderDetailsViewModelProvider);
     final viewModel = ref.read(orderDetailsViewModelProvider.notifier);
     final order = state.order;
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(_borderRadius),
-      child: Container(
-        decoration: BoxDecoration(
+    return Column(
+      children: [
+        ClipRRect(
           borderRadius: BorderRadius.circular(_borderRadius),
-          border: Border.all(
-            color: colorScheme.outline.withValues(alpha: _opacity),
+          child: Container(
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(_borderRadius),
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: _opacity),
+              ),
+            ),
+            child: Row(
+              children: OrderStatus.values.take(4).indexed.map(
+                (e) {
+                  final OrderStatus currentStatus = e.$2;
+                  final isCurrentStatus = order!.status == currentStatus;
+                  final isPreviousStatus =
+                      e.$1 < OrderStatus.values.indexOf(order.status);
+
+                  return Expanded(
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: InkWell(
+                        onTap: () => viewModel.updateOrderStatus(
+                          order,
+                          currentStatus,
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(16),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: isPreviousStatus
+                                ? colorScheme.primary
+                                    .withValues(alpha: _opacity)
+                                : isCurrentStatus
+                                    ? order.status.color
+                                    : colorScheme.surface,
+                          ),
+                          child: Text(e.$2.name),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ).toList(),
+            ),
           ),
         ),
-        child: Row(
-          children: OrderStatus.values.take(4).indexed.map(
-            (e) {
-              final OrderStatus currentStatus = e.$2;
-              final isCurrentStatus = order!.status == currentStatus;
-              final isPreviousStatus =
-                  e.$1 < OrderStatus.values.indexOf(order.status);
-
-              return Expanded(
-                child: MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: InkWell(
-                    onTap: () => viewModel.updateOrderStatus(
-                      order,
-                      currentStatus,
-                    ),
-                    child: Container(
-                      padding: const EdgeInsets.all(16),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: isPreviousStatus
-                            ? colorScheme.primary.withValues(alpha: _opacity)
-                            : isCurrentStatus
-                                ? order.status.color
-                                : colorScheme.surface,
-                      ),
-                      child: Text(e.$2.name),
-                    ),
-                  ),
-                ),
-              );
-            },
-          ).toList(),
+        const SizedBox(height: 16),
+        const HelpText(
+          text:
+              "Pour changer le statut de la commande, veuillez cliquer sur le statut souhaité",
         ),
-      ),
+      ],
     );
   }
 }
