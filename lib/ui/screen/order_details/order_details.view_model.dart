@@ -103,4 +103,13 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
       },
     );
   }
+
+  /// Edit order
+  ///
+  Future<void> editOrder() async {
+    final Order? order = await _dialogService.showEditOrderDialog(state.order!);
+    if (order != null) {
+      _orderService.updateOrder(order);
+    }
+  }
 }

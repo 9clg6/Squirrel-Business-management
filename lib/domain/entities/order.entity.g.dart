@@ -29,7 +29,7 @@ abstract class _$OrderCWProxy {
 
   Order status(OrderStatus status);
 
-  Order technique(String technique);
+  Order method(String method);
 
   Order note(String? note);
 
@@ -55,7 +55,7 @@ abstract class _$OrderCWProxy {
     double? price,
     double? commissionRatio,
     OrderStatus? status,
-    String? technique,
+    String? method,
     String? note,
     List<OrderAction>? actions,
     Priority? priority,
@@ -107,7 +107,7 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
   Order status(OrderStatus status) => this(status: status);
 
   @override
-  Order technique(String technique) => this(technique: technique);
+  Order method(String method) => this(method: method);
 
   @override
   Order note(String? note) => this(note: note);
@@ -138,7 +138,7 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
     Object? price = const $CopyWithPlaceholder(),
     Object? commissionRatio = const $CopyWithPlaceholder(),
     Object? status = const $CopyWithPlaceholder(),
-    Object? technique = const $CopyWithPlaceholder(),
+    Object? method = const $CopyWithPlaceholder(),
     Object? note = const $CopyWithPlaceholder(),
     Object? actions = const $CopyWithPlaceholder(),
     Object? priority = const $CopyWithPlaceholder(),
@@ -195,10 +195,10 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
           ? _value.status
           // ignore: cast_nullable_to_non_nullable
           : status as OrderStatus,
-      technique: technique == const $CopyWithPlaceholder() || technique == null
-          ? _value.technique
+      method: method == const $CopyWithPlaceholder() || method == null
+          ? _value.method
           // ignore: cast_nullable_to_non_nullable
-          : technique as String,
+          : method as String,
       note: note == const $CopyWithPlaceholder()
           ? _value.note
           // ignore: cast_nullable_to_non_nullable
@@ -238,7 +238,7 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
       price: (json['price'] as num).toDouble(),
       commissionRatio: (json['commissionRatio'] as num).toDouble(),
       status: $enumDecode(_$OrderStatusEnumMap, json['status']),
-      technique: json['technique'] as String,
+      method: json['method'] as String,
       note: json['note'] as String?,
       actions: (json['actions'] as List<dynamic>?)
           ?.map((e) => OrderAction.fromJson(e as Map<String, dynamic>))
@@ -259,7 +259,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'price': instance.price,
       'commissionRatio': instance.commissionRatio,
       'status': _$OrderStatusEnumMap[instance.status]!,
-      'technique': instance.technique,
+      'method': instance.method,
       'note': instance.note,
       'priority': _$PriorityEnumMap[instance.priority]!,
       'actions': instance.actions,

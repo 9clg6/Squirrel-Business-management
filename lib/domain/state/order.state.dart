@@ -1,5 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
+import 'package:init/domain/entities/action.entity.dart';
 import 'package:init/domain/entities/order.entity.dart';
 
 part 'order.state.g.dart';
@@ -43,7 +44,7 @@ class OrderState with EquatableMixin {
         sortAscending = true;
 
   /// All orders
-  /// 
+  ///
   List<Order> get allOrder => [
         ...orders,
         ...pinnedOrders,
@@ -51,13 +52,13 @@ class OrderState with EquatableMixin {
 
   /// Get next action date
   ///
-  DateTime? get nextActionDate {
+  Map<Order, OrderAction>? get nextAction {
     if (allOrder.isEmpty) return null;
 
-    final sortedOrders = List<Order>.from(allOrder)
-      ..sort((a, b) => a.startDate.compareTo(b.startDate));
+    final sortedOrders =
+        List<Order>.from(allOrder).map((e) => {e: e.actions.first}).toSet();
 
-    return sortedOrders.first.startDate;
+    return sortedOrders.first;
   }
 
   @override

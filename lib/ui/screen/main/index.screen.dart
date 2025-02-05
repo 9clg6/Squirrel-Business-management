@@ -5,6 +5,7 @@ import 'package:init/foundation/enums/headers.enum.dart';
 import 'package:init/foundation/extensions/date_time.extension.dart';
 import 'package:init/ui/screen/main/index.view_model.dart';
 import 'package:init/ui/screen/main/index.view_state.dart';
+import 'package:init/ui/widgets/help_text.dart';
 import 'package:init/ui/widgets/status_card.dart';
 
 /// Main screen
@@ -400,42 +401,61 @@ class _ResumeHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
     final currentMonth = DateTime.now().month;
+    final textTheme = Theme.of(context).textTheme;
+    final viewModel = ref.read(indexProvider.notifier);
 
     return SliverPadding(
       padding: const EdgeInsets.all(10),
       sliver: SliverToBoxAdapter(
-        child: SizedBox(
-          height: 100,
-          child: ListView(
-            scrollDirection: Axis.horizontal,
+        child: IntrinsicHeight(
+          child: Row(
             children: [
-              Container(
-                width: 250,
-                height: 100,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text("Prochaine action"),
-                    const SizedBox(height: 10),
-                    Text(
-                      state.orderState.nextActionDate?.toDDMMYYYY() ?? "",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+              MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () {
+                    viewModel.navigateToDetails(
+                      state.orderState.nextAction!.keys.first,
+                    );
+                  },
+                  child: Container(
+                    width: 250,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.surface,
+                      borderRadius: BorderRadius.circular(20),
                     ),
-                  ],
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Prochaine action",
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 12,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        Text(
+                          state.orderState.nextAction?.keys.first.actions.first
+                                  .date
+                                  .toDDMMYYYY() ??
+                              "",
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w500,
+                            fontSize: 22,
+                          ),
+                        ),
+                        const SizedBox(height: 10),
+                        const HelpText(text: "Cliquer pour voir les détails"),
+                      ],
+                    ),
+                  ),
                 ),
               ),
               const SizedBox(width: 10),
               Container(
                 width: 250,
-                height: 100,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
@@ -444,17 +464,23 @@ class _ResumeHeader extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text("Total"),
+                    Text(
+                      "Total",
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Text(
-                      "${state.orderState.orders.fold(
+                      "${state.orderState.allOrder.fold(
                             0,
                             (sum, order) =>
                                 (sum.toDouble() + order.commission).toInt(),
                           ).toStringAsFixed(2)} €",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).colorScheme.onSurface,
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 22,
                       ),
                     ),
                   ],
@@ -463,7 +489,6 @@ class _ResumeHeader extends ConsumerWidget {
               const SizedBox(width: 10),
               Container(
                 width: 250,
-                height: 100,
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.surface,
@@ -472,7 +497,13 @@ class _ResumeHeader extends ConsumerWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text("Total du mois de $currentMonth"),
+                    Text(
+                      "Total du mois de $currentMonth",
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                      ),
+                    ),
                     const SizedBox(height: 10),
                     Text(
                       "${state.orderState.orders.where((order) => order.startDate.month == currentMonth).fold(
@@ -480,9 +511,9 @@ class _ResumeHeader extends ConsumerWidget {
                             (sum, order) =>
                                 (sum.toDouble() + order.commission).toInt(),
                           ).toStringAsFixed(2)} €",
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: Theme.of(context).colorScheme.onSurface,
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 22,
                       ),
                     ),
                   ],

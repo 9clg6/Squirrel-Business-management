@@ -29,7 +29,7 @@ class OrderService {
                 price: 1500,
                 commissionRatio: .30,
                 status: OrderStatus.running,
-                technique: 'La Poste',
+                method: 'La Poste',
                 actions: [
                   OrderAction(
                     date: DateTime(2025, 2, 5),
@@ -53,7 +53,7 @@ class OrderService {
                 price: 800,
                 commissionRatio: .30,
                 status: OrderStatus.pending,
-                technique: 'La Poste',
+                method: 'La Poste',
                 actions: [
                   OrderAction(
                     date: DateTime(2025, 2, 5),
@@ -89,7 +89,11 @@ class OrderService {
   }
 
   /// Méthode utilitaire pour mettre à jour un ordre
-  void _updateOrder(Order updatedOrder, int indexOrder, bool isPinned) {
+  void _updateOrder(
+    Order updatedOrder,
+    int indexOrder,
+    bool isPinned,
+  ) {
     if (indexOrder == -1) return;
 
     if (isPinned) {
@@ -318,5 +322,31 @@ class OrderService {
         ...orderState.value.orders.where((e) => e != order),
       ],
     );
+  }
+
+  /// Update order
+  ///
+  void updateOrder(Order order) {
+    final (indexOrder, isPinned) = _findOrderById(order.id);
+    if (indexOrder == -1) return;
+
+    _updateOrder(
+      order,
+      indexOrder,
+      isPinned,
+    );
+  }
+
+  /// Méthode utilitaire pour trouver un ordre par son ID
+  (int, bool) _findOrderById(String id) {
+    var indexOrder = orderState.value.orders.indexWhere((o) => o.id == id);
+    var isPinned = false;
+
+    if (indexOrder == -1) {
+      indexOrder = orderState.value.pinnedOrders.indexWhere((o) => o.id == id);
+      isPinned = true;
+    }
+
+    return (indexOrder, isPinned);
   }
 }

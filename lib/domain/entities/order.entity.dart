@@ -25,7 +25,7 @@ class Order with EquatableMixin, SerializableMixin {
   final double price;
   final double commissionRatio;
   final OrderStatus status;
-  final String technique;
+  final String method;
   final String? note;
   final Priority priority;
   final List<OrderAction>? _actions;
@@ -53,7 +53,7 @@ class Order with EquatableMixin, SerializableMixin {
     required this.price,
     required this.commissionRatio,
     required this.status,
-    required this.technique,
+    required this.method,
     this.note,
     List<OrderAction>? actions,
     this.priority = Priority.normal,
@@ -80,7 +80,7 @@ class Order with EquatableMixin, SerializableMixin {
         price,
         commissionRatio,
         status,
-        technique,
+        method,
         note,
         commission,
         margin,

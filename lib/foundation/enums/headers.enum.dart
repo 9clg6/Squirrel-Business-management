@@ -7,7 +7,7 @@ enum Headers {
   startDate(label: 'Date début'),
   endDate(label: 'Date fin'),
   price(
-    label: 'Prix',
+    label: 'Montant',
     isNumeric: true,
   ),
   commission(

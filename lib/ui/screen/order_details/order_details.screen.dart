@@ -56,6 +56,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 }
 
 /// Body of the order details screen
+///
 class _OrderDetailBody extends StatelessWidget {
   /// Constructor
   ///
@@ -70,7 +71,10 @@ class _OrderDetailBody extends StatelessWidget {
       child: Column(
         children: [
           _OrderActionsRow(),
+          SizedBox(height: 16),
           _OrderDetailHeader(),
+          SizedBox(height: 16),
+          _OrderQuickDetails(),
           SizedBox(height: 16),
           _OrderDetailsContent(),
         ],
@@ -79,6 +83,128 @@ class _OrderDetailBody extends StatelessWidget {
   }
 }
 
+/// Order quick details
+///
+class _OrderQuickDetails extends ConsumerWidget {
+  const _OrderQuickDetails();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
+    final state = ref.watch(orderDetailsViewModelProvider);
+    final order = state.order;
+
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Boutique",
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                ),
+              ),
+              Text(
+                order!.shopName,
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+          VerticalDivider(
+            color: colorScheme.outline,
+            width: 1,
+            thickness: 1,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Montant de la commande",
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                ),
+              ),
+              Text(
+                "${order.price} €",
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+          VerticalDivider(
+            color: colorScheme.outline,
+            width: 1,
+            thickness: 1,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Commission",
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                ),
+              ),
+              Text(
+                "${order.commission} €",
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+          VerticalDivider(
+            color: colorScheme.outline,
+            width: 1,
+            thickness: 1,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Marge",
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w400,
+                  fontSize: 12,
+                ),
+              ),
+              Text(
+                "${order.commission - order.internalProcessingFee} €",
+                style: textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w500,
+                  fontSize: 16,
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Order actions row
+///
 class _OrderActionsRow extends ConsumerWidget {
   const _OrderActionsRow();
 
@@ -89,6 +215,17 @@ class _OrderActionsRow extends ConsumerWidget {
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
+        TextButton.icon(
+          onPressed: viewModel.editOrder,
+          label: const Text(
+            "Editer la commande",
+            style: TextStyle(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+            ),
+          ),
+          icon: const Icon(Icons.edit),
+        ),
         TextButton.icon(
           onPressed: viewModel.deleteOrder,
           label: const Text(
@@ -414,7 +551,7 @@ class _OrderInformations extends ConsumerWidget {
               ),
               Expanded(
                 child: SelectableText(
-                  order.technique,
+                  order.method,
                 ),
               ),
             ],
@@ -808,8 +945,8 @@ class _OrderDetailAppBar extends StatelessWidget
       title: const Text("Détails de la commande"),
       leading: MouseRegion(
         cursor: SystemMouseCursors.click,
-        child: GestureDetector(
-          onTap: () => context.pop(),
+        child: InkWell(
+          onTap: context.pop,
           child: Container(
             padding: const EdgeInsets.only(left: 10, top: 10),
             child: Row(

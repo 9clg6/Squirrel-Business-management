@@ -1,7 +1,9 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:init/domain/entities/action.entity.dart';
+import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/ui/dialog/confirmation_dialog.dart';
+import 'package:init/ui/dialog/edit_order_dialog.dart';
 import 'package:init/ui/screen/add_order_action/add_order_action.screen.dart';
 
 class DialogService {
@@ -67,6 +69,22 @@ class DialogService {
         message: message,
         onConfirm: onConfirm,
       ),
+    );
+  }
+
+  /// Show edit order dialog
+  ///
+  Future<Order?> showEditOrderDialog(Order order) async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.showEditOrderDialog()');
+      return null;
+    }
+
+    return showDialog<Order>(
+      context: context,
+      builder: (_) => EditOrderDialog(order: order),
     );
   }
 }
