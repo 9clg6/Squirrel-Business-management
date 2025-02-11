@@ -12,6 +12,8 @@ class CustomSideBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorSheme = Theme.of(context).colorScheme;
+
     return SafeArea(
       child: SidebarX(
         controller: SidebarXController(
@@ -82,13 +84,25 @@ class CustomSideBar extends StatelessWidget {
         ),
         headerBuilder: (context, extended) {
           return const SizedBox(
-            height: 40,
+            height: 10,
           ); // Pour éviter le chevauchement
         },
         items: [
           SidebarXItem(
-            icon: Icons.home,
             label: 'Accueil',
+            iconBuilder: (selected, hovered) {
+              return Tooltip(
+                message: 'Accueil',
+                exitDuration: const Duration(milliseconds: 50),
+                child: Icon(
+                  Icons.home,
+                  color: selected
+                      ? colorSheme.onSurface
+                      : colorSheme.onSurface.withValues(alpha: 0.5),
+                  size: 20,
+                ),
+              );
+            },
             onTap: () {
               if (navigationShell.currentIndex == 0) {
                 context.goNamed('main');
@@ -98,7 +112,19 @@ class CustomSideBar extends StatelessWidget {
             },
           ),
           SidebarXItem(
-            icon: Icons.list_alt_outlined,
+            iconBuilder: (selected, hovered) {
+              return Tooltip(
+                message: 'Todo liste',
+                exitDuration: const Duration(milliseconds: 50),
+                child: Icon(
+                  Icons.list_alt_outlined,
+                  color: selected
+                      ? colorSheme.onSurface
+                      : colorSheme.onSurface.withValues(alpha: 0.5),
+                  size: 20,
+                ),
+              );
+            },
             label: 'Todo liste',
             onTap: () {
               if (navigationShell.currentIndex == 1) {
@@ -109,7 +135,19 @@ class CustomSideBar extends StatelessWidget {
             },
           ),
           SidebarXItem(
-            icon: Icons.bar_chart,
+            iconBuilder: (selected, hovered) {
+              return Tooltip(
+                message: 'Statistiques',
+                exitDuration: const Duration(milliseconds: 50),
+                child: Icon(
+                  Icons.bar_chart,
+                  color: selected
+                      ? colorSheme.onSurface
+                      : colorSheme.onSurface.withValues(alpha: 0.5),
+                  size: 20,
+                ),
+              );
+            },
             label: 'Statistiques',
             onTap: () {
               if (navigationShell.currentIndex == 2) {
@@ -120,7 +158,19 @@ class CustomSideBar extends StatelessWidget {
             },
           ),
           SidebarXItem(
-            icon: Icons.calendar_month_outlined,
+            iconBuilder: (selected, hovered) {
+              return Tooltip(
+                message: 'Planification',
+                exitDuration: const Duration(milliseconds: 50),
+                child: Icon(
+                  Icons.calendar_month_outlined,
+                  color: selected
+                      ? colorSheme.onSurface
+                      : colorSheme.onSurface.withValues(alpha: 0.5),
+                  size: 20,
+                ),
+              );
+            },
             label: 'Planification',
             onTap: () {
               if (navigationShell.currentIndex == 3) {
@@ -131,12 +181,36 @@ class CustomSideBar extends StatelessWidget {
             },
           ),
           SidebarXItem(
-            icon: Icons.people_alt_outlined,
+            iconBuilder: (selected, hovered) {
+              return Tooltip(
+                message: 'Clients',
+                exitDuration: const Duration(milliseconds: 50),
+                child: Icon(
+                  Icons.people_alt_outlined,
+                  color: selected
+                      ? colorSheme.onSurface
+                      : colorSheme.onSurface.withValues(alpha: 0.5),
+                  size: 20,
+                ),
+              );
+            },
             label: 'Clients',
             onTap: () => navigationShell.goBranch(4),
           ),
           SidebarXItem(
-            icon: Icons.history,
+            iconBuilder: (selected, hovered) {
+              return Tooltip(
+                message: 'Historique',
+                exitDuration: const Duration(milliseconds: 50),
+                child: Icon(
+                  Icons.history,
+                  color: selected
+                      ? colorSheme.onSurface
+                      : colorSheme.onSurface.withValues(alpha: 0.5),
+                  size: 20,
+                ),
+              );
+            },
             label: 'Historique',
             onTap: () => navigationShell.goBranch(5),
           ),

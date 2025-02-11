@@ -9,6 +9,8 @@ part of 'todo.view_state.dart';
 abstract class _$TodoScreenStateCWProxy {
   TodoScreenState loading(bool? loading);
 
+  TodoScreenState orderState(OrderState orderState);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `TodoScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -17,6 +19,7 @@ abstract class _$TodoScreenStateCWProxy {
   /// ````
   TodoScreenState call({
     bool? loading,
+    OrderState? orderState,
   });
 }
 
@@ -30,6 +33,10 @@ class _$TodoScreenStateCWProxyImpl implements _$TodoScreenStateCWProxy {
   TodoScreenState loading(bool? loading) => this(loading: loading);
 
   @override
+  TodoScreenState orderState(OrderState orderState) =>
+      this(orderState: orderState);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `TodoScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -39,12 +46,17 @@ class _$TodoScreenStateCWProxyImpl implements _$TodoScreenStateCWProxy {
   /// ````
   TodoScreenState call({
     Object? loading = const $CopyWithPlaceholder(),
+    Object? orderState = const $CopyWithPlaceholder(),
   }) {
     return TodoScreenState(
       loading == const $CopyWithPlaceholder()
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
           : loading as bool?,
+      orderState == const $CopyWithPlaceholder() || orderState == null
+          ? _value.orderState
+          // ignore: cast_nullable_to_non_nullable
+          : orderState as OrderState,
     );
   }
 }

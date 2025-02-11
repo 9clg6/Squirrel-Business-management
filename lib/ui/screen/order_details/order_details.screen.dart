@@ -32,7 +32,7 @@ class OrderDetailsScreen extends ConsumerStatefulWidget {
 class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   @override
   void initState() {
-    ref.read(orderDetailsViewModelProvider.notifier).init(order: widget.order);
+    ref.read(orderDetailsViewModelProvider.notifier).init(o: widget.order);
     super.initState();
   }
 
@@ -309,27 +309,37 @@ class _ActionsHistory extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.center,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Historique des actions réalisées",
-                style: textTheme.labelLarge?.copyWith(
-                  fontWeight: FontWeight.w400,
-                ),
-              ),
-              const SizedBox(width: 16),
-              TextButton.icon(
-                onPressed: viewModel.addOrderAction,
-                label: const Text(
-                  "Ajouter une action",
-                  style: TextStyle(
-                    fontWeight: FontWeight.w400,
-                    fontSize: 12,
+              Row(
+                children: [
+                  Text(
+                    "Historique des actions réalisées",
+                    style: textTheme.labelLarge?.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
                   ),
-                ),
-                icon: const Icon(Icons.add),
+                  const SizedBox(width: 16),
+                  TextButton.icon(
+                    onPressed: viewModel.addOrderAction,
+                    label: const Text(
+                      "Ajouter une action",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 12,
+                      ),
+                    ),
+                    icon: const Icon(Icons.add),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
+              HelpText(
+                text:
+                    "Pour ajouter une action future il suffit d'ajouter une action avec une date supérieur à celle d'aujourd'hui. Par exemple ${DateTime.now().add(
+                  const Duration(days: 2),
+                ).toDDMMYYYY()}",
               ),
             ],
           ),

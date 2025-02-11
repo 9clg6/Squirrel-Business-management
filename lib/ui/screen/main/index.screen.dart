@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:init/foundation/enums/headers.enum.dart';
+import 'package:init/foundation/enums/ordrer_status.enum.dart';
 import 'package:init/foundation/extensions/date_time.extension.dart';
 import 'package:init/ui/screen/main/index.view_model.dart';
 import 'package:init/ui/screen/main/index.view_state.dart';
@@ -283,7 +284,13 @@ class _OrdersList extends ConsumerWidget {
                           ),
                         )
                         .toList(),
-                    rows: state.orderState.orders.map((order) {
+                    rows: state.orderState.orders
+                        .where((order) => ![
+                              OrderStatus.canceled,
+                              OrderStatus.failed,
+                              OrderStatus.finished,
+                            ].contains(order.status))
+                        .map((order) {
                       return DataRow(
                         selected:
                             state.orderState.selectedOrders.contains(order),

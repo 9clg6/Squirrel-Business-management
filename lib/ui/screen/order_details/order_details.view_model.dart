@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:init/application/providers/initializer.dart';
 import 'package:init/domain/entities/action.entity.dart';
@@ -40,20 +41,21 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   /// Init
   ///
-  Future<void> init({required Order order}) async {
+  Future<void> init({required Order o}) async {
     _orderService.orderState.addListener(
       () {
-        state = state.copyWith(
-          order: _orderService.orderState.value.allOrder.firstWhere(
-            (e) => e.id == order.id,
-          ),
+        final order = _orderService.orderState.value.allOrder.firstWhereOrNull(
+          (e) => e.id == o.id,
         );
+        if (order == null) return;
+        state = state.copyWith(order: order);
       },
     );
+    
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
-        order: order,
         loading: false,
+        order: o,
       );
     });
   }

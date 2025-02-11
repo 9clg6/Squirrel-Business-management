@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:init/gen/assets.gen.dart';
 import 'package:uuid/uuid.dart';
 
 /// Custom app bar
@@ -11,15 +12,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       leadingWidth: 200,
-      leading: const Padding(
-        padding: EdgeInsets.only(left: 20),
-        child: Text(
-          "Aiir",
-          style: TextStyle(
-            fontSize: 40,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+      leading: Padding(
+        padding: const EdgeInsets.only(left: 20),
+        child: Image.asset(Assets.images.squirelLogo.path)
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
       foregroundColor: Theme.of(context).colorScheme.onSurface,
