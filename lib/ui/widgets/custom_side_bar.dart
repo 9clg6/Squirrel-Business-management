@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
 
-class CustomSideBar extends StatelessWidget {
+class CustomSideBar extends StatefulWidget {
   const CustomSideBar({
     super.key,
     required this.navigationShell,
@@ -11,45 +11,56 @@ class CustomSideBar extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
   @override
+  State<CustomSideBar> createState() => _CustomSideBarState();
+}
+
+class _CustomSideBarState extends State<CustomSideBar> {
+  late SidebarXController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = SidebarXController(
+      selectedIndex: widget.navigationShell.currentIndex,
+      extended: true,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final colorSheme = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return SafeArea(
       child: SidebarX(
-        controller: SidebarXController(
-          selectedIndex: navigationShell.currentIndex,
-        ),
+        controller: controller,
+        showToggleButton: true,
         theme: SidebarXTheme(
           margin: const EdgeInsets.all(10),
+          width: 80,
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
           ),
           hoverColor: Theme.of(context).colorScheme.surface,
-          textStyle: TextStyle(color: Colors.white.withValues(alpha: .7)),
-          selectedTextStyle: const TextStyle(color: Colors.white),
-          hoverTextStyle: const TextStyle(
-            color: Colors.white,
+          textStyle: TextStyle(color: Colors.white.withValues(alpha: .5)),
+          selectedTextStyle: TextStyle(
+            color: colorScheme.primary,
             fontWeight: FontWeight.w500,
           ),
-          itemTextPadding: const EdgeInsets.only(left: 30),
-          selectedItemTextPadding: const EdgeInsets.only(left: 30),
-          itemPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 8,
-          ),
-          selectedItemPadding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 8,
-          ),
+          itemTextPadding: const EdgeInsets.only(left: 8),
+          selectedItemTextPadding: const EdgeInsets.only(left: 12),
+          itemPadding: const EdgeInsets.all(10),
+          selectedItemPadding: const EdgeInsets.all(10),
           itemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: Theme.of(context).colorScheme.surface),
+            border: Border.all(
+              color: colorScheme.surface.withValues(alpha: .5),
+            ),
           ),
           selectedItemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
-              color: Colors.white,
+              color: colorScheme.onSurface.withValues(alpha: .2),
             ),
             boxShadow: [
               BoxShadow(
@@ -58,28 +69,20 @@ class CustomSideBar extends StatelessWidget {
               )
             ],
           ),
-          iconTheme: IconThemeData(
-            color: Colors.white.withValues(alpha: .7),
-            size: 20,
-          ),
-          selectedIconTheme: const IconThemeData(
-            color: Colors.white,
-            size: 20,
-          ),
         ),
         extendedTheme: SidebarXTheme(
           width: 200,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: colorScheme.surface,
           ),
-          textStyle: const TextStyle(
-            color: Colors.white,
+          textStyle: TextStyle(
+            color: colorScheme.onSurface,
             fontSize: 12,
           ),
-          selectedTextStyle: const TextStyle(
-            color: Colors.white,
-            fontSize: 12,
-            fontWeight: FontWeight.bold,
+          selectedTextStyle: TextStyle(
+            color: colorScheme.onSurface,
+            fontSize: 13,
+            fontWeight: FontWeight.w600,
           ),
         ),
         headerBuilder: (context, extended) {
@@ -91,128 +94,110 @@ class CustomSideBar extends StatelessWidget {
           SidebarXItem(
             label: 'Accueil',
             iconBuilder: (selected, hovered) {
-              return Tooltip(
+              return const Tooltip(
                 message: 'Accueil',
-                exitDuration: const Duration(milliseconds: 50),
+                exitDuration: Duration(milliseconds: 50),
                 child: Icon(
                   Icons.home,
-                  color: selected
-                      ? colorSheme.onSurface
-                      : colorSheme.onSurface.withValues(alpha: 0.5),
                   size: 20,
                 ),
               );
             },
             onTap: () {
-              if (navigationShell.currentIndex == 0) {
+              if (widget.navigationShell.currentIndex == 0) {
                 context.goNamed('main');
               } else {
-                navigationShell.goBranch(0);
+                widget.navigationShell.goBranch(0);
               }
             },
           ),
           SidebarXItem(
             iconBuilder: (selected, hovered) {
-              return Tooltip(
+              return const Tooltip(
                 message: 'Todo liste',
-                exitDuration: const Duration(milliseconds: 50),
+                exitDuration: Duration(milliseconds: 50),
                 child: Icon(
                   Icons.list_alt_outlined,
-                  color: selected
-                      ? colorSheme.onSurface
-                      : colorSheme.onSurface.withValues(alpha: 0.5),
                   size: 20,
                 ),
               );
             },
             label: 'Todo liste',
             onTap: () {
-              if (navigationShell.currentIndex == 1) {
+              if (widget.navigationShell.currentIndex == 1) {
                 context.goNamed('todo');
               } else {
-                navigationShell.goBranch(1);
+                widget.navigationShell.goBranch(1);
               }
             },
           ),
           SidebarXItem(
             iconBuilder: (selected, hovered) {
-              return Tooltip(
+              return const Tooltip(
                 message: 'Statistiques',
-                exitDuration: const Duration(milliseconds: 50),
+                exitDuration: Duration(milliseconds: 50),
                 child: Icon(
                   Icons.bar_chart,
-                  color: selected
-                      ? colorSheme.onSurface
-                      : colorSheme.onSurface.withValues(alpha: 0.5),
                   size: 20,
                 ),
               );
             },
             label: 'Statistiques',
             onTap: () {
-              if (navigationShell.currentIndex == 2) {
+              if (widget.navigationShell.currentIndex == 2) {
                 context.goNamed('stats');
               } else {
-                navigationShell.goBranch(2);
+                widget.navigationShell.goBranch(2);
               }
             },
           ),
           SidebarXItem(
             iconBuilder: (selected, hovered) {
-              return Tooltip(
+              return const Tooltip(
                 message: 'Planification',
-                exitDuration: const Duration(milliseconds: 50),
+                exitDuration: Duration(milliseconds: 50),
                 child: Icon(
                   Icons.calendar_month_outlined,
-                  color: selected
-                      ? colorSheme.onSurface
-                      : colorSheme.onSurface.withValues(alpha: 0.5),
                   size: 20,
                 ),
               );
             },
             label: 'Planification',
             onTap: () {
-              if (navigationShell.currentIndex == 3) {
+              if (widget.navigationShell.currentIndex == 3) {
                 context.goNamed('planner');
               } else {
-                navigationShell.goBranch(3);
+                widget.navigationShell.goBranch(3);
               }
             },
           ),
           SidebarXItem(
             iconBuilder: (selected, hovered) {
-              return Tooltip(
+              return const Tooltip(
                 message: 'Clients',
-                exitDuration: const Duration(milliseconds: 50),
+                exitDuration: Duration(milliseconds: 50),
                 child: Icon(
                   Icons.people_alt_outlined,
-                  color: selected
-                      ? colorSheme.onSurface
-                      : colorSheme.onSurface.withValues(alpha: 0.5),
                   size: 20,
                 ),
               );
             },
             label: 'Clients',
-            onTap: () => navigationShell.goBranch(4),
+            onTap: () => widget.navigationShell.goBranch(4),
           ),
           SidebarXItem(
             iconBuilder: (selected, hovered) {
-              return Tooltip(
+              return const Tooltip(
                 message: 'Historique',
-                exitDuration: const Duration(milliseconds: 50),
+                exitDuration: Duration(milliseconds: 50),
                 child: Icon(
                   Icons.history,
-                  color: selected
-                      ? colorSheme.onSurface
-                      : colorSheme.onSurface.withValues(alpha: 0.5),
                   size: 20,
                 ),
               );
             },
             label: 'Historique',
-            onTap: () => navigationShell.goBranch(5),
+            onTap: () => widget.navigationShell.goBranch(5),
           ),
         ],
       ),

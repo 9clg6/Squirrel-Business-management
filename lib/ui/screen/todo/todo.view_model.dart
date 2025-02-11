@@ -1,4 +1,5 @@
 import 'package:init/application/providers/initializer.dart';
+import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
 import 'package:init/ui/screen/todo/todo.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,6 +14,9 @@ class TodoViewModel extends _$TodoViewModel {
   /// Order service
   late final OrderService orderService;
 
+  /// Navigator service
+  late final NavigatorService navigatorService;
+
   /// Constructor
   ///
   factory TodoViewModel() {
@@ -23,6 +27,7 @@ class TodoViewModel extends _$TodoViewModel {
   ///
   TodoViewModel._() {
     orderService = injector<OrderService>();
+    navigatorService = injector<NavigatorService>();
   }
 
   ///

@@ -141,7 +141,7 @@ class TodoStatusColumn extends ConsumerWidget {
   }
 }
 
-class TodoItem extends StatelessWidget {
+class TodoItem extends ConsumerWidget {
   const TodoItem({
     super.key,
     required this.status,
@@ -150,64 +150,80 @@ class TodoItem extends StatelessWidget {
 
   final OrderStatus status;
   final Order order;
-  @override
-  Widget build(BuildContext context) {
-    final textTheme = Theme.of(context).textTheme;
 
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 8),
-      child: Draggable<Order>(
-        data: order,
-        childWhenDragging: Container(),
-        feedback: Container(
-          padding: const EdgeInsets.all(8),
-          decoration: BoxDecoration(
-            color: status.color,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Text(order.shopName),
-        ),
-        child: Container(
-          width: double.infinity,
-          padding: EdgeInsets.symmetric(
-            horizontal: order.priority == Priority.high ? 12 : 24,
-            vertical: 8,
-          ),
-          decoration: BoxDecoration(
-            color: status.color,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              if (order.priority == Priority.high)
-                const Padding(
-                  padding: EdgeInsets.only(right: 8),
-                  child: Icon(
-                    Icons.priority_high,
-                    color: Colors.red,
-                    size: 20,
-                  ),
-                ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final textTheme = Theme.of(context).textTheme;
+    final viewModel = ref.read(todoViewModelProvider.notifier);
+
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: Padding(
+        padding: const EdgeInsets.only(bottom: 8),
+        child: InkWell(
+          onTap: () {
+            viewModel.navigatorService.navigateToDetails(order);
+          },
+          child: Draggable<Order>(
+            data: order,
+            childWhenDragging: Container(),
+            feedback: Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: status.color,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(order.shopName),
+            ),
+            child: Container(
+              width: double.infinity,
+              padding: EdgeInsets.symmetric(
+                horizontal: order.priority == Priority.high ? 12 : 24,
+                vertical: 8,
+              ),
+              decoration: BoxDecoration(
+                color: status.color,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    order.shopName,
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      if (order.priority == Priority.high)
+                        const Padding(
+                          padding: EdgeInsets.only(right: 8),
+                          child: Icon(
+                            Icons.priority_high,
+                            color: Colors.red,
+                            size: 20,
+                          ),
+                        ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            order.shopName,
+                            style: textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Text(
+                            order.clientContact,
+                            style: textTheme.labelSmall?.copyWith(
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  Text(
-                    order.clientContact,
-                    style: textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
+                  const Icon(Icons.open_in_new)
                 ],
               ),
-            ],
+            ),
           ),
         ),
       ),
