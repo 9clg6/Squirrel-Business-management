@@ -38,36 +38,36 @@ class _CustomSideBarState extends State<CustomSideBar> {
           margin: const EdgeInsets.all(10),
           width: 80,
           decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
+            color: colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
           ),
-          hoverColor: Theme.of(context).colorScheme.surface,
-          textStyle: TextStyle(color: Colors.white.withValues(alpha: .5)),
+          hoverColor: colorScheme.surfaceBright,
+          hoverTextStyle: TextStyle(
+            color: colorScheme.onSurface,
+          ),
+          textStyle: TextStyle(
+            color: colorScheme.onSurface.withValues(alpha: .5),
+          ),
+          selectedIconTheme: IconThemeData(
+            color: colorScheme.onSurface,
+          ),
+          selectedItemPadding: const EdgeInsets.all(10),
+          selectedItemTextPadding: const EdgeInsets.only(left: 12),
           selectedTextStyle: TextStyle(
             color: colorScheme.primary,
             fontWeight: FontWeight.w500,
           ),
+          selectedItemDecoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(color: colorScheme.onSurface),
+          ),
           itemTextPadding: const EdgeInsets.only(left: 8),
-          selectedItemTextPadding: const EdgeInsets.only(left: 12),
           itemPadding: const EdgeInsets.all(10),
-          selectedItemPadding: const EdgeInsets.all(10),
           itemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
               color: colorScheme.surface.withValues(alpha: .5),
             ),
-          ),
-          selectedItemDecoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-              color: colorScheme.onSurface.withValues(alpha: .2),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: .28),
-                blurRadius: 30,
-              )
-            ],
           ),
         ),
         extendedTheme: SidebarXTheme(
@@ -85,24 +85,10 @@ class _CustomSideBarState extends State<CustomSideBar> {
             fontWeight: FontWeight.w600,
           ),
         ),
-        headerBuilder: (context, extended) {
-          return const SizedBox(
-            height: 10,
-          ); // Pour éviter le chevauchement
-        },
         items: [
           SidebarXItem(
             label: 'Accueil',
-            iconBuilder: (selected, hovered) {
-              return const Tooltip(
-                message: 'Accueil',
-                exitDuration: Duration(milliseconds: 50),
-                child: Icon(
-                  Icons.home,
-                  size: 20,
-                ),
-              );
-            },
+            icon: Icons.home,
             onTap: () {
               if (widget.navigationShell.currentIndex == 0) {
                 context.goNamed('main');
@@ -112,16 +98,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
             },
           ),
           SidebarXItem(
-            iconBuilder: (selected, hovered) {
-              return const Tooltip(
-                message: 'Todo liste',
-                exitDuration: Duration(milliseconds: 50),
-                child: Icon(
-                  Icons.list_alt_outlined,
-                  size: 20,
-                ),
-              );
-            },
+            icon: Icons.list_alt_outlined,
             label: 'Todo liste',
             onTap: () {
               if (widget.navigationShell.currentIndex == 1) {
@@ -132,16 +109,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
             },
           ),
           SidebarXItem(
-            iconBuilder: (selected, hovered) {
-              return const Tooltip(
-                message: 'Statistiques',
-                exitDuration: Duration(milliseconds: 50),
-                child: Icon(
-                  Icons.bar_chart,
-                  size: 20,
-                ),
-              );
-            },
+            icon: Icons.bar_chart,
             label: 'Statistiques',
             onTap: () {
               if (widget.navigationShell.currentIndex == 2) {
@@ -152,16 +120,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
             },
           ),
           SidebarXItem(
-            iconBuilder: (selected, hovered) {
-              return const Tooltip(
-                message: 'Planification',
-                exitDuration: Duration(milliseconds: 50),
-                child: Icon(
-                  Icons.calendar_month_outlined,
-                  size: 20,
-                ),
-              );
-            },
+            icon: Icons.calendar_month_outlined,
             label: 'Planification',
             onTap: () {
               if (widget.navigationShell.currentIndex == 3) {
@@ -172,30 +131,12 @@ class _CustomSideBarState extends State<CustomSideBar> {
             },
           ),
           SidebarXItem(
-            iconBuilder: (selected, hovered) {
-              return const Tooltip(
-                message: 'Clients',
-                exitDuration: Duration(milliseconds: 50),
-                child: Icon(
-                  Icons.people_alt_outlined,
-                  size: 20,
-                ),
-              );
-            },
+            icon: Icons.people_alt_outlined,
             label: 'Clients',
             onTap: () => widget.navigationShell.goBranch(4),
           ),
           SidebarXItem(
-            iconBuilder: (selected, hovered) {
-              return const Tooltip(
-                message: 'Historique',
-                exitDuration: Duration(milliseconds: 50),
-                child: Icon(
-                  Icons.history,
-                  size: 20,
-                ),
-              );
-            },
+            icon: Icons.history,
             label: 'Historique',
             onTap: () => widget.navigationShell.goBranch(5),
           ),

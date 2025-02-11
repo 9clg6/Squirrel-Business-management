@@ -1,5 +1,6 @@
 import 'package:init/application/providers/initializer.dart';
 import 'package:init/domain/entities/order.entity.dart';
+import 'package:init/domain/service/dialog.service.dart';
 import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
 import 'package:init/ui/screen/main/index.view_state.dart';
@@ -14,12 +15,14 @@ part 'index.view_model.g.dart';
 class Index extends _$Index {
   late final OrderService _orderService;
   late final NavigatorService _navigatorService;
+  late final DialogService _dialogService;
 
   /// Constructor
   ///
   Index() {
     _orderService = injector<OrderService>();
     _navigatorService = injector<NavigatorService>();
+    _dialogService = injector<DialogService>();
   }
 
   /// Build
@@ -74,5 +77,17 @@ class Index extends _$Index {
 
   void navigateToDetails(Order order) {
     _navigatorService.navigateToDetails(order);
+  }
+
+  /// Create order
+  ///
+  Future<void> createOrder() async {
+    final Order? order = await _dialogService.showEditOrderDialog(
+      order: Order.empty(),
+      isCreation: true,
+    );
+    if (order != null) {
+      _orderService.addOrder(order);
+    }
   }
 }

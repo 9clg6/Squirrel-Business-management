@@ -51,7 +51,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
         state = state.copyWith(order: order);
       },
     );
-    
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
         loading: false,
@@ -109,7 +109,8 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Edit order
   ///
   Future<void> editOrder() async {
-    final Order? order = await _dialogService.showEditOrderDialog(state.order!);
+    final Order? order =
+        await _dialogService.showEditOrderDialog(order: state.order!);
     if (order != null) {
       _orderService.updateOrder(order);
     }

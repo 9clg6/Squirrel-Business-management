@@ -8,7 +8,7 @@ import 'package:init/foundation/routing/app_router.dart';
 class EditOrderDialog extends StatelessWidget {
   /// Order
   ///
-  final Order order;
+  final Order? order;
 
   /// Shop name controller
   ///
@@ -46,34 +46,39 @@ class EditOrderDialog extends StatelessWidget {
   ///
   final TextEditingController intermediaryController;
 
+  /// Is creation
+  ///
+  final bool isCreation;
+
   /// Constructor
   ///
   EditOrderDialog({
     super.key,
-    required this.order,
-  })  : shopNameController = TextEditingController(text: order.shopName),
+    this.order,
+    required this.isCreation,
+  })  : shopNameController = TextEditingController(text: order?.shopName),
         orderDateController =
-            TextEditingController(text: order.startDate.toDDMMYYYY()),
+            TextEditingController(text: order?.startDate.toDDMMYYYY()),
         orderDurationController = TextEditingController(
-          text: "${order.estimatedDuration.inDays} jours",
+          text: "${order?.estimatedDuration.inDays} jours",
         ),
         commissionController = TextEditingController(
-          text: "${order.commission} €",
+          text: "${order?.commission} €",
         ),
         orderAmountController = TextEditingController(
-          text: "${order.price} €",
+          text: "${order?.price} €",
         ),
         orderInternalFeesController = TextEditingController(
-          text: "${order.internalProcessingFee} €",
+          text: "${order?.internalProcessingFee} €",
         ),
         trackIdController = TextEditingController(
-          text: order.trackId,
+          text: order?.trackId,
         ),
         methodController = TextEditingController(
-          text: order.method,
+          text: order?.method,
         ),
         intermediaryController = TextEditingController(
-          text: order.intermediaryContact,
+          text: order?.intermediaryContact,
         );
 
   /// Build
@@ -95,7 +100,7 @@ class EditOrderDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    "Editer la commande",
+                    isCreation ? "Créer une commande" : "Editer la commande",
                     style: Theme.of(context).textTheme.titleLarge,
                   ),
                   IconButton(
@@ -203,29 +208,42 @@ class EditOrderDialog extends StatelessWidget {
                   const SizedBox(width: 16),
                   InkWell(
                     onTap: () {
-                      final price = double.tryParse(orderAmountController.text.replaceAll(' €', '')) ?? order.price;
-                      final commission = double.tryParse(commissionController.text.replaceAll(' €', '')) ?? order.commission;
-                      final internalFees = double.tryParse(orderInternalFeesController.text.replaceAll(' €', '')) ?? order.internalProcessingFee;
-                      final duration = int.tryParse(orderDurationController.text.replaceAll(' jours', '')) ?? order.estimatedDuration.inDays;
-                      
+                      final price = double.tryParse(orderAmountController.text
+                              .replaceAll(' €', '')) ??
+                          order?.price;
+                      final commission = double.tryParse(
+                              commissionController.text.replaceAll(' €', '')) ??
+                          order?.commission;
+                      final internalFees = double.tryParse(
+                              orderInternalFeesController.text
+                                  .replaceAll(' €', '')) ??
+                          order?.internalProcessingFee;
+                      final duration = int.tryParse(orderDurationController.text
+                              .replaceAll(' jours', '')) ??
+                          order?.estimatedDuration.inDays;
+
                       DateTime? parsedDate;
                       try {
                         final dateParts = orderDateController.text.split('/');
                         if (dateParts.length == 3) {
-                          final formattedDate = '${dateParts[2]}-${dateParts[1]}-${dateParts[0]}';
+                          final formattedDate =
+                              '${dateParts[2]}-${dateParts[1]}-${dateParts[0]}';
                           parsedDate = DateTime.parse(formattedDate);
                         }
                       } catch (e) {
-                        parsedDate = order.startDate;
+                        parsedDate = order?.startDate;
                       }
 
                       appRouter.pop<Order>(
-                        order.copyWith(
+                        order?.copyWith(
                           intermediaryContact: intermediaryController.text,
                           price: price,
                           shopName: shopNameController.text,
-                          startDate: parsedDate ?? order.startDate,
-                          estimatedDuration: Duration(days: duration),
+                          startDate: parsedDate ?? order?.startDate,
+                          estimatedDuration: Duration(
+                              days: duration ??
+                                  order?.estimatedDuration.inDays ??
+                                  0),
                           commissionRatio: commission,
                           internalProcessingFee: internalFees,
                           trackId: trackIdController.text,

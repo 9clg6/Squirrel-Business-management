@@ -23,8 +23,6 @@ import 'package:init/domain/service/navigator.service.dart' as _i641;
 import 'package:init/domain/service/order.service.dart' as _i819;
 import 'package:init/domain/service/secure_storage.service.dart' as _i861;
 import 'package:init/domain/use_case/get_theme.use_case.dart' as _i168;
-import 'package:init/foundation/interfaces/theme.service_interface.dart'
-    as _i457;
 import 'package:injectable/injectable.dart' as _i526;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -61,10 +59,6 @@ extension GetItInjectableX on _i174.GetIt {
         .preferencesRepository(gh<_i88.PreferencesLocalDataSource>()));
     gh.factory<_i168.GetThemeUseCase>(
         () => domainModule.getThemeUseCase(gh<_i333.PreferencesRepository>()));
-    await gh.singletonAsync<_i457.IThemeService>(
-      () => domainModule.themeService(gh<_i168.GetThemeUseCase>()),
-      preResolve: true,
-    );
     return this;
   }
 }

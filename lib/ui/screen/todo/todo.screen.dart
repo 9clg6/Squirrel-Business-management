@@ -34,34 +34,40 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
     const double paddingWidth = 8;
     final TodoViewModel viewModel = ref.read(todoViewModelProvider.notifier);
 
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(12),
-      child: Container(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surfaceDim,
+      body: ClipRRect(
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height / 2,
+          ),
           padding: const EdgeInsets.all(10),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final double parentSize = constraints.maxWidth;
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final double parentSize = constraints.maxWidth;
 
-              return ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: orderStatusLength,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(width: paddingWidth),
-                itemBuilder: (_, int index) {
-                  final status = OrderStatus.values[index];
+                return ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: orderStatusLength,
+                  separatorBuilder: (_, __) =>
+                      const SizedBox(width: paddingWidth),
+                  itemBuilder: (_, int index) {
+                    final status = OrderStatus.values[index];
 
-                  return TodoStatusColumn(
-                    parentSize: parentSize,
-                    orderStatusLength: orderStatusLength,
-                    paddingWidth: paddingWidth,
-                    colorScheme: colorScheme,
-                    viewModel: viewModel,
-                    status: status,
-                  );
-                },
-              );
-            },
-          )),
+                    return TodoStatusColumn(
+                      parentSize: parentSize,
+                      orderStatusLength: orderStatusLength,
+                      paddingWidth: paddingWidth,
+                      colorScheme: colorScheme,
+                      viewModel: viewModel,
+                      status: status,
+                    );
+                  },
+                );
+              },
+            )),
+      ),
     );
   }
 }
@@ -97,7 +103,7 @@ class TodoStatusColumn extends ConsumerWidget {
       ),
       child: DragTarget<Order>(
         onAcceptWithDetails: (data) {
-          viewModel.orderService.updateOrderStatus(
+          viewModel.updateOrderStatus(
             data.data,
             status,
           );
@@ -155,6 +161,7 @@ class TodoItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final textTheme = Theme.of(context).textTheme;
     final viewModel = ref.read(todoViewModelProvider.notifier);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -162,7 +169,7 @@ class TodoItem extends ConsumerWidget {
         padding: const EdgeInsets.only(bottom: 8),
         child: InkWell(
           onTap: () {
-            viewModel.navigatorService.navigateToDetails(order);
+            viewModel.navigateToDetails(order);
           },
           child: Draggable<Order>(
             data: order,
@@ -208,12 +215,14 @@ class TodoItem extends ConsumerWidget {
                             order.shopName,
                             style: textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.w500,
+                              color: colorScheme.onSurface,
                             ),
                           ),
                           Text(
                             order.clientContact,
                             style: textTheme.labelSmall?.copyWith(
                               fontWeight: FontWeight.w400,
+                              color: colorScheme.onSurface,
                             ),
                           ),
                         ],

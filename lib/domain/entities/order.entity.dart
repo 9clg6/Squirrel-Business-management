@@ -36,7 +36,9 @@ class Order with EquatableMixin, SerializableMixin {
   double get margin => commission - internalProcessingFee;
   DateTime? get endDate => startDate.add(estimatedDuration);
   DateTime? get nextActionDate => actions.isNotEmpty
-      ? actions.first.date.isAfter(DateTime.now()) ? actions.first.date : endDate
+      ? actions.first.date.isAfter(DateTime.now())
+          ? actions.first.date
+          : endDate
       : endDate;
 
   /// Constructor
@@ -59,6 +61,25 @@ class Order with EquatableMixin, SerializableMixin {
     this.priority = Priority.normal,
   })  : _actions = actions,
         id = id ?? const Uuid().v4();
+
+  /// Empty order
+  ///
+  factory Order.empty() => Order(
+        clientContact: '',
+        intermediaryContact: '',
+        internalProcessingFee: 0,
+        trackId: '',
+        startDate: DateTime.now(),
+        estimatedDuration: const Duration(days: 0),
+        shopName: '',
+        price: 0,
+        commissionRatio: 0,
+        status: OrderStatus.pending,
+        method: '',
+        priority: Priority.normal,
+        actions: [],
+        note: '',
+      );
 
   @override
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);

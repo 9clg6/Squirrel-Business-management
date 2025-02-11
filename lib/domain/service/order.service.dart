@@ -349,4 +349,12 @@ class OrderService {
 
     return (indexOrder, isPinned);
   }
+
+  /// Add order
+  ///
+  void addOrder(Order order) {
+    orderState.value = orderState.value.copyWith(
+      orders: [...orderState.value.orders, order],
+    );
+  }
 }

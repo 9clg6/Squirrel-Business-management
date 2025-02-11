@@ -74,7 +74,10 @@ class DialogService {
 
   /// Show edit order dialog
   ///
-  Future<Order?> showEditOrderDialog(Order order) async {
+  Future<Order?> showEditOrderDialog({
+    bool isCreation = false,
+    Order? order,
+  }) async {
     final context = navigatorKey.currentContext;
 
     if (context == null) {
@@ -84,7 +87,10 @@ class DialogService {
 
     return showDialog<Order>(
       context: context,
-      builder: (_) => EditOrderDialog(order: order),
+      builder: (_) => EditOrderDialog(
+        order: order,
+        isCreation: isCreation,
+      ),
     );
   }
 }

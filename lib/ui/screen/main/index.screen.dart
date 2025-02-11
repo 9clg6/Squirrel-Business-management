@@ -8,6 +8,7 @@ import 'package:init/ui/screen/main/index.view_model.dart';
 import 'package:init/ui/screen/main/index.view_state.dart';
 import 'package:init/ui/widgets/help_text.dart';
 import 'package:init/ui/widgets/status_card.dart';
+import 'package:init/ui/widgets/text_variant.dart';
 
 /// Main screen
 class MainScreen extends ConsumerStatefulWidget {
@@ -24,8 +25,9 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   /// Builds the main screen
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
-      body: CustomScrollView(
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surfaceDim,
+      body: const CustomScrollView(
         physics: ClampingScrollPhysics(),
         slivers: [
           _ResumeHeader(),
@@ -64,12 +66,9 @@ class _PinnedOrders extends ConsumerWidget {
               top: 22,
               bottom: 10,
             ),
-            child: Text(
+            child: TextVariant(
               "Commandes épinglées",
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w400,
-              ),
+              variantType: TextVariantType.titleMedium,
             ),
           ),
           SizedBox(
@@ -410,7 +409,7 @@ class _ResumeHeader extends ConsumerWidget {
     final currentMonth = DateTime.now().month;
     final textTheme = Theme.of(context).textTheme;
     final viewModel = ref.read(indexProvider.notifier);
-
+    final colorScheme = Theme.of(context).colorScheme;
     return SliverPadding(
       padding: const EdgeInsets.all(10),
       sliver: SliverToBoxAdapter(
@@ -429,7 +428,7 @@ class _ResumeHeader extends ConsumerWidget {
                     width: 250,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.surface,
+                      color: colorScheme.surface,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Column(
@@ -568,13 +567,17 @@ class _ManagementBar extends ConsumerWidget {
                         fontWeight: FontWeight.normal,
                       ),
                     ),
-                    child: Text(state.orderState.showComboBox
-                        ? "Masquer"
-                        : "Sélectionner"),
+                    child: TextVariant(
+                      state.orderState.showComboBox
+                          ? "Masquer"
+                          : "Sélectionner",
+                      variantType: TextVariantType.bodyMedium,
+                      color: colorScheme.primary,
+                    ),
                   ),
                   const SizedBox(width: 10),
                   TextButton.icon(
-                    onPressed: () {},
+                    onPressed: viewModel.createOrder,
                     icon: Icon(
                       Icons.add,
                       size: 20,

@@ -1,6 +1,8 @@
 import 'package:init/application/providers/initializer.dart';
+import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
+import 'package:init/foundation/enums/ordrer_status.enum.dart';
 import 'package:init/ui/screen/todo/todo.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -12,10 +14,10 @@ part 'todo.view_model.g.dart';
 @riverpod
 class TodoViewModel extends _$TodoViewModel {
   /// Order service
-  late final OrderService orderService;
+  late final OrderService _orderService;
 
   /// Navigator service
-  late final NavigatorService navigatorService;
+  late final NavigatorService _navigatorService;
 
   /// Constructor
   ///
@@ -26,8 +28,8 @@ class TodoViewModel extends _$TodoViewModel {
   /// Private constructor
   ///
   TodoViewModel._() {
-    orderService = injector<OrderService>();
-    navigatorService = injector<NavigatorService>();
+    _orderService = injector<OrderService>();
+    _navigatorService = injector<NavigatorService>();
   }
 
   ///
@@ -35,16 +37,16 @@ class TodoViewModel extends _$TodoViewModel {
   ///
   @override
   TodoScreenState build() {
-    orderService.orderState.addListener(() {
+    _orderService.orderState.addListener(() {
       state = TodoScreenState(
         false,
-        orderService.orderState.value,
+        _orderService.orderState.value,
       );
     });
 
     return TodoScreenState(
       false,
-      orderService.orderState.value,
+      _orderService.orderState.value,
     );
   }
 
@@ -52,4 +54,16 @@ class TodoViewModel extends _$TodoViewModel {
   /// Init
   ///
   Future<void> init() async {}
+
+  /// Navigate to details
+  ///
+  void navigateToDetails(Order order) {
+    _navigatorService.navigateToDetails(order);
+  }
+
+  /// Update order status
+  ///
+  void updateOrderStatus(Order data, OrderStatus status) {
+    _orderService.updateOrderStatus(data, status);
+  }
 }

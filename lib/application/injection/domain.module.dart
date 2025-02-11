@@ -5,9 +5,7 @@ import 'package:init/domain/service/dialog.service.dart';
 import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
 import 'package:init/domain/service/secure_storage.service.dart';
-import 'package:init/domain/service/theme.service.dart';
 import 'package:init/domain/use_case/get_theme.use_case.dart';
-import 'package:init/foundation/interfaces/theme.service_interface.dart';
 import 'package:init/foundation/routing/app_router.dart';
 import 'package:injectable/injectable.dart';
 
@@ -16,12 +14,6 @@ abstract class DomainModule {
   /// Provide the navigatorKey
   @singleton
   GlobalKey<NavigatorState> provideNavigatorKey() => parentNavigatorKey;
-
-  /// Allow to inject [ThemeService]
-  @Singleton(as: IThemeService)
-  @preResolve
-  Future<ThemeService> themeService(GetThemeUseCase useCase) =>
-      ThemeService.inject(useCase);
 
   ///
   @injectable

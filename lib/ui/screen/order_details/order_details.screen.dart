@@ -210,12 +210,13 @@ class _OrderActionsRow extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final colorScheme = Theme.of(context).colorScheme;
     final viewModel = ref.read(orderDetailsViewModelProvider.notifier);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        TextButton.icon(
+        FilledButton.icon(
           onPressed: viewModel.editOrder,
           label: const Text(
             "Editer la commande",
@@ -225,8 +226,16 @@ class _OrderActionsRow extends ConsumerWidget {
             ),
           ),
           icon: const Icon(Icons.edit),
+          style: FilledButton.styleFrom(
+            backgroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
         ),
-        TextButton.icon(
+        const SizedBox(width: 10),
+        FilledButton.icon(
           onPressed: viewModel.deleteOrder,
           label: const Text(
             "Supprimer la commande",
@@ -236,6 +245,13 @@ class _OrderActionsRow extends ConsumerWidget {
             ),
           ),
           icon: const Icon(Icons.delete_outline),
+          style: FilledButton.styleFrom(
+            backgroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
+          ),
         ),
       ],
     );
@@ -321,8 +337,15 @@ class _ActionsHistory extends ConsumerWidget {
                     ),
                   ),
                   const SizedBox(width: 16),
-                  TextButton.icon(
+                  FilledButton.icon(
                     onPressed: viewModel.addOrderAction,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
                     label: const Text(
                       "Ajouter une action",
                       style: TextStyle(
@@ -330,7 +353,10 @@ class _ActionsHistory extends ConsumerWidget {
                         fontSize: 12,
                       ),
                     ),
-                    icon: const Icon(Icons.add),
+                    icon: Icon(
+                      Icons.add,
+                      color: colorScheme.onPrimary,
+                    ),
                   ),
                 ],
               ),
@@ -338,8 +364,8 @@ class _ActionsHistory extends ConsumerWidget {
               HelpText(
                 text:
                     "Pour ajouter une action future il suffit d'ajouter une action avec une date supérieur à celle d'aujourd'hui. Par exemple ${DateTime.now().add(
-                  const Duration(days: 2),
-                ).toDDMMYYYY()}",
+                          const Duration(days: 2),
+                        ).toDDMMYYYY()}",
               ),
             ],
           ),
@@ -366,7 +392,7 @@ class _ActionsHistory extends ConsumerWidget {
                   child: Container(
                     width: 2,
                     height: (order!.actions.length * 48.0),
-                    color: colorScheme.primary.withValues(alpha: .2),
+                    color: colorScheme.primary,
                   ),
                 ),
                 Column(
@@ -398,10 +424,8 @@ class _ActionsHistory extends ConsumerWidget {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: isFirst
-                                          ? colorScheme.primary
-                                          : colorScheme.primary
-                                              .withValues(alpha: .2),
+                                      color: colorScheme.primary
+                                          .withValues(alpha: isFirst ? 1 : .6),
                                     ),
                                   ),
                                 ),

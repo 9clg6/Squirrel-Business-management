@@ -23,7 +23,7 @@ class HelpText extends StatelessWidget {
       children: [
         Icon(
           Icons.info_outline,
-          color: colorScheme.outline.withValues(alpha: .8),
+          color: colorScheme.onSurface.withValues(alpha: .6),
           size: 16,
         ),
         const SizedBox(width: 8),
@@ -32,7 +32,7 @@ class HelpText extends StatelessWidget {
           style: textTheme.bodyMedium?.copyWith(
             fontWeight: FontWeight.w400,
             fontSize: 12,
-            color: colorScheme.outline.withValues(alpha: .8),
+            color: colorScheme.onSurface.withValues(alpha: .6),
           ),
         ),
       ],
