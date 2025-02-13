@@ -1,4 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:flutter/material.dart';
 import 'package:init/domain/state/order.state.dart';
 import 'package:init/ui/abstraction/view_state.abs.dart';
 
@@ -15,20 +16,23 @@ class IndexScreenState extends ViewStateAbs {
   /// Order state
   final OrderState orderState;
 
+  final ScrollController scrollController;
+
   ///
   /// Constructor
   ///
   IndexScreenState(
     this.loading,
     this.orderState,
-  );
+  ) : scrollController = ScrollController();
 
   ///
   /// Initial state
   ///
   IndexScreenState.initial()
       : loading = true,
-        orderState = OrderState.initial();
+        orderState = OrderState.initial(),
+        scrollController = ScrollController();
 
   ///
   /// Get props
@@ -37,5 +41,6 @@ class IndexScreenState extends ViewStateAbs {
   List<Object?> get props => <Object?>[
         loading,
         orderState,
+        scrollController,
       ];
 }

@@ -7,7 +7,13 @@ part of 'stats.view_state.dart';
 // **************************************************************************
 
 abstract class _$StatsScreenStateCWProxy {
-  StatsScreenState loading(bool? loading);
+  StatsScreenState loading(bool loading);
+
+  StatsScreenState orders(List<Order> orders);
+
+  StatsScreenState hoveredShop(String? hoveredShop);
+
+  StatsScreenState dateRange(DateTimeRange dateRange);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `StatsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -17,6 +23,9 @@ abstract class _$StatsScreenStateCWProxy {
   /// ````
   StatsScreenState call({
     bool? loading,
+    List<Order>? orders,
+    String? hoveredShop,
+    DateTimeRange? dateRange,
   });
 }
 
@@ -27,7 +36,18 @@ class _$StatsScreenStateCWProxyImpl implements _$StatsScreenStateCWProxy {
   final StatsScreenState _value;
 
   @override
-  StatsScreenState loading(bool? loading) => this(loading: loading);
+  StatsScreenState loading(bool loading) => this(loading: loading);
+
+  @override
+  StatsScreenState orders(List<Order> orders) => this(orders: orders);
+
+  @override
+  StatsScreenState hoveredShop(String? hoveredShop) =>
+      this(hoveredShop: hoveredShop);
+
+  @override
+  StatsScreenState dateRange(DateTimeRange dateRange) =>
+      this(dateRange: dateRange);
 
   @override
 
@@ -39,12 +59,27 @@ class _$StatsScreenStateCWProxyImpl implements _$StatsScreenStateCWProxy {
   /// ````
   StatsScreenState call({
     Object? loading = const $CopyWithPlaceholder(),
+    Object? orders = const $CopyWithPlaceholder(),
+    Object? hoveredShop = const $CopyWithPlaceholder(),
+    Object? dateRange = const $CopyWithPlaceholder(),
   }) {
     return StatsScreenState(
-      loading == const $CopyWithPlaceholder()
+      loading == const $CopyWithPlaceholder() || loading == null
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
-          : loading as bool?,
+          : loading as bool,
+      orders == const $CopyWithPlaceholder() || orders == null
+          ? _value.orders
+          // ignore: cast_nullable_to_non_nullable
+          : orders as List<Order>,
+      hoveredShop == const $CopyWithPlaceholder()
+          ? _value.hoveredShop
+          // ignore: cast_nullable_to_non_nullable
+          : hoveredShop as String?,
+      dateRange == const $CopyWithPlaceholder() || dateRange == null
+          ? _value.dateRange
+          // ignore: cast_nullable_to_non_nullable
+          : dateRange as DateTimeRange,
     );
   }
 }

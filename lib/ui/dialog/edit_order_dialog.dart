@@ -46,6 +46,10 @@ class EditOrderDialog extends StatelessWidget {
   ///
   final TextEditingController intermediaryController;
 
+  /// Order client controller
+  ///
+  final TextEditingController clientController;
+
   /// Is creation
   ///
   final bool isCreation;
@@ -79,6 +83,9 @@ class EditOrderDialog extends StatelessWidget {
         ),
         intermediaryController = TextEditingController(
           text: order?.intermediaryContact,
+        ),
+        clientController = TextEditingController(
+          text: order?.clientContact,
         );
 
   /// Build
@@ -118,6 +125,13 @@ class EditOrderDialog extends StatelessWidget {
                 controller: shopNameController,
                 decoration: const InputDecoration(
                   labelText: "Nom du magasin",
+                ),
+              ),
+              const SizedBox(height: 32),
+              TextField(
+                controller: clientController,
+                decoration: const InputDecoration(
+                  labelText: "Nom du client",
                 ),
               ),
               const SizedBox(height: 32),
@@ -236,6 +250,7 @@ class EditOrderDialog extends StatelessWidget {
 
                       appRouter.pop<Order>(
                         order?.copyWith(
+                          clientContact: clientController.text,
                           intermediaryContact: intermediaryController.text,
                           price: price,
                           shopName: shopNameController.text,

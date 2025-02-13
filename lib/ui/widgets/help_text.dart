@@ -27,12 +27,14 @@ class HelpText extends StatelessWidget {
           size: 16,
         ),
         const SizedBox(width: 8),
-        Text(
-          text,
-          style: textTheme.bodyMedium?.copyWith(
-            fontWeight: FontWeight.w400,
-            fontSize: 12,
-            color: colorScheme.onSurface.withValues(alpha: .6),
+        Flexible(
+          child: Text(
+            text,
+            style: textTheme.bodyMedium?.copyWith(
+              fontWeight: FontWeight.w400,
+              fontSize: 12,
+              color: colorScheme.onSurface.withValues(alpha: .6),
+            ),
           ),
         ),
       ],

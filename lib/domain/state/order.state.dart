@@ -52,11 +52,12 @@ class OrderState with EquatableMixin {
 
   /// Get next action date
   ///
-  Map<Order, OrderAction>? get nextAction {
+  Map<Order, OrderAction?>? get nextAction {
     if (allOrder.isEmpty) return null;
 
-    final sortedOrders =
-        List<Order>.from(allOrder).map((e) => {e: e.actions.first}).toSet();
+    final sortedOrders = List<Order>.from(allOrder)
+        .map((e) => {e: e.actions.firstOrNull})
+        .toSet();
 
     return sortedOrders.first;
   }

@@ -40,6 +40,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   ///
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     final state = ref.watch(orderDetailsViewModelProvider);
     if (state.loading == true) {
       return const Scaffold(
@@ -48,9 +49,10 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
         ),
       );
     }
-    return const Scaffold(
-      appBar: _OrderDetailAppBar(),
-      body: _OrderDetailBody(),
+    return Scaffold(
+      backgroundColor: colorScheme.surfaceDim,
+      appBar: const _OrderDetailAppBar(),
+      body: const _OrderDetailBody(),
     );
   }
 }
@@ -360,7 +362,7 @@ class _ActionsHistory extends ConsumerWidget {
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
+              const SizedBox(height: 10),
               HelpText(
                 text:
                     "Pour ajouter une action future il suffit d'ajouter une action avec une date supérieur à celle d'aujourd'hui. Par exemple ${DateTime.now().add(
@@ -424,8 +426,10 @@ class _ActionsHistory extends ConsumerWidget {
                                   child: Container(
                                     decoration: BoxDecoration(
                                       shape: BoxShape.circle,
-                                      color: colorScheme.primary
-                                          .withValues(alpha: isFirst ? 1 : .6),
+                                      color: isFirst
+                                          ? colorScheme.tertiary
+                                          : colorScheme.primary
+                                              .withValues(alpha: .6),
                                     ),
                                   ),
                                 ),

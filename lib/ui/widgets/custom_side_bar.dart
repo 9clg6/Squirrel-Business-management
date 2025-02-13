@@ -41,7 +41,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
             color: colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
           ),
-          hoverColor: colorScheme.surfaceBright,
+          hoverColor: colorScheme.primaryContainer,
           hoverTextStyle: TextStyle(
             color: colorScheme.onSurface,
           ),
@@ -53,13 +53,9 @@ class _CustomSideBarState extends State<CustomSideBar> {
           ),
           selectedItemPadding: const EdgeInsets.all(10),
           selectedItemTextPadding: const EdgeInsets.only(left: 12),
-          selectedTextStyle: TextStyle(
-            color: colorScheme.primary,
-            fontWeight: FontWeight.w500,
-          ),
           selectedItemDecoration: BoxDecoration(
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: colorScheme.onSurface),
+            color: colorScheme.primary,
           ),
           itemTextPadding: const EdgeInsets.only(left: 8),
           itemPadding: const EdgeInsets.all(10),

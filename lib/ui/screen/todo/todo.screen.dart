@@ -39,10 +39,10 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
       body: ClipRRect(
         borderRadius: BorderRadius.circular(12),
         child: Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height / 2,
-          ),
-          padding: const EdgeInsets.all(10),
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height / 2,
+            ),
+            padding: const EdgeInsets.all(10),
             child: LayoutBuilder(
               builder: (context, constraints) {
                 final double parentSize = constraints.maxWidth;
@@ -129,7 +129,11 @@ class TodoStatusColumn extends ConsumerWidget {
                     ),
                   ),
                 ),
-                const SizedBox(height: 12),
+                Divider(
+                  color: colorScheme.outline,
+                  height: 24,
+                  thickness: 0.5,
+                ),
                 ...state.orderState.allOrder
                     .where((o) => o.status == status)
                     .map(
@@ -193,43 +197,37 @@ class TodoItem extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.start,
                 children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
+                  if (order.priority == Priority.high)
+                    const Padding(
+                      padding: EdgeInsets.only(right: 8),
+                      child: Icon(
+                        Icons.priority_high,
+                        color: Colors.red,
+                        size: 20,
+                      ),
+                    ),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      if (order.priority == Priority.high)
-                        const Padding(
-                          padding: EdgeInsets.only(right: 8),
-                          child: Icon(
-                            Icons.priority_high,
-                            color: Colors.red,
-                            size: 20,
-                          ),
+                      Text(
+                        order.shopName,
+                        style: textTheme.bodyMedium?.copyWith(
+                          fontWeight: FontWeight.w500,
+                          color: colorScheme.onSurface,
                         ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            order.shopName,
-                            style: textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w500,
-                              color: colorScheme.onSurface,
-                            ),
-                          ),
-                          Text(
-                            order.clientContact,
-                            style: textTheme.labelSmall?.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: colorScheme.onSurface,
-                            ),
-                          ),
-                        ],
+                      ),
+                      Text(
+                        order.clientContact,
+                        style: textTheme.labelSmall?.copyWith(
+                          fontWeight: FontWeight.w400,
+                          color: colorScheme.onSurface,
+                        ),
                       ),
                     ],
                   ),
-                  const Icon(Icons.open_in_new)
                 ],
               ),
             ),

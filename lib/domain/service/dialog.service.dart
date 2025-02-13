@@ -93,4 +93,20 @@ class DialogService {
       ),
     );
   }
+
+  Future<DateTimeRange?> selectRangeDate() async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.selectRangeDate()');
+      return null;
+    }
+
+    return showDateRangePicker(
+      context: context,
+      firstDate: DateTime.now().subtract(const Duration(days: 15)),
+      lastDate: DateTime.now(),
+      currentDate: DateTime.now(),
+    );
+  }
 }
