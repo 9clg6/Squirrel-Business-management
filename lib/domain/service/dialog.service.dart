@@ -47,7 +47,7 @@ class DialogService {
         dayBorderRadius: BorderRadius.circular(16),
         firstDayOfWeek: 1,
         selectableDayPredicate: (DateTime date) {
-          return date.isAfter(DateTime.now().subtract(const Duration(days: 1)));
+          return date.isBefore(DateTime.now().add(const Duration(days: 1)));
         },
       ),
       value: [DateTime.now()],
@@ -94,7 +94,7 @@ class DialogService {
     );
   }
 
-  Future<DateTimeRange?> selectRangeDate() async {
+  Future<List<DateTime?>?> selectRangeDate() async {
     final context = navigatorKey.currentContext;
 
     if (context == null) {
@@ -102,11 +102,23 @@ class DialogService {
       return null;
     }
 
-    return showDateRangePicker(
+    return await showCalendarDatePicker2Dialog(
       context: context,
-      firstDate: DateTime.now().subtract(const Duration(days: 15)),
-      lastDate: DateTime.now(),
-      currentDate: DateTime.now(),
+      config: CalendarDatePicker2WithActionButtonsConfig(
+        firstDate: DateTime.now().subtract(const Duration(days: 15)),
+        lastDate: DateTime.now(),
+        animateToDisplayedMonthDate: true,
+        allowSameValueSelection: true,
+        calendarType: CalendarDatePicker2Type.range,
+        currentDate: DateTime.now(),
+        dayBorderRadius: BorderRadius.circular(16),
+        firstDayOfWeek: 1,
+        rangeBidirectional: false,
+        selectableDayPredicate: (DateTime date) {
+          return date.isBefore(DateTime.now().add(const Duration(days: 1)));
+        },
+      ),
+      dialogSize: const Size(325, 400),
     );
   }
 }

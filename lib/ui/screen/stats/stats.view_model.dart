@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:init/application/providers/initializer.dart';
 import 'package:init/domain/service/dialog.service.dart';
 import 'package:init/domain/service/order.service.dart';
+import 'package:init/foundation/enums/chart_type.enum.dart';
 import 'package:init/ui/screen/stats/stats.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -64,10 +65,26 @@ class StatsViewModel extends _$StatsViewModel {
   ///
   Future<void> changeDateRange() async {
     // Afficher le sélecteur de dates
-    final DateTimeRange? result = await _dialogService.selectRangeDate();
+    final List<DateTime?>? result = await _dialogService.selectRangeDate();
 
-    if (result != null) {
-      state = state.copyWith(dateRange: result);
+    if (result == null || result.length < 2) return;
+
+    state = state.copyWith(
+      dateRange: DateTimeRange(
+        start: result[0]!,
+        end: result[1]!,
+      ),
+    );
+  }
+
+  ///
+  /// Set revenue type
+  ///
+  void setRevenueType(ChartType revenueType) {
+    if (revenueType == state.chartType) {
+      state = state.copyWith(chartType: ChartType.orderAmount);
+    } else {
+      state = state.copyWith(chartType: revenueType);
     }
   }
 }

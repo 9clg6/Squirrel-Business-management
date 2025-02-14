@@ -1,0 +1,4 @@
+enum ChartType {
+  dailyRevenue,
+  orderAmount,
+}

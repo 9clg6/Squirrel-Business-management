@@ -15,6 +15,8 @@ abstract class _$StatsScreenStateCWProxy {
 
   StatsScreenState dateRange(DateTimeRange dateRange);
 
+  StatsScreenState chartType(ChartType chartType);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `StatsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -26,6 +28,7 @@ abstract class _$StatsScreenStateCWProxy {
     List<Order>? orders,
     String? hoveredShop,
     DateTimeRange? dateRange,
+    ChartType? chartType,
   });
 }
 
@@ -50,6 +53,9 @@ class _$StatsScreenStateCWProxyImpl implements _$StatsScreenStateCWProxy {
       this(dateRange: dateRange);
 
   @override
+  StatsScreenState chartType(ChartType chartType) => this(chartType: chartType);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `StatsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -62,6 +68,7 @@ class _$StatsScreenStateCWProxyImpl implements _$StatsScreenStateCWProxy {
     Object? orders = const $CopyWithPlaceholder(),
     Object? hoveredShop = const $CopyWithPlaceholder(),
     Object? dateRange = const $CopyWithPlaceholder(),
+    Object? chartType = const $CopyWithPlaceholder(),
   }) {
     return StatsScreenState(
       loading == const $CopyWithPlaceholder() || loading == null
@@ -80,6 +87,10 @@ class _$StatsScreenStateCWProxyImpl implements _$StatsScreenStateCWProxy {
           ? _value.dateRange
           // ignore: cast_nullable_to_non_nullable
           : dateRange as DateTimeRange,
+      chartType == const $CopyWithPlaceholder() || chartType == null
+          ? _value.chartType
+          // ignore: cast_nullable_to_non_nullable
+          : chartType as ChartType,
     );
   }
 }

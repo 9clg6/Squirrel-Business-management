@@ -3,6 +3,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:init/foundation/enums/chart_type.enum.dart';
 import 'package:init/foundation/extensions/date_time.extension.dart';
 import 'package:init/ui/screen/stats/stats.view_model.dart';
 import 'package:init/ui/screen/stats/stats.view_state.dart';
@@ -46,31 +47,33 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
           : Container(
               padding: const EdgeInsets.all(10),
               margin: const EdgeInsets.all(10),
-              child: const Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  RowQuickStats(),
-                  Gap(22),
-                  StatsChart(),
-                  Gap(22),
-                  OrdersByDayChart(),
-                  Gap(22),
-                  // Top 5 des produits / Boutiques
-                  // Selectionner plage de dates
-                  // Nombre de commandes sur le mois
-                  // Nombre de commandes total
-                  // Stats par boutique
-                  // Stats par client
-                  // Duree moyenne des commandes
-                  // Duree moyenne des commandes par boutique
-                  // Montant total des commandes
-                  // Montant total des commandes par boutique
-                  // Nombre de commandes par jour
-                  // Nombre de commandes par semaine
-                  // Nombre de commandes par mois
-                  // Nombre de commandes par an
-                ],
+              child: const SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RowQuickStats(),
+                    Gap(22),
+                    StatsChart(),
+                    Gap(22),
+                    OrdersByDayChart(),
+                    Gap(22),
+                    // Top 5 des produits / Boutiques
+                    // Selectionner plage de dates
+                    // Nombre de commandes sur le mois
+                    // Nombre de commandes total
+                    // Stats par boutique
+                    // Stats par client
+                    // Duree moyenne des commandes
+                    // Duree moyenne des commandes par boutique
+                    // Montant total des commandes
+                    // Montant total des commandes par boutique
+                    // Nombre de commandes par jour
+                    // Nombre de commandes par semaine
+                    // Nombre de commandes par mois
+                    // Nombre de commandes par an
+                  ],
+                ),
               ),
             ),
     );
@@ -85,17 +88,16 @@ class OrdersByDayChart extends ConsumerStatefulWidget {
 }
 
 class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
-  bool isHovering = false;
-
+  bool isHoveringDate = false;
+  bool isHoveringRevenue = false;
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final state = ref.watch(statsViewModelProvider);
-    final amountOfOrders = state.orders.length;
     final viewModel = ref.read(statsViewModelProvider.notifier);
+    final dateRange = state.dateRange;
 
     return Container(
-      height: 500,
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(10),
@@ -112,25 +114,21 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
           InkWell(
             onTap: viewModel.changeDateRange,
             child: MouseRegion(
-              onExit: (_) {
-                setState(() => isHovering = false);
-              },
-              onHover: (_) {
-                setState(() => isHovering = true);
-              },
+              onExit: (_) => setState(() => isHoveringDate = false),
+              onHover: (_) => setState(() => isHoveringDate = true),
               cursor: SystemMouseCursors.click,
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
-                  color: isHovering
+                  color: isHoveringDate
                       ? colorScheme.primary
                       : colorScheme.surfaceBright,
                   borderRadius: BorderRadius.circular(10),
                 ),
                 child: TextVariant(
-                  '${state.dateRange.start.toDDMMYYYY()} - ${state.dateRange.end.toDDMMYYYY()}',
+                  '${dateRange.start.toDDMMYYYY()} - ${dateRange.end.toDDMMYYYY()}',
                   variantType: TextVariantType.bodyMedium,
-                  color: isHovering
+                  color: isHoveringDate
                       ? colorScheme.onPrimary
                       : colorScheme.onSurface,
                 ),
@@ -138,163 +136,137 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
             ),
           ),
           const Gap(20),
-          Expanded(
-            child: LineChart(
-              LineChartData(
-                minY: 0,
-                maxY: state.orders.isNotEmpty
-                    ? amountOfOrders > 50
-                        ? 50.toDouble()
-                        : amountOfOrders.toDouble()
-                    : 10,
-                gridData: const FlGridData(show: true),
-                titlesData: FlTitlesData(
-                  rightTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  topTitles: const AxisTitles(
-                    sideTitles: SideTitles(showTitles: false),
-                  ),
-                  leftTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 40,
-                      interval: 1,
-                      getTitlesWidget: (value, meta) {
-                        if (value % 2 != 0 && value != 1) return const SizedBox.shrink();
-                        
-                        return Padding(
-                          padding: const EdgeInsets.only(right: 8.0),
-                          child: Text(
-                            value.toInt().toString(),
-                            style: TextStyle(
-                              color: colorScheme.onSurface,
-                              fontSize: 12,
-                            ),
-                          ),
-                        );
-                      },
-                    ),
-                  ),
-                  bottomTitles: AxisTitles(
-                    sideTitles: SideTitles(
-                      showTitles: true,
-                      reservedSize: 30,
-                      getTitlesWidget: (value, meta) {
-                        final date =
-                            DateTime.fromMillisecondsSinceEpoch(value.toInt());
-
-                        if (date.day % 5 == 0) {
-                          return Padding(
-                            padding: const EdgeInsets.only(top: 8.0),
-                            child: Text(
-                              date.toDDMMYYYY(),
-                              style: TextStyle(
-                                color: colorScheme.onSurface,
-                                fontSize: 12,
-                              ),
-                            ),
-                          );
-                        }
-                        return const SizedBox.shrink();
-                      },
-                      interval:
-                          const Duration(days: 1).inMilliseconds.toDouble(),
-                    ),
-                  ),
-                ),
-                borderData: FlBorderData(show: false),
-                lineBarsData: [
-                  LineChartBarData(
-                    spots: () {
-                      // Filtrer les commandes sur le dernier mois et les grouper par date
-                      final ordersByDate = state.orders
-                          .where((order) =>
-                              order.startDate.isAfter(state.dateRange.start))
-                          .fold<Map<DateTime, int>>(
-                        {},
-                        (map, order) {
-                          final date = DateTime(
-                            order.startDate.year,
-                            order.startDate.month,
-                            order.startDate.day,
-                          );
-                          return map
-                            ..update(
-                              date,
-                              (value) => value + 1,
-                              ifAbsent: () => 1,
-                            );
-                        },
-                      );
-
-                      // Créer une liste de toutes les dates du mois avec des valeurs à 0 par défaut
-                      final allDates = <DateTime, int>{};
-                      for (var date = state.dateRange.start;
-                          date.isBefore(state.dateRange.end);
-                          date = date.add(const Duration(days: 1))) {
-                        allDates[DateTime(date.year, date.month, date.day)] = 0;
-                      }
-
-                      // Fusionner avec les commandes réelles
-                      allDates.addAll(ordersByDate);
-
-                      // Convertir en spots pour le graphique
-                      final spots = allDates.entries
-                          .map(
-                            (entry) => FlSpot(
-                              entry.key.millisecondsSinceEpoch.toDouble(),
-                              entry.value.toDouble(),
-                            ),
-                          )
-                          .toList()
-                        ..sort((a, b) => a.x.compareTo(b.x));
-
-                      return spots;
-                    }(),
-                    isCurved: false,
-                    color: colorScheme.primary,
-                    barWidth: 3,
-                    isStrokeCapRound: true,
-                    dotData: FlDotData(
-                      show: true,
-                      getDotPainter: (
-                        spot,
-                        percent,
-                        barData,
-                        index,
-                      ) =>
-                          FlDotCirclePainter(
-                        radius: 6,
-                        color: colorScheme.primary,
-                        strokeWidth: 2,
-                        strokeColor: colorScheme.surface,
+          SizedBox(
+            height: 40,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                InkWell(
+                  onTap: () {
+                    viewModel.setRevenueType(ChartType.dailyRevenue);
+                  },
+                  child: MouseRegion(
+                    onExit: (_) => setState(() => isHoveringRevenue = false),
+                    onHover: (_) => setState(() => isHoveringRevenue = true),
+                    cursor: SystemMouseCursors.click,
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: state.chartType == ChartType.dailyRevenue ||
+                                isHoveringRevenue
+                            ? colorScheme.primary
+                            : colorScheme.surfaceBright,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: TextVariant(
+                        'Revenus journalier',
+                        variantType: TextVariantType.bodyMedium,
+                        color: isHoveringRevenue ||
+                                state.chartType == ChartType.dailyRevenue
+                            ? colorScheme.onPrimary
+                            : colorScheme.onSurface,
                       ),
                     ),
-                    belowBarData: BarAreaData(
-                      show: true,
-                      color: colorScheme.primary.withValues(alpha: 0.1),
-                    ),
-                  ),
-                ],
-                lineTouchData: LineTouchData(
-                  enabled: true,
-                  touchTooltipData: LineTouchTooltipData(
-                    getTooltipItems: (touchedSpots) {
-                      return touchedSpots.map((LineBarSpot touchedSpot) {
-                        final date = DateTime.fromMillisecondsSinceEpoch(
-                            touchedSpot.x.toInt());
-                        return LineTooltipItem(
-                          '${touchedSpot.y.toInt()} commandes\n${date.day}/${date.month}/${date.year}',
-                          TextStyle(color: colorScheme.onSurface),
-                        );
-                      }).toList();
-                    },
                   ),
                 ),
-              ),
+              ],
             ),
           ),
+          const Gap(40),
+          SizedBox(
+            height: 500,
+            child: Builder(
+              builder: (context) {
+                return LineChart(
+                  LineChartData(
+                    minY: 0,
+                    maxY: state.maxY,
+                    gridData: const FlGridData(show: true),
+                    titlesData: FlTitlesData(
+                      rightTitles: const AxisTitles(
+                        sideTitles: SideTitles(showTitles: false),
+                      ),
+                      topTitles: const AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: false,
+                        ),
+                      ),
+                      bottomTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          getTitlesWidget: (value, meta) {
+                            final date = DateTime.fromMillisecondsSinceEpoch(
+                              value.toInt(),
+                            ).getDateWithoutTime();
+
+                            return TextVariant(
+                              date.toDDMMYYYY(),
+                              variantType: TextVariantType.bodyMedium,
+                            );
+                          },
+                          reservedSize: 42,
+                          interval:
+                              const Duration(days: 1).inMilliseconds.toDouble(),
+                        ),
+                      ),
+                      leftTitles: AxisTitles(
+                        sideTitles: SideTitles(
+                          showTitles: true,
+                          interval: state.yInterval,
+                          getTitlesWidget: (value, meta) {
+                            return TextVariant(
+                              value.toInt().toString(),
+                              variantType: TextVariantType.bodyMedium,
+                            );
+                          },
+                          reservedSize: 42,
+                        ),
+                      ),
+                    ),
+                    borderData: FlBorderData(show: false),
+                    lineBarsData: [
+                      LineChartBarData(
+                        spots: List.generate(
+                          dateRange.end.difference(dateRange.start).inDays + 1,
+                          (index) {
+                            final date = dateRange.start.add(
+                              Duration(days: index),
+                            );
+
+                            return FlSpot(
+                              date.millisecondsSinceEpoch.toDouble(),
+                              state.dataToShow[date.getDateWithoutTime()]
+                                      ?.toDouble() ??
+                                  0,
+                            );
+                          },
+                        ),
+                        isCurved: false,
+                        color: colorScheme.primary,
+                        barWidth: 3,
+                        isStrokeCapRound: true,
+                        dotData: FlDotData(
+                          show: true,
+                          getDotPainter: (spot, percent, barData, index) =>
+                              FlDotCirclePainter(
+                            radius: 6,
+                            color: colorScheme.primary,
+                            strokeWidth: 2,
+                            strokeColor: colorScheme.surface,
+                          ),
+                        ),
+                        belowBarData: BarAreaData(
+                          show: true,
+                          color: colorScheme.primary.withValues(alpha: .1),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
+          ),
+          const Gap(20),
         ],
       ),
     );
