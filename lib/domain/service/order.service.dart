@@ -18,7 +18,7 @@ class OrderService {
           OrderState.initial().copyWith(
             orders: [
               Order(
-                clientContact: 'Jean',
+                clientContact: 'Eric',
                 intermediaryContact: 'Intermediaire 2',
                 internalProcessingFee: 35,
                 trackId: '1234567890',
@@ -42,7 +42,7 @@ class OrderService {
                 ],
               ),
               Order(
-                clientContact: 'Louis',
+                clientContact: 'Pierre',
                 intermediaryContact: 'Intermediaire 1',
                 internalProcessingFee: 35,
                 trackId: '1234567890',

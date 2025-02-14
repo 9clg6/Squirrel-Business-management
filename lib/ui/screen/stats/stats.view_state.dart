@@ -128,7 +128,7 @@ class StatsScreenState extends ViewStateAbs {
         orders = [],
         hoveredShop = null,
         dateRange = DateTimeRange(
-          start: DateTime.now().subtract(const Duration(days: 15)),
+          start: DateTime.now().subtract(const Duration(days: 5)),
           end: DateTime.now(),
         ),
         chartType = ChartType.orderAmount;
