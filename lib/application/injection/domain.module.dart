@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:init/data/repository/preferences/preferences.repository.dart';
+import 'package:init/domain/service/auth.service.dart';
 import 'package:init/domain/service/dialog.service.dart';
 import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
@@ -53,4 +54,8 @@ abstract class DomainModule {
   /// Allow to inject [NavigatorService]
   @singleton
   NavigatorService navigatorService() => NavigatorService();
+
+  /// Allow to inject [AuthService]
+  @singleton
+  AuthService authService() => AuthService();
 }

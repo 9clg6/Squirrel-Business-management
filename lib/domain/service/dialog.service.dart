@@ -4,6 +4,7 @@ import 'package:init/domain/entities/action.entity.dart';
 import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/ui/dialog/confirmation_dialog.dart';
 import 'package:init/ui/dialog/edit_order_dialog.dart';
+import 'package:init/ui/dialog/use_conditions.dialog.dart';
 import 'package:init/ui/screen/add_order_action/add_order_action.screen.dart';
 
 class DialogService {
@@ -119,6 +120,16 @@ class DialogService {
         },
       ),
       dialogSize: const Size(325, 400),
+    );
+  }
+
+  void showError(String s) {}
+
+  Future<bool?> showUseConditions() async {
+    return showDialog<bool>(
+      barrierDismissible: false,
+      context: navigatorKey.currentContext!,
+      builder: (_) => const UseConditionsDialog(),
     );
   }
 }

@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:init/application/providers/initializer.dart';
 import 'package:init/domain/entities/order.entity.dart';
+import 'package:init/domain/service/auth.service.dart';
+import 'package:init/ui/screen/auth/auth.screen.dart';
 import 'package:init/ui/screen/clients/clients.screen.dart';
 import 'package:init/ui/screen/history/history.screen.dart';
 import 'package:init/ui/screen/main/index.screen.dart';
@@ -14,15 +17,28 @@ import 'package:init/ui/widgets/custom_side_bar.dart';
 final GlobalKey<NavigatorState> parentNavigatorKey =
     GlobalKey<NavigatorState>();
 
+String? _authGuard(context, state) {
+  final bool isAuthenticated = injector<AuthService>().isUserAuthenticated;
+  if (!isAuthenticated) {
+    return '/auth';
+  }
+  return null;
+}
+
+bool _checkIfAuthRoute(String location) {
+  return location.startsWith('/auth');
+}
+
 final GoRouter appRouter = GoRouter(
   debugLogDiagnostics: true,
   navigatorKey: parentNavigatorKey,
+  redirect: _authGuard,
   routes: [
     StatefulShellRoute(
       parentNavigatorKey: parentNavigatorKey,
-      builder: (context, state, navigationShell) => navigationShell,
+      builder: (_, __, navigationShell) => navigationShell,
       navigatorContainerBuilder: (
-        BuildContext context,
+        _,
         StatefulNavigationShell navigationShell,
         List<Widget> children,
       ) {
@@ -30,10 +46,15 @@ final GoRouter appRouter = GoRouter(
           return const SizedBox();
         }
         return Scaffold(
-          appBar: const CustomAppBar(),
+          appBar: !_checkIfAuthRoute(
+                  navigationShell.shellRouteContext.routerState.matchedLocation)
+              ? const CustomAppBar()
+              : null,
           body: Row(
             children: [
-              CustomSideBar(navigationShell: navigationShell),
+              if (!_checkIfAuthRoute(navigationShell
+                  .shellRouteContext.routerState.matchedLocation))
+                CustomSideBar(navigationShell: navigationShell),
               Expanded(child: children[navigationShell.currentIndex]),
             ],
           ),
@@ -45,7 +66,7 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/',
               name: 'main',
-              builder: (_, state) => const MainScreen(),
+              builder: (_, __) => const MainScreen(),
             ),
             GoRoute(
               path: '/order-details/:orderId',
@@ -61,7 +82,16 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/todo',
               name: 'todo',
-              builder: (_, state) => const TodoScreen(),
+              builder: (_, __) => const TodoScreen(),
+            ),
+          ],
+        ),
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: '/auth',
+              name: 'auth',
+              builder: (_, __) => const AuthScreen(),
             ),
           ],
         ),
@@ -70,7 +100,7 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/stats',
               name: 'stats',
-              builder: (_, state) => const StatsScreen(),
+              builder: (_, __) => const StatsScreen(),
             ),
           ],
         ),
@@ -79,7 +109,7 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/planner',
               name: 'planner',
-              builder: (_, state) => const PlannerScreen(),
+              builder: (_, __) => const PlannerScreen(),
             ),
           ],
         ),
@@ -88,7 +118,7 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/clients',
               name: 'clients',
-              builder: (_, state) => const ClientsScreen(),
+              builder: (_, __) => const ClientsScreen(),
             ),
           ],
         ),
@@ -97,7 +127,7 @@ final GoRouter appRouter = GoRouter(
             GoRoute(
               path: '/history',
               name: 'history',
-              builder: (_, state) => const HistoryScreen(),
+              builder: (_, __) => const HistoryScreen(),
             ),
           ],
         ),
