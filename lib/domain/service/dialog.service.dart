@@ -6,6 +6,7 @@ import 'package:init/ui/dialog/confirmation_dialog.dart';
 import 'package:init/ui/dialog/edit_order_dialog.dart';
 import 'package:init/ui/dialog/use_conditions.dialog.dart';
 import 'package:init/ui/screen/add_order_action/add_order_action.screen.dart';
+import 'package:init/ui/widgets/text_variant.dart';
 
 class DialogService {
   final GlobalKey<NavigatorState> navigatorKey;
@@ -123,7 +124,33 @@ class DialogService {
     );
   }
 
-  void showError(String s) {}
+  void showError(String message) {
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.showEditOrderDialog()');
+      return;
+    }
+
+    final theme = Theme.of(context).colorScheme;
+
+    showDialog<void>(
+      context: context,
+      builder: (_) => AlertDialog(
+        icon: Icon(
+          Icons.error_outline,
+          color: theme.primary,
+          size: 42,
+        ),
+        title: const Text('Erreur'),
+        content: TextVariant(
+          message,
+          variantType: TextVariantType.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+      ),
+    );
+  }
 
   Future<bool?> showUseConditions() async {
     return showDialog<bool>(

@@ -1,7 +1,11 @@
+import 'package:init/domain/use_case/login.use_case.dart';
+
 class AuthService {
+  final LoginUseCase _loginUseCase;
+
   bool _isUserAuthenticated = false;
 
-  AuthService();
+  AuthService(this._loginUseCase);
 
   bool get isUserAuthenticated => _isUserAuthenticated;
 
@@ -9,5 +13,7 @@ class AuthService {
     _isUserAuthenticated = isAuthenticated;
   }
 
-  login(String licenseKey) {}
+  Future<bool> login(String licenseKey) async {
+    return await _loginUseCase.login(licenseKey);
+  }
 }

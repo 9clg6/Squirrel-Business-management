@@ -12,4 +12,8 @@ class NavigatorService {
       extra: order,
     );
   }
+
+  Future<void> navigateToHome() async {
+    appRouter.go('/');
+  }
 }

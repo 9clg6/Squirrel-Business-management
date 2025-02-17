@@ -1,10 +1,12 @@
 // ignore_for_file: missing_provider_scope
 import 'package:easy_localization/easy_localization.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:init/application/config/app_config.dart';
 import 'package:init/application/providers/initializer.dart';
+import 'package:init/firebase_options.dart';
 import 'package:init/ui/app.dart';
 
 ///
@@ -57,6 +59,10 @@ class Kernel {
   Future<void> _ensureInitialized() async {
     // Initialize widgets
     WidgetsFlutterBinding.ensureInitialized();
+
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
 
     await Hive.initFlutter();
 

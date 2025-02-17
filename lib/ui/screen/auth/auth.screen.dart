@@ -4,7 +4,6 @@ import 'package:gap/gap.dart';
 import 'package:init/ui/screen/auth/auth.view_model.dart';
 import 'package:init/ui/widgets/help_text.dart';
 import 'package:init/ui/widgets/text_variant.dart';
-import 'package:uuid/uuid.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});
@@ -17,6 +16,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   bool _isLoading = false;
 
   final _licenseKeyController = TextEditingController();
+
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -33,20 +34,31 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               variantType: TextVariantType.displaySmall,
             ),
             const Gap(20),
-            TextField(
-              controller: _licenseKeyController,
-              decoration: InputDecoration(
-                hintText: 'Entrez votre numéro de compte ${const Uuid().v4()}',
+            Form(
+              key: _formKey,
+              child: TextFormField(
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Veuillez entrer votre numéro de compte';
+                  }
+                  return null;
+                },
+                controller: _licenseKeyController,
+                decoration: const InputDecoration(
+                  hintText: 'Entrez votre numéro de compte',
+                ),
               ),
             ),
             const Gap(20),
             FilledButton(
               onPressed: () {
-                setState(() => _isLoading = true);
-                ref
-                    .read(authProvider.notifier)
-                    .login(_licenseKeyController.text);
-                setState(() => _isLoading = false);
+                if (_formKey.currentState!.validate()) {
+                  setState(() => _isLoading = true);
+                  ref
+                      .read(authProvider.notifier)
+                      .login(_licenseKeyController.text);
+                  setState(() => _isLoading = false);
+                }
               },
               child: _isLoading
                   ? CircularProgressIndicator(

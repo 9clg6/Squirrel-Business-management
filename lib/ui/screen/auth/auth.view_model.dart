@@ -27,17 +27,16 @@ class Auth extends _$Auth {
   AuthState build() => AuthState.initial();
 
   Future<void> login(String licenseKey) async {
-    // final bool result = await _authService.login(licenseKey);
+    final bool result = await _authService.login(licenseKey);
 
-    if (true) {
+    if (result) {
       final result = await _dialogService.showUseConditions();
       if (result == true) {
-        // _navigatorService.navigateTo(const MainScreen());
+        _authService.setUserAuthenticated(true);
+        _navigatorService.navigateToHome();
       }
     } else {
-      _dialogService.showError(
-        'Une erreur est survenue lors de la connexion',
-      );
+      _dialogService.showError('Impossible de se connecter');
     }
   }
 }

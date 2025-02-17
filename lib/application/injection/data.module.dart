@@ -1,5 +1,9 @@
 import 'package:init/data/local_data_source/preferences/impl/preferences_local.data_source.impl.dart';
 import 'package:init/data/local_data_source/preferences/preferences_local.data_source.dart';
+import 'package:init/data/remote_data_source/authentication.data_source.dart';
+import 'package:init/data/remote_data_source/impl/authentication.data_source.impl.dart';
+import 'package:init/data/repository/auth/authentication.repository.dart';
+import 'package:init/data/repository/auth/impl/authentication.repository.impl.dart';
 import 'package:init/data/repository/preferences/impl/preferences_repository_impl.dart';
 import 'package:init/data/repository/preferences/preferences.repository.dart';
 import 'package:init/data/storage/hive_secure_storage.dart';
@@ -65,4 +69,17 @@ abstract class DataModule {
     PreferencesLocalDataSource localDataSource,
   ) =>
       PreferencesRepositoryImpl(localDataSource);
+
+  /// Allow to inject [AuthenticationDataSourceImpl]
+  @Injectable(as: AuthenticationDataSource)
+  AuthenticationDataSourceImpl authenticationDataSourceImpl() =>
+      AuthenticationDataSourceImpl();
+
+  /// Allow to inject [AuthenticationRepositoryImpl]
+  @Injectable(as: AuthenticationRepository)
+  AuthenticationRepositoryImpl authenticationRepository(
+    AuthenticationDataSource authenticationDataSource,
+  ) =>
+      AuthenticationRepositoryImpl(authenticationDataSource);
+
 }

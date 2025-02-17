@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:init/foundation/routing/app_router.dart';
@@ -95,7 +96,7 @@ class _CountdownTimerState extends State<_CountdownTimer> {
   @override
   void initState() {
     super.initState();
-    _countdown = ValueNotifier<int>(30);
+    _countdown = ValueNotifier<int>(kDebugMode ? 5 : 30);
     _startCountdown();
   }
 
@@ -139,7 +140,8 @@ class _CountdownTimerState extends State<_CountdownTimer> {
                       CircularProgressIndicator(
                         value: value / 30,
                         backgroundColor: Colors.grey[300],
-                        strokeWidth: 8,
+                        strokeWidth: 4,
+                        strokeAlign: -2,
                       ),
                       const Gap(16),
                       Center(
