@@ -54,8 +54,6 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
                   children: [
                     RowQuickStats(),
                     Gap(22),
-                    StatsChart(),
-                    Gap(22),
                     OrdersByDayChart(),
                     Gap(22),
                     // Top 5 des produits / Boutiques
@@ -448,6 +446,8 @@ class RowQuickStats extends ConsumerWidget {
               ),
             ),
           ),
+          const Gap(22),
+          const StatsChart(),
         ],
       ),
     );
@@ -468,7 +468,8 @@ class _StatsChartState extends ConsumerState<StatsChart> {
     final viewModel = ref.read(statsViewModelProvider.notifier);
     final state = ref.watch(statsViewModelProvider);
 
-    return Center(
+    return Expanded(
+      flex: 2,
       child: Container(
         decoration: BoxDecoration(
           color: colorScheme.surface,
@@ -486,7 +487,7 @@ class _StatsChartState extends ConsumerState<StatsChart> {
             TextVariant(
               '${state.total} €',
               color: colorScheme.onSurface,
-              variantType: TextVariantType.displaySmall,
+              variantType: TextVariantType.titleLarge,
             ),
             Builder(
               builder: (context) {

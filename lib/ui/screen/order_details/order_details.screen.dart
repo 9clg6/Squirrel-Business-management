@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/foundation/enums/ordrer_status.enum.dart';
@@ -292,8 +293,6 @@ class _OrderDetailsContent extends StatelessWidget {
             ),
             const _SummaryOrder(),
             const SizedBox(height: 16),
-            const _ActionsHistory(),
-            const SizedBox(height: 16),
             const _OrderInformations(),
           ],
         ),
@@ -315,179 +314,167 @@ class _ActionsHistory extends ConsumerWidget {
         ref.watch(orderDetailsViewModelProvider);
     final Order? order = state.order;
 
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: .2),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Text(
-                    "Historique des actions réalisées",
-                    style: textTheme.labelLarge?.copyWith(
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  const SizedBox(width: 16),
-                  FilledButton.icon(
-                    onPressed: viewModel.addOrderAction,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: colorScheme.primary,
-                      foregroundColor: colorScheme.onPrimary,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                    label: const Text(
-                      "Ajouter une action",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w400,
-                        fontSize: 12,
-                      ),
-                    ),
-                    icon: Icon(
-                      Icons.add,
-                      color: colorScheme.onPrimary,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              HelpText(
-                text:
-                    "Pour ajouter une action future il suffit d'ajouter une action avec une date supérieur à celle d'aujourd'hui. Par exemple ${DateTime.now().add(
-                          const Duration(days: 2),
-                        ).toDDMMYYYY()}",
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          if (order?.actions.isEmpty == true)
-            Text(
-              "Aucune action n'a été effectuée",
-              style: textTheme.labelLarge?.copyWith(
-                fontWeight: FontWeight.w400,
-                color: colorScheme.outline.withValues(alpha: .7),
-                fontSize: 12,
-              ),
-            )
-          else ...[
-            Divider(
-              color: colorScheme.outline.withValues(alpha: .2),
-              height: 46,
-              thickness: 1,
-            ),
-            Stack(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 7),
-                  child: Container(
-                    width: 2,
-                    height: (order!.actions.length * 48.0),
-                    color: colorScheme.primary,
+                Text(
+                  "Historique des actions réalisées",
+                  style: textTheme.labelLarge?.copyWith(
+                    fontWeight: FontWeight.w400,
                   ),
                 ),
-                Column(
-                  children: order.actions.asMap().entries.map((entry) {
-                    final index = entry.key;
-                    final action = entry.value;
-                    final isFirst = index == 0;
-                    int? dayDiffBetweenActions;
-
-                    // Calculer la différence pour toutes les actions sauf la dernière (la plus récente)
-                    if (index < order.actions.length - 1) {
-                      final nextDate = order.actions[index + 1].date;
-                      dayDiffBetweenActions =
-                          action.date.difference(nextDate).inDays;
-                    }
-
-                    return SizedBox(
-                      height: 48,
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                SizedBox(
-                                  width: 15,
-                                  height: 15,
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      shape: BoxShape.circle,
-                                      color: isFirst
-                                          ? colorScheme.tertiary
-                                          : colorScheme.primary
-                                              .withValues(alpha: .6),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Expanded(
-                                  child: Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      Expanded(
-                                        child: Text(action.date.toDDMMYYYY()),
-                                      ),
-                                      Expanded(
-                                        child: Text(
-                                          action.description,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: Tooltip(
-                                          message: dayDiffBetweenActions != null
-                                              ? "Jours depuis la dernière action"
-                                              : "",
-                                          child: Text(
-                                            dayDiffBetweenActions != null
-                                                ? "+$dayDiffBetweenActions jours"
-                                                : "",
-                                            style:
-                                                textTheme.bodySmall?.copyWith(
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                          MouseRegion(
-                            cursor: SystemMouseCursors.click,
-                            child: IconButton(
-                              onPressed: () {
-                                viewModel.deleteOrderAction(action);
-                              },
-                              icon: const Icon(Icons.delete_outline),
-                            ),
-                          ),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                const SizedBox(width: 16),
+                FilledButton.icon(
+                  onPressed: viewModel.addOrderAction,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                  ),
+                  label: const Text(
+                    "Ajouter une action",
+                    style: TextStyle(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12,
+                    ),
+                  ),
+                  icon: Icon(
+                    Icons.add,
+                    color: colorScheme.onPrimary,
+                  ),
                 ),
               ],
             ),
+            const SizedBox(height: 10),
+            HelpText(
+              text:
+                  "Pour ajouter une action future il suffit d'ajouter une action avec une date supérieur à celle d'aujourd'hui. Par exemple ${DateTime.now().add(
+                        const Duration(days: 2),
+                      ).toDDMMYYYY()}",
+            ),
           ],
+        ),
+        const SizedBox(height: 4),
+        if (order?.actions.isEmpty == true)
+          Text(
+            "Aucune action n'a été effectuée",
+            style: textTheme.labelLarge?.copyWith(
+              fontWeight: FontWeight.w400,
+              color: colorScheme.outline.withValues(alpha: .7),
+              fontSize: 12,
+            ),
+          )
+        else ...[
+          Divider(
+            color: colorScheme.outline.withValues(alpha: .2),
+            height: 46,
+            thickness: 1,
+          ),
+          Stack(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 7),
+                child: Container(
+                  width: 2,
+                  height: (order!.actions.length * 48.0),
+                  color: colorScheme.primary,
+                ),
+              ),
+              Column(
+                children: order.actions.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final action = entry.value;
+                  final isFirst = index == 0;
+                  int? dayDiffBetweenActions;
+
+                  // Calculer la différence pour toutes les actions sauf la dernière (la plus récente)
+                  if (index < order.actions.length - 1) {
+                    final nextDate = order.actions[index + 1].date;
+                    dayDiffBetweenActions =
+                        action.date.difference(nextDate).inDays;
+                  }
+
+                  return SizedBox(
+                    height: 48,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                width: 15,
+                                height: 15,
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: isFirst
+                                        ? colorScheme.tertiary
+                                        : colorScheme.primary
+                                            .withValues(alpha: .6),
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Expanded(
+                                      child: Text(action.date.toDDMMYYYY()),
+                                    ),
+                                    Expanded(
+                                      child: Text(
+                                        action.description,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Tooltip(
+                                        message: dayDiffBetweenActions != null
+                                            ? "Jours depuis la dernière action"
+                                            : "",
+                                        child: Text(
+                                          dayDiffBetweenActions != null
+                                              ? "+$dayDiffBetweenActions jours"
+                                              : "",
+                                          style: textTheme.bodySmall?.copyWith(
+                                            fontWeight: FontWeight.w400,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        MouseRegion(
+                          cursor: SystemMouseCursors.click,
+                          child: IconButton(
+                            onPressed: () {
+                              viewModel.deleteOrderAction(action);
+                            },
+                            icon: const Icon(Icons.delete_outline),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
         ],
-      ),
+      ],
     );
   }
 }
@@ -674,89 +661,113 @@ class _SummaryOrder extends ConsumerWidget {
           color: colorScheme.outline.withValues(alpha: .2),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            "Prochaine action",
-            style: textTheme.labelSmall?.copyWith(
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            state.order!.nextActionDate?.toDDMMYYYY() ?? 'Aucune action prévue',
-            style: textTheme.headlineMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(height: 16),
-          Text(
-            "Recontacter la boutique par mail",
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-          const SizedBox(height: 16),
-          InkWell(
-            onTap: () => viewModel.updateOrderPriority(order),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: Tooltip(
-                verticalOffset: 50,
-                message: "Cliquez pour changer la priorité",
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 32,
-                    vertical: 16,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: colorScheme.outline.withValues(alpha: .2),
+      child: IntrinsicHeight(
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    "Prochaine action",
+                    style: textTheme.labelSmall?.copyWith(
+                      fontWeight: FontWeight.w400,
                     ),
                   ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Priorité",
-                        style: textTheme.bodyLarge
-                            ?.copyWith(fontWeight: FontWeight.w400),
-                      ),
-                      const SizedBox(height: 16),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: 10,
-                            height: 10,
-                            decoration: BoxDecoration(
-                              color: order!.priority.color,
-                              borderRadius: BorderRadius.circular(2),
+                  const Gap(4),
+                  Text(
+                    state.order!.nextActionDate?.toDDMMYYYY() ??
+                        'Aucune action prévue',
+                    style: textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  const Gap(16),
+                  Text(
+                    "Recontacter la boutique par mail",
+                    style: textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  const Gap(16),
+                  InkWell(
+                    onTap: () => viewModel.updateOrderPriority(order),
+                    child: MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: Tooltip(
+                        verticalOffset: 50,
+                        message: "Cliquez pour changer la priorité",
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 32,
+                            vertical: 16,
+                          ),
+                          decoration: BoxDecoration(
+                            color: colorScheme.surface,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                              color: colorScheme.outline.withValues(alpha: .2),
                             ),
                           ),
-                          const SizedBox(width: 16),
-                          Text(
-                            order.priority.name,
-                            style: textTheme.bodyMedium
-                                ?.copyWith(fontWeight: FontWeight.w400),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "Priorité",
+                                style: textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              const Gap(16),
+                              Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Container(
+                                    width: 10,
+                                    height: 10,
+                                    decoration: BoxDecoration(
+                                      color: order!.priority.color,
+                                      borderRadius: BorderRadius.circular(2),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 16),
+                                  Text(
+                                    order.priority.name,
+                                    style: textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w400,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ],
+                    ),
                   ),
-                ),
+                  const Gap(16),
+                  const HelpText(
+                    text: "Cliquer sur la priorité pour la changer",
+                  ),
+                ],
               ),
             ),
-          ),
-          const SizedBox(height: 16),
-          const HelpText(
-            text:
-                "Pour changer la priorité de la commande, veuillez cliquer sur le bouton ci-dessus",
-          ),
-        ],
+            SizedBox(
+              width: 75,
+              child: VerticalDivider(
+                color: colorScheme.outline.withValues(alpha: .2),
+                thickness: 1,
+                width: 60,
+              ),
+            ),
+            const Expanded(
+              flex: 3,
+              child: _ActionsHistory(),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -808,8 +819,7 @@ class _StatusRow extends ConsumerWidget {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: isPreviousStatus
-                                ? colorScheme.primary
-                                    .withValues(alpha: _opacity)
+                                ? colorScheme.outline
                                 : isCurrentStatus
                                     ? order.status.color
                                     : colorScheme.surface,

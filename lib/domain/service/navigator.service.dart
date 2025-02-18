@@ -14,6 +14,6 @@ class NavigatorService {
   }
 
   Future<void> navigateToHome() async {
-    appRouter.go('/');
+    appRouter.go('/main');
   }
 }

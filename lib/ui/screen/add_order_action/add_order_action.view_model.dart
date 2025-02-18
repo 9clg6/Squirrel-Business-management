@@ -1,5 +1,3 @@
-// ignore_for_file: avoid_public_notifier_properties
-import 'package:flutter/material.dart';
 import 'package:init/application/providers/initializer.dart';
 import 'package:init/domain/entities/action.entity.dart';
 import 'package:init/domain/service/dialog.service.dart';
@@ -12,7 +10,6 @@ part 'add_order_action.view_model.g.dart';
 @riverpod
 class AddOrderAction extends _$AddOrderAction {
   late final DialogService _dialogService;
-  final controller = TextEditingController();
 
   @override
   AddOrderActionViewState build() {
@@ -38,14 +35,14 @@ class AddOrderAction extends _$AddOrderAction {
   }
 
   void navigateBackWithResult() {
-    if (controller.text.isEmpty&& state.selectedDate == null) {
+    if (state.formKey.currentState?.validate() == false) {
       return;
     }
 
     navigateBack(
       result: OrderAction(
         date: state.selectedDate!,
-        description: controller.text,
+        description: state.controller.text,
       ),
     );
   }

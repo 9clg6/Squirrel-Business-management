@@ -15,8 +15,10 @@ import 'package:init/ui/screen/todo/todo.screen.dart';
 import 'package:init/ui/widgets/custom_app_bar.dart';
 import 'package:init/ui/widgets/custom_side_bar.dart';
 
-final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
-final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
+final GlobalKey<NavigatorState> rootNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> shellNavigatorKey =
+    GlobalKey<NavigatorState>(debugLabel: 'shell');
 
 String? _authRedirect(BuildContext context, GoRouterState state) {
   final bool isAuthenticated = injector<AuthService>().isUserAuthenticated;
@@ -24,7 +26,7 @@ String? _authRedirect(BuildContext context, GoRouterState state) {
 
   if (!isAuthenticated && !kDebugMode) {
     if (isAuthRoute) return null;
-    
+
     return '/auth';
   }
 
@@ -47,19 +49,19 @@ final GoRouter appRouter = GoRouter(
       name: 'auth',
       builder: (context, state) => const AuthScreen(),
     ),
-    
+
     // Routes protégées
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
         // Ne pas afficher la barre latérale sur la page d'authentification
         final bool isAuthRoute = state.uri.toString() == '/auth';
-        
+
         return Scaffold(
           appBar: !isAuthRoute ? const CustomAppBar() : null,
           backgroundColor: Theme.of(context).colorScheme.surfaceDim,
           body: Row(
             children: [
-              if (!isAuthRoute) 
+              if (!isAuthRoute)
                 CustomSideBar(
                   navigationShell: navigationShell,
                 ),

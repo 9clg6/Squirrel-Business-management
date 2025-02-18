@@ -6,7 +6,7 @@ part of 'add_order_action.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$addOrderActionHash() => r'3a9705669e89b439e8cc8e5bce963cbeb438074b';
+String _$addOrderActionHash() => r'fe6f8633beec0423cc3b276cf8bf3b8c3bc1895e';
 
 /// See also [AddOrderAction].
 @ProviderFor(AddOrderAction)

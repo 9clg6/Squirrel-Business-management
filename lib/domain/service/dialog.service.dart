@@ -40,17 +40,12 @@ class DialogService {
     return showCalendarDatePicker2Dialog(
       context: context,
       config: CalendarDatePicker2WithActionButtonsConfig(
-        firstDate: DateTime.now(),
-        lastDate: DateTime.now().add(const Duration(days: 365)),
         animateToDisplayedMonthDate: true,
         allowSameValueSelection: true,
         calendarType: CalendarDatePicker2Type.single,
         currentDate: DateTime.now(),
         dayBorderRadius: BorderRadius.circular(16),
         firstDayOfWeek: 1,
-        selectableDayPredicate: (DateTime date) {
-          return date.isBefore(DateTime.now().add(const Duration(days: 1)));
-        },
       ),
       value: [DateTime.now()],
       dialogSize: const Size(325, 400),

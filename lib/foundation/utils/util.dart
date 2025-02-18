@@ -19,3 +19,15 @@ WidgetStateProperty<Color?> computeDataRowColor(ColorScheme colorScheme) {
     return Colors.transparent;
   });
 }
+
+String? Function(String?)? validator(
+  String label, [
+  bool feminine = false,
+]) {
+  return (value) {
+    if (value == null || value.isEmpty) {
+      return 'Le ${feminine ? 'nom de la' : 'nom du'} $label est obligatoire';
+    }
+    return null;
+  };
+}
