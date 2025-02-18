@@ -33,11 +33,12 @@ class StatsScreenState extends ViewStateAbs {
       };
 
   /// Max Y
-  double get maxY =>
-      dataToShow.values
-          .reduce((max, value) => max > value ? max : value)
-          .toDouble() +
-      yInterval;
+  double get maxY => dataToShow.values.isNotEmpty
+      ? dataToShow.values
+              .reduce((max, value) => max > value ? max : value)
+              .toDouble() +
+          yInterval
+      : 5;
 
   /// Total
   double get total => orders.fold(0, (sum, order) => sum + order.price.toInt());

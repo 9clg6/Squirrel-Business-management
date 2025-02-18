@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:init/data/remote_data_source/authentication.data_source.dart';
@@ -31,11 +32,11 @@ class AuthenticationDataSourceImpl extends AuthenticationDataSource {
       final bool isValid = result.data['valid'] as bool? ?? false;
       return isValid;
     } catch (e) {
-      print('Erreur détaillée dans login: $e');
+      log('Erreur détaillée dans login: $e');
       if (e is FirebaseFunctionsException) {
-        print('Code Firebase: ${e.code}');
-        print('Message Firebase: ${e.message}');
-        print('Détails Firebase: ${e.details}');
+        log('Code Firebase: ${e.code}');
+        log('Message Firebase: ${e.message}');
+        log('Détails Firebase: ${e.details}');
       }
       return false;
     }

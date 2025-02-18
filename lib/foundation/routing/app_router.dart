@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:init/application/providers/initializer.dart';
@@ -17,11 +18,20 @@ import 'package:init/ui/widgets/custom_side_bar.dart';
 final GlobalKey<NavigatorState> parentNavigatorKey =
     GlobalKey<NavigatorState>();
 
-String? _authGuard(context, state) {
+String? _authGuard(BuildContext context, GoRouterState state) {
   final bool isAuthenticated = injector<AuthService>().isUserAuthenticated;
-  if (!isAuthenticated) {
-    return '/auth';
+  final isAuthRoute = state.matchedLocation == '/auth';
+
+  // Si l'utilisateur n'est pas authentifié et ce n'est pas en mode debug
+  if (!isAuthenticated && !kDebugMode) {
+    return isAuthRoute ? null : '/auth';
   }
+
+  // Si l'utilisateur est authentifié et essaie d'accéder à la page auth
+  if (isAuthenticated && isAuthRoute) {
+    return '/';
+  }
+
   return null;
 }
 
@@ -89,18 +99,18 @@ final GoRouter appRouter = GoRouter(
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/auth',
-              name: 'auth',
-              builder: (_, __) => const AuthScreen(),
+              path: '/stats',
+              name: 'stats',
+              builder: (_, __) => const StatsScreen(),
             ),
           ],
         ),
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/stats',
-              name: 'stats',
-              builder: (_, __) => const StatsScreen(),
+              path: '/auth',
+              name: 'auth',
+              builder: (_, __) => const AuthScreen(),
             ),
           ],
         ),

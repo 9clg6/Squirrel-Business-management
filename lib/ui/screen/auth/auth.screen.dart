@@ -50,22 +50,24 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               ),
             ),
             const Gap(20),
-            FilledButton(
-              onPressed: () {
-                if (_formKey.currentState!.validate()) {
-                  setState(() => _isLoading = true);
-                  ref
-                      .read(authProvider.notifier)
-                      .login(_licenseKeyController.text);
-                  setState(() => _isLoading = false);
-                }
-              },
-              child: _isLoading
-                  ? CircularProgressIndicator(
-                      color: Theme.of(context).colorScheme.primary,
-                    )
-                  : const Text('Connexion'),
-            ),
+            _isLoading
+                ? CircularProgressIndicator(
+                    backgroundColor: Colors.grey[300],
+                    strokeWidth: 4,
+                    strokeAlign: -2,
+                  )
+                : FilledButton(
+                    onPressed: () async {
+                      if (_formKey.currentState!.validate()) {
+                        setState(() => _isLoading = true);
+                        await ref
+                            .read(authProvider.notifier)
+                            .login(_licenseKeyController.text);
+                        setState(() => _isLoading = false);
+                      }
+                    },
+                    child: const Text('Connexion'),
+                  ),
             const Gap(42),
             const HelpText(
               text:
