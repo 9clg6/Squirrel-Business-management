@@ -15,129 +15,125 @@ import 'package:init/ui/screen/todo/todo.screen.dart';
 import 'package:init/ui/widgets/custom_app_bar.dart';
 import 'package:init/ui/widgets/custom_side_bar.dart';
 
-final GlobalKey<NavigatorState> parentNavigatorKey =
-    GlobalKey<NavigatorState>();
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+final GlobalKey<NavigatorState> shellNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'shell');
 
-String? _authGuard(BuildContext context, GoRouterState state) {
+String? _authRedirect(BuildContext context, GoRouterState state) {
   final bool isAuthenticated = injector<AuthService>().isUserAuthenticated;
-  final isAuthRoute = state.matchedLocation == '/auth';
+  final bool isAuthRoute = state.matchedLocation == '/auth';
 
-  // Si l'utilisateur n'est pas authentifié et ce n'est pas en mode debug
   if (!isAuthenticated && !kDebugMode) {
-    return isAuthRoute ? null : '/auth';
+    if (isAuthRoute) return null;
+    
+    return '/auth';
   }
 
-  // Si l'utilisateur est authentifié et essaie d'accéder à la page auth
   if (isAuthenticated && isAuthRoute) {
-    return '/';
+    return '/main';
   }
 
   return null;
 }
 
-bool _checkIfAuthRoute(String location) {
-  return location.startsWith('/auth');
-}
-
 final GoRouter appRouter = GoRouter(
   debugLogDiagnostics: true,
-  navigatorKey: parentNavigatorKey,
-  redirect: _authGuard,
+  navigatorKey: rootNavigatorKey,
+  initialLocation: '/main',
+  redirect: _authRedirect,
   routes: [
-    StatefulShellRoute(
-      parentNavigatorKey: parentNavigatorKey,
-      builder: (_, __, navigationShell) => navigationShell,
-      navigatorContainerBuilder: (
-        _,
-        StatefulNavigationShell navigationShell,
-        List<Widget> children,
-      ) {
-        if (children.isEmpty) {
-          return const SizedBox();
-        }
+    // Route d'authentification
+    GoRoute(
+      path: '/auth',
+      name: 'auth',
+      builder: (context, state) => const AuthScreen(),
+    ),
+    
+    // Routes protégées
+    StatefulShellRoute.indexedStack(
+      builder: (context, state, navigationShell) {
+        // Ne pas afficher la barre latérale sur la page d'authentification
+        final bool isAuthRoute = state.uri.toString() == '/auth';
+        
         return Scaffold(
-          appBar: !_checkIfAuthRoute(
-                  navigationShell.shellRouteContext.routerState.matchedLocation)
-              ? const CustomAppBar()
-              : null,
+          appBar: !isAuthRoute ? const CustomAppBar() : null,
           body: Row(
             children: [
-              if (!_checkIfAuthRoute(navigationShell
-                  .shellRouteContext.routerState.matchedLocation))
-                CustomSideBar(navigationShell: navigationShell),
-              Expanded(child: children[navigationShell.currentIndex]),
+              if (!isAuthRoute) 
+                CustomSideBar(
+                  navigationShell: navigationShell,
+                ),
+              Expanded(child: navigationShell),
             ],
           ),
         );
       },
       branches: [
+        // Branche 0 - Accueil
         StatefulShellBranch(
           routes: [
             GoRoute(
-              path: '/',
+              path: '/main',
               name: 'main',
-              builder: (_, __) => const MainScreen(),
-            ),
-            GoRoute(
-              path: '/order-details/:orderId',
-              name: 'order-details',
-              builder: (_, state) => OrderDetailsScreen(
-                order: state.extra! as Order,
-              ),
+              builder: (context, state) => const MainScreen(),
+              routes: [
+                GoRoute(
+                  path: 'order-details/:orderId',
+                  name: 'order-details',
+                  builder: (context, state) => OrderDetailsScreen(
+                    order: state.extra! as Order,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
+        // Branche 1 - Todo
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/todo',
               name: 'todo',
-              builder: (_, __) => const TodoScreen(),
+              builder: (context, state) => const TodoScreen(),
             ),
           ],
         ),
+        // Branche 2 - Stats
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/stats',
               name: 'stats',
-              builder: (_, __) => const StatsScreen(),
+              builder: (context, state) => const StatsScreen(),
             ),
           ],
         ),
-        StatefulShellBranch(
-          routes: [
-            GoRoute(
-              path: '/auth',
-              name: 'auth',
-              builder: (_, __) => const AuthScreen(),
-            ),
-          ],
-        ),
+        // Branche 3 - Planner
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/planner',
               name: 'planner',
-              builder: (_, __) => const PlannerScreen(),
+              builder: (context, state) => const PlannerScreen(),
             ),
           ],
         ),
+        // Branche 4 - Clients
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/clients',
               name: 'clients',
-              builder: (_, __) => const ClientsScreen(),
+              builder: (context, state) => const ClientsScreen(),
             ),
           ],
         ),
+        // Branche 5 - History
         StatefulShellBranch(
           routes: [
             GoRoute(
               path: '/history',
               name: 'history',
-              builder: (_, __) => const HistoryScreen(),
+              builder: (context, state) => const HistoryScreen(),
             ),
           ],
         ),

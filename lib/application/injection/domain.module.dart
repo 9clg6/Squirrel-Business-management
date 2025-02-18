@@ -28,7 +28,7 @@ abstract class DomainModule {
 
   /// Provide the navigatorKey
   @singleton
-  GlobalKey<NavigatorState> provideNavigatorKey() => parentNavigatorKey;
+  GlobalKey<NavigatorState> provideNavigatorKey() => rootNavigatorKey;
 
   ///
   @injectable
