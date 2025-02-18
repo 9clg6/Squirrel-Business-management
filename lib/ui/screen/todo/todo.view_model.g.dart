@@ -6,7 +6,7 @@ part of 'todo.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$todoViewModelHash() => r'810c78a67ac76c61413e61abdb71ec0dbb9bc9d0';
+String _$todoViewModelHash() => r'fa47783058e160d0abba31e934918bc994b95a3d';
 
 ///
 /// [TodoViewModel]

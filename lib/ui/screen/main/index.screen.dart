@@ -253,160 +253,159 @@ class _OrdersList extends ConsumerWidget {
                     ),
                   )
                 : DataTable(
-                  columnSpacing: 46,
-                  border: TableBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  dataRowColor: computeDataRowColor(colorScheme),
-                  dataTextStyle: textTheme.bodyMedium?.copyWith(
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  headingTextStyle: textTheme.titleMedium,
-                  showCheckboxColumn: state.orderState.showComboBox,
-                  horizontalMargin: 12,
-                  dividerThickness: .5,
-                  onSelectAll: (_) {
-                    viewModel.selectAll();
-                  },
-                  sortColumnIndex: state.orderState.sortColumnIndex,
-                  sortAscending: state.orderState.sortAscending,
-                  columns: Headers.values
-                      .map(
-                        (e) => DataColumn(
-                          label: TextVariant(
-                            e.label,
-                            variantType: TextVariantType.bodyMedium,
+                    columnSpacing: 46,
+                    border: TableBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                    dataRowColor: computeDataRowColor(colorScheme),
+                    dataTextStyle: textTheme.bodyMedium?.copyWith(
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    headingTextStyle: textTheme.titleMedium,
+                    showCheckboxColumn: state.orderState.showComboBox,
+                    horizontalMargin: 12,
+                    dividerThickness: .5,
+                    onSelectAll: (_) {
+                      viewModel.selectAll();
+                    },
+                    sortColumnIndex: state.orderState.sortColumnIndex,
+                    sortAscending: state.orderState.sortAscending,
+                    columns: Headers.values
+                        .map(
+                          (e) => DataColumn(
+                            label: TextVariant(
+                              e.label,
+                              variantType: TextVariantType.bodyMedium,
+                            ),
+                            numeric: e.isNumeric,
+                            headingRowAlignment: MainAxisAlignment.center,
+                            onSort: viewModel.sortOrders,
                           ),
-                          numeric: e.isNumeric,
-                          headingRowAlignment: MainAxisAlignment.center,
-                          onSort: viewModel.sortOrders,
-                        ),
-                      )
-                      .toList(),
-                  rows: state.orderState.orders
-                      .where((order) => ![
-                            OrderStatus.canceled,
-                            OrderStatus.failed,
-                            OrderStatus.finished,
-                          ].contains(order.status))
-                      .map((order) {
-                    return DataRow(
-                      selected:
-                          state.orderState.selectedOrders.contains(order),
-                      onLongPress: () => viewModel.selectOrder(order),
-                      onSelectChanged: (bool? value) {
-                        if (state.orderState.showComboBox) {
-                          viewModel.selectOrder(order);
-                        } else {
-                          if (context.mounted) {
-                            context.pushNamed(
-                              'order-details',
-                              pathParameters: {'orderId': order.id},
-                              extra: order,
-                            );
+                        )
+                        .toList(),
+                    rows: state.orderState.orders
+                        .where((order) => ![
+                              OrderStatus.canceled,
+                              OrderStatus.failed,
+                              OrderStatus.finished,
+                            ].contains(order.status))
+                        .map((order) {
+                      return DataRow(
+                        selected:
+                            state.orderState.selectedOrders.contains(order),
+                        onLongPress: () => viewModel.selectOrder(order),
+                        onSelectChanged: (bool? value) {
+                          if (state.orderState.showComboBox) {
+                            viewModel.selectOrder(order);
+                          } else {
+                            if (context.mounted) {
+                              context.pushNamed(
+                                'order-details',
+                                pathParameters: {'orderId': order.id},
+                                extra: order,
+                              );
+                            }
                           }
-                        }
-                      },
-                      cells: [
-                        DataCell(
-                          Hero(
-                            tag: 'order-${order.id}',
-                            child: Center(
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 8),
-                                child: TextVariant(
-                                  order.clientContact,
-                                  variantType: TextVariantType.bodyMedium,
+                        },
+                        cells: [
+                          DataCell(
+                            Hero(
+                              tag: 'order-${order.id}',
+                              child: Center(
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 8),
+                                  child: TextVariant(
+                                    order.clientContact,
+                                    variantType: TextVariantType.bodyMedium,
+                                  ),
                                 ),
                               ),
                             ),
                           ),
-                        ),
-                        DataCell(
-                          Center(
-                            child: StatusCard(
-                              status: order.status,
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          Center(
-                            child: TextVariant(
-                              order.shopName,
-                              variantType: TextVariantType.bodyMedium,
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          Center(
-                            child: TextVariant(
-                              order.startDate.toDDMMYYYY(),
-                              variantType: TextVariantType.bodyMedium,
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          Center(
-                            child: TextVariant(
-                              order.endDate?.toDDMMYYYY() ?? "",
-                              variantType: TextVariantType.bodyMedium,
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          Center(
-                            child: TextVariant(
-                              "${order.price}€",
-                              variantType: TextVariantType.bodyMedium,
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          Center(
-                            child: TextVariant(
-                              "${order.commission}€",
-                              variantType: TextVariantType.bodyMedium,
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          Center(
-                            child: IconButton(
-                              onPressed: () {
-                                if (context.mounted) {
-                                  context.pushNamed(
-                                    'order-details',
-                                    pathParameters: {'orderId': order.id},
-                                    extra: order,
-                                  );
-                                }
-                              },
-                              icon: const Icon(Icons.open_in_new),
-                              tooltip: "Ouvrir",
-                            ),
-                          ),
-                        ),
-                        DataCell(
-                          Center(
-                            child: IconButton(
-                              onPressed: () {
-                                viewModel.pinOrder(order);
-                              },
-                              icon: Icon(
-                                state.orderState.pinnedOrders
-                                        .contains(order)
-                                    ? Icons.push_pin
-                                    : Icons.push_pin_outlined,
+                          DataCell(
+                            Center(
+                              child: StatusCard(
+                                status: order.status,
                               ),
-                              tooltip: "Épingler",
                             ),
                           ),
-                        ),
-                      ],
-                    );
-                  }).toList(),
-                ),
+                          DataCell(
+                            Center(
+                              child: TextVariant(
+                                order.shopName,
+                                variantType: TextVariantType.bodyMedium,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: TextVariant(
+                                order.startDate.toDDMMYYYY(),
+                                variantType: TextVariantType.bodyMedium,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: TextVariant(
+                                order.endDate?.toDDMMYYYY() ?? "",
+                                variantType: TextVariantType.bodyMedium,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: TextVariant(
+                                "${order.price}€",
+                                variantType: TextVariantType.bodyMedium,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: TextVariant(
+                                "${order.commission}€",
+                                variantType: TextVariantType.bodyMedium,
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: IconButton(
+                                onPressed: () {
+                                  if (context.mounted) {
+                                    context.pushNamed(
+                                      'order-details',
+                                      pathParameters: {'orderId': order.id},
+                                      extra: order,
+                                    );
+                                  }
+                                },
+                                icon: const Icon(Icons.open_in_new),
+                                tooltip: "Ouvrir",
+                              ),
+                            ),
+                          ),
+                          DataCell(
+                            Center(
+                              child: IconButton(
+                                onPressed: () {
+                                  viewModel.pinOrder(order);
+                                },
+                                icon: Icon(
+                                  state.orderState.pinnedOrders.contains(order)
+                                      ? Icons.push_pin
+                                      : Icons.push_pin_outlined,
+                                ),
+                                tooltip: "Épingler",
+                              ),
+                            ),
+                          ),
+                        ],
+                      );
+                    }).toList(),
+                  ),
           ),
         ],
       ),

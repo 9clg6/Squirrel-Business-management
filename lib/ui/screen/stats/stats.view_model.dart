@@ -19,40 +19,23 @@ class StatsViewModel extends _$StatsViewModel {
   /// Dialog service
   late final DialogService _dialogService;
 
-  /// Constructor
-  ///
-  factory StatsViewModel() {
-    return StatsViewModel._();
-  }
-
-  /// Private constructor
-  ///
-  StatsViewModel._() {
-    _orderService = injector<OrderService>();
-    _dialogService = injector<DialogService>();
-    init();
-  }
-
   /// Build
   ///
   @override
-  StatsScreenState build() => StatsScreenState.initial();
+  StatsScreenState build() {
+    _orderService = injector<OrderService>();
+    _dialogService = injector<DialogService>();
 
-  /// Init
-  ///
-  Future<void> init() async {
-    _orderService.orderState.addListener(
-      () {
-        state = state.copyWith(orders: _orderService.orderState.value.allOrder);
-      },
+    state = StatsScreenState.initial().copyWith(
+      loading: false,
+      orders: _orderService.orderState.allOrder,
     );
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      state = state.copyWith(
-        loading: false,
-        orders: _orderService.orderState.value.allOrder,
-      );
+    _orderService.addListener((s) {
+      state = state.copyWith(orders: s.allOrder);
     });
+
+    return state;
   }
 
   /// Change hovered shop

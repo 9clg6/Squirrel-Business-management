@@ -42,15 +42,15 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Init
   ///
   Future<void> init({required Order o}) async {
-    _orderService.orderState.addListener(
-      () {
-        final order = _orderService.orderState.value.allOrder.firstWhereOrNull(
-          (e) => e.id == o.id,
-        );
-        if (order == null) return;
+    _orderService.addListener((s) {
+      final order = s.allOrder.firstWhereOrNull(
+        (e) => e.id == o.id,
+      );
+      if (order == null) return;
+      WidgetsBinding.instance.addPostFrameCallback((_) {
         state = state.copyWith(order: order);
-      },
-    );
+      });
+    });
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(

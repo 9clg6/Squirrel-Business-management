@@ -37,16 +37,13 @@ class TodoViewModel extends _$TodoViewModel {
   ///
   @override
   TodoScreenState build() {
-    _orderService.orderState.addListener(() {
-      state = TodoScreenState(
-        false,
-        _orderService.orderState.value,
-      );
+    _orderService.addListener((s) {
+      state = TodoScreenState(false, s);
     });
 
     return TodoScreenState(
       false,
-      _orderService.orderState.value,
+      _orderService.orderState,
     );
   }
 

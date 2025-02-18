@@ -113,13 +113,13 @@ class StatsScreenState extends ViewStateAbs {
   ///
   /// Constructor
   ///
-  StatsScreenState(
-    this.loading,
-    this.orders,
-    this.hoveredShop,
-    this.dateRange,
-    this.chartType,
-  );
+  StatsScreenState({
+    required this.loading,
+    required this.orders,
+    required this.hoveredShop,
+    required this.dateRange,
+    required this.chartType,
+  });
 
   ///
   /// Initial state

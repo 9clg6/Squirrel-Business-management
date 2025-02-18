@@ -56,6 +56,7 @@ final GoRouter appRouter = GoRouter(
         
         return Scaffold(
           appBar: !isAuthRoute ? const CustomAppBar() : null,
+          backgroundColor: Theme.of(context).colorScheme.surfaceDim,
           body: Row(
             children: [
               if (!isAuthRoute) 

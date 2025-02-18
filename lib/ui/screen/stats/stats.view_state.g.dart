@@ -71,23 +71,23 @@ class _$StatsScreenStateCWProxyImpl implements _$StatsScreenStateCWProxy {
     Object? chartType = const $CopyWithPlaceholder(),
   }) {
     return StatsScreenState(
-      loading == const $CopyWithPlaceholder() || loading == null
+      loading: loading == const $CopyWithPlaceholder() || loading == null
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
           : loading as bool,
-      orders == const $CopyWithPlaceholder() || orders == null
+      orders: orders == const $CopyWithPlaceholder() || orders == null
           ? _value.orders
           // ignore: cast_nullable_to_non_nullable
           : orders as List<Order>,
-      hoveredShop == const $CopyWithPlaceholder()
+      hoveredShop: hoveredShop == const $CopyWithPlaceholder()
           ? _value.hoveredShop
           // ignore: cast_nullable_to_non_nullable
           : hoveredShop as String?,
-      dateRange == const $CopyWithPlaceholder() || dateRange == null
+      dateRange: dateRange == const $CopyWithPlaceholder() || dateRange == null
           ? _value.dateRange
           // ignore: cast_nullable_to_non_nullable
           : dateRange as DateTimeRange,
-      chartType == const $CopyWithPlaceholder() || chartType == null
+      chartType: chartType == const $CopyWithPlaceholder() || chartType == null
           ? _value.chartType
           // ignore: cast_nullable_to_non_nullable
           : chartType as ChartType,

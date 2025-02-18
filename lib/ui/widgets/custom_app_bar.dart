@@ -10,7 +10,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// Build the app bar
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return AppBar(
+      elevation: 0,
       leadingWidth: 200,
       leading: const Padding(
         padding: EdgeInsets.only(left: 20),
@@ -23,14 +25,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      foregroundColor: Theme.of(context).colorScheme.onSurface,
+      backgroundColor: colorScheme.surface,
+      surfaceTintColor: Colors.transparent,
+      foregroundColor: colorScheme.onSurface,
       actions: [
         Text(
           "Expire dans 30 jours",
           style: TextStyle(
             fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: colorScheme.onSurface,
             fontWeight: FontWeight.w500,
           ),
         ),
@@ -39,7 +42,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           const Uuid().v4(),
           style: TextStyle(
             fontSize: 12,
-            color: Theme.of(context).colorScheme.onSurface,
+            color: colorScheme.onSurface,
           ),
         ),
         const SizedBox(width: 10),

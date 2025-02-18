@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:init/domain/entities/action.entity.dart';
 import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/domain/state/order.state.dart';
@@ -7,14 +7,13 @@ import 'package:init/foundation/enums/ordrer_status.enum.dart';
 import 'package:init/foundation/enums/priority.enum.dart';
 
 /// [OrderService]
-class OrderService {
-  /// Order state
-  final ValueNotifier<OrderState> orderState;
+class OrderService extends StateNotifier<OrderState> {
+  OrderState get orderState => state;
 
   /// Public constructor
   ///
   OrderService()
-      : orderState = ValueNotifier(
+      : super(
           OrderState.initial().copyWith(
             orders: [
               Order(
@@ -75,13 +74,11 @@ class OrderService {
 
   /// Méthode utilitaire pour trouver un ordre et déterminer s'il est épinglé
   (int, bool) _findOrder(Order order) {
-    var indexOrder =
-        orderState.value.orders.indexWhere((o) => o.id == order.id);
+    var indexOrder = state.orders.indexWhere((o) => o.id == order.id);
     var isPinned = false;
 
     if (indexOrder == -1) {
-      indexOrder =
-          orderState.value.pinnedOrders.indexWhere((o) => o.id == order.id);
+      indexOrder = state.pinnedOrders.indexWhere((o) => o.id == order.id);
       isPinned = true;
     }
 
@@ -97,24 +94,23 @@ class OrderService {
     if (indexOrder == -1) return;
 
     if (isPinned) {
-      final updatedPinnedOrders =
-          List<Order>.from(orderState.value.pinnedOrders)
-            ..replaceRange(
-              indexOrder,
-              indexOrder + 1,
-              [updatedOrder],
-            );
-      orderState.value = orderState.value.copyWith(
-        pinnedOrders: updatedPinnedOrders,
-      );
-    } else {
-      final updatedOrders = List<Order>.from(orderState.value.orders)
+      final updatedPinnedOrders = List<Order>.from(state.pinnedOrders)
         ..replaceRange(
           indexOrder,
           indexOrder + 1,
           [updatedOrder],
         );
-      orderState.value = orderState.value.copyWith(
+      state = state.copyWith(
+        pinnedOrders: updatedPinnedOrders,
+      );
+    } else {
+      final updatedOrders = List<Order>.from(state.orders)
+        ..replaceRange(
+          indexOrder,
+          indexOrder + 1,
+          [updatedOrder],
+        );
+      state = state.copyWith(
         orders: updatedOrders,
       );
     }
@@ -131,16 +127,16 @@ class OrderService {
 
   /// Pin order
   void pinOrder(Order order) {
-    if (orderState.value.pinnedOrders.contains(order)) {
+    if (state.pinnedOrders.contains(order)) {
       unpinOrder(order);
     } else {
-      orderState.value = orderState.value.copyWith(
+      state = state.copyWith(
         pinnedOrders: [
-          ...orderState.value.pinnedOrders,
+          ...state.pinnedOrders,
           order,
         ],
         orders: [
-          ...orderState.value.orders.where((e) => e != order),
+          ...state.orders.where((e) => e != order),
         ],
       );
     }
@@ -149,11 +145,10 @@ class OrderService {
   /// Unpin order
   ///
   void unpinOrder(Order order) {
-    orderState.value = orderState.value.copyWith(
-      pinnedOrders:
-          orderState.value.pinnedOrders.where((e) => e != order).toList(),
+    state = state.copyWith(
+      pinnedOrders: state.pinnedOrders.where((e) => e != order).toList(),
       orders: [
-        ...orderState.value.orders,
+        ...state.orders,
         order,
       ],
     );
@@ -163,33 +158,32 @@ class OrderService {
   ///
   void selectOrder(Order? order) {
     if (order == null) return;
-    if (orderState.value.showComboBox == false) {
-      orderState.value = orderState.value.copyWith(
+    if (state.showComboBox == false) {
+      state = state.copyWith(
         showComboBox: true,
       );
     }
-    if (orderState.value.selectedOrders.contains(order)) {
-      orderState.value = orderState.value.copyWith(
+    if (state.selectedOrders.contains(order)) {
+      state = state.copyWith(
         selectedOrders: [
-          ...orderState.value.selectedOrders.where(
+          ...state.selectedOrders.where(
             (element) => element != order,
           )
         ],
       );
     } else {
-      orderState.value = orderState.value.copyWith(
-        selectedOrders: [...orderState.value.selectedOrders, order],
+      state = state.copyWith(
+        selectedOrders: [...state.selectedOrders, order],
       );
     }
   }
 
   void selectAll() {
-    if (orderState.value.selectedOrders.length ==
-        orderState.value.orders.length) {
+    if (state.selectedOrders.length == state.orders.length) {
       unselectOrder();
     } else {
-      orderState.value = orderState.value.copyWith(
-        selectedOrders: orderState.value.orders,
+      state = state.copyWith(
+        selectedOrders: state.orders,
       );
     }
   }
@@ -198,16 +192,16 @@ class OrderService {
   /// Unselect order
   ///
   void unselectOrder() {
-    orderState.value = orderState.value.copyWith(
+    state = state.copyWith(
       selectedOrders: [],
     );
   }
 
   void deleteSelectedOrders() {
-    orderState.value = orderState.value.copyWith(
+    state = state.copyWith(
       orders: [
-        ...orderState.value.orders.where(
-          (e) => !orderState.value.selectedOrders.contains(e),
+        ...state.orders.where(
+          (e) => !state.selectedOrders.contains(e),
         ),
       ],
       selectedOrders: [],
@@ -215,12 +209,12 @@ class OrderService {
   }
 
   void showComboBox() {
-    final newComboBoxState = !orderState.value.showComboBox;
-    orderState.value = orderState.value.copyWith(
+    final newComboBoxState = !state.showComboBox;
+    state = state.copyWith(
       showComboBox: newComboBoxState,
     );
     if (!newComboBoxState) {
-      orderState.value = orderState.value.copyWith(
+      state = state.copyWith(
         selectedOrders: [],
       );
     }
@@ -230,7 +224,7 @@ class OrderService {
   ///
   void sortOrders(int columnIndex, bool ascending) {
     final Headers selectedHeader = Headers.values[columnIndex];
-    final orders = orderState.value.orders;
+    final orders = state.orders;
     orders.sort((a, b) {
       switch (selectedHeader) {
         case Headers.client:
@@ -265,7 +259,7 @@ class OrderService {
           return 0;
       }
     });
-    orderState.value = orderState.value.copyWith(
+    state = state.copyWith(
       orders: orders,
       sortColumnIndex: columnIndex,
       sortAscending: ascending,
@@ -317,9 +311,9 @@ class OrderService {
     final (indexOrder, isPinned) = _findOrder(order);
     if (indexOrder == -1) return;
 
-    orderState.value = orderState.value.copyWith(
+    state = state.copyWith(
       orders: [
-        ...orderState.value.orders.where((e) => e != order),
+        ...state.orders.where((e) => e != order),
       ],
     );
   }
@@ -339,11 +333,11 @@ class OrderService {
 
   /// Méthode utilitaire pour trouver un ordre par son ID
   (int, bool) _findOrderById(String id) {
-    var indexOrder = orderState.value.orders.indexWhere((o) => o.id == id);
+    var indexOrder = state.orders.indexWhere((o) => o.id == id);
     var isPinned = false;
 
     if (indexOrder == -1) {
-      indexOrder = orderState.value.pinnedOrders.indexWhere((o) => o.id == id);
+      indexOrder = state.pinnedOrders.indexWhere((o) => o.id == id);
       isPinned = true;
     }
 
@@ -353,8 +347,8 @@ class OrderService {
   /// Add order
   ///
   void addOrder(Order order) {
-    orderState.value = orderState.value.copyWith(
-      orders: [...orderState.value.orders, order],
+    state = state.copyWith(
+      orders: [...state.orders, order],
     );
   }
 }

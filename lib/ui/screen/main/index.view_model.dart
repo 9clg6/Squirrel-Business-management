@@ -17,6 +17,8 @@ class Index extends _$Index {
   late final NavigatorService _navigatorService;
   late final DialogService _dialogService;
 
+  
+
   /// Constructor
   ///
   Index() {
@@ -29,14 +31,14 @@ class Index extends _$Index {
   ///
   @override
   IndexScreenState build() {
-    _orderService.orderState.addListener(() {
-      state = IndexScreenState(
-        false,
-        _orderService.orderState.value,
-      );
+    _orderService.addListener((s) {
+      state = IndexScreenState(false, s);
     });
 
-    return IndexScreenState(false, _orderService.orderState.value);
+    return IndexScreenState(
+      false,
+      _orderService.orderState,
+    );
   }
 
   /// Pin order
