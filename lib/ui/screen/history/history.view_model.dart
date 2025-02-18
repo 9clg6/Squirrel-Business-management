@@ -1,35 +1,42 @@
+import 'package:init/application/providers/initializer.dart';
+import 'package:init/domain/service/order.service.dart';
+import 'package:init/domain/state/order.state.dart';
+import 'package:init/foundation/enums/ordrer_status.enum.dart';
 import 'package:init/ui/screen/history/history.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'history.view_model.g.dart';
 
 ///
-/// [HistoryViewModel]
+/// [History]
 ///
 @riverpod
-class HistoryViewModel extends _$HistoryViewModel {
-  ///
-  /// Constructor
-  ///
-  factory HistoryViewModel() {
-    return HistoryViewModel._();
-  }
+class History extends _$History {
+  late OrderService _orderService;
 
-  ///
-  /// Private constructor
-  ///
-  HistoryViewModel._() {
-    init();
-  }
-
-  ///
   /// Build
   ///
   @override
-  HistoryScreenState build() => HistoryScreenState.initial();
+  HistoryState build() {
+    _orderService = injector<OrderService>();
 
-  ///
-  /// Init
-  ///
-  Future<void> init() async {}
+    _orderService.addListener((s) {
+      state = _mapOrderStateToHistoryState(s);
+    });
+
+    return _mapOrderStateToHistoryState(_orderService.orderState);
+  }
+
+  HistoryState _mapOrderStateToHistoryState(OrderState orderState) {
+    return HistoryState(
+      loading: false,
+      orders: orderState.allOrder
+          .where((order) => [
+                OrderStatus.canceled,
+                OrderStatus.failed,
+                OrderStatus.finished,
+              ].contains(order.status))
+          .toList(),
+    );
+  }
 }

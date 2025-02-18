@@ -1,25 +1,34 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/ui/abstraction/view_state.abs.dart';
 
 part 'history.view_state.g.dart';
 
 ///
-/// [HistoryScreenState]
+/// [HistoryState]
 ///
 @CopyWith()
-class HistoryScreenState extends ViewStateAbs {
+class HistoryState extends ViewStateAbs {
   /// Loading state
   final bool? loading;
+
+  /// Orders
+  final List<Order> orders;
 
   ///
   /// Constructor
   ///
-  HistoryScreenState(this.loading);
+  HistoryState({
+    required this.loading,
+    required this.orders,
+  });
 
   ///
   /// Initial state
   ///
-  HistoryScreenState.initial() : loading = true;
+  HistoryState.initial()
+      : loading = true,
+        orders = <Order>[];
 
   ///
   /// Get props
@@ -27,5 +36,6 @@ class HistoryScreenState extends ViewStateAbs {
   @override
   List<Object?> get props => <Object?>[
         loading,
+        orders,
       ];
 }
