@@ -611,12 +611,18 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
     final colorScheme = Theme.of(context).colorScheme;
 
     return MouseRegion(
-      cursor: SystemMouseCursors.click,
+      cursor: state.orderState.nextAction != null
+          ? SystemMouseCursors.click
+          : SystemMouseCursors.basic,
       onExit: (_) {
-        setState(() => isHover = false);
+        if (state.orderState.nextAction != null) {
+          setState(() => isHover = false);
+        }
       },
       onHover: (_) {
-        setState(() => isHover = true);
+        if (state.orderState.nextAction != null) {
+          setState(() => isHover = true);
+        }
       },
       child: GestureDetector(
         onTap: () {
@@ -644,15 +650,23 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
                 color: isHover ? colorScheme.onPrimary : colorScheme.onSurface,
               ),
               const SizedBox(height: 10),
-              TextVariant(
-                state.orderState.nextAction?.keys.first.actions.first.date
-                        .toDDMMYYYY() ??
-                    "",
-                variantType: TextVariantType.titleLarge,
-                color: isHover ? colorScheme.onPrimary : colorScheme.onSurface,
-              ),
+              if (state.orderState.nextAction != null)
+                TextVariant(
+                  state.orderState.nextAction!.keys.firstOrNull?.actions.firstOrNull?.date
+                          .toDDMMYYYY() ??
+                      "",
+                  variantType: TextVariantType.titleLarge,
+                  color: isHover ? colorScheme.onPrimary : colorScheme.onSurface,
+                )
+              else
+                TextVariant(
+                  "Aucune action à venir",
+                  variantType: TextVariantType.bodyMedium,
+                  color: colorScheme.onSurface,
+                ),
               const SizedBox(height: 10),
-              const HelpText(text: "Cliquer pour voir les détails"),
+              if (state.orderState.nextAction != null)
+                const HelpText(text: "Cliquer pour voir les détails"),
             ],
           ),
         ),

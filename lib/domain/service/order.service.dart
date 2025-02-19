@@ -1,4 +1,9 @@
+import 'dart:convert';
+import 'dart:developer';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:init/data/storage/hive_secure_storage.dart';
 import 'package:init/domain/entities/action.entity.dart';
 import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/domain/state/order.state.dart';
@@ -8,69 +13,41 @@ import 'package:init/foundation/enums/priority.enum.dart';
 
 /// [OrderService]
 class OrderService extends StateNotifier<OrderState> {
+  final HiveSecureStorage hiveService;
+
   OrderState get orderState => state;
 
   /// Public constructor
   ///
-  OrderService()
-      : super(
-          OrderState.initial().copyWith(
-            orders: [
-              Order(
-                clientContact: 'Eric',
-                intermediaryContact: 'Intermediaire 2',
-                internalProcessingFee: 35,
-                trackId: '1234567890',
-                priority: Priority.normal,
-                startDate: DateTime(2025, 2, 12),
-                estimatedDuration: const Duration(days: 30),
-                shopName: 'Amazon',
-                price: 1500,
-                commission: 0,
-                status: OrderStatus.running,
-                method: 'La Poste',
-                actions: [
-                  OrderAction(
-                    date: DateTime(2025, 2, 5),
-                    description: "Envoi du produit",
-                  ),
-                  OrderAction(
-                    date: DateTime(2025, 2, 20),
-                    description: "Prise d'information auprès de la boutique",
-                  ),
-                ],
-              ),
-              Order(
-                clientContact: 'Pierre',
-                intermediaryContact: 'Intermediaire 1',
-                internalProcessingFee: 35,
-                trackId: '1234567890',
-                priority: Priority.high,
-                startDate: DateTime(2025, 2, 13),
-                estimatedDuration: const Duration(days: 30),
-                shopName: 'Zalando',
-                price: 800,
-                commission: 0,
-                status: OrderStatus.pending,
-                method: 'La Poste',
-                actions: [
-                  OrderAction(
-                    date: DateTime(2025, 2, 5),
-                    description: "Envoi du produit",
-                  ),
-                  OrderAction(
-                    date: DateTime(2025, 2, 10),
-                    description: "Prise d'information auprès de la boutique",
-                  ),
-                  OrderAction(
-                    date: DateTime(2025, 2, 20),
-                    description: "Prise d'information auprès de la boutique",
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
+  OrderService(this.hiveService) : super(OrderState.initial()) {
+    _loadOrders();
+    addListener(_save);
+  }
+
+  /// Load orders
+  ///
+  void _loadOrders() {
+    log('Loading orders');
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final String? o = await hiveService.get('orders');
+      if (o != null) {
+        final orders = jsonDecode(o) as List;
+        final ordersList = orders.map((e) => Order.fromJson(e)).toList();
+        state = state.copyWith(orders: ordersList);
+      }
+    });
+  }
+
+  /// Save orders
+  ///
+  void _save(OrderState os) {
+    log('Saving orders');
+    if (os.orders.isEmpty) return;
+    hiveService.set(
+      'orders',
+      jsonEncode(os.orders.map((e) => e.toJson()).toList()),
+    );
+  }
 
   /// Méthode utilitaire pour trouver un ordre et déterminer s'il est épinglé
   (int, bool) _findOrder(Order order) {

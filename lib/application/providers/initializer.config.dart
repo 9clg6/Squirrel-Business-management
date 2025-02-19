@@ -47,7 +47,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i558.FlutterSecureStorage>(() => domainModule.storage());
     gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
         () => domainModule.provideNavigatorKey());
-    gh.singleton<_i819.OrderService>(() => domainModule.orderService());
     gh.singleton<_i641.NavigatorService>(() => domainModule.navigatorService());
     gh.factory<_i784.AuthenticationDataSource>(
         () => dataModule.authenticationDataSourceImpl());
@@ -73,6 +72,8 @@ extension GetItInjectableX on _i174.GetIt {
         .preferencesLocalDataSourcesImpl(gh<_i323.HiveSecureStorage>()));
     gh.factory<_i333.PreferencesRepository>(() => dataModule
         .preferencesRepository(gh<_i88.PreferencesLocalDataSource>()));
+    gh.singleton<_i819.OrderService>(
+        () => domainModule.orderService(gh<_i323.HiveSecureStorage>()));
     gh.factory<_i168.GetThemeUseCase>(
         () => domainModule.getThemeUseCase(gh<_i333.PreferencesRepository>()));
     return this;

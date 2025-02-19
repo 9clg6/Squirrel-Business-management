@@ -62,7 +62,8 @@ abstract class DomainModule {
 
   /// Allow to inject [OrderService]
   @singleton
-  OrderService orderService() => OrderService();
+  OrderService orderService(HiveSecureStorage hiveService) =>
+      OrderService(hiveService);
 
   /// Allow to inject [DialogService]
   @singleton

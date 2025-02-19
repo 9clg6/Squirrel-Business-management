@@ -55,11 +55,27 @@ class OrderState with EquatableMixin {
   Map<Order, OrderAction?>? get nextAction {
     if (allOrder.isEmpty) return null;
 
-    final sortedOrders = List<Order>.from(allOrder)
-        .map((e) => {e: e.actions.firstOrNull})
-        .toSet();
+    final now = DateTime.now();
+    
+    // Créer une liste de paires ordre/action où l'action est future
+    final futureActions = allOrder.map((order) {
+      final nextAction = order.actions
+          .where((action) => action.date.isAfter(now))
+          .toList()
+        ..sort((a, b) => a.date.compareTo(b.date));
+      
+      return MapEntry(order, nextAction.firstOrNull);
+    }).where((entry) => entry.value != null);
 
-    return sortedOrders.first;
+    // Si aucune action future n'est trouvée
+    if (futureActions.isEmpty) return null;
+
+    // Retourner l'ordre avec l'action la plus proche
+    return Map.fromEntries([
+      futureActions.reduce((a, b) => 
+        a.value!.date.compareTo(b.value!.date) <= 0 ? a : b
+      )
+    ]);
   }
 
   @override

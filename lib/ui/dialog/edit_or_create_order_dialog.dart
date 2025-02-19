@@ -190,6 +190,10 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                     suffixText: "€",
                   ),
                   validator: validator('montant de la commande'),
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
                 ),
                 const Gap(32),
                 Column(

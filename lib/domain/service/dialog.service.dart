@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:init/domain/entities/action.entity.dart';
 import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/ui/dialog/confirmation_dialog.dart';
-import 'package:init/ui/dialog/edit_order_dialog.dart';
+import 'package:init/ui/dialog/edit_or_create_order_dialog.dart';
 import 'package:init/ui/dialog/use_conditions.dialog.dart';
 import 'package:init/ui/screen/add_order_action/add_order_action.screen.dart';
 import 'package:init/ui/widgets/text_variant.dart';
