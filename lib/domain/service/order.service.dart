@@ -26,7 +26,7 @@ class OrderService extends StateNotifier<OrderState> {
                 estimatedDuration: const Duration(days: 30),
                 shopName: 'Amazon',
                 price: 1500,
-                commissionRatio: .30,
+                commission: 0,
                 status: OrderStatus.running,
                 method: 'La Poste',
                 actions: [
@@ -50,7 +50,7 @@ class OrderService extends StateNotifier<OrderState> {
                 estimatedDuration: const Duration(days: 30),
                 shopName: 'Zalando',
                 price: 800,
-                commissionRatio: .30,
+                commission: 0,
                 status: OrderStatus.pending,
                 method: 'La Poste',
                 actions: [

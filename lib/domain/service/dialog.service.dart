@@ -84,7 +84,7 @@ class DialogService {
 
     return showDialog<Order>(
       context: context,
-      builder: (_) => EditOrderDialog(
+      builder: (_) => EditOrAddOrderDialog(
         order: order,
         isCreation: isCreation,
       ),

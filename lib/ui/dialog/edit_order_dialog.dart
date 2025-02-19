@@ -5,89 +5,103 @@ import 'package:init/domain/entities/order.entity.dart';
 import 'package:init/foundation/extensions/date_time.extension.dart';
 import 'package:init/foundation/routing/app_router.dart';
 import 'package:init/foundation/utils/util.dart';
+import 'package:init/ui/widgets/text_variant.dart';
 
-/// Edit order dialog
-///
-class EditOrderDialog extends StatelessWidget {
-  /// Form key
-  final GlobalKey<FormState> formKey;
+class EditOrAddOrderDialog extends StatefulWidget {
+  /// Is creation
+  final bool isCreation;
 
   /// Order
   final Order? order;
 
+  /// Constructor
+  const EditOrAddOrderDialog({
+    super.key,
+    this.isCreation = false,
+    this.order,
+  });
+
+  @override
+  State<EditOrAddOrderDialog> createState() => _EditOrAddOrderDialogState();
+}
+
+class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
+  /// Form key
+  late final GlobalKey<FormState> formKey;
+
+  /// Order
+  late final Order? order;
+
   /// Shop name controller
-  final TextEditingController shopNameController;
+  late final TextEditingController shopNameController;
 
   /// Order date controller
-  final TextEditingController orderDateController;
+  late final TextEditingController orderDateController;
 
   /// Order duration controller
-  final TextEditingController orderDurationController;
+  late final TextEditingController orderDurationController;
 
   /// Commission controller
-  final TextEditingController commissionController;
+  late final TextEditingController commissionController;
 
   /// Order amount controller
-  final TextEditingController orderAmountController;
+  late final TextEditingController orderAmountController;
 
   /// Order internal fees controller
-  final TextEditingController orderInternalFeesController;
+  late final TextEditingController orderInternalFeesController;
 
   /// Order track id controller
-  final TextEditingController trackIdController;
+  late final TextEditingController trackIdController;
 
   /// Order method controller
-  final TextEditingController methodController;
+  late final TextEditingController methodController;
 
   /// Order intermediary controller
-  final TextEditingController intermediaryController;
+  late final TextEditingController intermediaryController;
 
   /// Order client controller
-  final TextEditingController clientController;
+  late final TextEditingController clientController;
 
   /// Order comment controller
-  final TextEditingController commentController;
+  late final TextEditingController commentController;
 
   /// Is creation
-  final bool isCreation;
+  late final bool isCreation;
+
+  /// Is commission percentage
+  late bool isCommissionPercentage;
 
   /// Constructor
   ///
-  EditOrderDialog({
-    super.key,
-    this.order,
-    required this.isCreation,
-  })  : shopNameController = TextEditingController(text: order?.shopName),
-        orderDateController =
-            TextEditingController(text: order?.startDate.toDDMMYYYY()),
-        orderDurationController = TextEditingController(
-          text: "${order?.estimatedDuration.inDays}",
-        ),
-        commissionController = TextEditingController(
-          text: "${order?.commission}",
-        ),
-        orderAmountController = TextEditingController(
-          text: "${order?.price}",
-        ),
-        orderInternalFeesController = TextEditingController(
-          text: "${order?.internalProcessingFee}",
-        ),
-        trackIdController = TextEditingController(
-          text: order?.trackId,
-        ),
-        methodController = TextEditingController(
-          text: order?.method,
-        ),
-        intermediaryController = TextEditingController(
-          text: order?.intermediaryContact,
-        ),
-        clientController = TextEditingController(
-          text: order?.clientContact,
-        ),
-        commentController = TextEditingController(
-          text: order?.note,
-        ),
-        formKey = GlobalKey<FormState>();
+  _EditOrAddOrderDialogState();
+
+  @override
+  void initState() {
+    super.initState();
+    order = widget.order;
+    isCreation = widget.isCreation;
+    isCommissionPercentage = widget.order?.commissionRatio != null;
+    shopNameController = TextEditingController(text: widget.order?.shopName);
+    orderDateController =
+        TextEditingController(text: widget.order?.startDate.toDDMMYYYY());
+    orderDurationController = TextEditingController(
+        text: "${widget.order?.estimatedDuration.inDays}");
+    commissionController = TextEditingController(
+        text: widget.order?.commissionRatio != null
+            ? "${widget.order?.commissionRatio}"
+            : "${widget.order?.commission}");
+    orderAmountController =
+        TextEditingController(text: "${widget.order?.price}");
+    orderInternalFeesController =
+        TextEditingController(text: "${widget.order?.internalProcessingFee}");
+    trackIdController = TextEditingController(text: widget.order?.trackId);
+    methodController = TextEditingController(text: widget.order?.method);
+    intermediaryController =
+        TextEditingController(text: widget.order?.intermediaryContact);
+    clientController = TextEditingController(text: widget.order?.clientContact);
+    commentController = TextEditingController(text: widget.order?.note);
+    formKey = GlobalKey<FormState>();
+  }
 
   /// Build
   ///
@@ -178,36 +192,109 @@ class EditOrderDialog extends StatelessWidget {
                   validator: validator('montant de la commande'),
                 ),
                 const Gap(32),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Expanded(
-                      child: TextFormField(
-                        controller: commissionController,
-                        decoration: const InputDecoration(
-                          labelText: "Commission",
-                          suffixText: "€",
+                    Row(
+                      children: [
+                        Expanded(
+                          child: TextFormField(
+                            controller: commissionController,
+                            decoration: InputDecoration(
+                              labelText: "Commission",
+                              suffixText: isCommissionPercentage
+                                  ? "%"
+                                  : "€",
+                            ),
+                            validator: validator('commission', true),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                          ),
                         ),
-                        validator: validator('commission', true),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: TextFormField(
+                            controller: orderInternalFeesController,
+                            decoration: const InputDecoration(
+                              labelText: "Frais internes",
+                              suffixText: "€",
+                            ),
+                            validator: validator('frais internes'),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              FilteringTextInputFormatter.digitsOnly,
+                            ],
+                          ),
+                        ),
+                      ],
                     ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: TextFormField(
-                        controller: orderInternalFeesController,
-                        decoration: const InputDecoration(
-                          labelText: "Frais internes",
-                          suffixText: "€",
+                    const Gap(8),
+                    ToggleButtons(
+                      borderRadius: BorderRadius.circular(8),
+                      borderColor: colorScheme.outline,
+                      borderWidth: 1,
+                      fillColor: colorScheme.primary,
+                      selectedColor: colorScheme.onPrimary,
+                      isSelected: [
+                        isCommissionPercentage,
+                        !isCommissionPercentage,
+                      ],
+                      onPressed: (value) {
+                        setState(() {
+                          isCommissionPercentage = !isCommissionPercentage;
+                        });
+                      },
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (isCommissionPercentage)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 4),
+                                child: Icon(
+                                  Icons.check_circle,
+                                  color: colorScheme.surface,
+                                  size: 16,
+                                ),
+                              ),
+                            TextVariant(
+                              "Pourcentage",
+                              color: isCommissionPercentage
+                                  ? colorScheme.surface
+                                  : colorScheme.onSurface,
+                            ),
+                          ],
                         ),
-                        validator: validator('frais internes'),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
-                        ],
-                      ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            if (!isCommissionPercentage)
+                              Padding(
+                                padding: const EdgeInsets.only(right: 4),
+                                child: Icon(
+                                  Icons.check_circle,
+                                  color: colorScheme.surface,
+                                  size: 16,
+                                ),
+                              ),
+                            TextVariant(
+                              "Montant",
+                              color: isCommissionPercentage
+                                  ? colorScheme.onSurface
+                                  : colorScheme.surface,
+                            ),
+                          ],
+                        ),
+                      ].map((e) => Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 23),
+                            child: e,
+                          )).toList(),
                     ),
                   ],
                 ),
@@ -268,7 +355,7 @@ class EditOrderDialog extends StatelessWidget {
                         final price = double.tryParse(orderAmountController.text
                                 .replaceAll(' €', '')) ??
                             order?.price;
-                        final commission = double.tryParse(commissionController
+                        final commissionText = double.tryParse(commissionController
                                 .text
                                 .replaceAll(' €', '')) ??
                             order?.commission;
@@ -304,7 +391,12 @@ class EditOrderDialog extends StatelessWidget {
                                 days: duration ??
                                     order?.estimatedDuration.inDays ??
                                     0),
-                            commissionRatio: commission,
+                            commissionRatio: isCommissionPercentage
+                                ? commissionText
+                                : null,
+                            commission: isCommissionPercentage
+                                ? price! * commissionText! / 100
+                                : commissionText,
                             internalProcessingFee: internalFees,
                             trackId: trackIdController.text,
                             method: methodController.text,

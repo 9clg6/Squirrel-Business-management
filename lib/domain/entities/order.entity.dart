@@ -23,7 +23,8 @@ class Order with EquatableMixin, SerializableMixin {
   final Duration estimatedDuration;
   final String shopName;
   final double price;
-  final double commissionRatio;
+  final double? commissionRatio;
+  final double commission;
   final OrderStatus status;
   final String method;
   final String? note;
@@ -31,8 +32,6 @@ class Order with EquatableMixin, SerializableMixin {
   final List<OrderAction>? _actions;
   List<OrderAction> get actions =>
       (_actions ?? [])..sort((a, b) => b.date.compareTo(a.date));
-
-  double get commission => price * commissionRatio;
   double get margin => commission - internalProcessingFee;
   DateTime? get endDate => startDate.add(estimatedDuration);
   DateTime? get nextActionDate => actions.isNotEmpty
@@ -53,7 +52,8 @@ class Order with EquatableMixin, SerializableMixin {
     required this.estimatedDuration,
     required this.shopName,
     required this.price,
-    required this.commissionRatio,
+    this.commissionRatio,
+    required this.commission,
     required this.status,
     required this.method,
     this.note,
@@ -74,6 +74,7 @@ class Order with EquatableMixin, SerializableMixin {
         shopName: '',
         price: 0,
         commissionRatio: 0,
+        commission: 0,
         status: OrderStatus.pending,
         method: '',
         priority: Priority.normal,
@@ -92,21 +93,21 @@ class Order with EquatableMixin, SerializableMixin {
         id,
         clientContact,
         intermediaryContact,
-        internalProcessingFee,
-        trackId,
-        priority,
         startDate,
         estimatedDuration,
+        note,
+        actions,
+        status,
+        method,
+        priority,
+        internalProcessingFee,
+        trackId,
         shopName,
         price,
         commissionRatio,
-        status,
-        method,
-        note,
         commission,
         margin,
         endDate,
-        priority,
-        actions,
+        nextActionDate,
       ];
 }

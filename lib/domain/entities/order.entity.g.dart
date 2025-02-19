@@ -25,7 +25,9 @@ abstract class _$OrderCWProxy {
 
   Order price(double price);
 
-  Order commissionRatio(double commissionRatio);
+  Order commissionRatio(double? commissionRatio);
+
+  Order commission(double commission);
 
   Order status(OrderStatus status);
 
@@ -54,6 +56,7 @@ abstract class _$OrderCWProxy {
     String? shopName,
     double? price,
     double? commissionRatio,
+    double? commission,
     OrderStatus? status,
     String? method,
     String? note,
@@ -100,8 +103,11 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
   Order price(double price) => this(price: price);
 
   @override
-  Order commissionRatio(double commissionRatio) =>
+  Order commissionRatio(double? commissionRatio) =>
       this(commissionRatio: commissionRatio);
+
+  @override
+  Order commission(double commission) => this(commission: commission);
 
   @override
   Order status(OrderStatus status) => this(status: status);
@@ -137,6 +143,7 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
     Object? shopName = const $CopyWithPlaceholder(),
     Object? price = const $CopyWithPlaceholder(),
     Object? commissionRatio = const $CopyWithPlaceholder(),
+    Object? commission = const $CopyWithPlaceholder(),
     Object? status = const $CopyWithPlaceholder(),
     Object? method = const $CopyWithPlaceholder(),
     Object? note = const $CopyWithPlaceholder(),
@@ -186,11 +193,15 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
           ? _value.price
           // ignore: cast_nullable_to_non_nullable
           : price as double,
-      commissionRatio: commissionRatio == const $CopyWithPlaceholder() ||
-              commissionRatio == null
+      commissionRatio: commissionRatio == const $CopyWithPlaceholder()
           ? _value.commissionRatio
           // ignore: cast_nullable_to_non_nullable
-          : commissionRatio as double,
+          : commissionRatio as double?,
+      commission:
+          commission == const $CopyWithPlaceholder() || commission == null
+              ? _value.commission
+              // ignore: cast_nullable_to_non_nullable
+              : commission as double,
       status: status == const $CopyWithPlaceholder() || status == null
           ? _value.status
           // ignore: cast_nullable_to_non_nullable
@@ -236,7 +247,8 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
           Duration(microseconds: (json['estimatedDuration'] as num).toInt()),
       shopName: json['shopName'] as String,
       price: (json['price'] as num).toDouble(),
-      commissionRatio: (json['commissionRatio'] as num).toDouble(),
+      commissionRatio: (json['commissionRatio'] as num?)?.toDouble(),
+      commission: (json['commission'] as num).toDouble(),
       status: $enumDecode(_$OrderStatusEnumMap, json['status']),
       method: json['method'] as String,
       note: json['note'] as String?,
@@ -258,6 +270,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'shopName': instance.shopName,
       'price': instance.price,
       'commissionRatio': instance.commissionRatio,
+      'commission': instance.commission,
       'status': _$OrderStatusEnumMap[instance.status]!,
       'method': instance.method,
       'note': instance.note,
