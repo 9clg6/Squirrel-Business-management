@@ -65,8 +65,10 @@ extension GetItInjectableX on _i174.GetIt {
       () => dataModule.hiveSecureStorage(gh<_i861.SecureStorageService>()),
       preResolve: true,
     );
-    gh.singleton<_i553.AuthService>(
-        () => domainModule.authService(gh<_i90.LoginUseCase>()));
+    gh.singleton<_i553.AuthService>(() => domainModule.authService(
+          gh<_i90.LoginUseCase>(),
+          gh<_i323.HiveSecureStorage>(),
+        ));
     gh.factory<_i88.PreferencesLocalDataSource>(() => dataModule
         .preferencesLocalDataSourcesImpl(gh<_i323.HiveSecureStorage>()));
     gh.factory<_i333.PreferencesRepository>(() => dataModule

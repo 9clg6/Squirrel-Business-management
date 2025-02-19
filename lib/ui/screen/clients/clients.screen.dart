@@ -63,7 +63,11 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: .2),
+                  width: 1,
+                ),
               ),
               child: DataTable(
                 columns: const [

@@ -22,8 +22,9 @@ class SecureStorageService {
     FlutterSecureStorage storage,
   ) async {
     late final String key;
-
-    if (!(await storage.containsKey(key: _encryptedKey))) {
+    final allKeys = await storage.readAll();
+    final isKeyExists = allKeys.containsKey(_encryptedKey);
+    if (!isKeyExists) {
       final List<int> bytes = Hive.generateSecureKey();
       key = base64Encode(bytes);
       await storage.write(key: _encryptedKey, value: key);

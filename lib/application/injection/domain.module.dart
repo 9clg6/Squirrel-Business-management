@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:init/data/repository/auth/authentication.repository.dart';
 import 'package:init/data/repository/preferences/preferences.repository.dart';
+import 'package:init/data/storage/hive_secure_storage.dart';
 import 'package:init/domain/service/auth.service.dart';
 import 'package:init/domain/service/dialog.service.dart';
 import 'package:init/domain/service/navigator.service.dart';
@@ -21,23 +22,11 @@ abstract class DomainModule {
   ) =>
       LoginUseCase(authenticationRepository);
 
-  /// Allow to inject [AuthService]
-  @singleton
-  AuthService authService(LoginUseCase loginUseCase) =>
-      AuthService(loginUseCase);
-
-  /// Provide the navigatorKey
-  @singleton
-  GlobalKey<NavigatorState> provideNavigatorKey() => rootNavigatorKey;
-
   ///
   @injectable
   FlutterSecureStorage storage() => const FlutterSecureStorage(
-        iOptions: IOSOptions(
-          accessibility: KeychainAccessibility.first_unlock,
-        ),
-        aOptions: AndroidOptions(
-          encryptedSharedPreferences: true,
+        mOptions: MacOsOptions(
+          accessibility: KeychainAccessibility.unlocked,
         ),
       );
 
@@ -48,6 +37,21 @@ abstract class DomainModule {
     FlutterSecureStorage storage,
   ) async =>
       SecureStorageService.inject(storage);
+
+  /// Allow to inject [AuthService]
+  @singleton
+  AuthService authService(
+    LoginUseCase loginUseCase,
+    HiveSecureStorage hiveSecureStorage,
+  ) =>
+      AuthService(
+        loginUseCase,
+        hiveSecureStorage,
+      );
+
+  /// Provide the navigatorKey
+  @singleton
+  GlobalKey<NavigatorState> provideNavigatorKey() => rootNavigatorKey;
 
   /// Allow to inject [GetThemeUseCase]
   @injectable

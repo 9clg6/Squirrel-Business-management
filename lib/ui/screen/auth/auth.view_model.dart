@@ -23,16 +23,21 @@ class Auth extends _$Auth {
     _authService = injector<AuthService>();
   }
 
+  /// Build
+  /// @return [AuthState]
+  ///
   @override
   AuthState build() => AuthState.initial();
 
+  /// Login
+  /// @param [licenseKey] license key
+  /// 
   Future<void> login(String licenseKey) async {
     final bool result = await _authService.login(licenseKey);
 
     if (result) {
       final result = await _dialogService.showUseConditions();
       if (result == true) {
-        _authService.setUserAuthenticated(true);
         _navigatorService.navigateToHome();
       }
     } else {

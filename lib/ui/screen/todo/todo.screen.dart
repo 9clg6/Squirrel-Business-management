@@ -37,36 +37,37 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       body: ClipRRect(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
         child: Container(
-            constraints: BoxConstraints(
-              maxHeight: MediaQuery.of(context).size.height / 2,
-            ),
-            padding: const EdgeInsets.all(10),
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                final double parentSize = constraints.maxWidth;
+          constraints: BoxConstraints(
+            maxHeight: MediaQuery.of(context).size.height / 2,
+          ),
+          padding: const EdgeInsets.all(10),
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              final double parentSize = constraints.maxWidth;
 
-                return ListView.separated(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: orderStatusLength,
-                  separatorBuilder: (_, __) =>
-                      const SizedBox(width: paddingWidth),
-                  itemBuilder: (_, int index) {
-                    final status = OrderStatus.values[index];
+              return ListView.separated(
+                scrollDirection: Axis.horizontal,
+                itemCount: orderStatusLength,
+                separatorBuilder: (_, __) =>
+                    const SizedBox(width: paddingWidth),
+                itemBuilder: (_, int index) {
+                  final status = OrderStatus.values[index];
 
-                    return TodoStatusColumn(
-                      parentSize: parentSize,
-                      orderStatusLength: orderStatusLength,
-                      paddingWidth: paddingWidth,
-                      colorScheme: colorScheme,
-                      viewModel: viewModel,
-                      status: status,
-                    );
-                  },
-                );
-              },
-            )),
+                  return TodoStatusColumn(
+                    parentSize: parentSize,
+                    orderStatusLength: orderStatusLength,
+                    paddingWidth: paddingWidth,
+                    colorScheme: colorScheme,
+                    viewModel: viewModel,
+                    status: status,
+                  );
+                },
+              );
+            },
+          ),
+        ),
       ),
     );
   }
@@ -99,7 +100,11 @@ class TodoStatusColumn extends ConsumerWidget {
       width: (parentSize / orderStatusLength) - paddingWidth,
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       child: DragTarget<Order>(
         onAcceptWithDetails: (data) {

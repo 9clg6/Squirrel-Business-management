@@ -103,7 +103,11 @@ class _OrderQuickDetails extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
@@ -279,7 +283,11 @@ class _OrderDetailsContent extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       child: SingleChildScrollView(
         child: Column(
@@ -493,9 +501,10 @@ class _OrderInformations extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
         ),
       ),
       child: Column(
@@ -656,9 +665,10 @@ class _SummaryOrder extends ConsumerWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
         ),
       ),
       child: IntrinsicHeight(
@@ -706,9 +716,10 @@ class _SummaryOrder extends ConsumerWidget {
                           ),
                           decoration: BoxDecoration(
                             color: colorScheme.surface,
-                            borderRadius: BorderRadius.circular(10),
+                            borderRadius: BorderRadius.circular(20),
                             border: Border.all(
                               color: colorScheme.outline.withValues(alpha: .2),
+                              width: 1,
                             ),
                           ),
                           child: Column(
@@ -896,7 +907,11 @@ class _OrderDetailHeader extends ConsumerWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,

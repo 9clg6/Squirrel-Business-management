@@ -98,7 +98,11 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
     return Container(
       decoration: BoxDecoration(
         color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -121,7 +125,11 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
                   color: isHoveringDate
                       ? colorScheme.primary
                       : colorScheme.surfaceBright,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: colorScheme.outline.withValues(alpha: .2),
+                    width: 1,
+                  ),
                 ),
                 child: TextVariant(
                   '${dateRange.start.toDDMMYYYY()} - ${dateRange.end.toDDMMYYYY()}',
@@ -154,7 +162,11 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
                                 isHoveringRevenue
                             ? colorScheme.primary
                             : colorScheme.surfaceBright,
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(20),
+                        border: Border.all(
+                          color: colorScheme.outline.withValues(alpha: .2),
+                          width: 1,
+                        ),
                       ),
                       child: TextVariant(
                         'Revenus journalier',
@@ -289,7 +301,11 @@ class RowQuickStats extends ConsumerWidget {
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: .2),
+                  width: 1,
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -299,7 +315,11 @@ class RowQuickStats extends ConsumerWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceBright,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: colorScheme.outline.withValues(alpha: .2),
+                        width: 1,
+                      ),
                     ),
                     child: Icon(
                       Icons.store,
@@ -330,7 +350,11 @@ class RowQuickStats extends ConsumerWidget {
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: .2),
+                  width: 1,
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -340,7 +364,11 @@ class RowQuickStats extends ConsumerWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceBright,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: colorScheme.outline.withValues(alpha: .2),
+                        width: 1,
+                      ),
                     ),
                     child: Icon(
                       Icons.person,
@@ -395,7 +423,11 @@ class RowQuickStats extends ConsumerWidget {
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
                 color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(10),
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: .2),
+                  width: 1,
+                ),
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -405,7 +437,11 @@ class RowQuickStats extends ConsumerWidget {
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       color: colorScheme.surfaceBright,
-                      borderRadius: BorderRadius.circular(10),
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: colorScheme.outline.withValues(alpha: .2),
+                        width: 1,
+                      ),
                     ),
                     child: Icon(
                       Icons.favorite,
@@ -473,7 +509,11 @@ class _StatsChartState extends ConsumerState<StatsChart> {
       child: Container(
         decoration: BoxDecoration(
           color: colorScheme.surface,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: colorScheme.outline.withValues(alpha: .2),
+            width: 1,
+          ),
         ),
         padding: const EdgeInsets.only(top: 40),
         child: Column(
@@ -518,7 +558,12 @@ class _StatsChartState extends ConsumerState<StatsChart> {
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                   color: colorScheme.surfaceBright,
-                                  borderRadius: BorderRadius.circular(10),
+                                  borderRadius: BorderRadius.circular(20),
+                                  border: Border.all(
+                                    color: colorScheme.outline
+                                        .withValues(alpha: .2),
+                                    width: 1,
+                                  ),
                                 ),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,

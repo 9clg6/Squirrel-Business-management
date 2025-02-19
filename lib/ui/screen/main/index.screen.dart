@@ -36,7 +36,6 @@ class _MainScreenState extends ConsumerState<MainScreen> {
         physics: ClampingScrollPhysics(),
         slivers: [
           _ResumeHeader(),
-          _ManagementBar(),
           _Body(),
         ],
       ),
@@ -59,6 +58,10 @@ class _PinnedOrders extends ConsumerWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       width: double.infinity,
       margin: const EdgeInsets.only(bottom: 20),
@@ -224,20 +227,83 @@ class _OrdersList extends ConsumerWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(
-              left: 22,
-              top: 22,
-              bottom: 10,
-            ),
-            child: TextVariant(
-              "Commandes",
-              variantType: TextVariantType.titleMedium,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 22),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(
+                    top: 22,
+                    bottom: 10,
+                  ),
+                  child: TextVariant(
+                    "Commandes",
+                    variantType: TextVariantType.titleMedium,
+                  ),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: viewModel.showComboBox,
+                      style: TextButton.styleFrom(
+                        textStyle: const TextStyle(
+                          fontWeight: FontWeight.normal,
+                        ),
+                      ),
+                      child: TextVariant(
+                        state.orderState.showComboBox
+                            ? "Masquer"
+                            : "Sélectionner",
+                        variantType: TextVariantType.bodyMedium,
+                        color: colorScheme.primary,
+                      ),
+                    ),
+                    const Gap(10),
+                    TextButton.icon(
+                      onPressed: viewModel.createOrder,
+                      icon: Icon(
+                        Icons.add,
+                        size: 20,
+                        color: colorScheme.onPrimary,
+                      ),
+                      label: const TextVariant(
+                        "Ajouter",
+                        variantType: TextVariantType.bodyMedium,
+                      ),
+                      style: TextButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                        foregroundColor: colorScheme.onPrimary,
+                        backgroundColor: colorScheme.primary,
+                        iconColor: colorScheme.onPrimary,
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                      ),
+                    ),
+                    const Gap(10),
+                    if (state.orderState.selectedOrders.isNotEmpty)
+                      TextButton.icon(
+                        onPressed: viewModel.deleteSelectedOrders,
+                        icon: const Icon(Icons.delete),
+                        label: const TextVariant(
+                          "Supprimer",
+                          variantType: TextVariantType.bodyMedium,
+                        ),
+                      ),
+                  ],
+                ),
+              ],
             ),
           ),
           SizedBox(
@@ -448,13 +514,18 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
     final state = ref.watch(indexProvider);
     final currentMonth = DateTime.now().month;
     final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       width: 250,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -489,12 +560,17 @@ class _TotalContainer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(indexProvider);
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       width: 250,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -554,6 +630,10 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
           decoration: BoxDecoration(
             color: isHover ? colorScheme.primaryContainer : colorScheme.surface,
             borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: colorScheme.outline.withValues(alpha: .2),
+              width: 1,
+            ),
           ),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -574,92 +654,6 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
               const SizedBox(height: 10),
               const HelpText(text: "Cliquer pour voir les détails"),
             ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-/// Management bar
-class _ManagementBar extends ConsumerWidget {
-  /// Constructor
-  ///
-  const _ManagementBar();
-
-  /// Builds the management bar
-  ///
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.watch(indexProvider);
-    final viewModel = ref.read(indexProvider.notifier);
-
-    return SliverPadding(
-      padding: const EdgeInsets.all(10),
-      sliver: SliverToBoxAdapter(
-        child: Align(
-          alignment: Alignment.centerRight,
-          child: IntrinsicWidth(
-            child: Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: colorScheme.surface,
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  TextButton(
-                    onPressed: viewModel.showComboBox,
-                    style: TextButton.styleFrom(
-                      textStyle: const TextStyle(
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                    child: TextVariant(
-                      state.orderState.showComboBox
-                          ? "Masquer"
-                          : "Sélectionner",
-                      variantType: TextVariantType.bodyMedium,
-                      color: colorScheme.primary,
-                    ),
-                  ),
-                  const Gap(10),
-                  TextButton.icon(
-                    onPressed: viewModel.createOrder,
-                    icon: Icon(
-                      Icons.add,
-                      size: 20,
-                      color: colorScheme.onPrimary,
-                    ),
-                    label: const TextVariant(
-                      "Ajouter",
-                      variantType: TextVariantType.bodyMedium,
-                    ),
-                    style: TextButton.styleFrom(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      foregroundColor: colorScheme.onPrimary,
-                      backgroundColor: colorScheme.primary,
-                      iconColor: colorScheme.onPrimary,
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                    ),
-                  ),
-                  const Gap(10),
-                  if (state.orderState.selectedOrders.isNotEmpty)
-                    TextButton.icon(
-                      onPressed: viewModel.deleteSelectedOrders,
-                      icon: const Icon(Icons.delete),
-                      label: const TextVariant(
-                        "Supprimer",
-                        variantType: TextVariantType.bodyMedium,
-                      ),
-                    ),
-                ],
-              ),
-            ),
           ),
         ),
       ),

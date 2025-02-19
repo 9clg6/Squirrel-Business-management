@@ -45,6 +45,10 @@ class _OrdersList extends ConsumerWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: colorScheme.outline.withValues(alpha: .2),
+          width: 1,
+        ),
       ),
       width: double.infinity,
       child: Column(

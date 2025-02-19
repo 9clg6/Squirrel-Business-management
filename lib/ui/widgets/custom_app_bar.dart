@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
+import 'package:init/application/providers/initializer.dart';
+import 'package:init/domain/service/auth.service.dart';
 import 'package:init/ui/widgets/text_variant.dart';
-import 'package:uuid/uuid.dart';
 
 /// Custom app bar
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -11,6 +13,8 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final authService = injector<AuthService>();
+
     return AppBar(
       elevation: 0,
       leadingWidth: 200,
@@ -25,12 +29,12 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      backgroundColor: colorScheme.surface,
+      backgroundColor: colorScheme.surfaceDim,
       surfaceTintColor: Colors.transparent,
       foregroundColor: colorScheme.onSurface,
       actions: [
         Text(
-          "Expire dans 30 jours",
+          "Expire dans ${authService.expirationDate?.difference(DateTime.now()).inDays} jours",
           style: TextStyle(
             fontSize: 12,
             color: colorScheme.onSurface,
@@ -39,7 +43,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         const SizedBox(width: 10),
         Text(
-          const Uuid().v4(),
+          authService.licenseId ?? "",
           style: TextStyle(
             fontSize: 12,
             color: colorScheme.onSurface,
@@ -48,25 +52,43 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         const SizedBox(width: 10),
         IconButton(
           onPressed: () {},
+          style: IconButton.styleFrom(
+            backgroundColor: colorScheme.surface,
+            fixedSize: const Size(15, 15),
+            hoverColor: colorScheme.primaryContainer,
+          ),
           icon: const Icon(
             Icons.settings,
             size: 18,
           ),
         ),
+        const Gap(10),
         IconButton(
           onPressed: () {},
+          style: IconButton.styleFrom(
+            backgroundColor: colorScheme.surface,
+            fixedSize: const Size(15, 15),
+            hoverColor: colorScheme.primaryContainer,
+          ),
           icon: const Icon(
             Icons.notifications,
             size: 18,
           ),
         ),
+        const Gap(10),
         IconButton(
           onPressed: () {},
+          style: IconButton.styleFrom(
+            backgroundColor: colorScheme.surface,
+            fixedSize: const Size(15, 15),
+            hoverColor: colorScheme.primaryContainer,
+          ),
           icon: const Icon(
             Icons.person,
             size: 18,
           ),
         ),
+        const Gap(10),
       ],
     );
   }
