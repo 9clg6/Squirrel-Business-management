@@ -1,6 +1,4 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/domain/service/order.service.dart';
 import 'package:init/ui/abstraction/view_state.abs.dart';
 
 part 'clients.view_state.g.dart';
@@ -11,22 +9,32 @@ part 'clients.view_state.g.dart';
 @CopyWith()
 class ClientsScreenState extends ViewStateAbs {
   /// Loading state
-  final bool? loading;
+  final bool loading;
 
-  /// Order service
-  final OrderService orderService;
+  /// Selected client
+  final String? selectedClient;
+
+  ///
+  /// Clients
+  ///
+  final Map<String, Map<String, dynamic>> clients;
 
   ///
   /// Constructor
   ///
-  ClientsScreenState(this.loading) : orderService = injector<OrderService>();
+  ClientsScreenState(
+    this.loading,
+    this.selectedClient,
+    this.clients,
+  );
 
   ///
   /// Initial state
   ///
   ClientsScreenState.initial()
       : loading = true,
-        orderService = injector<OrderService>();
+        selectedClient = null,
+        clients = {};
 
   ///
   /// Get props
@@ -34,5 +42,7 @@ class ClientsScreenState extends ViewStateAbs {
   @override
   List<Object?> get props => <Object?>[
         loading,
+        selectedClient,
+        clients,
       ];
 }

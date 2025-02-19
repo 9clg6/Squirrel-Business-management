@@ -7,7 +7,11 @@ part of 'clients.view_state.dart';
 // **************************************************************************
 
 abstract class _$ClientsScreenStateCWProxy {
-  ClientsScreenState loading(bool? loading);
+  ClientsScreenState loading(bool loading);
+
+  ClientsScreenState selectedClient(String? selectedClient);
+
+  ClientsScreenState clients(Map<String, Map<String, dynamic>> clients);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ClientsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -17,6 +21,8 @@ abstract class _$ClientsScreenStateCWProxy {
   /// ````
   ClientsScreenState call({
     bool? loading,
+    String? selectedClient,
+    Map<String, Map<String, dynamic>>? clients,
   });
 }
 
@@ -27,7 +33,15 @@ class _$ClientsScreenStateCWProxyImpl implements _$ClientsScreenStateCWProxy {
   final ClientsScreenState _value;
 
   @override
-  ClientsScreenState loading(bool? loading) => this(loading: loading);
+  ClientsScreenState loading(bool loading) => this(loading: loading);
+
+  @override
+  ClientsScreenState selectedClient(String? selectedClient) =>
+      this(selectedClient: selectedClient);
+
+  @override
+  ClientsScreenState clients(Map<String, Map<String, dynamic>> clients) =>
+      this(clients: clients);
 
   @override
 
@@ -39,12 +53,22 @@ class _$ClientsScreenStateCWProxyImpl implements _$ClientsScreenStateCWProxy {
   /// ````
   ClientsScreenState call({
     Object? loading = const $CopyWithPlaceholder(),
+    Object? selectedClient = const $CopyWithPlaceholder(),
+    Object? clients = const $CopyWithPlaceholder(),
   }) {
     return ClientsScreenState(
-      loading == const $CopyWithPlaceholder()
+      loading == const $CopyWithPlaceholder() || loading == null
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
-          : loading as bool?,
+          : loading as bool,
+      selectedClient == const $CopyWithPlaceholder()
+          ? _value.selectedClient
+          // ignore: cast_nullable_to_non_nullable
+          : selectedClient as String?,
+      clients == const $CopyWithPlaceholder() || clients == null
+          ? _value.clients
+          // ignore: cast_nullable_to_non_nullable
+          : clients as Map<String, Map<String, dynamic>>,
     );
   }
 }

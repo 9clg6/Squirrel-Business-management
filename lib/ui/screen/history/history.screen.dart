@@ -22,12 +22,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
     final colorScheme = Theme.of(context).colorScheme;
     return Scaffold(
       backgroundColor: colorScheme.surfaceDim,
-      body: const Column(
-        children: [
-          Text("History"),
-          _OrdersList(),
-        ],
-      ),
+      body: const _OrdersList()
     );
   }
 }
@@ -54,17 +49,6 @@ class _OrdersList extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(
-              left: 22,
-              top: 22,
-              bottom: 10,
-            ),
-            child: TextVariant(
-              "Commandes",
-              variantType: TextVariantType.titleMedium,
-            ),
-          ),
           SizedBox(
             width: double.infinity,
             child: state.orders.isEmpty
@@ -89,6 +73,7 @@ class _OrdersList extends ConsumerWidget {
                     headingTextStyle: textTheme.titleMedium,
                     horizontalMargin: 12,
                     dividerThickness: .5,
+                    showCheckboxColumn: false,
                     columns: Headers.values
                         .where((h) => h != Headers.actions)
                         .map(

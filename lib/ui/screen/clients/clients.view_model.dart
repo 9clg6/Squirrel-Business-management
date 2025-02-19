@@ -1,35 +1,63 @@
+import 'package:init/application/providers/initializer.dart';
+import 'package:init/domain/service/order.service.dart';
 import 'package:init/ui/screen/clients/clients.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'clients.view_model.g.dart';
 
 ///
-/// [ClientsViewModel]
+/// [Clients]
 ///
 @riverpod
-class ClientsViewModel extends _$ClientsViewModel {
+class Clients extends _$Clients {
   ///
-  /// Constructor
+  /// Client service
   ///
-  factory ClientsViewModel() {
-    return ClientsViewModel._();
-  }
+  final OrderService _orderService;
 
   ///
   /// Private constructor
   ///
-  ClientsViewModel._() {
-    init();
-  }
+  Clients() : _orderService = injector<OrderService>();
 
   ///
   /// Build
   ///
   @override
-  ClientsScreenState build() => ClientsScreenState.initial();
+  ClientsScreenState build() => ClientsScreenState.initial().copyWith(
+        loading: false,
+        clients: _orderService.orderState.allOrder
+            .fold<Map<String, Map<String, dynamic>>>(
+          {},
+      (map, order) {
+        final clientName = order.clientContact;
+        if (!map.containsKey(clientName)) {
+          map[clientName] = {
+            'totalOrders': 0,
+            'totalAmount': 0.0,
+            'totalCommissions': 0.0,
+          };
+        }
+        map[clientName]!['totalOrders'] =
+            (map[clientName]!['totalOrders'] as int) + 1;
+        map[clientName]!['totalAmount'] =
+            (map[clientName]!['totalAmount'] as double) + order.price;
+        map[clientName]!['totalCommissions'] =
+              (map[clientName]!['totalCommissions'] as double) + order.commission;
+          return map;
+        },
+      ),
+    );
 
   ///
   /// Init
   ///
   Future<void> init() async {}
+
+  ///
+  /// Select client
+  ///
+  void selectClient(String key) {
+    state = state.copyWith(selectedClient: key);
+  }
 }

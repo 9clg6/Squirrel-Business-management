@@ -12,7 +12,4 @@ class FontFamily {
 
   /// Font family: InitIcons
   static const String initIcons = 'InitIcons';
-
-  /// Font family: Poppins
-  static const String poppins = 'Poppins';
 }

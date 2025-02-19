@@ -36,37 +36,30 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-      body: ClipRRect(
-        borderRadius: BorderRadius.circular(20),
-        child: Container(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height / 2,
-          ),
-          padding: const EdgeInsets.all(10),
-          child: LayoutBuilder(
-            builder: (context, constraints) {
-              final double parentSize = constraints.maxWidth;
+      body: Container(
+        padding: const EdgeInsets.all(10),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            final double parentSize = constraints.maxWidth;
 
-              return ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: orderStatusLength,
-                separatorBuilder: (_, __) =>
-                    const SizedBox(width: paddingWidth),
-                itemBuilder: (_, int index) {
-                  final status = OrderStatus.values[index];
+            return ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemCount: orderStatusLength,
+              separatorBuilder: (_, __) => const SizedBox(width: paddingWidth),
+              itemBuilder: (_, int index) {
+                final status = OrderStatus.values[index];
 
-                  return TodoStatusColumn(
-                    parentSize: parentSize,
-                    orderStatusLength: orderStatusLength,
-                    paddingWidth: paddingWidth,
-                    colorScheme: colorScheme,
-                    viewModel: viewModel,
-                    status: status,
-                  );
-                },
-              );
-            },
-          ),
+                return TodoStatusColumn(
+                  parentSize: parentSize,
+                  orderStatusLength: orderStatusLength,
+                  paddingWidth: paddingWidth,
+                  colorScheme: colorScheme,
+                  viewModel: viewModel,
+                  status: status,
+                );
+              },
+            );
+          },
         ),
       ),
     );
@@ -121,6 +114,7 @@ class TodoStatusColumn extends ConsumerWidget {
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisSize: MainAxisSize.min,
               children: [
                 SizedBox(
                   height: 40,
