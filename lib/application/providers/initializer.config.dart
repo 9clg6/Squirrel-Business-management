@@ -27,6 +27,7 @@ import 'package:init/domain/service/dialog.service.dart' as _i218;
 import 'package:init/domain/service/navigator.service.dart' as _i641;
 import 'package:init/domain/service/order.service.dart' as _i819;
 import 'package:init/domain/service/secure_storage.service.dart' as _i861;
+import 'package:init/domain/use_case/check_validity.use_case.dart' as _i104;
 import 'package:init/domain/use_case/get_theme.use_case.dart' as _i168;
 import 'package:init/domain/use_case/login.use_case.dart' as _i90;
 import 'package:injectable/injectable.dart' as _i526;
@@ -60,16 +61,22 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i90.LoginUseCase>(
         () => domainModule.loginUseCase(gh<_i303.AuthenticationRepository>()));
+    gh.factory<_i104.CheckValidityUseCase>(() => domainModule
+        .checkValidityUseCase(gh<_i303.AuthenticationRepository>()));
     await gh.singletonAsync<_i323.HiveSecureStorage>(
       () => dataModule.hiveSecureStorage(gh<_i861.SecureStorageService>()),
       preResolve: true,
     );
-    gh.singleton<_i553.AuthService>(() => domainModule.authService(
-          gh<_i90.LoginUseCase>(),
-          gh<_i323.HiveSecureStorage>(),
-        ));
     gh.factory<_i88.PreferencesLocalDataSource>(() => dataModule
         .preferencesLocalDataSourcesImpl(gh<_i323.HiveSecureStorage>()));
+    await gh.singletonAsync<_i553.AuthService>(
+      () => domainModule.authService(
+        gh<_i90.LoginUseCase>(),
+        gh<_i104.CheckValidityUseCase>(),
+        gh<_i323.HiveSecureStorage>(),
+      ),
+      preResolve: true,
+    );
     gh.factory<_i333.PreferencesRepository>(() => dataModule
         .preferencesRepository(gh<_i88.PreferencesLocalDataSource>()));
     gh.singleton<_i819.OrderService>(

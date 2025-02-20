@@ -14,6 +14,11 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final authService = injector<AuthService>();
+    final Duration timeRemain =
+        authService.expirationDate!.difference(DateTime.now());
+    final bool timeRemainInDays = timeRemain.inDays > 0;
+    final int timeRemainAdjuster =
+        timeRemainInDays ? timeRemain.inDays : timeRemain.inHours;
 
     return AppBar(
       elevation: 0,
@@ -33,34 +38,18 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       surfaceTintColor: Colors.transparent,
       foregroundColor: colorScheme.onSurface,
       actions: [
-        Text(
-          "Expire dans ${authService.expirationDate?.difference(DateTime.now()).inDays} jours",
-          style: TextStyle(
-            fontSize: 12,
-            color: colorScheme.onSurface,
-            fontWeight: FontWeight.w500,
-          ),
+        TextVariant(
+          "Votre licence expire dans ${timeRemainInDays ? timeRemainAdjuster.toString() : timeRemainAdjuster.toString()} ${timeRemainInDays ? "jours" : "heures"}",
+          variantType: TextVariantType.bodyMedium,
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.bold,
         ),
-        const SizedBox(width: 10),
-        Text(
-          authService.licenseId ?? "",
-          style: TextStyle(
-            fontSize: 12,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        const SizedBox(width: 10),
-        IconButton(
-          onPressed: () {},
-          style: IconButton.styleFrom(
-            backgroundColor: colorScheme.surface,
-            fixedSize: const Size(15, 15),
-            hoverColor: colorScheme.primaryContainer,
-          ),
-          icon: const Icon(
-            Icons.settings,
-            size: 18,
-          ),
+        const Gap(10),
+        if(!timeRemainInDays) TextVariant(
+          "| Contactez votre fournisseur pour la renouveler",
+          variantType: TextVariantType.bodyMedium,
+          color: colorScheme.onSurface,
+          fontWeight: FontWeight.bold,
         ),
         const Gap(10),
         IconButton(

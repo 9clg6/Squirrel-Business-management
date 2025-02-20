@@ -37,7 +37,11 @@ class _CustomSideBarState extends State<CustomSideBar> {
           controller: controller,
           showToggleButton: true,
           theme: SidebarXTheme(
-            margin: const EdgeInsets.all(10),
+            margin: const EdgeInsets.only(
+              bottom: 10,
+              right: 10,
+              left: 10,
+            ),
             width: 60,
             decoration: BoxDecoration(
               color: colorScheme.surface,

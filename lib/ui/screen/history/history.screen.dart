@@ -37,6 +37,7 @@ class _OrdersList extends ConsumerWidget {
     final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Container(
+      margin: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),

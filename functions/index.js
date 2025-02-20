@@ -2,11 +2,31 @@ const functions = require('firebase-functions');
 const admin = require('firebase-admin');
 admin.initializeApp();
 
-exports.verifyLicenseKey = functions.https.onCall(async (data, context) => {
-  // Log de l'objet data complet pour le débogage
-  const parsedData = JSON.parse(data["data"]);
+const users = admin.firestore().collection('users');
 
-  // Accès à la clé licenseKey
+async function getLicenseDoc(licenseKey) {
+  return await users.doc(licenseKey).get();
+}
+
+async function isLicenseValid(doc) {
+  if (!doc.exists) {
+    return { valid: false, expirationDate: null };
+  }
+  const data = doc.data();
+  const expirationDate = data.expirationDate.toDate();
+  if (expirationDate < new Date()) {
+    console.log('Key expired');
+    return { valid: false, expirationDate };
+  }
+  if (data.use > 0) {
+    console.log('Key already used');
+    return { valid: false, expirationDate };
+  }
+  return { valid: true, expirationDate };
+}
+
+exports.verifyLicenseKey = functions.https.onCall(async (data, context) => {
+  const parsedData = JSON.parse(data["data"]);
   const licenseKey = parsedData.licenseKey;
 
   if (!licenseKey) {
@@ -14,27 +34,31 @@ exports.verifyLicenseKey = functions.https.onCall(async (data, context) => {
   }
 
   try {
-    console.log('Start');
-
-    const doc = await admin.firestore().collection('users').doc(licenseKey).get();
-
-    console.log(doc.data());
-
-    if (doc.exists && doc.data().use > 0) {
-      console.log('Key already used');
-      return { valid: false };
-    } else {
-      console.log('Key not used');
-
-      await admin.firestore().collection('users').doc(licenseKey).update({
+    const doc = await getLicenseDoc(licenseKey);
+    const { valid, expirationDate } = await isLicenseValid(doc);
+    if (valid) {
+      await users.doc(licenseKey).update({
         use: admin.firestore.FieldValue.increment(1)
-      });    
-      
-      console.log('Incrementing use');
-
-
-      return { valid: true };
+      });
     }
+    return { valid, expirationDate: expirationDate ? expirationDate.toISOString() : null };
+  } catch (error) {
+    throw new functions.https.HttpsError('internal', 'Erreur lors de la vérification de la clé de licence.');
+  }
+});
+
+exports.checkValidity = functions.https.onCall(async (data, context) => {
+  const parsedData = JSON.parse(data["data"]);
+  const licenseKey = parsedData.licenseKey;
+
+  if (!licenseKey) {
+    throw new functions.https.HttpsError('invalid-argument', 'La clé de licence est manquante.');
+  }
+
+  try {
+    const doc = await getLicenseDoc(licenseKey);
+    const { valid, expirationDate } = await isLicenseValid(doc);
+    return { valid, expirationDate: expirationDate ? expirationDate.toISOString() : null };
   } catch (error) {
     throw new functions.https.HttpsError('internal', 'Erreur lors de la vérification de la clé de licence.');
   }

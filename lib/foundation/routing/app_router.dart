@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:init/application/providers/initializer.dart';
@@ -17,6 +16,7 @@ import 'package:init/ui/widgets/custom_side_bar.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
+    
 final GlobalKey<NavigatorState> shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'shell');
 
@@ -24,7 +24,7 @@ String? _authRedirect(BuildContext context, GoRouterState state) {
   final bool isAuthenticated = injector<AuthService>().isUserAuthenticated;
   final bool isAuthRoute = state.matchedLocation == '/auth';
 
-  if (!isAuthenticated && !kDebugMode) {
+  if (!isAuthenticated) {
     if (isAuthRoute) return null;
 
     return '/auth';

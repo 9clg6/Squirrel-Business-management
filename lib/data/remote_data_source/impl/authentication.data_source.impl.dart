@@ -2,12 +2,13 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:init/data/model/login_result.remote_model.dart';
 import 'package:init/data/remote_data_source/authentication.data_source.dart';
 import 'package:init/foundation/enums/function.enum.dart';
 
 class AuthenticationDataSourceImpl extends AuthenticationDataSource {
   @override
-  Future<bool> login(String licenseKey) async {
+  Future<LoginResultRemoteModel> login(String licenseKey) async {
     try {
       final callable = FirebaseFunctions.instance.httpsCallable(
         Functions.verifyLicenseKey.name,
@@ -30,9 +31,42 @@ class AuthenticationDataSourceImpl extends AuthenticationDataSource {
       final result = await callable.call(jsonEncode(payload));
 
       final bool isValid = result.data['valid'] as bool? ?? false;
-      return isValid;
+      return LoginResultRemoteModel(
+        valid: isValid,
+        expirationDate: DateTime.parse(result.data['expirationDate']),
+      );
     } catch (e) {
       log('Erreur détaillée dans login: $e');
+      if (e is FirebaseFunctionsException) {
+        log('Code Firebase: ${e.code}');
+        log('Message Firebase: ${e.message}');
+        log('Détails Firebase: ${e.details}');
+      }
+      return LoginResultRemoteModel(
+        valid: false,
+        expirationDate: null,
+      );
+    }
+  }
+
+  /// Check validity of license
+  /// @param [licenseKey] license key
+  /// @return [LoginResultRemoteModel] login result remote model
+  ///
+  @override
+  Future<bool> checkValidity(String licenseKey) async {
+    try {
+      final callable = FirebaseFunctions.instance.httpsCallable(
+        Functions.checkValidity.name,
+        options: HttpsCallableOptions(
+          timeout: const Duration(seconds: 30),
+        ),
+      );
+
+      final result = await callable.call(jsonEncode(licenseKey));
+      return result.data['valid'] as bool? ?? false;
+    } catch (e) {
+      log('Erreur détaillée dans checkValidity: $e');
       if (e is FirebaseFunctionsException) {
         log('Code Firebase: ${e.code}');
         log('Message Firebase: ${e.message}');

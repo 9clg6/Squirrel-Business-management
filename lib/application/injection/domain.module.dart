@@ -8,6 +8,7 @@ import 'package:init/domain/service/dialog.service.dart';
 import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
 import 'package:init/domain/service/secure_storage.service.dart';
+import 'package:init/domain/use_case/check_validity.use_case.dart';
 import 'package:init/domain/use_case/get_theme.use_case.dart';
 import 'package:init/domain/use_case/login.use_case.dart';
 import 'package:init/foundation/routing/app_router.dart';
@@ -21,6 +22,13 @@ abstract class DomainModule {
     AuthenticationRepository authenticationRepository,
   ) =>
       LoginUseCase(authenticationRepository);
+
+  /// Allow to inject [CheckValidityUseCase]
+  @injectable
+  CheckValidityUseCase checkValidityUseCase(
+    AuthenticationRepository authenticationRepository,
+  ) =>
+      CheckValidityUseCase(authenticationRepository);
 
   ///
   @injectable
@@ -40,12 +48,15 @@ abstract class DomainModule {
 
   /// Allow to inject [AuthService]
   @singleton
-  AuthService authService(
+  @preResolve
+  Future<AuthService> authService(
     LoginUseCase loginUseCase,
+    CheckValidityUseCase checkValidityUseCase,
     HiveSecureStorage hiveSecureStorage,
-  ) =>
-      AuthService(
+  ) async =>
+      AuthService.inject(
         loginUseCase,
+        checkValidityUseCase,
         hiveSecureStorage,
       );
 
