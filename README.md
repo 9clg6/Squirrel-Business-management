@@ -1,4 +1,4 @@
-# Aiir-Gestion
+# Squirrel, Business Manaegment
 Application professionnelle de gestion de clients, commande en cours, archives et statistiques
 
 # Générer les locales
