@@ -1,4 +1,4 @@
-import 'package:init/data/model/login_result.remote_model.dart';
+import 'package:init/data/model/remote/login_result.remote_model.dart';
 
 /// [AuthenticationDataSource]
 abstract class AuthenticationDataSource {

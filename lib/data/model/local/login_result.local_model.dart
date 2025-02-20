@@ -1,13 +1,16 @@
 import 'package:init/domain/mixin/serializable.mixin.dart';
 import 'package:json_annotation/json_annotation.dart';
 
-part 'login_result.remote_model.g.dart';
+part 'login_result.local_model.g.dart';
 
-/// [LoginResultRemoteModel]
+/// [LoginResultLocalModel]
 @JsonSerializable()
-class LoginResultRemoteModel with SerializableMixin {
+class LoginResultLocalModel with SerializableMixin {
   /// Is valid
   final bool valid;
+
+  /// License key
+  final String licenseKey;
 
   /// License id
   final DateTime? expirationDate;
@@ -16,8 +19,9 @@ class LoginResultRemoteModel with SerializableMixin {
   /// @param [valid] is valid
   /// @param [expirationDate] expiration date
   ///
-  LoginResultRemoteModel({
+  LoginResultLocalModel({
     required this.valid,
+    required this.licenseKey,
     required this.expirationDate,
   });
 
@@ -26,13 +30,13 @@ class LoginResultRemoteModel with SerializableMixin {
   ///
   @override
   Map<String, dynamic> toJson() {
-    return _$LoginResultRemoteModelToJson(this);
+    return _$LoginResultLocalModelToJson(this);
   }
 
   /// From json
   /// @param [json] json
-  /// @return [LoginResultRemoteModel] login result remote model
+  /// @return [LoginResultLocalModel] login result local model
   ///
-  factory LoginResultRemoteModel.fromJson(Map<String, dynamic> json) =>
-      _$LoginResultRemoteModelFromJson(json);
+  factory LoginResultLocalModel.fromJson(Map<String, dynamic> json) =>
+      _$LoginResultLocalModelFromJson(json);
 }

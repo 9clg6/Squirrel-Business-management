@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:init/data/model/login_result.remote_model.dart';
+import 'package:init/data/model/remote/login_result.remote_model.dart';
 import 'package:init/data/remote_data_source/authentication.data_source.dart';
 import 'package:init/foundation/enums/function.enum.dart';
 
@@ -11,7 +11,7 @@ class AuthenticationDataSourceImpl extends AuthenticationDataSource {
   Future<LoginResultRemoteModel> login(String licenseKey) async {
     try {
       final callable = FirebaseFunctions.instance.httpsCallable(
-        Functions.verifyLicenseKey.name,
+        Functions.login.name,
         options: HttpsCallableOptions(
           timeout: const Duration(seconds: 30),
         ),
@@ -33,6 +33,7 @@ class AuthenticationDataSourceImpl extends AuthenticationDataSource {
       final bool isValid = result.data['valid'] as bool? ?? false;
       return LoginResultRemoteModel(
         valid: isValid,
+        licenseKey: licenseKey,
         expirationDate: DateTime.parse(result.data['expirationDate']),
       );
     } catch (e) {
@@ -44,6 +45,7 @@ class AuthenticationDataSourceImpl extends AuthenticationDataSource {
       }
       return LoginResultRemoteModel(
         valid: false,
+        licenseKey: '',
         expirationDate: null,
       );
     }
@@ -63,7 +65,13 @@ class AuthenticationDataSourceImpl extends AuthenticationDataSource {
         ),
       );
 
-      final result = await callable.call(jsonEncode(licenseKey));
+      // Construction du payload
+      final Map<String, dynamic> payload = {
+        'licenseKey': licenseKey.trim(),
+      };
+
+      // Appel de la fonction Cloud
+      final result = await callable.call(jsonEncode(payload));
       return result.data['valid'] as bool? ?? false;
     } catch (e) {
       log('Erreur détaillée dans checkValidity: $e');
