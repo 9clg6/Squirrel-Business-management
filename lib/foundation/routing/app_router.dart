@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:init/application/providers/initializer.dart';
 import 'package:init/domain/entities/order.entity.dart';
+import 'package:init/domain/provider/request_service.provider.dart';
 import 'package:init/domain/service/auth.service.dart';
 import 'package:init/ui/screen/auth/auth.screen.dart';
 import 'package:init/ui/screen/clients/clients.screen.dart';
@@ -9,6 +11,7 @@ import 'package:init/ui/screen/history/history.screen.dart';
 import 'package:init/ui/screen/main/index.screen.dart';
 import 'package:init/ui/screen/order_details/order_details.screen.dart';
 import 'package:init/ui/screen/planner/planner.screen.dart';
+import 'package:init/ui/screen/request/request.screen.dart';
 import 'package:init/ui/screen/stats/stats.screen.dart';
 import 'package:init/ui/screen/todo/todo.screen.dart';
 import 'package:init/ui/widgets/custom_app_bar.dart';
@@ -16,7 +19,7 @@ import 'package:init/ui/widgets/custom_side_bar.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');
-    
+
 final GlobalKey<NavigatorState> shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'shell');
 
@@ -53,21 +56,34 @@ final GoRouter appRouter = GoRouter(
     // Routes protégées
     StatefulShellRoute.indexedStack(
       builder: (context, state, navigationShell) {
-        // Ne pas afficher la barre latérale sur la page d'authentification
         final bool isAuthRoute = state.uri.toString() == '/auth';
 
-        return Scaffold(
-          appBar: !isAuthRoute ? const CustomAppBar() : null,
-          backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-          body: Row(
-            children: [
-              if (!isAuthRoute)
-                CustomSideBar(
-                  navigationShell: navigationShell,
-                ),
-              Expanded(child: navigationShell),
-            ],
-          ),
+        return Consumer(
+          builder: (context, ref, child) {
+            final requestState = ref.watch(requestServiceNotifierProvider);
+
+            return Scaffold(
+              appBar: !isAuthRoute ? const CustomAppBar() : null,
+              backgroundColor: Theme.of(context).colorScheme.surfaceDim,
+              body: Row(
+                children: [
+                  if (!isAuthRoute)
+                    CustomSideBar(
+                      navigationShell: navigationShell,
+                    ),
+                  Expanded(
+                    flex: requestState.isRequestShow ? 2 : 1,
+                    child: navigationShell,
+                  ),
+                  if (requestState.isRequestShow)
+                    const Expanded(
+                      flex: 1,
+                      child: RequestScreen(),
+                    ),
+                ],
+              ),
+            );
+          },
         );
       },
       branches: [

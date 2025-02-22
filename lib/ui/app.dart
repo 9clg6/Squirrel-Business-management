@@ -32,15 +32,16 @@ class _AppState extends State<App> {
   Widget build(BuildContext context) {
     final TextTheme textTheme = createTextTheme();
     final MaterialTheme theme = MaterialTheme(textTheme);
-    
+
     final Brightness brightness =
         View.of(context).platformDispatcher.platformBrightness;
 
     return Builder(
       builder: (context) {
         return MediaQuery(
-          data:
-              MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+          data: MediaQuery.of(context).copyWith(
+            textScaler: TextScaler.noScaling,
+          ),
           child: ProviderScope(
             child: MaterialApp.router(
               routerConfig: appRouter,

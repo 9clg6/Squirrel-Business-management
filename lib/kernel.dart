@@ -8,6 +8,7 @@ import 'package:init/application/config/app_config.dart';
 import 'package:init/application/providers/initializer.dart';
 import 'package:init/firebase_options.dart';
 import 'package:init/ui/app.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 ///
 /// The kernel of the application.
@@ -41,8 +42,10 @@ class Kernel {
   /// Run the application
   ///
   void _run() {
-    runApp(
-      build(const App()),
+    initializeDateFormatting('fr_FR', null).then(
+      (_) => runApp(
+        build(const App()),
+      ),
     );
   }
 

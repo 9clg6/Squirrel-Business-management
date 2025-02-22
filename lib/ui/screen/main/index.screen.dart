@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:init/foundation/enums/headers.enum.dart';
 import 'package:init/foundation/enums/ordrer_status.enum.dart';
 import 'package:init/foundation/extensions/date_time.extension.dart';
+import 'package:init/foundation/localizations/localizations.dart';
 import 'package:init/foundation/utils/util.dart';
 import 'package:init/ui/screen/main/index.view_model.dart';
 import 'package:init/ui/screen/main/index.view_state.dart';
@@ -531,7 +532,7 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "Total du mois de $currentMonth",
+            "Total du mois de ${DateFormat('MMMM').format(DateTime.now())}",
             style: textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
               fontSize: 12,

@@ -5,6 +5,8 @@ import 'dart:developer';
 import 'package:init/data/model/local/login_result.local_model.dart';
 import 'package:init/data/storage/hive_secure_storage.dart';
 import 'package:init/domain/entities/login_result.entity.dart';
+import 'package:init/domain/entities/request.entity.dart';
+import 'package:init/domain/service/request_service.dart';
 import 'package:init/domain/use_case/check_validity.use_case.dart';
 import 'package:init/domain/use_case/login.use_case.dart';
 import 'package:init/foundation/routing/app_router.dart';
@@ -22,6 +24,9 @@ class AuthService {
 
   /// Secure storage service
   late final HiveSecureStorage _secureStorageService;
+
+  /// Request service
+  late final RequestService _requestService;
 
   /// Is user authenticated
   bool _isUserAuthenticated = false;
@@ -41,6 +46,7 @@ class AuthService {
     this._loginUseCase,
     this._checkValidityUseCase,
     this._secureStorageService,
+    this._requestService,
   );
 
   /// Inject auth service
@@ -52,11 +58,13 @@ class AuthService {
     LoginUseCase loginUseCase,
     CheckValidityUseCase checkValidityUseCase,
     HiveSecureStorage secureStorageService,
+    RequestService requestService,
   ) async {
     final authService = AuthService._(
       loginUseCase,
       checkValidityUseCase,
       secureStorageService,
+      requestService,
     );
 
     await authService._getSavedLicenceAndCheckValidity();
@@ -75,8 +83,22 @@ class AuthService {
       log('License found: $license');
       final LoginResultLocalModel loginResult =
           LoginResultLocalModel.fromJson(jsonDecode(license));
-          
-      final bool isValid = await _checkValidityUseCase.execute(loginResult.licenseKey);
+
+      final bool isValid = await _checkValidityUseCase.execute(
+        loginResult.licenseKey,
+      );
+
+      _requestService.addRequest(
+        Request(
+          name: 'Check license validity',
+          description: 'Vérification de la validité de la licence',
+          destination: 'Serveur de validation',
+          parameters: {
+            'licenseKey': loginResult.licenseKey,
+          },
+          date: DateTime.now(),
+        ),
+      );
 
       if (isValid) {
         log('License is valid');
@@ -128,6 +150,18 @@ class AuthService {
     final LoginResultLocalModel loginResult =
         LoginResultLocalModel.fromJson(jsonDecode(license));
 
+    _requestService.addRequest(
+      Request(
+        name: 'Check license validity',
+        description: 'Vérification de la validité de la licence',
+        destination: 'Serveur de validation',
+        parameters: {
+          'licenseKey': loginResult.licenseKey,
+        },
+        date: DateTime.now(),
+      ),
+    );
+
     return _checkValidityUseCase.execute(loginResult.licenseKey);
   }
 
@@ -152,6 +186,19 @@ class AuthService {
   ///
   Future<bool> login(String licenseKey) async {
     log('Start login');
+
+    _requestService.addRequest(
+      Request(
+        name: 'Login',
+        description: 'Connexion à l\'application',
+        destination: 'Serveur de connexion',
+        parameters: {
+          'licenseKey': licenseKey,
+        },
+        date: DateTime.now(),
+      ),
+    );
+
     final LoginResultEntity loginResult =
         await _loginUseCase.execute(licenseKey);
 

@@ -7,6 +7,7 @@ import 'package:init/domain/service/auth.service.dart';
 import 'package:init/domain/service/dialog.service.dart';
 import 'package:init/domain/service/navigator.service.dart';
 import 'package:init/domain/service/order.service.dart';
+import 'package:init/domain/service/request_service.dart';
 import 'package:init/domain/service/secure_storage.service.dart';
 import 'package:init/domain/use_case/check_validity.use_case.dart';
 import 'package:init/domain/use_case/get_theme.use_case.dart';
@@ -46,6 +47,10 @@ abstract class DomainModule {
   ) async =>
       SecureStorageService.inject(storage);
 
+  /// Allow to inject [RequestService]
+  @singleton
+  RequestService requestService() => RequestService();
+
   /// Allow to inject [AuthService]
   @singleton
   @preResolve
@@ -53,11 +58,13 @@ abstract class DomainModule {
     LoginUseCase loginUseCase,
     CheckValidityUseCase checkValidityUseCase,
     HiveSecureStorage hiveSecureStorage,
+    RequestService requestService,
   ) async =>
       AuthService.inject(
         loginUseCase,
         checkValidityUseCase,
         hiveSecureStorage,
+        requestService,
       );
 
   /// Provide the navigatorKey

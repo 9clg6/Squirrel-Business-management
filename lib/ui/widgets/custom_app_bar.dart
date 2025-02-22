@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:init/application/providers/initializer.dart';
+import 'package:init/domain/provider/request_service.provider.dart';
 import 'package:init/domain/service/auth.service.dart';
 import 'package:init/ui/widgets/text_variant.dart';
 
@@ -45,12 +47,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           fontWeight: FontWeight.bold,
         ),
         const Gap(10),
-        if(!timeRemainInDays) TextVariant(
-          "| Contactez votre fournisseur pour la renouveler",
-          variantType: TextVariantType.bodyMedium,
-          color: colorScheme.onSurface,
-          fontWeight: FontWeight.bold,
-        ),
+        if (!timeRemainInDays)
+          TextVariant(
+            "| Contactez votre fournisseur pour la renouveler",
+            variantType: TextVariantType.bodyMedium,
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
         const Gap(10),
         IconButton(
           onPressed: () {},
@@ -78,6 +81,32 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
         const Gap(10),
+        Consumer(
+          builder: (context, ref, child) {
+            final requestServiceNotifier = ref.read(requestServiceNotifierProvider.notifier);
+            final requestService = ref.watch(requestServiceNotifierProvider);
+
+            return FilledButton.icon(
+              onPressed: requestServiceNotifier.toggleRequest,
+              label: const TextVariant(
+              "Requête web",
+              variantType: TextVariantType.bodyMedium,
+            ),
+            icon: const Icon(
+              Icons.language,
+              size: 18,
+            ),
+            style: ButtonStyle(
+              backgroundColor: WidgetStateProperty.resolveWith<Color>(
+                (_) => requestService.isRequestShow
+                    ? colorScheme.primary
+                    : colorScheme.surface,
+              ),
+              ),
+            );
+          },
+        ),
+        const Gap(10)
       ],
     );
   }
