@@ -1,10 +1,10 @@
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/domain/service/navigator.service.dart';
-import 'package:init/domain/service/order.service.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
-import 'package:init/ui/screen/todo/todo.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/service/navigator.service.dart';
+import 'package:squirrel/domain/service/order.service.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/ui/screen/todo/todo.view_state.dart';
 
 part 'todo.view_model.g.dart';
 

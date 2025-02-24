@@ -1,6 +1,6 @@
-import 'package:init/data/repository/preferences/preferences.repository.dart';
-import 'package:init/domain/use_case/abstraction/use_case_abs.dart';
-import 'package:init/foundation/enums/theme_appareance.enum.dart';
+import 'package:squirrel/data/repository/preferences/preferences.repository.dart';
+import 'package:squirrel/domain/use_case/abstraction/use_case_abs.dart';
+import 'package:squirrel/foundation/enums/theme_appareance.enum.dart';
 
 /// [GetThemeUseCase]
 class GetThemeUseCase implements UseCase<Future<ThemeAppearance>> {

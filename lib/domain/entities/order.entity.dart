@@ -1,10 +1,10 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
-import 'package:init/domain/entities/action.entity.dart';
-import 'package:init/domain/mixin/serializable.mixin.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
-import 'package:init/foundation/enums/priority.enum.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:squirrel/domain/entities/action.entity.dart';
+import 'package:squirrel/domain/mixin/serializable.mixin.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/foundation/enums/priority.enum.dart';
 import 'package:uuid/uuid.dart';
 
 part 'order.entity.g.dart';

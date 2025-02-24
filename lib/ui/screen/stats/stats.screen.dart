@@ -3,11 +3,11 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:init/foundation/enums/chart_type.enum.dart';
-import 'package:init/foundation/extensions/date_time.extension.dart';
-import 'package:init/ui/screen/stats/stats.view_model.dart';
-import 'package:init/ui/screen/stats/stats.view_state.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/foundation/enums/chart_type.enum.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/ui/screen/stats/stats.view_model.dart';
+import 'package:squirrel/ui/screen/stats/stats.view_state.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 // STATS BOTS :
 // Nombre de messages par jour / semaine / mois

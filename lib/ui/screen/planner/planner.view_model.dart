@@ -1,5 +1,5 @@
-import 'package:init/ui/screen/planner/planner.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/ui/screen/planner/planner.view_state.dart';
 
 part 'planner.view_model.g.dart';
 

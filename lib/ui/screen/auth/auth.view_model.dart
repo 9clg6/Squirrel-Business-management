@@ -1,9 +1,9 @@
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/domain/service/auth.service.dart';
-import 'package:init/domain/service/dialog.service.dart';
-import 'package:init/domain/service/navigator.service.dart';
-import 'package:init/ui/screen/auth/auth.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/service/auth.service.dart';
+import 'package:squirrel/domain/service/dialog.service.dart';
+import 'package:squirrel/domain/service/navigator.service.dart';
+import 'package:squirrel/ui/screen/auth/auth.view_state.dart';
 
 part 'auth.view_model.g.dart';
 

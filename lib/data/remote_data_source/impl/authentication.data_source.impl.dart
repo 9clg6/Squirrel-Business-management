@@ -2,9 +2,9 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:init/data/model/remote/login_result.remote_model.dart';
-import 'package:init/data/remote_data_source/authentication.data_source.dart';
-import 'package:init/foundation/enums/function.enum.dart';
+import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
+import 'package:squirrel/data/remote_data_source/authentication.data_source.dart';
+import 'package:squirrel/foundation/enums/function.enum.dart';
 
 class AuthenticationDataSourceImpl extends AuthenticationDataSource {
   @override

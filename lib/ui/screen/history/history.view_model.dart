@@ -1,9 +1,9 @@
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/domain/service/order.service.dart';
-import 'package:init/domain/state/order.state.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
-import 'package:init/ui/screen/history/history.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/service/order.service.dart';
+import 'package:squirrel/domain/state/order.state.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/ui/screen/history/history.view_state.dart';
 
 part 'history.view_model.g.dart';
 

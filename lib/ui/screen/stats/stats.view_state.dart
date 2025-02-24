@@ -1,9 +1,9 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/foundation/enums/chart_type.enum.dart';
-import 'package:init/foundation/extensions/date_time.extension.dart';
-import 'package:init/ui/abstraction/view_state.abs.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/foundation/enums/chart_type.enum.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'stats.view_state.g.dart';
 

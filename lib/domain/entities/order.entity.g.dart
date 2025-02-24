@@ -249,7 +249,7 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
       price: (json['price'] as num).toDouble(),
       commissionRatio: (json['commissionRatio'] as num?)?.toDouble(),
       commission: (json['commission'] as num).toDouble(),
-      status: $enumDecode(_$OrderStatusEnumMap, json['status']),
+      status: OrderStatus.fromJson(json['status'] as String),
       method: json['method'] as String,
       note: json['note'] as String?,
       actions: (json['actions'] as List<dynamic>?)
@@ -271,21 +271,12 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'price': instance.price,
       'commissionRatio': instance.commissionRatio,
       'commission': instance.commission,
-      'status': _$OrderStatusEnumMap[instance.status]!,
+      'status': instance.status,
       'method': instance.method,
       'note': instance.note,
       'priority': _$PriorityEnumMap[instance.priority]!,
       'actions': instance.actions,
     };
-
-const _$OrderStatusEnumMap = {
-  OrderStatus.pending: 'pending',
-  OrderStatus.running: 'running',
-  OrderStatus.waitingForPaiement: 'waitingForPaiement',
-  OrderStatus.finished: 'finished',
-  OrderStatus.failed: 'failed',
-  OrderStatus.canceled: 'canceled',
-};
 
 const _$PriorityEnumMap = {
   Priority.low: 'low',

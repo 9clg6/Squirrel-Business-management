@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:init/foundation/routing/app_router.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/foundation/routing/app_router.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 class UseConditionsDialog extends StatelessWidget {
   const UseConditionsDialog({super.key});

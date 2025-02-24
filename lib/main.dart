@@ -1,5 +1,5 @@
-import 'package:init/application/config/app_config.dart';
-import 'package:init/kernel.dart';
+import 'package:squirrel/application/config/app_config.dart';
+import 'package:squirrel/kernel.dart';
 
 ///
 /// The main function of the application.

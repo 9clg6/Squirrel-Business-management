@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
-import 'package:init/foundation/enums/priority.enum.dart';
-import 'package:init/ui/screen/todo/todo.view_model.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/foundation/enums/priority.enum.dart';
+import 'package:squirrel/ui/screen/todo/todo.view_model.dart';
 
 ///
 /// Second screen

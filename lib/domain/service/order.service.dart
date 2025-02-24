@@ -3,13 +3,13 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:init/data/storage/hive_secure_storage.dart';
-import 'package:init/domain/entities/action.entity.dart';
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/domain/state/order.state.dart';
-import 'package:init/foundation/enums/headers.enum.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
-import 'package:init/foundation/enums/priority.enum.dart';
+import 'package:squirrel/data/storage/hive_secure_storage.dart';
+import 'package:squirrel/domain/entities/action.entity.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/state/order.state.dart';
+import 'package:squirrel/foundation/enums/headers.enum.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/foundation/enums/priority.enum.dart';
 
 /// [OrderService]
 class OrderService extends StateNotifier<OrderState> {

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
-import 'package:init/foundation/extensions/date_time.extension.dart';
-import 'package:init/ui/screen/order_details/order_details.view_model.dart';
-import 'package:init/ui/screen/order_details/order_details.view_state.dart';
-import 'package:init/ui/widgets/help_text.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/ui/screen/order_details/order_details.view_model.dart';
+import 'package:squirrel/ui/screen/order_details/order_details.view_state.dart';
+import 'package:squirrel/ui/widgets/help_text.dart';
 
 /// Order details screen
 ///

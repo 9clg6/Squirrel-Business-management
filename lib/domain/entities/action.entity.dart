@@ -1,7 +1,7 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
-import 'package:init/domain/mixin/serializable.mixin.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:squirrel/domain/mixin/serializable.mixin.dart';
 
 part 'action.entity.g.dart';
 

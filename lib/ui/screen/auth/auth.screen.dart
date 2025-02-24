@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:init/ui/screen/auth/auth.view_model.dart';
-import 'package:init/ui/widgets/help_text.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/ui/screen/auth/auth.view_model.dart';
+import 'package:squirrel/ui/widgets/help_text.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 class AuthScreen extends ConsumerStatefulWidget {
   const AuthScreen({super.key});

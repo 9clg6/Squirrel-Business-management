@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/domain/provider/request_service.provider.dart';
-import 'package:init/domain/service/auth.service.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/provider/request_service.provider.dart';
+import 'package:squirrel/domain/service/auth.service.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Custom app bar
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {

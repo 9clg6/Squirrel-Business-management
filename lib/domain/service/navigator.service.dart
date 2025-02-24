@@ -1,5 +1,5 @@
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/foundation/routing/app_router.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/foundation/routing/app_router.dart';
 
 /// Navigator service
 class NavigatorService {

@@ -1,5 +1,5 @@
-import 'package:init/domain/mixin/serializable.mixin.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:squirrel/domain/mixin/serializable.mixin.dart';
 
 part 'login_result.remote_model.g.dart';
 

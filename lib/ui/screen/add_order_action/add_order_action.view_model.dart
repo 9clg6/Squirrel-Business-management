@@ -1,9 +1,9 @@
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/domain/entities/action.entity.dart';
-import 'package:init/domain/service/dialog.service.dart';
-import 'package:init/foundation/routing/app_router.dart';
-import 'package:init/ui/screen/add_order_action/add_order_action.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/entities/action.entity.dart';
+import 'package:squirrel/domain/service/dialog.service.dart';
+import 'package:squirrel/foundation/routing/app_router.dart';
+import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_state.dart';
 
 part 'add_order_action.view_model.g.dart';
 

@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:init/foundation/enums/headers.enum.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
-import 'package:init/foundation/extensions/date_time.extension.dart';
-import 'package:init/foundation/localizations/localizations.dart';
-import 'package:init/foundation/utils/util.dart';
-import 'package:init/ui/screen/main/index.view_model.dart';
-import 'package:init/ui/screen/main/index.view_state.dart';
-import 'package:init/ui/widgets/help_text.dart';
-import 'package:init/ui/widgets/status_card.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/foundation/enums/headers.enum.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
+import 'package:squirrel/foundation/utils/util.dart';
+import 'package:squirrel/ui/screen/main/index.view_model.dart';
+import 'package:squirrel/ui/screen/main/index.view_state.dart';
+import 'package:squirrel/ui/widgets/help_text.dart';
+import 'package:squirrel/ui/widgets/status_card.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Main screen
 class MainScreen extends ConsumerStatefulWidget {

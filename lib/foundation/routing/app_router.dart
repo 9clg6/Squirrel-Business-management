@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/domain/provider/request_service.provider.dart';
-import 'package:init/domain/service/auth.service.dart';
-import 'package:init/ui/screen/auth/auth.screen.dart';
-import 'package:init/ui/screen/clients/clients.screen.dart';
-import 'package:init/ui/screen/history/history.screen.dart';
-import 'package:init/ui/screen/main/index.screen.dart';
-import 'package:init/ui/screen/order_details/order_details.screen.dart';
-import 'package:init/ui/screen/planner/planner.screen.dart';
-import 'package:init/ui/screen/request/request.screen.dart';
-import 'package:init/ui/screen/stats/stats.screen.dart';
-import 'package:init/ui/screen/todo/todo.screen.dart';
-import 'package:init/ui/widgets/custom_app_bar.dart';
-import 'package:init/ui/widgets/custom_side_bar.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/provider/request_service.provider.dart';
+import 'package:squirrel/domain/service/auth.service.dart';
+import 'package:squirrel/ui/screen/auth/auth.screen.dart';
+import 'package:squirrel/ui/screen/clients/clients.screen.dart';
+import 'package:squirrel/ui/screen/history/history.screen.dart';
+import 'package:squirrel/ui/screen/main/index.screen.dart';
+import 'package:squirrel/ui/screen/order_details/order_details.screen.dart';
+import 'package:squirrel/ui/screen/planner/planner.screen.dart';
+import 'package:squirrel/ui/screen/request/request.screen.dart';
+import 'package:squirrel/ui/screen/stats/stats.screen.dart';
+import 'package:squirrel/ui/screen/todo/todo.screen.dart';
+import 'package:squirrel/ui/widgets/custom_app_bar.dart';
+import 'package:squirrel/ui/widgets/custom_side_bar.dart';
 
 final GlobalKey<NavigatorState> rootNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'root');

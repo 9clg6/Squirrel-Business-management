@@ -1,7 +1,7 @@
-import 'package:init/data/model/remote/login_result.remote_model.dart';
-import 'package:init/data/remote_data_source/authentication.data_source.dart';
-import 'package:init/data/repository/auth/authentication.repository.dart';
-import 'package:init/domain/entities/login_result.entity.dart';
+import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
+import 'package:squirrel/data/remote_data_source/authentication.data_source.dart';
+import 'package:squirrel/data/repository/auth/authentication.repository.dart';
+import 'package:squirrel/domain/entities/login_result.entity.dart';
 
 /// [AuthenticationRepositoryImpl]
 class AuthenticationRepositoryImpl extends AuthenticationRepository {

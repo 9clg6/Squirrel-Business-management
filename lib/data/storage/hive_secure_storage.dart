@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:hive/hive.dart';
-import 'package:init/domain/service/secure_storage.service.dart';
-import 'package:init/foundation/interfaces/storage.interface.dart';
+import 'package:squirrel/domain/service/secure_storage.service.dart';
+import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
 ///
 /// [HiveSecureStorage]

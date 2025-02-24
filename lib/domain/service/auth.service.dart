@@ -2,14 +2,14 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:init/data/model/local/login_result.local_model.dart';
-import 'package:init/data/storage/hive_secure_storage.dart';
-import 'package:init/domain/entities/login_result.entity.dart';
-import 'package:init/domain/entities/request.entity.dart';
-import 'package:init/domain/service/request_service.dart';
-import 'package:init/domain/use_case/check_validity.use_case.dart';
-import 'package:init/domain/use_case/login.use_case.dart';
-import 'package:init/foundation/routing/app_router.dart';
+import 'package:squirrel/data/model/local/login_result.local_model.dart';
+import 'package:squirrel/data/storage/hive_secure_storage.dart';
+import 'package:squirrel/domain/entities/login_result.entity.dart';
+import 'package:squirrel/domain/entities/request.entity.dart';
+import 'package:squirrel/domain/service/request_service.dart';
+import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
+import 'package:squirrel/domain/use_case/login.use_case.dart';
+import 'package:squirrel/foundation/routing/app_router.dart';
 
 /// [AuthService]
 class AuthService {

@@ -1,4 +1,4 @@
-import 'package:init/foundation/enums/theme_appareance.enum.dart';
+import 'package:squirrel/foundation/enums/theme_appareance.enum.dart';
 
 ///
 /// [PreferencesRepository]

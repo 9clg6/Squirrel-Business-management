@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:init/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
 
 class OrderCodec extends Codec<Order, String> {
   @override

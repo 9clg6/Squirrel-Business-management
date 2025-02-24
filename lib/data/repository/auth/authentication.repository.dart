@@ -1,6 +1,4 @@
-
-
-import 'package:init/domain/entities/login_result.entity.dart';
+import 'package:squirrel/domain/entities/login_result.entity.dart';
 
 /// Authentication repository
 abstract class AuthenticationRepository {

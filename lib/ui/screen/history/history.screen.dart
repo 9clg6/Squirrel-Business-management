@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:init/foundation/enums/headers.enum.dart';
-import 'package:init/foundation/extensions/date_time.extension.dart';
-import 'package:init/foundation/utils/util.dart';
-import 'package:init/ui/screen/history/history.view_model.dart';
-import 'package:init/ui/screen/history/history.view_state.dart';
-import 'package:init/ui/widgets/status_card.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/foundation/enums/headers.enum.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/foundation/utils/util.dart';
+import 'package:squirrel/ui/screen/history/history.view_model.dart';
+import 'package:squirrel/ui/screen/history/history.view_state.dart';
+import 'package:squirrel/ui/widgets/status_card.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 class HistoryScreen extends StatefulWidget {
   const HistoryScreen({super.key});

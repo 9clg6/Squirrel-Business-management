@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:init/foundation/extensions/date_time.extension.dart';
-import 'package:init/ui/screen/add_order_action/add_order_action.view_model.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_model.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 class AddOrderActionScreen extends ConsumerWidget {
   const AddOrderActionScreen({super.key});

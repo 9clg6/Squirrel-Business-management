@@ -1,6 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:init/domain/state/order.state.dart';
-import 'package:init/ui/abstraction/view_state.abs.dart';
+import 'package:squirrel/domain/state/order.state.dart';
+import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'todo.view_state.g.dart';
 

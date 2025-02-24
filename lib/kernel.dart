@@ -4,11 +4,11 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:init/application/config/app_config.dart';
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/firebase_options.dart';
-import 'package:init/ui/app.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:squirrel/application/config/app_config.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/firebase_options.dart';
+import 'package:squirrel/ui/app.dart';
 
 ///
 /// The kernel of the application.

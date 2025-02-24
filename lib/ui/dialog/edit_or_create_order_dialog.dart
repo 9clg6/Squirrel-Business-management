@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:gap/gap.dart';
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/foundation/extensions/date_time.extension.dart';
-import 'package:init/foundation/routing/app_router.dart';
-import 'package:init/foundation/utils/util.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/foundation/routing/app_router.dart';
+import 'package:squirrel/foundation/utils/util.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 class EditOrAddOrderDialog extends StatefulWidget {
   /// Is creation

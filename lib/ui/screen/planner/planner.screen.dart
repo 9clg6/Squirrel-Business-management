@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:init/gen/assets.gen.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/gen/assets.gen.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 ///
 /// Planner screen

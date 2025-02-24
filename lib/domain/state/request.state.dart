@@ -1,6 +1,6 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
-import 'package:init/domain/entities/request.entity.dart';
+import 'package:squirrel/domain/entities/request.entity.dart';
 
 part 'request.state.g.dart';
 

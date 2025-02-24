@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:init/application/providers/initializer.dart';
-import 'package:init/domain/service/dialog.service.dart';
-import 'package:init/domain/service/order.service.dart';
-import 'package:init/foundation/enums/chart_type.enum.dart';
-import 'package:init/ui/screen/stats/stats.view_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/service/dialog.service.dart';
+import 'package:squirrel/domain/service/order.service.dart';
+import 'package:squirrel/foundation/enums/chart_type.enum.dart';
+import 'package:squirrel/ui/screen/stats/stats.view_state.dart';
 
 part 'stats.view_model.g.dart';
 

@@ -11,27 +11,27 @@
 import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
-import 'package:init/application/injection/data.module.dart' as _i35;
-import 'package:init/application/injection/domain.module.dart' as _i852;
-import 'package:init/data/local_data_source/preferences/preferences_local.data_source.dart'
-    as _i88;
-import 'package:init/data/remote_data_source/authentication.data_source.dart'
-    as _i784;
-import 'package:init/data/repository/auth/authentication.repository.dart'
-    as _i303;
-import 'package:init/data/repository/preferences/preferences.repository.dart'
-    as _i333;
-import 'package:init/data/storage/hive_secure_storage.dart' as _i323;
-import 'package:init/domain/service/auth.service.dart' as _i553;
-import 'package:init/domain/service/dialog.service.dart' as _i218;
-import 'package:init/domain/service/navigator.service.dart' as _i641;
-import 'package:init/domain/service/order.service.dart' as _i819;
-import 'package:init/domain/service/request_service.dart' as _i581;
-import 'package:init/domain/service/secure_storage.service.dart' as _i861;
-import 'package:init/domain/use_case/check_validity.use_case.dart' as _i104;
-import 'package:init/domain/use_case/get_theme.use_case.dart' as _i168;
-import 'package:init/domain/use_case/login.use_case.dart' as _i90;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:squirrel/application/injection/data.module.dart' as _i70;
+import 'package:squirrel/application/injection/domain.module.dart' as _i844;
+import 'package:squirrel/data/local_data_source/preferences/preferences_local.data_source.dart'
+    as _i939;
+import 'package:squirrel/data/remote_data_source/authentication.data_source.dart'
+    as _i397;
+import 'package:squirrel/data/repository/auth/authentication.repository.dart'
+    as _i201;
+import 'package:squirrel/data/repository/preferences/preferences.repository.dart'
+    as _i513;
+import 'package:squirrel/data/storage/hive_secure_storage.dart' as _i241;
+import 'package:squirrel/domain/service/auth.service.dart' as _i1038;
+import 'package:squirrel/domain/service/dialog.service.dart' as _i635;
+import 'package:squirrel/domain/service/navigator.service.dart' as _i216;
+import 'package:squirrel/domain/service/order.service.dart' as _i483;
+import 'package:squirrel/domain/service/request_service.dart' as _i392;
+import 'package:squirrel/domain/service/secure_storage.service.dart' as _i1072;
+import 'package:squirrel/domain/use_case/check_validity.use_case.dart' as _i365;
+import 'package:squirrel/domain/use_case/get_theme.use_case.dart' as _i173;
+import 'package:squirrel/domain/use_case/login.use_case.dart' as _i677;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -47,49 +47,49 @@ extension GetItInjectableX on _i174.GetIt {
     final domainModule = _$DomainModule();
     final dataModule = _$DataModule();
     gh.factory<_i558.FlutterSecureStorage>(() => domainModule.storage());
-    gh.singleton<_i581.RequestService>(() => domainModule.requestService());
+    gh.singleton<_i392.RequestService>(() => domainModule.requestService());
     gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
         () => domainModule.provideNavigatorKey());
-    gh.singleton<_i641.NavigatorService>(() => domainModule.navigatorService());
-    gh.factory<_i784.AuthenticationDataSource>(
+    gh.singleton<_i216.NavigatorService>(() => domainModule.navigatorService());
+    gh.factory<_i397.AuthenticationDataSource>(
         () => dataModule.authenticationDataSourceImpl());
-    gh.factory<_i303.AuthenticationRepository>(() => dataModule
-        .authenticationRepository(gh<_i784.AuthenticationDataSource>()));
-    gh.singleton<_i218.DialogService>(() => domainModule
+    gh.factory<_i201.AuthenticationRepository>(() => dataModule
+        .authenticationRepository(gh<_i397.AuthenticationDataSource>()));
+    gh.factory<_i677.LoginUseCase>(
+        () => domainModule.loginUseCase(gh<_i201.AuthenticationRepository>()));
+    gh.factory<_i365.CheckValidityUseCase>(() => domainModule
+        .checkValidityUseCase(gh<_i201.AuthenticationRepository>()));
+    gh.singleton<_i635.DialogService>(() => domainModule
         .dialogService(gh<_i409.GlobalKey<_i409.NavigatorState>>()));
-    await gh.singletonAsync<_i861.SecureStorageService>(
+    await gh.singletonAsync<_i1072.SecureStorageService>(
       () => domainModule.secureStorageService(gh<_i558.FlutterSecureStorage>()),
       preResolve: true,
     );
-    gh.factory<_i90.LoginUseCase>(
-        () => domainModule.loginUseCase(gh<_i303.AuthenticationRepository>()));
-    gh.factory<_i104.CheckValidityUseCase>(() => domainModule
-        .checkValidityUseCase(gh<_i303.AuthenticationRepository>()));
-    await gh.singletonAsync<_i323.HiveSecureStorage>(
-      () => dataModule.hiveSecureStorage(gh<_i861.SecureStorageService>()),
+    await gh.singletonAsync<_i241.HiveSecureStorage>(
+      () => dataModule.hiveSecureStorage(gh<_i1072.SecureStorageService>()),
       preResolve: true,
     );
-    await gh.singletonAsync<_i553.AuthService>(
+    gh.factory<_i939.PreferencesLocalDataSource>(() => dataModule
+        .preferencesLocalDataSourcesImpl(gh<_i241.HiveSecureStorage>()));
+    await gh.singletonAsync<_i1038.AuthService>(
       () => domainModule.authService(
-        gh<_i90.LoginUseCase>(),
-        gh<_i104.CheckValidityUseCase>(),
-        gh<_i323.HiveSecureStorage>(),
-        gh<_i581.RequestService>(),
+        gh<_i677.LoginUseCase>(),
+        gh<_i365.CheckValidityUseCase>(),
+        gh<_i241.HiveSecureStorage>(),
+        gh<_i392.RequestService>(),
       ),
       preResolve: true,
     );
-    gh.factory<_i88.PreferencesLocalDataSource>(() => dataModule
-        .preferencesLocalDataSourcesImpl(gh<_i323.HiveSecureStorage>()));
-    gh.factory<_i333.PreferencesRepository>(() => dataModule
-        .preferencesRepository(gh<_i88.PreferencesLocalDataSource>()));
-    gh.singleton<_i819.OrderService>(
-        () => domainModule.orderService(gh<_i323.HiveSecureStorage>()));
-    gh.factory<_i168.GetThemeUseCase>(
-        () => domainModule.getThemeUseCase(gh<_i333.PreferencesRepository>()));
+    gh.singleton<_i483.OrderService>(
+        () => domainModule.orderService(gh<_i241.HiveSecureStorage>()));
+    gh.factory<_i513.PreferencesRepository>(() => dataModule
+        .preferencesRepository(gh<_i939.PreferencesLocalDataSource>()));
+    gh.factory<_i173.GetThemeUseCase>(
+        () => domainModule.getThemeUseCase(gh<_i513.PreferencesRepository>()));
     return this;
   }
 }
 
-class _$DomainModule extends _i852.DomainModule {}
+class _$DomainModule extends _i844.DomainModule {}
 
-class _$DataModule extends _i35.DataModule {}
+class _$DataModule extends _i70.DataModule {}

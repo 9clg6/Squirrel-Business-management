@@ -1,5 +1,5 @@
-import 'package:init/data/repository/auth/authentication.repository.dart';
-import 'package:init/domain/use_case/abstraction/use_case_abs.dart';
+import 'package:squirrel/data/repository/auth/authentication.repository.dart';
+import 'package:squirrel/domain/use_case/abstraction/use_case_abs.dart';
 
 class CheckValidityUseCase implements UseCaseWithParams<Future<bool>, String> {
   /// Authentication repository

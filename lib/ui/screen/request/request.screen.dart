@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:init/domain/provider/request_service.provider.dart';
-import 'package:init/foundation/extensions/date_time.extension.dart';
-import 'package:init/ui/widgets/text_variant.dart';
+import 'package:squirrel/domain/provider/request_service.provider.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// [RequestScreen]
 class RequestScreen extends ConsumerStatefulWidget {

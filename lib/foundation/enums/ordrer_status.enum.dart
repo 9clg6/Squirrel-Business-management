@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
 
+@JsonEnum()
 enum OrderStatus {
   pending(
     name: "En attente",
@@ -33,4 +35,11 @@ enum OrderStatus {
 
   final String name;
   final Color color;
+
+  factory OrderStatus.fromJson(String value) => OrderStatus.values.firstWhere(
+        (element) => element.name == value,
+        orElse: () => OrderStatus.pending,
+      );
+
+  String toJson() => name;
 }

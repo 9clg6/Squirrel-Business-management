@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:init/foundation/utils/util.dart';
-import 'package:init/ui/screen/clients/clients.view_model.dart';
+import 'package:squirrel/foundation/utils/util.dart';
+import 'package:squirrel/ui/screen/clients/clients.view_model.dart';
 
 ///
 /// Second screen

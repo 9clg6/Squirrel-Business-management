@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:init/foundation/routing/app_router.dart';
+import 'package:squirrel/foundation/routing/app_router.dart';
 
 /// Confirmation dialog
 ///

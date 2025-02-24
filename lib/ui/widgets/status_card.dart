@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 
 /// A card that displays the status of an order
 ///

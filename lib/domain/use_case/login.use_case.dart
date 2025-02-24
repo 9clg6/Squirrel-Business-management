@@ -1,6 +1,6 @@
-import 'package:init/data/repository/auth/authentication.repository.dart';
-import 'package:init/domain/entities/login_result.entity.dart';
-import 'package:init/domain/use_case/abstraction/use_case_abs.dart';
+import 'package:squirrel/data/repository/auth/authentication.repository.dart';
+import 'package:squirrel/domain/entities/login_result.entity.dart';
+import 'package:squirrel/domain/use_case/abstraction/use_case_abs.dart';
 
 /// [LoginUseCase]
 class LoginUseCase implements UseCaseWithParams<Future<LoginResultEntity>, String> {

@@ -1,5 +1,5 @@
-import 'package:init/data/model/local/login_result.local_model.dart';
-import 'package:init/data/model/remote/login_result.remote_model.dart';
+import 'package:squirrel/data/model/local/login_result.local_model.dart';
+import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
 
 /// [LoginResultEntity]
 class LoginResultEntity {

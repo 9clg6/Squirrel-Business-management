@@ -1,8 +1,8 @@
 import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:init/domain/entities/request.entity.dart';
-import 'package:init/domain/state/request.state.dart';
+import 'package:squirrel/domain/entities/request.entity.dart';
+import 'package:squirrel/domain/state/request.state.dart';
 
 /// [RequestService]
 class RequestService extends StateNotifier<RequestState> {

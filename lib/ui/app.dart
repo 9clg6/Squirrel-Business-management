@@ -1,9 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:init/foundation/routing/app_router.dart';
-import 'package:init/foundation/theming/theme.dart';
-import 'package:init/foundation/utils/util.dart';
+import 'package:squirrel/foundation/routing/app_router.dart';
+import 'package:squirrel/foundation/theming/theme.dart';
+import 'package:squirrel/foundation/utils/util.dart';
 
 ///
 /// The main app widget.

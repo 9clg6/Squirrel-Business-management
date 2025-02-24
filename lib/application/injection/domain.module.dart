@@ -1,19 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:init/data/repository/auth/authentication.repository.dart';
-import 'package:init/data/repository/preferences/preferences.repository.dart';
-import 'package:init/data/storage/hive_secure_storage.dart';
-import 'package:init/domain/service/auth.service.dart';
-import 'package:init/domain/service/dialog.service.dart';
-import 'package:init/domain/service/navigator.service.dart';
-import 'package:init/domain/service/order.service.dart';
-import 'package:init/domain/service/request_service.dart';
-import 'package:init/domain/service/secure_storage.service.dart';
-import 'package:init/domain/use_case/check_validity.use_case.dart';
-import 'package:init/domain/use_case/get_theme.use_case.dart';
-import 'package:init/domain/use_case/login.use_case.dart';
-import 'package:init/foundation/routing/app_router.dart';
 import 'package:injectable/injectable.dart';
+import 'package:squirrel/data/repository/auth/authentication.repository.dart';
+import 'package:squirrel/data/repository/preferences/preferences.repository.dart';
+import 'package:squirrel/data/storage/hive_secure_storage.dart';
+import 'package:squirrel/domain/service/auth.service.dart';
+import 'package:squirrel/domain/service/dialog.service.dart';
+import 'package:squirrel/domain/service/navigator.service.dart';
+import 'package:squirrel/domain/service/order.service.dart';
+import 'package:squirrel/domain/service/request_service.dart';
+import 'package:squirrel/domain/service/secure_storage.service.dart';
+import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
+import 'package:squirrel/domain/use_case/get_theme.use_case.dart';
+import 'package:squirrel/domain/use_case/login.use_case.dart';
+import 'package:squirrel/foundation/routing/app_router.dart';
 
 @module
 abstract class DomainModule {

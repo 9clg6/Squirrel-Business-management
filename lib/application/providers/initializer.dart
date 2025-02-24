@@ -1,7 +1,7 @@
 import 'package:get_it/get_it.dart';
-import 'package:init/application/config/app_config.dart';
-import 'package:init/application/providers/initializer.config.dart';
 import 'package:injectable/injectable.dart';
+import 'package:squirrel/application/config/app_config.dart';
+import 'package:squirrel/application/providers/initializer.config.dart';
 
 ///
 /// The injector instance

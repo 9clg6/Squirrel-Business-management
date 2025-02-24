@@ -1,5 +1,5 @@
-import 'package:init/data/local_data_source/preferences/preferences_local.data_source.dart';
-import 'package:init/data/storage/hive_secure_storage.dart';
+import 'package:squirrel/data/local_data_source/preferences/preferences_local.data_source.dart';
+import 'package:squirrel/data/storage/hive_secure_storage.dart';
 
 ///
 /// [PreferencesLocalDataSourcesImpl]

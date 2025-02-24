@@ -1,8 +1,8 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
-import 'package:init/domain/entities/action.entity.dart';
-import 'package:init/domain/entities/order.entity.dart';
-import 'package:init/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/domain/entities/action.entity.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 
 part 'order.state.g.dart';
 
