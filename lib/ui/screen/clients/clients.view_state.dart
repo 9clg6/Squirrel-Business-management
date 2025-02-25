@@ -1,4 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
+import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'clients.view_state.g.dart';
@@ -17,7 +18,7 @@ class ClientsScreenState extends ViewStateAbs {
   ///
   /// Clients
   ///
-  final Map<String, Map<String, dynamic>> clients;
+  final List<Client> clients;
 
   ///
   /// Constructor
@@ -34,7 +35,7 @@ class ClientsScreenState extends ViewStateAbs {
   ClientsScreenState.initial()
       : loading = true,
         selectedClient = null,
-        clients = {};
+        clients = [];
 
   ///
   /// Get props

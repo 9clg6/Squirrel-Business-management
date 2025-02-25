@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/auth/auth.view_model.dart';
 import 'package:squirrel/ui/widgets/help_text.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -34,8 +35,8 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const TextVariant(
-                'Connexion',
+              TextVariant(
+                LocaleKeys.login.tr(),
                 variantType: TextVariantType.displaySmall,
               ),
               const Gap(20),
@@ -44,13 +45,13 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 child: TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Veuillez entrer votre numéro de compte';
+                      return LocaleKeys.pleaseEnterYourAccountNumber.tr();
                     }
                     return null;
                   },
                   controller: _licenseKeyController,
-                  decoration: const InputDecoration(
-                    hintText: 'Entrez votre numéro de compte',
+                  decoration: InputDecoration(
+                    hintText: LocaleKeys.pleaseEnterYourAccountNumber.tr(),
                   ),
                 ),
               ),
@@ -71,12 +72,14 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           setState(() => _isLoading = false);
                         }
                       },
-                      child: const Text('Connexion'),
+                      child: TextVariant(
+                        LocaleKeys.login.tr(),
+                        variantType: TextVariantType.bodyMedium,
+                      ),
                     ),
               const Gap(42),
-              const HelpText(
-                text:
-                    "Si vous avez perdu votre clé, contactez votre fournisseur.",
+              HelpText(
+                text: LocaleKeys.ifYouHaveLostYourKey.tr(),
               ),
             ],
           ),

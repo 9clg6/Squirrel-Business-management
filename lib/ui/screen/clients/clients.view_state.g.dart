@@ -11,7 +11,7 @@ abstract class _$ClientsScreenStateCWProxy {
 
   ClientsScreenState selectedClient(String? selectedClient);
 
-  ClientsScreenState clients(Map<String, Map<String, dynamic>> clients);
+  ClientsScreenState clients(List<Client> clients);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `ClientsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -22,7 +22,7 @@ abstract class _$ClientsScreenStateCWProxy {
   ClientsScreenState call({
     bool? loading,
     String? selectedClient,
-    Map<String, Map<String, dynamic>>? clients,
+    List<Client>? clients,
   });
 }
 
@@ -40,8 +40,7 @@ class _$ClientsScreenStateCWProxyImpl implements _$ClientsScreenStateCWProxy {
       this(selectedClient: selectedClient);
 
   @override
-  ClientsScreenState clients(Map<String, Map<String, dynamic>> clients) =>
-      this(clients: clients);
+  ClientsScreenState clients(List<Client> clients) => this(clients: clients);
 
   @override
 
@@ -68,7 +67,7 @@ class _$ClientsScreenStateCWProxyImpl implements _$ClientsScreenStateCWProxy {
       clients == const $CopyWithPlaceholder() || clients == null
           ? _value.clients
           // ignore: cast_nullable_to_non_nullable
-          : clients as Map<String, Map<String, dynamic>>,
+          : clients as List<Client>,
     );
   }
 }

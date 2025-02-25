@@ -1,0 +1,4 @@
+enum BusinessType {
+  service,
+  shop;
+}

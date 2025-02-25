@@ -3,8 +3,10 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:squirrel/domain/provider/service_type_service.provider.dart';
 import 'package:squirrel/foundation/enums/chart_type.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/stats/stats.view_model.dart';
 import 'package:squirrel/ui/screen/stats/stats.view_state.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -15,25 +17,25 @@ import 'package:squirrel/ui/widgets/text_variant.dart';
 // Horaires habituels des actions
 // Horaires habituels des réponses
 
-///
 /// Stats screen
-///
 class StatsScreen extends ConsumerStatefulWidget {
-  ///
   /// Constructor
+  /// @param [key] key
   ///
   const StatsScreen({super.key});
 
+  /// Creates the state of the stats screen
+  /// @return [ConsumerState<ConsumerStatefulWidget>] state of the stats screen
+  ///
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _StatsScreenState();
 }
 
-///
 /// State of the stats screen
-///
 class _StatsScreenState extends ConsumerState<StatsScreen> {
-  ///
   /// Builds the second screen
+  /// @param [context] context
+  /// @return [Widget] widget of the second screen
   ///
   @override
   Widget build(BuildContext context) {
@@ -108,7 +110,7 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
       child: Column(
         children: [
           TextVariant(
-            'Nombre de commandes par jour',
+            LocaleKeys.ordersByDay.tr(),
             variantType: TextVariantType.titleMedium,
             color: colorScheme.onSurface,
           ),
@@ -169,7 +171,7 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
                         ),
                       ),
                       child: TextVariant(
-                        'Revenus journalier',
+                        LocaleKeys.dailyRevenue.tr(),
                         variantType: TextVariantType.bodyMedium,
                         color: isHoveringRevenue ||
                                 state.chartType == ChartType.dailyRevenue
@@ -290,6 +292,7 @@ class RowQuickStats extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final state = ref.watch(statsViewModelProvider);
+    final businessTypeState = ref.watch(businessTypeServiceNotifierProvider);
 
     return IntrinsicHeight(
       child: Row(
@@ -327,8 +330,10 @@ class RowQuickStats extends ConsumerWidget {
                     ),
                   ),
                   const Gap(10),
-                  const TextVariant(
-                    'Boutiques les plus performantes',
+                  TextVariant(
+                    businessTypeState.isService
+                        ? LocaleKeys.bestProducts.tr()
+                        : LocaleKeys.bestShops.tr(),
                     variantType: TextVariantType.bodySmall,
                     fontWeight: FontWeight.bold,
                   ),
@@ -376,8 +381,8 @@ class RowQuickStats extends ConsumerWidget {
                     ),
                   ),
                   const Gap(10),
-                  const TextVariant(
-                    'Meilleur client',
+                  TextVariant(
+                    LocaleKeys.bestClient.tr(),
                     variantType: TextVariantType.bodySmall,
                     fontWeight: FontWeight.bold,
                   ),
@@ -449,8 +454,8 @@ class RowQuickStats extends ConsumerWidget {
                     ),
                   ),
                   const Gap(10),
-                  const TextVariant(
-                    'Client le plus fidèle',
+                  TextVariant(
+                    LocaleKeys.mostFrequentClient.tr(),
                     variantType: TextVariantType.bodySmall,
                     fontWeight: FontWeight.bold,
                   ),
@@ -519,13 +524,13 @@ class _StatsChartState extends ConsumerState<StatsChart> {
         child: Column(
           children: [
             TextVariant(
-              'Montant total des commandes',
+              LocaleKeys.totalOrdersAmount.tr(),
               color: colorScheme.onSurface,
               variantType: TextVariantType.bodyMedium,
             ),
             const Gap(12),
             TextVariant(
-              '${state.total} €',
+              LocaleKeys.priceWithSymbol.tr(args: [state.total.toString()]),
               color: colorScheme.onSurface,
               variantType: TextVariantType.titleLarge,
             ),
@@ -574,7 +579,12 @@ class _StatsChartState extends ConsumerState<StatsChart> {
                                       variantType: TextVariantType.bodyMedium,
                                     ),
                                     TextVariant(
-                                      "${state.totalByShop[state.hoveredShop!]} €",
+                                      LocaleKeys.priceWithSymbol.tr(
+                                        args: [
+                                          state.totalByShop[state.hoveredShop!]
+                                              .toString(),
+                                        ],
+                                      ),
                                       color: colorScheme.onSurface,
                                       variantType: TextVariantType.titleLarge,
                                     ),

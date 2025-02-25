@@ -5,6 +5,7 @@ import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/provider/request_service.provider.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
+import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/ui/screen/auth/auth.screen.dart';
 import 'package:squirrel/ui/screen/clients/clients.screen.dart';
 import 'package:squirrel/ui/screen/history/history.screen.dart';
@@ -60,7 +61,7 @@ final GoRouter appRouter = GoRouter(
 
         return Consumer(
           builder: (context, ref, child) {
-            final requestState = ref.watch(requestServiceNotifierProvider);
+            final RequestState requestState = ref.watch(requestServiceNotifierProvider);
 
             return Scaffold(
               appBar: !isAuthRoute ? const CustomAppBar() : null,

@@ -8,9 +8,7 @@ import 'package:squirrel/ui/screen/todo/todo.view_state.dart';
 
 part 'todo.view_model.g.dart';
 
-///
 /// [TodoViewModel]
-///
 @riverpod
 class TodoViewModel extends _$TodoViewModel {
   /// Order service
@@ -32,7 +30,6 @@ class TodoViewModel extends _$TodoViewModel {
     _navigatorService = injector<NavigatorService>();
   }
 
-  ///
   /// Build
   ///
   @override
@@ -47,19 +44,17 @@ class TodoViewModel extends _$TodoViewModel {
     );
   }
 
-  ///
-  /// Init
-  ///
-  Future<void> init() async {}
-
   /// Navigate to details
-  ///
+  /// @param [order] order
+  /// 
   void navigateToDetails(Order order) {
     _navigatorService.navigateToDetails(order);
   }
 
   /// Update order status
-  ///
+  /// @param [data] data
+  /// @param [status] status
+  /// 
   void updateOrderStatus(Order data, OrderStatus status) {
     _orderService.updateOrderStatus(data, status);
   }

@@ -7,6 +7,7 @@ import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/order_details/order_details.view_state.dart';
 
 part 'order_details.view_model.g.dart';
@@ -38,8 +39,8 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   @override
   OrderDetailsScreenState build() => OrderDetailsScreenState.initial();
 
-  ///
   /// Init
+  /// @param [o] order
   ///
   Future<void> init({required Order o}) async {
     _orderService.addListener((s) {
@@ -61,18 +62,22 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   }
 
   /// Update order status
+  /// @param [order] order
+  /// @param [currentStatus] current status
   ///
   void updateOrderStatus(Order order, OrderStatus currentStatus) {
     _orderService.updateOrderStatus(order, currentStatus);
   }
 
   /// Update order priority
+  /// @param [order] order
   ///
   void updateOrderPriority(Order order) {
     _orderService.updateOrderPriority(order);
   }
 
   /// Add order action
+  /// @param [order] order
   ///
   Future<void> addOrderAction() async {
     final OrderAction? orderAction =
@@ -86,6 +91,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   }
 
   /// Delete order action
+  /// @param [action] action
   ///
   void deleteOrderAction(OrderAction action) {
     _orderService.deleteOrderAction(
@@ -98,8 +104,8 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   void deleteOrder() {
     _dialogService.showConfirmationDialog(
-      "Supprimer la commande",
-      "Voulez-vous vraiment supprimer la commande ?\nCette action est irréversible.",
+      LocaleKeys.deleteOrder.tr(),
+      LocaleKeys.deleteOrderConfirmation.tr(),
       () {
         _orderService.deleteOrder(state.order!);
       },
@@ -109,8 +115,10 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Edit order
   ///
   Future<void> editOrder() async {
-    final Order? order =
-        await _dialogService.showEditOrderDialog(order: state.order!);
+    final Order? order = await _dialogService.showEditOrderDialog(
+      order: state.order!,
+    );
+
     if (order != null) {
       _orderService.updateOrder(order);
     }

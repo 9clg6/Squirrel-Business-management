@@ -5,7 +5,10 @@ import 'package:squirrel/data/repository/auth/authentication.repository.dart';
 import 'package:squirrel/data/repository/preferences/preferences.repository.dart';
 import 'package:squirrel/data/storage/hive_secure_storage.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
+import 'package:squirrel/domain/service/business_type.service.dart';
+import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
+import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
@@ -46,6 +49,13 @@ abstract class DomainModule {
     FlutterSecureStorage storage,
   ) async =>
       SecureStorageService.inject(storage);
+
+  /// Allow to inject [HiveSecureStorageService]
+  @singleton
+  @preResolve
+  Future<HiveSecureStorageService> hiveSecureStorageService(
+          SecureStorageService secureStorageService) =>
+      HiveSecureStorageService.inject(secureStorageService);
 
   /// Allow to inject [RequestService]
   @singleton
@@ -91,4 +101,16 @@ abstract class DomainModule {
   /// Allow to inject [NavigatorService]
   @singleton
   NavigatorService navigatorService() => NavigatorService();
+
+  /// Allow to inject [BusinessTypeService]
+  @singleton
+  @preResolve
+  Future<BusinessTypeService> serviceTypeService(
+          HiveSecureStorageService secureStorageService) =>
+      BusinessTypeService.inject(secureStorageService);
+
+  /// Allow to inject [ClientService]
+  @singleton
+  ClientService clientService(OrderService orderService) =>
+      ClientService(orderService);
 }

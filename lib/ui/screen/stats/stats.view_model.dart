@@ -8,9 +8,7 @@ import 'package:squirrel/ui/screen/stats/stats.view_state.dart';
 
 part 'stats.view_model.g.dart';
 
-///
 /// [StatsViewModel]
-///
 @riverpod
 class StatsViewModel extends _$StatsViewModel {
   /// Order service
@@ -20,7 +18,8 @@ class StatsViewModel extends _$StatsViewModel {
   late final DialogService _dialogService;
 
   /// Build
-  ///
+  /// @return [StatsScreenState] state of the stats screen
+  /// 
   @override
   StatsScreenState build() {
     _orderService = injector<OrderService>();
@@ -39,13 +38,15 @@ class StatsViewModel extends _$StatsViewModel {
   }
 
   /// Change hovered shop
-  ///
+  /// @param [key] key
+  /// 
   void changeHoveredShop([String? key]) {
     state = state.copyWith(hoveredShop: key);
   }
 
   /// Change date range
-  ///
+  /// @return [Future<void>] future void
+  /// 
   Future<void> changeDateRange() async {
     // Afficher le sélecteur de dates
     final List<DateTime?>? result = await _dialogService.selectRangeDate();
@@ -60,9 +61,9 @@ class StatsViewModel extends _$StatsViewModel {
     );
   }
 
-  ///
   /// Set revenue type
-  ///
+  /// @param [revenueType] revenue type
+  /// 
   void setRevenueType(ChartType revenueType) {
     if (revenueType == state.chartType) {
       state = state.copyWith(chartType: ChartType.orderAmount);

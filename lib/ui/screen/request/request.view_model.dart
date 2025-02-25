@@ -6,6 +6,8 @@ part 'request.view_model.g.dart';
 /// [RequestViewModel]
 @riverpod
 class RequestViewModel extends _$RequestViewModel {
+  /// Build
+  ///
   @override
   RequestViewState build() => RequestViewState.initial();
 }

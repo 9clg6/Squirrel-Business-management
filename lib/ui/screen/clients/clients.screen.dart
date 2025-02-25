@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/utils/util.dart';
 import 'package:squirrel/ui/screen/clients/clients.view_model.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 ///
 /// Second screen
@@ -51,33 +53,55 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
               child: DataTable(
                 dataRowColor: computeDataRowColor(colorScheme),
                 showCheckboxColumn: false,
-                columns: const [
-                  DataColumn(label: Text('Nom d\'utilisateur')),
-                  DataColumn(label: Text('Nombre de commandes')),
-                  DataColumn(label: Text('Total des commandes')),
-                  DataColumn(label: Text('Total des commissions')),
+                columns: [
+                  DataColumn(
+                    label: TextVariant(
+                      LocaleKeys.clientName.tr(),
+                      variantType: TextVariantType.bodyMedium,
+                    ),
+                  ),
+                  DataColumn(
+                    label: TextVariant(
+                      LocaleKeys.totalOrders.tr(),
+                      variantType: TextVariantType.bodyMedium,
+                    ),
+                  ),
+                  DataColumn(
+                    label: TextVariant(
+                      LocaleKeys.totalAmount.tr(),
+                      variantType: TextVariantType.bodyMedium,
+                    ),
+                  ),
+                  DataColumn(
+                    label: TextVariant(
+                      LocaleKeys.totalCommissions.tr(),
+                      variantType: TextVariantType.bodyMedium,
+                    ),
+                  ),
                 ],
-                rows: state.clients.entries
+                rows: state.clients
                     .map((entry) => DataRow(
                           onSelectChanged: (bool? value) {
-                            viewModel.selectClient(entry.key);
+                            viewModel.selectClient(entry.name);
                           },
                           cells: [
-                            DataCell(Text(entry.key)),
+                            DataCell(Text(entry.name)),
                             DataCell(
                               Text(
-                                entry.value['totalOrders'].toString(),
+                                entry.orderQuantity.toString(),
                               ),
                             ),
                             DataCell(
                               Text(
-                                entry.value['totalAmount'].toStringAsFixed(2),
+                                entry.orderTotalAmount?.toStringAsFixed(2) ??
+                                    '-',
                               ),
                             ),
                             DataCell(
                               Text(
-                                entry.value['totalCommissions']
-                                    .toStringAsFixed(2),
+                                entry.commissionTotalAmount
+                                        ?.toStringAsFixed(2) ??
+                                    '-',
                               ),
                             ),
                           ],

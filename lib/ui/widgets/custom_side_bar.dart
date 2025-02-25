@@ -1,22 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 
+/// Custom side bar
 class CustomSideBar extends StatefulWidget {
+  /// Constructor
+  /// @param [key] key
+  /// @param [navigationShell] navigation shell
+  /// 
   const CustomSideBar({
     super.key,
     required this.navigationShell,
   });
 
+  /// Navigation shell
   final StatefulNavigationShell navigationShell;
 
+  /// Create the state
+  /// @return [State<CustomSideBar>] state of the custom side bar
+  /// 
   @override
   State<CustomSideBar> createState() => _CustomSideBarState();
 }
 
+/// State of the custom side bar
 class _CustomSideBarState extends State<CustomSideBar> {
+  /// Controller
   late SidebarXController controller;
 
+  /// Init the state
+  /// 
   @override
   void initState() {
     super.initState();
@@ -26,6 +40,10 @@ class _CustomSideBarState extends State<CustomSideBar> {
     );
   }
 
+  /// Build the side bar
+  /// @param [context] context
+  /// @return [Widget] widget of the side bar
+  /// 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -99,7 +117,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
           ),
           items: [
             SidebarXItem(
-              label: 'Accueil',
+              label: LocaleKeys.home.tr(),
               icon: Icons.home,
               onTap: () {
                 if (widget.navigationShell.currentIndex == 0) {
@@ -111,7 +129,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
             ),
             SidebarXItem(
               icon: Icons.list_alt_outlined,
-              label: 'Todo liste',
+              label: LocaleKeys.todoList.tr(),
               onTap: () {
                 if (widget.navigationShell.currentIndex == 1) {
                   context.goNamed('todo');
@@ -122,7 +140,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
             ),
             SidebarXItem(
               icon: Icons.bar_chart,
-              label: 'Statistiques',
+              label: LocaleKeys.stats.tr(),
               onTap: () {
                 if (widget.navigationShell.currentIndex == 2) {
                   context.goNamed('stats');
@@ -133,7 +151,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
             ),
             SidebarXItem(
               icon: Icons.calendar_month_outlined,
-              label: 'Planification',
+              label: LocaleKeys.planification.tr(),
               onTap: () {
                 if (widget.navigationShell.currentIndex == 3) {
                   context.goNamed('planner');
@@ -144,12 +162,12 @@ class _CustomSideBarState extends State<CustomSideBar> {
             ),
             SidebarXItem(
               icon: Icons.people_alt_outlined,
-              label: 'Clients',
+              label: LocaleKeys.clients.tr(),
               onTap: () => widget.navigationShell.goBranch(4),
             ),
             SidebarXItem(
               icon: Icons.history,
-              label: 'Historique',
+              label: LocaleKeys.history.tr(),
               onTap: () => widget.navigationShell.goBranch(5),
             ),
           ],

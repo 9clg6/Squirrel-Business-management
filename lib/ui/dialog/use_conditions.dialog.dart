@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/routing/app_router.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
@@ -10,9 +11,12 @@ class UseConditionsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('Conditions d\'utilisation'),
-      content: const Padding(
-        padding: EdgeInsets.symmetric(
+      title: TextVariant(
+        LocaleKeys.useConditions.tr(),
+        variantType: TextVariantType.titleLarge,
+      ),
+      content: Padding(
+        padding: const EdgeInsets.symmetric(
           horizontal: 62,
           vertical: 40,
         ),
@@ -25,51 +29,51 @@ class UseConditionsDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   TextVariant(
-                    "1) Chaque clé de licence est unique, valide 30 jours et utilisable par un seul utilisateur.",
+                    LocaleKeys.useConditions1.tr(),
                     variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
-                  Gap(20),
+                  const Gap(20),
                   TextVariant(
-                    "2) Si vous communiquez votre clé de licence à un tiers, la clé sera bannie et ne pourra plus être utilisée. Vous perderez alors l'accès à l'application et ne serez pas remboursé.",
+                    LocaleKeys.useConditions2.tr(),
                     variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
-                  Gap(20),
+                  const Gap(20),
                   TextVariant(
-                    "3) Hors mis la vérification de la clé de licence, qui n'est associée à aucune autre donnée, aucune information personnelle n'est collectée. Aucune donnée ne transite par internet.",
+                    LocaleKeys.useConditions3.tr(),
                     variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
                 ],
               ),
             ),
-            Gap(150),
+            const Gap(150),
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextVariant(
-                    "4) Si vous perdez accès à votre appareil, nous ne pourrons d'aucune façon vous aider à récupérer vos données. (cf règle 3)",
+                    LocaleKeys.useConditions4.tr(),
                     variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
-                  Gap(20),
+                  const Gap(20),
                   TextVariant(
-                    "5) Les développeurs de cette application ne sont pas responsables, garants, approbateurs, commanditaires ou autre de l'utilisation ou la finalité de cette application.",
+                    LocaleKeys.useConditions5.tr(),
                     variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
-                  Gap(20),
+                  const Gap(20),
                   TextVariant(
-                    "6) Nous n'approuvons aucune activité illégale ou non conforme à la législation en vigueur.",
+                    LocaleKeys.useConditions6.tr(),
                     variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
-                  Gap(20),
+                  const Gap(20),
                   TextVariant(
-                    "7) Les développeurs de cette application souhaite correspondre aux besoins de ses utilisateurs. Si vous avez des suggestions, des questions ou des problèmes, veuillez contacter votre fournisseur.",
+                    LocaleKeys.useConditions7.tr(),
                     variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),

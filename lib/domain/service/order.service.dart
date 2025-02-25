@@ -328,4 +328,10 @@ class OrderService extends StateNotifier<OrderState> {
       orders: [...state.orders, order],
     );
   }
+
+  /// Get client by id
+  ///
+  void getClientById(){
+
+  }
 }

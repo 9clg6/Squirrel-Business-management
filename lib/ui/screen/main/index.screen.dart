@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:squirrel/domain/provider/service_type_service.provider.dart';
 import 'package:squirrel/foundation/enums/headers.enum.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
@@ -69,14 +70,14 @@ class _PinnedOrders extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Padding(
-            padding: EdgeInsets.only(
+          Padding(
+            padding: const EdgeInsets.only(
               left: 22,
               top: 22,
               bottom: 10,
             ),
             child: TextVariant(
-              "Commandes épinglées",
+              LocaleKeys.pinnedOrders.tr(),
               variantType: TextVariantType.titleMedium,
             ),
           ),
@@ -141,12 +142,24 @@ class _PinnedOrders extends ConsumerWidget {
                     ),
                     DataCell(
                       Center(
-                        child: Text("${order.price}€"),
+                        child: Text(
+                          LocaleKeys.priceWithSymbol.tr(
+                            args: [
+                              order.price.toString(),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     DataCell(
                       Center(
-                        child: Text("${order.commission}€"),
+                        child: Text(
+                          LocaleKeys.priceWithSymbol.tr(
+                            args: [
+                              order.commission.toString(),
+                            ],
+                          ),
+                        ),
                       ),
                     ),
                     DataCell(
@@ -156,7 +169,7 @@ class _PinnedOrders extends ConsumerWidget {
                             viewModel.navigateToDetails(order);
                           },
                           icon: const Icon(Icons.open_in_new),
-                          tooltip: "Ouvrir",
+                          tooltip: LocaleKeys.open.tr(),
                         ),
                       ),
                     ),
@@ -169,7 +182,7 @@ class _PinnedOrders extends ConsumerWidget {
                                 ? Icons.push_pin
                                 : Icons.push_pin_outlined,
                           ),
-                          tooltip: "Épingler",
+                          tooltip: LocaleKeys.pin.tr(),
                         ),
                       ),
                     ),
@@ -223,6 +236,9 @@ class _OrdersList extends ConsumerWidget {
     final Index viewModel = ref.read(indexProvider.notifier);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
+    final businessTypeState = ref.watch(businessTypeServiceNotifierProvider);
+    final businessTypeNotifier =
+        ref.read(businessTypeServiceNotifierProvider.notifier);
 
     return Container(
       decoration: BoxDecoration(
@@ -242,13 +258,13 @@ class _OrdersList extends ConsumerWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Padding(
-                  padding: EdgeInsets.only(
+                Padding(
+                  padding: const EdgeInsets.only(
                     top: 22,
                     bottom: 10,
                   ),
                   child: TextVariant(
-                    "Commandes",
+                    LocaleKeys.orders.tr(),
                     variantType: TextVariantType.titleMedium,
                   ),
                 ),
@@ -264,8 +280,8 @@ class _OrdersList extends ConsumerWidget {
                       ),
                       child: TextVariant(
                         state.orderState.showComboBox
-                            ? "Masquer"
-                            : "Sélectionner",
+                            ? LocaleKeys.hide.tr()
+                            : LocaleKeys.select.tr(),
                         variantType: TextVariantType.bodyMedium,
                         color: colorScheme.primary,
                       ),
@@ -278,8 +294,8 @@ class _OrdersList extends ConsumerWidget {
                         size: 20,
                         color: colorScheme.onPrimary,
                       ),
-                      label: const TextVariant(
-                        "Ajouter",
+                      label: TextVariant(
+                        LocaleKeys.add.tr(),
                         variantType: TextVariantType.bodyMedium,
                       ),
                       style: TextButton.styleFrom(
@@ -297,8 +313,8 @@ class _OrdersList extends ConsumerWidget {
                       TextButton.icon(
                         onPressed: viewModel.deleteSelectedOrders,
                         icon: const Icon(Icons.delete),
-                        label: const TextVariant(
-                          "Supprimer",
+                        label: TextVariant(
+                          LocaleKeys.delete.tr(),
                           variantType: TextVariantType.bodyMedium,
                         ),
                       ),
@@ -310,11 +326,11 @@ class _OrdersList extends ConsumerWidget {
           SizedBox(
             width: double.infinity,
             child: state.orderState.orders.isEmpty
-                ? const SizedBox(
+                ? SizedBox(
                     height: 100,
                     child: Center(
                       child: TextVariant(
-                        "Aucune commande trouvée",
+                        LocaleKeys.noOrdersFound.tr(),
                         variantType: TextVariantType.bodyMedium,
                       ),
                     ),
@@ -341,7 +357,12 @@ class _OrdersList extends ConsumerWidget {
                         .map(
                           (e) => DataColumn(
                             label: TextVariant(
-                              e.label,
+                              e == Headers.store
+                                  ? businessTypeNotifier.getServiceTypeWording(
+                                      "x",
+                                      type: businessTypeState,
+                                    )
+                                  : e.label,
                               variantType: TextVariantType.bodyMedium,
                             ),
                             numeric: e.isNumeric,
@@ -450,7 +471,7 @@ class _OrdersList extends ConsumerWidget {
                                   }
                                 },
                                 icon: const Icon(Icons.open_in_new),
-                                tooltip: "Ouvrir",
+                                tooltip: LocaleKeys.open.tr(),
                               ),
                             ),
                           ),
@@ -465,7 +486,7 @@ class _OrdersList extends ConsumerWidget {
                                       ? Icons.push_pin
                                       : Icons.push_pin_outlined,
                                 ),
-                                tooltip: "Épingler",
+                                tooltip: LocaleKeys.pin.tr(),
                               ),
                             ),
                           ),
@@ -514,7 +535,6 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(indexProvider);
     final currentMonth = DateTime.now().month;
-    final textTheme = Theme.of(context).textTheme;
     final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -531,23 +551,29 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Total du mois de ${DateFormat('MMMM').format(DateTime.now())}",
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
+          TextVariant(
+            LocaleKeys.totalWithDate.tr(
+              args: [
+                DateFormat('MMMM').format(DateTime.now()),
+              ],
             ),
+            variantType: TextVariantType.bodyMedium,
           ),
           const SizedBox(height: 10),
-          Text(
-            "${state.orderState.orders.where((order) => order.startDate.month == currentMonth).fold(
-                  0,
-                  (sum, order) => (sum.toDouble() + order.commission).toInt(),
-                ).toStringAsFixed(2)} €",
-            style: textTheme.bodyMedium?.copyWith(
-              fontWeight: FontWeight.w500,
-              fontSize: 22,
+          TextVariant(
+            LocaleKeys.priceWithSymbol.tr(
+              args: [
+                state.orderState.orders
+                    .where((order) => order.startDate.month == currentMonth)
+                    .fold(
+                      0,
+                      (sum, order) =>
+                          (sum.toDouble() + order.commission).toInt(),
+                    )
+                    .toStringAsFixed(2)
+              ],
             ),
+            variantType: TextVariantType.titleLarge,
           ),
         ],
       ),
@@ -576,16 +602,23 @@ class _TotalContainer extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const TextVariant(
-            "Total",
+          TextVariant(
+            LocaleKeys.total.tr(),
             variantType: TextVariantType.bodySmall,
           ),
           const SizedBox(height: 10),
           TextVariant(
-            "${state.orderState.allOrder.fold(
-                  0,
-                  (sum, order) => (sum.toDouble() + order.commission).toInt(),
-                ).toStringAsFixed(2)} €",
+            LocaleKeys.priceWithSymbol.tr(
+              args: [
+                state.orderState.allOrder
+                    .fold(
+                      0,
+                      (sum, order) =>
+                          (sum.toDouble() + order.commission).toInt(),
+                    )
+                    .toStringAsFixed(2),
+              ],
+            ),
             variantType: TextVariantType.titleLarge,
           ),
         ],
@@ -646,28 +679,30 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextVariant(
-                "Prochaine action",
+                LocaleKeys.nextAction.tr(),
                 variantType: TextVariantType.bodySmall,
                 color: isHover ? colorScheme.onPrimary : colorScheme.onSurface,
               ),
               const SizedBox(height: 10),
               if (state.orderState.nextAction != null)
                 TextVariant(
-                  state.orderState.nextAction!.keys.firstOrNull?.actions.firstOrNull?.date
+                  state.orderState.nextAction!.keys.firstOrNull?.actions
+                          .firstOrNull?.date
                           .toDDMMYYYY() ??
                       "",
                   variantType: TextVariantType.titleLarge,
-                  color: isHover ? colorScheme.onPrimary : colorScheme.onSurface,
+                  color:
+                      isHover ? colorScheme.onPrimary : colorScheme.onSurface,
                 )
               else
                 TextVariant(
-                  "Aucune action à venir",
+                  LocaleKeys.noNextAction.tr(),
                   variantType: TextVariantType.bodyMedium,
                   color: colorScheme.onSurface,
                 ),
               const SizedBox(height: 10),
               if (state.orderState.nextAction != null)
-                const HelpText(text: "Cliquer pour voir les détails"),
+                HelpText(text: LocaleKeys.clickToSeeDetails.tr()),
             ],
           ),
         ),

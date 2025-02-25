@@ -8,9 +8,7 @@ part of 'history.view_model.dart';
 
 String _$historyHash() => r'6eca9c9328aa75cfd2ec4907ef866a73a22c272d';
 
-///
 /// [History]
-///
 ///
 /// Copied from [History].
 @ProviderFor(History)

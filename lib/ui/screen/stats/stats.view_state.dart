@@ -27,6 +27,7 @@ class StatsScreenState extends ViewStateAbs {
   /// Chart type
   final ChartType chartType;
 
+  /// Y interval
   double get yInterval => switch (chartType) {
         ChartType.dailyRevenue => 500,
         ChartType.orderAmount => 1,
@@ -43,6 +44,7 @@ class StatsScreenState extends ViewStateAbs {
   /// Total
   double get total => orders.fold(0, (sum, order) => sum + order.price.toInt());
 
+  /// Data to show
   Map<DateTime, int> get dataToShow => switch (chartType) {
         ChartType.dailyRevenue => dailyRevenue,
         ChartType.orderAmount => ordersQuantityByDate,
@@ -110,9 +112,13 @@ class StatsScreenState extends ViewStateAbs {
     return ordersMap;
   }
 
-  ///
   /// Constructor
-  ///
+  /// @param [loading] loading
+  /// @param [orders] orders
+  /// @param [hoveredShop] hovered shop
+  /// @param [dateRange] date range
+  /// @param [chartType] chart type
+  /// 
   StatsScreenState({
     required this.loading,
     required this.orders,
@@ -121,7 +127,6 @@ class StatsScreenState extends ViewStateAbs {
     required this.chartType,
   });
 
-  ///
   /// Initial state
   ///
   StatsScreenState.initial()

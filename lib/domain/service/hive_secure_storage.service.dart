@@ -5,21 +5,21 @@ import 'package:squirrel/domain/service/secure_storage.service.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
 ///
-/// [HiveSecureStorage]
+/// [HiveSecureStorageService]
 ///
 /// Use it when you want to save secured data that won't be backed up by the system.
-class HiveSecureStorage implements StorageInterface<String?> {
+class HiveSecureStorageService implements StorageInterface<String?> {
   final Box<String> _box;
 
   static String get _boxName => r'hive_local_storage';
 
-  HiveSecureStorage._(this._box);
+  HiveSecureStorageService._(this._box);
 
-  /// Static method to create a new instance of [HiveSecureStorage]
-  static Future<HiveSecureStorage> inject(
+  /// Static method to create a new instance of [HiveSecureStorageService]
+  static Future<HiveSecureStorageService> inject(
     SecureStorageService secureStorageService,
   ) async {
-    return HiveSecureStorage._(
+    return HiveSecureStorageService._(
       await Hive.openBox<String>(
         _boxName,
         encryptionCipher:

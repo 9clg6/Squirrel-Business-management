@@ -26,7 +26,18 @@ String? Function(String?)? validator(
 ]) {
   return (value) {
     if (value == null || value.isEmpty) {
-      return 'Le ${feminine ? 'nom de la' : 'nom du'} $label est obligatoire';
+      return 'Le ${feminine ? 'nom de la' : 'nom du'} ${label.toLowerCase()} est obligatoire';
+    }
+    return null;
+  };
+}
+
+String? Function(String?)? validatorWithoutNamePrefix(
+  String label,
+) {
+  return (value) {
+    if (value == null || value.isEmpty) {
+      return 'Le ${label.toLowerCase()} est obligatoire';
     }
     return null;
   };

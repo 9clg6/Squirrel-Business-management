@@ -5,29 +5,26 @@ import 'package:squirrel/foundation/routing/app_router.dart';
 import 'package:squirrel/foundation/theming/theme.dart';
 import 'package:squirrel/foundation/utils/util.dart';
 
-///
 /// The main app widget.
-///
 class App extends StatefulWidget {
-  ///
   /// Constructor
+  /// @param [key] key
   ///
   const App({super.key});
 
-  ///
   /// Creates the state of the app widget.
-  ///
+  /// @return [State<App>] state of the app widget
+  /// 
   @override
   State<App> createState() => _AppState();
 }
 
-///
 /// The state of the app widget.
-///
 class _AppState extends State<App> {
-  ///
   /// Builds the app widget.
-  ///
+  /// @param [context] context
+  /// @return [Widget] widget of the app widget
+  /// 
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = createTextTheme();

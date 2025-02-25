@@ -3,6 +3,7 @@ import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/auth/auth.view_state.dart';
 
 part 'auth.view_model.g.dart';
@@ -41,7 +42,7 @@ class Auth extends _$Auth {
         _navigatorService.navigateToHome();
       }
     } else {
-      _dialogService.showError('Impossible de se connecter');
+      _dialogService.showError(LocaleKeys.impossibleToConnect.tr());
     }
   }
 }

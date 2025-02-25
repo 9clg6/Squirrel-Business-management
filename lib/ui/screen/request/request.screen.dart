@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:squirrel/domain/provider/request_service.provider.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// [RequestScreen]
@@ -45,28 +46,28 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
         ),
         child: Column(
           children: [
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 TextVariant(
-                  'Date',
+                  LocaleKeys.date.tr(),
                   variantType: TextVariantType.titleMedium,
                 ),
                 TextVariant(
-                  'Name',
+                  LocaleKeys.name.tr(),
                   variantType: TextVariantType.titleMedium,
                 ),
                 TextVariant(
-                  'Destination',
+                  LocaleKeys.destination.tr(),
                   variantType: TextVariantType.titleMedium,
                 ),
                 TextVariant(
-                  'Description',
+                  LocaleKeys.description.tr(),
                   variantType: TextVariantType.titleMedium,
                 ),
                 TextVariant(
-                  'Parameters',
+                  LocaleKeys.parameters.tr(),
                   variantType: TextVariantType.titleMedium,
                 ),
               ],
@@ -85,24 +86,38 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Flexible(
-                          child: TextVariant(request.date?.toDDMMYYYY() ?? ''),
+                          child: TextVariant(
+                            request.date?.toDDMMYYYY() ?? '',
+                            variantType: TextVariantType.bodyMedium,
+                          ),
                         ),
                         const Gap(5),
                         Flexible(
-                          child: TextVariant(request.name ?? ''),
+                          child: TextVariant(
+                            request.name ?? '',
+                            variantType: TextVariantType.bodyMedium,
+                          ),
                         ),
                         const Gap(5),
                         Flexible(
-                          child: TextVariant(request.destination ?? ''),
+                          child: TextVariant(
+                            request.destination ?? '',
+                            variantType: TextVariantType.bodyMedium,
+                          ),
                         ),
                         const Gap(5),
                         Flexible(
-                          child: TextVariant(request.description ?? ''),
+                          child: TextVariant(
+                            request.description ?? '',
+                            variantType: TextVariantType.bodyMedium,
+                          ),
                         ),
                         const Gap(5),
                         Flexible(
-                          child:
-                              TextVariant(request.parameters?.toString() ?? ''),
+                          child: TextVariant(
+                            request.parameters?.toString() ?? '',
+                            variantType: TextVariantType.bodyMedium,
+                          ),
                         ),
                       ],
                     ),

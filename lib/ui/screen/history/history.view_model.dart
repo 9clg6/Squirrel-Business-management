@@ -7,9 +7,7 @@ import 'package:squirrel/ui/screen/history/history.view_state.dart';
 
 part 'history.view_model.g.dart';
 
-///
 /// [History]
-///
 @riverpod
 class History extends _$History {
   late OrderService _orderService;
@@ -27,6 +25,10 @@ class History extends _$History {
     return _mapOrderStateToHistoryState(_orderService.orderState);
   }
 
+  /// Map order state to history state
+  /// @param [orderState] order state
+  /// @return [HistoryState] history state
+  ///
   HistoryState _mapOrderStateToHistoryState(OrderState orderState) {
     return HistoryState(
       loading: false,

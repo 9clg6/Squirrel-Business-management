@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/routing/app_router.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Confirmation dialog
 ///
@@ -68,7 +70,10 @@ class ConfirmationDialog extends StatelessWidget {
                       width: 150,
                       height: 40,
                       alignment: Alignment.center,
-                      child: const Text("Annuler"),
+                      child: TextVariant(
+                        LocaleKeys.cancel.tr(),
+                        variantType: TextVariantType.bodyMedium,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 16),
@@ -87,7 +92,10 @@ class ConfirmationDialog extends StatelessWidget {
                         color: colorScheme.primary,
                         borderRadius: BorderRadius.circular(16),
                       ),
-                      child: const Text("Confirmer"),
+                      child: TextVariant(
+                        LocaleKeys.confirm.tr(),
+                        variantType: TextVariantType.bodyMedium,
+                      ),
                     ),
                   ),
                 ],

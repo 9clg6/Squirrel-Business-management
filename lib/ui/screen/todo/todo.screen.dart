@@ -4,13 +4,12 @@ import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/enums/priority.enum.dart';
 import 'package:squirrel/ui/screen/todo/todo.view_model.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
-///
-/// Second screen
-///
+/// Todo screen
 class TodoScreen extends ConsumerStatefulWidget {
-  ///
   /// Constructor
+  /// @param [key] key
   ///
   const TodoScreen({super.key});
 
@@ -18,14 +17,14 @@ class TodoScreen extends ConsumerStatefulWidget {
   ConsumerState<ConsumerStatefulWidget> createState() => _TodoScreenState();
 }
 
-///
-/// State of the second screen
-///
+/// State of the todo screen
 class _TodoScreenState extends ConsumerState<TodoScreen> {
+  /// Column position
   Map<OrderStatus, double> columnPosition = {};
 
-  ///
-  /// Builds the second screen
+  /// Builds the todo screen
+  /// @param [context] context
+  /// @return [Widget] widget of the todo screen
   ///
   @override
   Widget build(BuildContext context) {
@@ -66,7 +65,32 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
   }
 }
 
+/// Todo status column
 class TodoStatusColumn extends ConsumerWidget {
+  /// Parent size
+  final double parentSize;
+
+  /// Order status length
+  final int orderStatusLength;
+
+  /// Padding width
+  final double paddingWidth;
+  final ColorScheme colorScheme;
+
+  /// View model
+  final TodoViewModel viewModel;
+
+  /// Status
+  final OrderStatus status;
+
+  /// Constructor
+  /// @param [parentSize] parent size
+  /// @param [orderStatusLength] order status length
+  /// @param [paddingWidth] padding width
+  /// @param [colorScheme] color scheme
+  /// @param [viewModel] view model
+  /// @param [status] status
+  ///
   const TodoStatusColumn({
     super.key,
     required this.parentSize,
@@ -77,17 +101,14 @@ class TodoStatusColumn extends ConsumerWidget {
     required this.status,
   });
 
-  final double parentSize;
-  final int orderStatusLength;
-  final double paddingWidth;
-  final ColorScheme colorScheme;
-  final TodoViewModel viewModel;
-  final OrderStatus status;
-
+  /// Builds the todo status column
+  /// @param [context] context
+  /// @param [ref] ref
+  /// @return [Widget] widget of the todo status column
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(todoViewModelProvider);
-    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       width: (parentSize / orderStatusLength) - paddingWidth,
@@ -119,12 +140,10 @@ class TodoStatusColumn extends ConsumerWidget {
                 SizedBox(
                   height: 40,
                   child: Center(
-                    child: Text(
+                    child: TextVariant(
                       status.name,
-                      style: textTheme.labelMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                      textAlign: TextAlign.center,
+                      variantType: TextVariantType.labelMedium,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
@@ -150,19 +169,31 @@ class TodoStatusColumn extends ConsumerWidget {
   }
 }
 
+/// Todo item
 class TodoItem extends ConsumerWidget {
+  /// Status
+  final OrderStatus status;
+
+  /// Order
+  final Order order;
+
+  /// Constructor
+  /// @param [status] status
+  /// @param [order] order
+  /// 
   const TodoItem({
     super.key,
     required this.status,
     required this.order,
   });
 
-  final OrderStatus status;
-  final Order order;
-
+  /// Builds the todo item
+  /// @param [context] context
+  /// @param [ref] ref
+  /// @return [Widget] widget of the todo item
+  /// 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final textTheme = Theme.of(context).textTheme;
     final viewModel = ref.read(todoViewModelProvider.notifier);
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -211,19 +242,17 @@ class TodoItem extends ConsumerWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
+                      TextVariant(
                         order.shopName,
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w500,
-                          color: colorScheme.onSurface,
-                        ),
+                        variantType: TextVariantType.bodyMedium,
+                        fontWeight: FontWeight.w500,
+                        color: colorScheme.onSurface,
                       ),
-                      Text(
+                      TextVariant(
                         order.clientContact,
-                        style: textTheme.labelSmall?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          color: colorScheme.onSurface,
-                        ),
+                        variantType: TextVariantType.labelSmall,
+                        fontWeight: FontWeight.w400,
+                        color: colorScheme.onSurface,
                       ),
                     ],
                   ),

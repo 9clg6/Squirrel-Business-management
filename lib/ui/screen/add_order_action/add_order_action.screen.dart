@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_model.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
@@ -39,7 +40,7 @@ class AddOrderActionScreen extends ConsumerWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    "Ajouter une nouvelle action",
+                    LocaleKeys.addOrderAction.tr(),
                     style: textTheme.labelSmall?.copyWith(
                       fontWeight: FontWeight.w400,
                     ),
@@ -53,12 +54,12 @@ class AddOrderActionScreen extends ConsumerWidget {
                     controller: state.controller,
                     validator: (value) {
                       if (value == null || value.isEmpty) {
-                        return 'Le nom de l\'action est obligatoire';
+                        return LocaleKeys.orderActionNameRequired.tr();
                       }
                       return null;
                     },
                     decoration: InputDecoration(
-                      labelText: 'Nom de l\'action',
+                      labelText: LocaleKeys.orderActionName.tr(),
                       labelStyle: const TextStyle(
                         fontWeight: FontWeight.w400,
                         fontSize: 12,
@@ -75,7 +76,7 @@ class AddOrderActionScreen extends ConsumerWidget {
                     key: state.dateKey,
                     validator: (_) {
                       if (state.selectedDate == null) {
-                        return 'La date de l\'action est obligatoire';
+                        return LocaleKeys.orderActionDateRequired.tr();
                       }
                       return null;
                     },
@@ -99,7 +100,7 @@ class AddOrderActionScreen extends ConsumerWidget {
                               ),
                               child: TextVariant(
                                 state.selectedDate?.toDDMMYYYY() ??
-                                    "Sélectionner la date de l'action",
+                                    LocaleKeys.selectOrderActionDate.tr(),
                                 variantType: TextVariantType.bodyMedium,
                                 style: TextStyle(
                                   color: field.hasError
@@ -150,7 +151,10 @@ class AddOrderActionScreen extends ConsumerWidget {
                         color: colorScheme.outline,
                       ),
                     ),
-                    child: const Text('Annuler'),
+                    child: TextVariant(
+                      LocaleKeys.cancel.tr(),
+                      variantType: TextVariantType.bodyMedium,
+                    ),
                   ),
                 ),
                 const SizedBox(width: 16),
@@ -165,7 +169,10 @@ class AddOrderActionScreen extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(8),
                       color: colorScheme.primary,
                     ),
-                    child: const Text('Ajouter'),
+                    child: TextVariant(
+                      LocaleKeys.add.tr(),
+                      variantType: TextVariantType.bodyMedium,
+                    ),
                   ),
                 ),
               ],

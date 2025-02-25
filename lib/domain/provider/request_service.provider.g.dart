@@ -7,9 +7,11 @@ part of 'request_service.provider.dart';
 // **************************************************************************
 
 String _$requestServiceNotifierHash() =>
-    r'2ba066ead01e5fe17c63c782bede2c41714e55d5';
+    r'f6f231425750eff50a1446dd7cc5f3ba05f1c4d9';
 
-/// See also [RequestServiceNotifier].
+/// [RequestServiceNotifier]
+///
+/// Copied from [RequestServiceNotifier].
 @ProviderFor(RequestServiceNotifier)
 final requestServiceNotifierProvider =
     NotifierProvider<RequestServiceNotifier, RequestState>.internal(

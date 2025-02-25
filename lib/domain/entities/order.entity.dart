@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -34,8 +35,12 @@ class Order with EquatableMixin, SerializableMixin {
       (_actions ?? [])..sort((a, b) => b.date.compareTo(a.date));
   double get margin => commission - internalProcessingFee;
   DateTime? get endDate => startDate.add(estimatedDuration);
+
+  OrderAction? get nextAction =>
+      actions.firstWhereOrNull((a) => a.date.isAfter(DateTime.now()));
+      
   DateTime? get nextActionDate => actions.isNotEmpty
-      ? actions.first.date.isAfter(DateTime.now())
+      ? nextAction != null
           ? actions.first.date
           : endDate
       : endDate;

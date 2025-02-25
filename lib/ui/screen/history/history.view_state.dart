@@ -4,9 +4,7 @@ import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'history.view_state.g.dart';
 
-///
 /// [HistoryState]
-///
 @CopyWith()
 class HistoryState extends ViewStateAbs {
   /// Loading state
@@ -15,22 +13,21 @@ class HistoryState extends ViewStateAbs {
   /// Orders
   final List<Order> orders;
 
-  ///
   /// Constructor
-  ///
+  /// @param [loading] loading state
+  /// @param [orders] orders
+  /// 
   HistoryState({
     required this.loading,
     required this.orders,
   });
 
-  ///
   /// Initial state
   ///
   HistoryState.initial()
       : loading = true,
         orders = <Order>[];
 
-  ///
   /// Get props
   ///
   @override

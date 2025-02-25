@@ -6,19 +6,27 @@ import 'package:squirrel/domain/state/request.state.dart';
 
 part 'request_service.provider.g.dart';
 
+/// [RequestServiceNotifier]
 @Riverpod(keepAlive: true)
 class RequestServiceNotifier extends _$RequestServiceNotifier {
-  late final RequestService _service;
+  /// Service
+  late final RequestService service;
 
+  /// Build
+  /// 
   @override
   RequestState build() {
-    _service = injector.get<RequestService>();
-    return _service.requestState;
-  }
+    service = injector.get<RequestService>();
 
-  void toggleRequest() {
-    state = state.copyWith(
-      isRequestShow: !state.isRequestShow,
+    service.addListener(
+      (s) {
+        state = RequestState.initial().copyWith(
+          isRequestShow: s.isRequestShow,
+          requests: s.requests,
+        );
+      },
     );
+
+    return service.requestState;
   }
 }

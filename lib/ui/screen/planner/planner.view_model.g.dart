@@ -8,9 +8,7 @@ part of 'planner.view_model.dart';
 
 String _$plannerViewModelHash() => r'9e9e35286411f9eff700c6068798d61005ec81c4';
 
-///
 /// [PlannerViewModel]
-///
 ///
 /// Copied from [PlannerViewModel].
 @ProviderFor(PlannerViewModel)

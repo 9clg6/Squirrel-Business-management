@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/provider/service_type_service.provider.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/routing/app_router.dart';
 import 'package:squirrel/foundation/utils/util.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
-class EditOrAddOrderDialog extends StatefulWidget {
+class EditOrAddOrderDialog extends ConsumerStatefulWidget {
   /// Is creation
   final bool isCreation;
 
@@ -22,10 +25,11 @@ class EditOrAddOrderDialog extends StatefulWidget {
   });
 
   @override
-  State<EditOrAddOrderDialog> createState() => _EditOrAddOrderDialogState();
+  ConsumerState<EditOrAddOrderDialog> createState() =>
+      _EditOrAddOrderDialogState();
 }
 
-class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
+class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
   /// Form key
   late final GlobalKey<FormState> formKey;
 
@@ -108,6 +112,7 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final state = ref.watch(businessTypeServiceNotifierProvider);
 
     return Dialog(
       child: Container(
@@ -123,9 +128,11 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      isCreation ? "Créer une commande" : "Editer la commande",
-                      style: Theme.of(context).textTheme.titleLarge,
+                    TextVariant(
+                      isCreation
+                          ? LocaleKeys.createOrder.tr()
+                          : LocaleKeys.editOrder.tr(),
+                      variantType: TextVariantType.titleLarge,
                     ),
                     IconButton(
                       onPressed: appRouter.pop,
@@ -140,18 +147,22 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                 ),
                 TextFormField(
                   controller: shopNameController,
-                  decoration: const InputDecoration(
-                    labelText: "Nom du magasin",
+                  decoration: InputDecoration(
+                    labelText: state.isService
+                        ? LocaleKeys.shopName.tr()
+                        : LocaleKeys.productName.tr(),
                   ),
-                  validator: validator('nom du magasin'),
+                  validator: validator(state.isService
+                      ? LocaleKeys.shop.tr()
+                      : LocaleKeys.product.tr()),
                 ),
                 const Gap(32),
                 TextFormField(
                   controller: clientController,
-                  decoration: const InputDecoration(
-                    labelText: "Nom du client",
+                  decoration: InputDecoration(
+                    labelText: LocaleKeys.clientName.tr(),
                   ),
-                  validator: validator('nom du client'),
+                  validator: validator(LocaleKeys.client.tr()),
                 ),
                 const Gap(32),
                 Row(
@@ -159,25 +170,25 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                     Expanded(
                       child: TextFormField(
                         controller: orderDateController,
-                        decoration: const InputDecoration(
-                          labelText: "Date de la commande",
+                        decoration: InputDecoration(
+                          labelText: LocaleKeys.orderDate.tr(),
                         ),
-                        validator: validator('date de la commande', true),
+                        validator: validator(LocaleKeys.orderDate.tr(), true),
                       ),
                     ),
                     const SizedBox(width: 16),
                     Expanded(
                       child: TextFormField(
                         controller: orderDurationController,
-                        decoration: const InputDecoration(
-                          labelText: "Durée de la commande",
-                          suffixText: "jours",
+                        decoration: InputDecoration(
+                          labelText: LocaleKeys.orderDuration.tr(),
+                          suffixText: LocaleKeys.days.tr(),
                         ),
                         keyboardType: TextInputType.number,
                         inputFormatters: [
                           FilteringTextInputFormatter.digitsOnly,
                         ],
-                        validator: validator('durée de la commande'),
+                        validator: validator(LocaleKeys.orderDuration.tr()),
                       ),
                     ),
                   ],
@@ -185,11 +196,11 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                 const Gap(32),
                 TextFormField(
                   controller: orderAmountController,
-                  decoration: const InputDecoration(
-                    labelText: "Montant de la commande",
-                    suffixText: "€",
+                  decoration: InputDecoration(
+                    labelText: LocaleKeys.orderAmount.tr(),
+                    suffixText: LocaleKeys.euros.tr(),
                   ),
-                  validator: validator('montant de la commande'),
+                  validator: validator(LocaleKeys.orderAmount.tr()),
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -205,12 +216,13 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                           child: TextFormField(
                             controller: commissionController,
                             decoration: InputDecoration(
-                              labelText: "Commission",
+                              labelText: LocaleKeys.commission.tr(),
                               suffixText: isCommissionPercentage
-                                  ? "%"
-                                  : "€",
+                                  ? LocaleKeys.percentage.tr()
+                                  : LocaleKeys.euros.tr(),
                             ),
-                            validator: validator('commission', true),
+                            validator:
+                                validator(LocaleKeys.commission.tr(), true),
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
@@ -221,11 +233,11 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                         Expanded(
                           child: TextFormField(
                             controller: orderInternalFeesController,
-                            decoration: const InputDecoration(
-                              labelText: "Frais internes",
-                              suffixText: "€",
+                            decoration: InputDecoration(
+                              labelText: LocaleKeys.internalFees.tr(),
+                              suffixText: LocaleKeys.euros.tr(),
                             ),
-                            validator: validator('frais internes'),
+                            validator: validator(LocaleKeys.internalFees.tr()),
                             keyboardType: TextInputType.number,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly,
@@ -266,7 +278,7 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                                 ),
                               ),
                             TextVariant(
-                              "Pourcentage",
+                              LocaleKeys.percentage.tr(),
                               color: isCommissionPercentage
                                   ? colorScheme.surface
                                   : colorScheme.onSurface,
@@ -288,43 +300,48 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                                 ),
                               ),
                             TextVariant(
-                              "Montant",
+                              LocaleKeys.amount.tr(),
                               color: isCommissionPercentage
                                   ? colorScheme.onSurface
                                   : colorScheme.surface,
                             ),
                           ],
                         ),
-                      ].map((e) => Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 23),
-                            child: e,
-                          )).toList(),
+                      ]
+                          .map((e) => Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 23),
+                                child: e,
+                              ))
+                          .toList(),
                     ),
                   ],
                 ),
                 const Gap(32),
                 TextFormField(
                   controller: trackIdController,
-                  decoration: const InputDecoration(
-                    labelText: "Numéro de suivi",
+                  decoration: InputDecoration(
+                    labelText: LocaleKeys.trackId.tr(),
                   ),
-                  validator: validator('numéro de suivi'),
+                  validator: validatorWithoutNamePrefix(
+                    LocaleKeys.trackId.tr(),
+                  ),
                 ),
                 const Gap(32),
                 TextFormField(
                   controller: methodController,
-                  decoration: const InputDecoration(
-                    labelText: "Méthode",
+                  decoration: InputDecoration(
+                    labelText: LocaleKeys.method.tr(),
                   ),
-                  validator: validator('méthode', true),
+                  validator: validator(LocaleKeys.method.tr(), true),
                 ),
                 const Gap(32),
                 TextFormField(
                   controller: intermediaryController,
-                  decoration: const InputDecoration(
-                    labelText: "Intermédiaire",
+                  decoration: InputDecoration(
+                    labelText: LocaleKeys.intermediary.tr(),
                   ),
-                  validator: validator('intermédiaire'),
+                  validator: validator(LocaleKeys.intermediary.tr()),
                 ),
                 const Gap(32),
                 SizedBox(
@@ -332,8 +349,8 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                   height: 100,
                   child: TextFormField(
                     maxLines: 4,
-                    decoration: const InputDecoration(
-                      labelText: "Commentaire",
+                    decoration: InputDecoration(
+                      labelText: LocaleKeys.comment.tr(),
                     ),
                     controller: commentController,
                   ),
@@ -348,7 +365,7 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                         width: 150,
                         height: 40,
                         alignment: Alignment.center,
-                        child: const Text("Annuler"),
+                        child: Text(LocaleKeys.cancel.tr()),
                       ),
                     ),
                     const SizedBox(width: 16),
@@ -359,9 +376,9 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                         final price = double.tryParse(orderAmountController.text
                                 .replaceAll(' €', '')) ??
                             order?.price;
-                        final commissionText = double.tryParse(commissionController
-                                .text
-                                .replaceAll(' €', '')) ??
+                        final commissionText = double.tryParse(
+                                commissionController.text
+                                    .replaceAll(' €', '')) ??
                             order?.commission;
                         final internalFees = double.tryParse(
                                 orderInternalFeesController.text
@@ -395,9 +412,8 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                                 days: duration ??
                                     order?.estimatedDuration.inDays ??
                                     0),
-                            commissionRatio: isCommissionPercentage
-                                ? commissionText
-                                : null,
+                            commissionRatio:
+                                isCommissionPercentage ? commissionText : null,
                             commission: isCommissionPercentage
                                 ? price! * commissionText! / 100
                                 : commissionText,
@@ -416,7 +432,7 @@ class _EditOrAddOrderDialogState extends State<EditOrAddOrderDialog> {
                           color: colorScheme.primary,
                           borderRadius: BorderRadius.circular(16),
                         ),
-                        child: const Text("Sauvegarder"),
+                        child: Text(LocaleKeys.save.tr()),
                       ),
                     ),
                   ],

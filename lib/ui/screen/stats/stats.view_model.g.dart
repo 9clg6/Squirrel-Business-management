@@ -8,9 +8,7 @@ part of 'stats.view_model.dart';
 
 String _$statsViewModelHash() => r'e49c552b1f066c38027ba0df23338de50550ff27';
 
-///
 /// [StatsViewModel]
-///
 ///
 /// Copied from [StatsViewModel].
 @ProviderFor(StatsViewModel)

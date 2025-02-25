@@ -5,9 +5,7 @@ import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'index.view_state.g.dart';
 
-///
 /// [IndexScreenState]
-///
 @CopyWith()
 class IndexScreenState extends ViewStateAbs {
   /// Loading state
@@ -16,17 +14,17 @@ class IndexScreenState extends ViewStateAbs {
   /// Order state
   final OrderState orderState;
 
+  ///
   final ScrollController scrollController;
 
-  ///
   /// Constructor
-  ///
+  /// @param [loading] loading state
+  /// 
   IndexScreenState(
     this.loading,
     this.orderState,
   ) : scrollController = ScrollController();
 
-  ///
   /// Initial state
   ///
   IndexScreenState.initial()
@@ -34,7 +32,6 @@ class IndexScreenState extends ViewStateAbs {
         orderState = OrderState.initial(),
         scrollController = ScrollController();
 
-  ///
   /// Get props
   ///
   @override

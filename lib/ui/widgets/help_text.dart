@@ -6,14 +6,18 @@ class HelpText extends StatelessWidget {
   final String text;
 
   /// Constructor
-  ///
+  /// @param [key] key
+  /// @param [text] text
+  /// 
   const HelpText({
     super.key,
     required this.text,
   });
 
   /// Build
-  ///
+  /// @param [context] context
+  /// @return [Widget] widget of the help text
+  /// 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;

@@ -1,6 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
-import 'package:squirrel/domain/service/order.service.dart';
+import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/ui/screen/clients/clients.view_state.dart';
 
 part 'clients.view_model.g.dart';
@@ -13,12 +13,12 @@ class Clients extends _$Clients {
   ///
   /// Client service
   ///
-  final OrderService _orderService;
+  final ClientService _clientService;
 
   ///
   /// Private constructor
   ///
-  Clients() : _orderService = injector<OrderService>();
+  Clients() : _clientService = injector<ClientService>();
 
   ///
   /// Build
@@ -26,28 +26,8 @@ class Clients extends _$Clients {
   @override
   ClientsScreenState build() => ClientsScreenState.initial().copyWith(
         loading: false,
-        clients: _orderService.orderState.allOrder
-            .fold<Map<String, Map<String, dynamic>>>(
-          {},
-      (map, order) {
-        final clientName = order.clientContact;
-        if (!map.containsKey(clientName)) {
-          map[clientName] = {
-            'totalOrders': 0,
-            'totalAmount': 0.0,
-            'totalCommissions': 0.0,
-          };
-        }
-        map[clientName]!['totalOrders'] =
-            (map[clientName]!['totalOrders'] as int) + 1;
-        map[clientName]!['totalAmount'] =
-            (map[clientName]!['totalAmount'] as double) + order.price;
-        map[clientName]!['totalCommissions'] =
-              (map[clientName]!['totalCommissions'] as double) + order.commission;
-          return map;
-        },
-      ),
-    );
+        clients: _clientService.clientState.clients,
+      );
 
   ///
   /// Init

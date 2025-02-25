@@ -17,8 +17,6 @@ class Index extends _$Index {
   late final NavigatorService _navigatorService;
   late final DialogService _dialogService;
 
-  
-
   /// Constructor
   ///
   Index() {
@@ -42,6 +40,7 @@ class Index extends _$Index {
   }
 
   /// Pin order
+  /// @param [order] order
   ///
   void pinOrder(Order order) {
     _orderService.pinOrder(order);
@@ -66,17 +65,23 @@ class Index extends _$Index {
   }
 
   /// Sort orders
+  /// @param [columnIndex] column index
+  /// @param [ascending] ascending
   ///
   void sortOrders(int columnIndex, bool ascending) {
     _orderService.sortOrders(columnIndex, ascending);
   }
 
   /// Select order
+  /// @param [order] order
   ///
   void selectOrder(Order order) {
     _orderService.selectOrder(order);
   }
 
+  /// Navigate to details
+  /// @param [order] order
+  ///
   void navigateToDetails(Order order) {
     _navigatorService.navigateToDetails(order);
   }

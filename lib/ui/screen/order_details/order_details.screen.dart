@@ -3,18 +3,24 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/provider/service_type_service.provider.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/order_details/order_details.view_model.dart';
 import 'package:squirrel/ui/screen/order_details/order_details.view_state.dart';
 import 'package:squirrel/ui/widgets/help_text.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Order details screen
 ///
 class OrderDetailsScreen extends ConsumerStatefulWidget {
+  /// Order
   final Order order;
 
   /// Constructor
+  /// @param [order] order
+  /// @param [key] key
   ///
   const OrderDetailsScreen({
     required this.order,
@@ -22,6 +28,7 @@ class OrderDetailsScreen extends ConsumerStatefulWidget {
   });
 
   /// Creates the state for the order details screen
+  /// @return [ConsumerState] state
   ///
   @override
   ConsumerState<ConsumerStatefulWidget> createState() =>
@@ -29,8 +36,9 @@ class OrderDetailsScreen extends ConsumerStatefulWidget {
 }
 
 /// State of the order details screen
-///
 class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
+  /// Initializes the order details screen
+  ///
   @override
   void initState() {
     ref.read(orderDetailsViewModelProvider.notifier).init(o: widget.order);
@@ -38,18 +46,25 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   }
 
   /// Builds the order details screen
+  /// @param [context] context
+  /// @return [Widget] widget
   ///
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final state = ref.watch(orderDetailsViewModelProvider);
+
     if (state.loading == true) {
-      return const Scaffold(
+      return Scaffold(
+        backgroundColor: colorScheme.surfaceDim,
         body: Center(
-          child: CircularProgressIndicator(),
+          child: CircularProgressIndicator(
+            color: colorScheme.primary,
+          ),
         ),
       );
     }
+
     return Scaffold(
       backgroundColor: colorScheme.surfaceDim,
       appBar: const _OrderDetailAppBar(),
@@ -66,6 +81,8 @@ class _OrderDetailBody extends StatelessWidget {
   const _OrderDetailBody();
 
   /// Builds the body of the order details screen
+  /// @param [context] context
+  /// @return [Widget] widget
   ///
   @override
   Widget build(BuildContext context) {
@@ -89,14 +106,20 @@ class _OrderDetailBody extends StatelessWidget {
 /// Order quick details
 ///
 class _OrderQuickDetails extends ConsumerWidget {
+  /// Constructor
+  ///
   const _OrderQuickDetails();
 
+  /// Builds the order quick details
+  /// @param [context] context
+  /// @return [Widget] widget
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     final state = ref.watch(orderDetailsViewModelProvider);
+    final businessState = ref.watch(businessTypeServiceNotifierProvider);
     final order = state.order;
 
     return Container(
@@ -116,19 +139,17 @@ class _OrderQuickDetails extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Boutique",
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                ),
+              TextVariant(
+                businessState.isService
+                    ? LocaleKeys.shop.tr()
+                    : LocaleKeys.product.tr(),
+                variantType: TextVariantType.bodyMedium,
+                fontSize: 12,
               ),
-              Text(
+              TextVariant(
                 order!.shopName,
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                ),
+                variantType: TextVariantType.titleLarge,
+                fontSize: 16,
               ),
             ],
           ),
@@ -140,43 +161,19 @@ class _OrderQuickDetails extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Montant de la commande",
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                ),
+              TextVariant(
+                LocaleKeys.orderAmount.tr(),
+                variantType: TextVariantType.bodyMedium,
+                fontSize: 12,
               ),
-              Text(
-                "${order.price} €",
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
+              TextVariant(
+                LocaleKeys.priceWithSymbol.tr(
+                  args: [
+                    order.price.toString(),
+                  ],
                 ),
-              ),
-            ],
-          ),
-          VerticalDivider(
-            color: colorScheme.outline,
-            width: 1,
-            thickness: 1,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Commission",
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                ),
-              ),
-              Text(
-                "${order.commission} €",
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
-                ),
+                variantType: TextVariantType.titleLarge,
+                fontSize: 16,
               ),
             ],
           ),
@@ -188,19 +185,43 @@ class _OrderQuickDetails extends ConsumerWidget {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                "Marge",
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w400,
-                  fontSize: 12,
-                ),
+              TextVariant(
+                LocaleKeys.commission.tr(),
+                variantType: TextVariantType.bodyMedium,
+                fontSize: 12,
               ),
-              Text(
-                "${order.commission - order.internalProcessingFee} €",
-                style: textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w500,
-                  fontSize: 16,
+              TextVariant(
+                LocaleKeys.priceWithSymbol.tr(
+                  args: [
+                    order.commission.toString(),
+                  ],
                 ),
+                variantType: TextVariantType.titleLarge,
+                fontSize: 16,
+              ),
+            ],
+          ),
+          VerticalDivider(
+            color: colorScheme.outline,
+            width: 1,
+            thickness: 1,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              TextVariant(
+                LocaleKeys.margin.tr(),
+                variantType: TextVariantType.bodyMedium,
+                fontSize: 12,
+              ),
+              TextVariant(
+                LocaleKeys.priceWithSymbol.tr(
+                  args: [
+                    (order.commission - order.internalProcessingFee).toString(),
+                  ],
+                ),
+                variantType: TextVariantType.titleLarge,
+                fontSize: 16,
               ),
             ],
           ),
@@ -244,12 +265,10 @@ class _OrderActionsRow extends ConsumerWidget {
         const SizedBox(width: 10),
         FilledButton.icon(
           onPressed: viewModel.deleteOrder,
-          label: const Text(
-            "Supprimer la commande",
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-            ),
+          label: TextVariant(
+            LocaleKeys.deleteOrder.tr(),
+            variantType: TextVariantType.bodyMedium,
+            fontSize: 12,
           ),
           icon: const Icon(Icons.delete_outline),
           style: FilledButton.styleFrom(
@@ -315,7 +334,6 @@ class _ActionsHistory extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final TextTheme textTheme = Theme.of(context).textTheme;
     final OrderDetailsViewModel viewModel =
         ref.read(orderDetailsViewModelProvider.notifier);
     final OrderDetailsScreenState state =
@@ -330,11 +348,10 @@ class _ActionsHistory extends ConsumerWidget {
           children: [
             Row(
               children: [
-                Text(
-                  "Historique des actions réalisées",
-                  style: textTheme.labelLarge?.copyWith(
-                    fontWeight: FontWeight.w400,
-                  ),
+                TextVariant(
+                  LocaleKeys.actionsHistory.tr(),
+                  variantType: TextVariantType.labelLarge,
+                  fontWeight: FontWeight.w400,
                 ),
                 const SizedBox(width: 16),
                 FilledButton.icon(
@@ -346,12 +363,10 @@ class _ActionsHistory extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(10),
                     ),
                   ),
-                  label: const Text(
-                    "Ajouter une action",
-                    style: TextStyle(
-                      fontWeight: FontWeight.w400,
-                      fontSize: 12,
-                    ),
+                  label: TextVariant(
+                    LocaleKeys.addOrderAction.tr(),
+                    variantType: TextVariantType.bodyMedium,
+                    fontSize: 12,
                   ),
                   icon: Icon(
                     Icons.add,
@@ -362,22 +377,22 @@ class _ActionsHistory extends ConsumerWidget {
             ),
             const SizedBox(height: 10),
             HelpText(
-              text:
-                  "Pour ajouter une action future il suffit d'ajouter une action avec une date supérieur à celle d'aujourd'hui. Par exemple ${DateTime.now().add(
-                        const Duration(days: 2),
-                      ).toDDMMYYYY()}",
+              text: LocaleKeys.addOrderActionFuture.tr(
+                args: [
+                  DateTime.now().add(const Duration(days: 2)).toDDMMYYYY(),
+                ],
+              ),
             ),
           ],
         ),
         const SizedBox(height: 4),
         if (order?.actions.isEmpty == true)
-          Text(
-            "Aucune action n'a été effectuée",
-            style: textTheme.labelLarge?.copyWith(
-              fontWeight: FontWeight.w400,
-              color: colorScheme.outline.withValues(alpha: .7),
-              fontSize: 12,
-            ),
+          TextVariant(
+            LocaleKeys.noOrderAction.tr(),
+            variantType: TextVariantType.labelLarge,
+            fontWeight: FontWeight.w400,
+            color: colorScheme.outline.withValues(alpha: .7),
+            fontSize: 12,
           )
         else ...[
           Divider(
@@ -447,15 +462,22 @@ class _ActionsHistory extends ConsumerWidget {
                                     Expanded(
                                       child: Tooltip(
                                         message: dayDiffBetweenActions != null
-                                            ? "Jours depuis la dernière action"
+                                            ? LocaleKeys.daysSinceLastAction
+                                                .tr()
                                             : "",
-                                        child: Text(
+                                        child: TextVariant(
                                           dayDiffBetweenActions != null
-                                              ? "+$dayDiffBetweenActions jours"
+                                              ? LocaleKeys.daysDiffWithSymbol
+                                                  .tr(
+                                                  args: [
+                                                    dayDiffBetweenActions
+                                                        .toString()
+                                                  ],
+                                                )
                                               : "",
-                                          style: textTheme.bodySmall?.copyWith(
-                                            fontWeight: FontWeight.w400,
-                                          ),
+                                          variantType:
+                                              TextVariantType.bodySmall,
+                                          fontWeight: FontWeight.w400,
                                         ),
                                       ),
                                     ),
@@ -496,6 +518,7 @@ class _OrderInformations extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final state = ref.watch(orderDetailsViewModelProvider);
     final order = state.order;
+    final businessTypeState = ref.watch(businessTypeServiceNotifierProvider);
 
     return Container(
       width: double.infinity,
@@ -510,9 +533,10 @@ class _OrderInformations extends ConsumerWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            "Informations",
-            style: textTheme.labelLarge?.copyWith(fontWeight: FontWeight.w400),
+          TextVariant(
+            LocaleKeys.informations.tr(),
+            variantType: TextVariantType.labelLarge,
+            fontWeight: FontWeight.w400,
           ),
           Divider(
             color: colorScheme.outline.withValues(alpha: .2),
@@ -523,7 +547,7 @@ class _OrderInformations extends ConsumerWidget {
             children: [
               Expanded(
                 child: SelectableText(
-                  "Date de commande",
+                  LocaleKeys.orderDate.tr(),
                   style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                   ),
@@ -541,7 +565,7 @@ class _OrderInformations extends ConsumerWidget {
             children: [
               Expanded(
                 child: SelectableText(
-                  "Numéro de suivi",
+                  LocaleKeys.trackingNumber.tr(),
                   style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                   ),
@@ -559,7 +583,7 @@ class _OrderInformations extends ConsumerWidget {
             children: [
               Expanded(
                 child: SelectableText(
-                  "Fin de dossier prévue",
+                  LocaleKeys.endOfFile.tr(),
                   style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                   ),
@@ -577,7 +601,7 @@ class _OrderInformations extends ConsumerWidget {
             children: [
               Expanded(
                 child: SelectableText(
-                  "Méthode",
+                  LocaleKeys.method.tr(),
                   style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                   ),
@@ -595,16 +619,16 @@ class _OrderInformations extends ConsumerWidget {
             children: [
               Expanded(
                 child: SelectableText(
-                  "Boutique",
+                  businessTypeState.isService
+                      ? LocaleKeys.shop.tr()
+                      : LocaleKeys.product.tr(),
                   style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                   ),
                 ),
               ),
               Expanded(
-                child: SelectableText(
-                  order.shopName,
-                ),
+                child: SelectableText(order.shopName),
               ),
             ],
           ),
@@ -613,7 +637,7 @@ class _OrderInformations extends ConsumerWidget {
             children: [
               Expanded(
                 child: SelectableText(
-                  "Intermédiaire",
+                  LocaleKeys.intermediary.tr(),
                   style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                   ),
@@ -631,7 +655,7 @@ class _OrderInformations extends ConsumerWidget {
             children: [
               Expanded(
                 child: SelectableText(
-                  "Frais",
+                  LocaleKeys.fees.tr(),
                   style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w400,
                   ),
@@ -639,7 +663,11 @@ class _OrderInformations extends ConsumerWidget {
               ),
               Expanded(
                 child: SelectableText(
-                  "${order.internalProcessingFee} €",
+                  LocaleKeys.priceWithSymbol.tr(
+                    args: [
+                      order.internalProcessingFee.toString(),
+                    ],
+                  ),
                 ),
               ),
             ],
@@ -656,7 +684,6 @@ class _SummaryOrder extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     final state = ref.watch(orderDetailsViewModelProvider);
     final order = state.order;
     final viewModel = ref.read(orderDetailsViewModelProvider.notifier);
@@ -680,26 +707,23 @@ class _SummaryOrder extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Text(
-                    "Prochaine action",
-                    style: textTheme.labelSmall?.copyWith(
-                      fontWeight: FontWeight.w400,
-                    ),
+                  TextVariant(
+                    LocaleKeys.nextAction.tr(),
+                    variantType: TextVariantType.labelSmall,
+                    fontWeight: FontWeight.w400,
                   ),
                   const Gap(4),
-                  Text(
+                  TextVariant(
                     state.order!.nextActionDate?.toDDMMYYYY() ??
-                        'Aucune action prévue',
-                    style: textTheme.headlineMedium?.copyWith(
-                      fontWeight: FontWeight.w500,
-                    ),
+                        LocaleKeys.noNextAction.tr(),
+                    variantType: TextVariantType.headlineMedium,
                   ),
                   const Gap(16),
-                  Text(
-                    "Recontacter la boutique par mail",
-                    style: textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.w400,
-                    ),
+                  TextVariant(
+                    state.order!.nextAction?.description ??
+                        LocaleKeys.noNextAction.tr(),
+                    variantType: TextVariantType.bodyMedium,
+                    fontWeight: FontWeight.w400,
                   ),
                   const Gap(16),
                   InkWell(
@@ -708,7 +732,7 @@ class _SummaryOrder extends ConsumerWidget {
                       cursor: SystemMouseCursors.click,
                       child: Tooltip(
                         verticalOffset: 50,
-                        message: "Cliquez pour changer la priorité",
+                        message: LocaleKeys.clickToChangePriority.tr(),
                         child: Container(
                           padding: const EdgeInsets.symmetric(
                             horizontal: 32,
@@ -725,11 +749,10 @@ class _SummaryOrder extends ConsumerWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                "Priorité",
-                                style: textTheme.bodyLarge?.copyWith(
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              TextVariant(
+                                LocaleKeys.priority.tr(),
+                                variantType: TextVariantType.bodyLarge,
+                                fontWeight: FontWeight.w400,
                               ),
                               const Gap(16),
                               Row(
@@ -744,11 +767,10 @@ class _SummaryOrder extends ConsumerWidget {
                                     ),
                                   ),
                                   const SizedBox(width: 16),
-                                  Text(
+                                  TextVariant(
                                     order.priority.name,
-                                    style: textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                    ),
+                                    variantType: TextVariantType.bodyMedium,
+                                    fontWeight: FontWeight.w400,
                                   ),
                                 ],
                               ),
@@ -759,8 +781,8 @@ class _SummaryOrder extends ConsumerWidget {
                     ),
                   ),
                   const Gap(16),
-                  const HelpText(
-                    text: "Cliquer sur la priorité pour la changer",
+                  HelpText(
+                    text: LocaleKeys.clickToChangePriority.tr(),
                   ),
                 ],
               ),
@@ -846,9 +868,8 @@ class _StatusRow extends ConsumerWidget {
           ),
         ),
         const SizedBox(height: 16),
-        const HelpText(
-          text:
-              "Pour changer le statut de la commande, veuillez cliquer sur le statut souhaité",
+        HelpText(
+          text: LocaleKeys.clickToChangeStatus.tr(),
         ),
       ],
     );
@@ -884,8 +905,14 @@ class _StatsCard extends ConsumerWidget {
           ),
         ),
         child: ListTile(
-          subtitle: Text(subtitle),
-          title: Text(title),
+          subtitle: TextVariant(
+            subtitle,
+            variantType: TextVariantType.bodyMedium,
+          ),
+          title: TextVariant(
+            title,
+            variantType: TextVariantType.titleLarge,
+          ),
         ),
       ),
     );
@@ -918,38 +945,33 @@ class _OrderDetailHeader extends ConsumerWidget {
         children: [
           const _ClientInfoCard(),
           Expanded(
-            flex: 5,
-            child: _buildStatisticsRow(),
-          ),
+              flex: 5,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  _StatsCard(
+                    subtitle: LocaleKeys.numberOfOrders.tr(),
+                    title: "3",
+                  ),
+                  const SizedBox(width: 10),
+                  _StatsCard(
+                    subtitle: LocaleKeys.sponsorship.tr(),
+                    title: "1",
+                  ),
+                  const SizedBox(width: 10),
+                  _StatsCard(
+                    subtitle: LocaleKeys.totalAmount.tr(),
+                    title: "1000 €",
+                  ),
+                  const SizedBox(width: 10),
+                  _StatsCard(
+                    subtitle: LocaleKeys.firstOrder.tr(),
+                    title: "2024-01-01",
+                  ),
+                ],
+              )),
         ],
       ),
-    );
-  }
-
-  Widget _buildStatisticsRow() {
-    return const Row(
-      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _StatsCard(
-          subtitle: "Nombre de commandes",
-          title: "3",
-        ),
-        SizedBox(width: 10),
-        _StatsCard(
-          subtitle: "Parrainage",
-          title: "1",
-        ),
-        SizedBox(width: 10),
-        _StatsCard(
-          subtitle: "Montant total",
-          title: "1000 €",
-        ),
-        SizedBox(width: 10),
-        _StatsCard(
-          subtitle: "Première commande",
-          title: "2024-01-01",
-        ),
-      ],
     );
   }
 }
@@ -969,21 +991,30 @@ class _ClientInfoCard extends ConsumerWidget {
 
     return Expanded(
       child: ListTile(
-        subtitle: const SizedBox(
+        subtitle: SizedBox(
           width: 200,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("@ojfewpo"),
+              TextVariant(
+                order?.clientContact ?? "",
+                variantType: TextVariantType.bodyMedium,
+              ),
             ],
           ),
         ),
         title: Hero(
           tag: "order-${order?.id}",
-          child: Text(order?.clientContact ?? ""),
+          child: TextVariant(
+            order?.clientContact ?? "",
+            variantType: TextVariantType.bodyMedium,
+          ),
         ),
         leading: CircleAvatar(
-          child: Text(order?.clientContact[0] ?? ""),
+          child: TextVariant(
+            order?.clientContact[0] ?? "",
+            variantType: TextVariantType.bodyMedium,
+          ),
         ),
         tileColor: colorScheme.surface,
         contentPadding: const EdgeInsets.symmetric(
@@ -1005,7 +1036,10 @@ class _OrderDetailAppBar extends StatelessWidget
       scrolledUnderElevation: 0,
       leadingWidth: 220,
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-      title: const Text("Détails de la commande"),
+      title: TextVariant(
+        LocaleKeys.orderDetails.tr(),
+        variantType: TextVariantType.headlineMedium,
+      ),
       leading: MouseRegion(
         cursor: SystemMouseCursors.click,
         child: InkWell(
@@ -1016,9 +1050,9 @@ class _OrderDetailAppBar extends StatelessWidget
               children: [
                 const Icon(Icons.arrow_back),
                 const SizedBox(width: 10),
-                Text(
-                  "Retour au dashboard",
-                  style: Theme.of(context).textTheme.labelMedium,
+                TextVariant(
+                  LocaleKeys.backToDashboard.tr(),
+                  variantType: TextVariantType.labelMedium,
                 ),
               ],
             ),

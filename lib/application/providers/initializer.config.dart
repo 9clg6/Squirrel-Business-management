@@ -24,7 +24,11 @@ import 'package:squirrel/data/repository/preferences/preferences.repository.dart
     as _i513;
 import 'package:squirrel/data/storage/hive_secure_storage.dart' as _i241;
 import 'package:squirrel/domain/service/auth.service.dart' as _i1038;
+import 'package:squirrel/domain/service/business_type.service.dart' as _i363;
+import 'package:squirrel/domain/service/client.service.dart' as _i1025;
 import 'package:squirrel/domain/service/dialog.service.dart' as _i635;
+import 'package:squirrel/domain/service/hive_secure_storage.service.dart'
+    as _i1041;
 import 'package:squirrel/domain/service/navigator.service.dart' as _i216;
 import 'package:squirrel/domain/service/order.service.dart' as _i483;
 import 'package:squirrel/domain/service/request_service.dart' as _i392;
@@ -65,6 +69,11 @@ extension GetItInjectableX on _i174.GetIt {
       () => domainModule.secureStorageService(gh<_i558.FlutterSecureStorage>()),
       preResolve: true,
     );
+    await gh.singletonAsync<_i1041.HiveSecureStorageService>(
+      () => domainModule
+          .hiveSecureStorageService(gh<_i1072.SecureStorageService>()),
+      preResolve: true,
+    );
     await gh.singletonAsync<_i241.HiveSecureStorage>(
       () => dataModule.hiveSecureStorage(gh<_i1072.SecureStorageService>()),
       preResolve: true,
@@ -82,6 +91,13 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.singleton<_i483.OrderService>(
         () => domainModule.orderService(gh<_i241.HiveSecureStorage>()));
+    gh.singleton<_i1025.ClientService>(
+        () => domainModule.clientService(gh<_i483.OrderService>()));
+    await gh.singletonAsync<_i363.BusinessTypeService>(
+      () => domainModule
+          .serviceTypeService(gh<_i1041.HiveSecureStorageService>()),
+      preResolve: true,
+    );
     gh.factory<_i513.PreferencesRepository>(() => dataModule
         .preferencesRepository(gh<_i939.PreferencesLocalDataSource>()));
     gh.factory<_i173.GetThemeUseCase>(
