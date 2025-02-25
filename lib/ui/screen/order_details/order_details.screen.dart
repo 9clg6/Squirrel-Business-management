@@ -929,6 +929,13 @@ class _OrderDetailHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    final state = ref.watch(orderDetailsViewModelProvider);
+    final order = state.order;
+
+    // Si l'ordre n'est pas encore chargé, afficher un indicateur de chargement
+    if (order == null) {
+      return const Center(child: CircularProgressIndicator());
+    }
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -951,22 +958,22 @@ class _OrderDetailHeader extends ConsumerWidget {
                 children: [
                   _StatsCard(
                     subtitle: LocaleKeys.numberOfOrders.tr(),
-                    title: "3",
+                    title: order.client?.orderQuantity.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.sponsorship.tr(),
-                    title: "1",
+                    title: order.client?.sponsorshipQuantity.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.totalAmount.tr(),
-                    title: "1000 €",
+                    title: order.client?.orderTotalAmount.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.firstOrder.tr(),
-                    title: "2024-01-01",
+                    title: order.client?.firstOrderDate?.toDDMMYYYY() ?? "",
                   ),
                 ],
               )),
@@ -997,7 +1004,7 @@ class _ClientInfoCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextVariant(
-                order?.clientContact ?? "",
+                order?.client?.name ?? "",
                 variantType: TextVariantType.bodyMedium,
               ),
             ],
@@ -1006,13 +1013,13 @@ class _ClientInfoCard extends ConsumerWidget {
         title: Hero(
           tag: "order-${order?.id}",
           child: TextVariant(
-            order?.clientContact ?? "",
+            order?.client?.name ?? "",
             variantType: TextVariantType.bodyMedium,
           ),
         ),
         leading: CircleAvatar(
           child: TextVariant(
-            order?.clientContact[0] ?? "",
+            order?.client?.name[0] ?? "",
             variantType: TextVariantType.bodyMedium,
           ),
         ),
@@ -1038,7 +1045,7 @@ class _OrderDetailAppBar extends StatelessWidget
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       title: TextVariant(
         LocaleKeys.orderDetails.tr(),
-        variantType: TextVariantType.headlineMedium,
+        variantType: TextVariantType.titleMedium,
       ),
       leading: MouseRegion(
         cursor: SystemMouseCursors.click,
@@ -1052,7 +1059,7 @@ class _OrderDetailAppBar extends StatelessWidget
                 const SizedBox(width: 10),
                 TextVariant(
                   LocaleKeys.backToDashboard.tr(),
-                  variantType: TextVariantType.labelMedium,
+                  variantType: TextVariantType.bodyMedium,
                 ),
               ],
             ),

@@ -8,6 +8,7 @@ abstract class  LocaleKeys {
   static const confirm = 'confirm';
   static const squirrel = 'squirrel';
   static const client = 'client';
+  static const trackId = 'trackId';
   static const createOrder = 'createOrder';
   static const editOrder = 'editOrder';
   static const shopName = 'shopName';
@@ -21,7 +22,6 @@ abstract class  LocaleKeys {
   static const internalFees = 'internalFees';
   static const percentage = 'percentage';
   static const amount = 'amount';
-  static const trackId = 'trackId';
   static const method = 'method';
   static const intermediary = 'intermediary';
   static const comment = 'comment';
@@ -112,5 +112,7 @@ abstract class  LocaleKeys {
   static const planification = 'planification';
   static const clients = 'clients';
   static const history = 'history';
+  static const noClients = 'noClients';
+  static const percentageSymbol = 'percentageSymbol';
 
 }

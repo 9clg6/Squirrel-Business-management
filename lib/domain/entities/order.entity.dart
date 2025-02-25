@@ -3,6 +3,7 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
+import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/mixin/serializable.mixin.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/enums/priority.enum.dart';
@@ -16,7 +17,8 @@ part 'order.entity.g.dart';
 @JsonSerializable()
 class Order with EquatableMixin, SerializableMixin {
   final String id;
-  final String clientContact;
+  final Client? client;
+  final String clientName;
   final String intermediaryContact;
   final double internalProcessingFee;
   final String trackId;
@@ -31,6 +33,7 @@ class Order with EquatableMixin, SerializableMixin {
   final String? note;
   final Priority priority;
   final List<OrderAction>? _actions;
+
   List<OrderAction> get actions =>
       (_actions ?? [])..sort((a, b) => b.date.compareTo(a.date));
   double get margin => commission - internalProcessingFee;
@@ -38,7 +41,7 @@ class Order with EquatableMixin, SerializableMixin {
 
   OrderAction? get nextAction =>
       actions.firstWhereOrNull((a) => a.date.isAfter(DateTime.now()));
-      
+
   DateTime? get nextActionDate => actions.isNotEmpty
       ? nextAction != null
           ? actions.first.date
@@ -49,7 +52,8 @@ class Order with EquatableMixin, SerializableMixin {
   ///
   Order({
     String? id,
-    required this.clientContact,
+    required this.client,
+    required this.clientName,
     required this.intermediaryContact,
     required this.internalProcessingFee,
     required this.trackId,
@@ -70,7 +74,8 @@ class Order with EquatableMixin, SerializableMixin {
   /// Empty order
   ///
   factory Order.empty() => Order(
-        clientContact: '',
+        client: null,
+        clientName: "",
         intermediaryContact: '',
         internalProcessingFee: 0,
         trackId: '',
@@ -96,7 +101,7 @@ class Order with EquatableMixin, SerializableMixin {
   @override
   List<Object?> get props => [
         id,
-        clientContact,
+        client,
         intermediaryContact,
         startDate,
         estimatedDuration,

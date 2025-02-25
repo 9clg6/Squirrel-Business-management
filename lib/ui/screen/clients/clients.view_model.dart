@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/client.service.dart';
+import 'package:squirrel/domain/state/client.state.dart';
 import 'package:squirrel/ui/screen/clients/clients.view_state.dart';
 
 part 'clients.view_model.g.dart';
@@ -10,29 +11,34 @@ part 'clients.view_model.g.dart';
 ///
 @riverpod
 class Clients extends _$Clients {
-  ///
-  /// Client service
-  ///
-  final ClientService _clientService;
+  late final ClientService _clientService;
 
-  ///
-  /// Private constructor
-  ///
+  /// Public constructor
+  /// 
   Clients() : _clientService = injector<ClientService>();
 
   ///
   /// Build
   ///
   @override
-  ClientsScreenState build() => ClientsScreenState.initial().copyWith(
-        loading: false,
-        clients: _clientService.clientState.clients,
-      );
+  ClientsScreenState build() {
+    _clientService.addListener(_onClientStateChanged);
+    
+    return ClientsScreenState.initial().copyWith(
+      loading: false,
+      clients: _clientService.clientState.clients,
+    );
+  }
 
   ///
-  /// Init
+  /// Gestionnaire de changement d'état
   ///
-  Future<void> init() async {}
+  void _onClientStateChanged(ClientState s) {
+    state = ClientsScreenState.initial().copyWith(
+      loading: false,
+      clients: s.clients,
+    );
+  }
 
   ///
   /// Select client

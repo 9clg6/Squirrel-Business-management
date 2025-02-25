@@ -102,7 +102,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
     methodController = TextEditingController(text: widget.order?.method);
     intermediaryController =
         TextEditingController(text: widget.order?.intermediaryContact);
-    clientController = TextEditingController(text: widget.order?.clientContact);
+    clientController = TextEditingController(text: widget.order?.client?.name);
     commentController = TextEditingController(text: widget.order?.note);
     formKey = GlobalKey<FormState>();
   }
@@ -218,7 +218,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             decoration: InputDecoration(
                               labelText: LocaleKeys.commission.tr(),
                               suffixText: isCommissionPercentage
-                                  ? LocaleKeys.percentage.tr()
+                                  ? LocaleKeys.percentageSymbol.tr()
                                   : LocaleKeys.euros.tr(),
                             ),
                             validator:
@@ -403,7 +403,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
 
                         appRouter.pop<Order>(
                           order?.copyWith(
-                            clientContact: clientController.text,
+                            clientName: clientController.text,
                             intermediaryContact: intermediaryController.text,
                             price: price,
                             shopName: shopNameController.text,

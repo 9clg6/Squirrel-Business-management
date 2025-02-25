@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
+import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
@@ -18,6 +20,9 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Order service
   late final OrderService _orderService;
 
+  /// Client service
+  late final ClientService _clientService;
+
   /// Dialog service
   late final DialogService _dialogService;
 
@@ -31,6 +36,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   OrderDetailsViewModel._() {
     _orderService = injector<OrderService>();
+    _clientService = injector<ClientService>();
     _dialogService = injector<DialogService>();
   }
 
@@ -59,6 +65,24 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
         order: o,
       );
     });
+  }
+
+  /// Get client by id
+  /// @param [id] id
+  /// @return [Client] client
+  ///
+  Client getClientById(String id) {
+    try {
+      return _clientService.getClientById(id);
+    } catch (e) {
+      // Si aucun client n'est trouvé, retourner un client par défaut
+      return Client(
+        name: "Client inconnu",
+        orderQuantity: 0,
+        orderTotalAmount: 0,
+        commissionTotalAmount: 0,
+      );
+    }
   }
 
   /// Update order status

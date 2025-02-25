@@ -180,7 +180,7 @@ class TodoItem extends ConsumerWidget {
   /// Constructor
   /// @param [status] status
   /// @param [order] order
-  /// 
+  ///
   const TodoItem({
     super.key,
     required this.status,
@@ -191,7 +191,7 @@ class TodoItem extends ConsumerWidget {
   /// @param [context] context
   /// @param [ref] ref
   /// @return [Widget] widget of the todo item
-  /// 
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final viewModel = ref.read(todoViewModelProvider.notifier);
@@ -249,7 +249,7 @@ class TodoItem extends ConsumerWidget {
                         color: colorScheme.onSurface,
                       ),
                       TextVariant(
-                        order.clientContact,
+                        order.client?.name ?? "",
                         variantType: TextVariantType.labelSmall,
                         fontWeight: FontWeight.w400,
                         color: colorScheme.onSurface,

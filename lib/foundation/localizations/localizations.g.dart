@@ -20,6 +20,7 @@ class CodegenLoader extends AssetLoader{
   "confirm": "Confirmer",
   "squirrel": "Squirrel",
   "client": "Client",
+  "trackId": "Numéro de suivi",
   "createOrder": "Créer une commande",
   "editOrder": "Editer la commande",
   "shopName": "Nom du magasin",
@@ -33,7 +34,6 @@ class CodegenLoader extends AssetLoader{
   "internalFees": "Frais internes",
   "percentage": "Pourcentage",
   "amount": "Montant",
-  "trackId": "Numéro de suivi",
   "method": "Méthode",
   "intermediary": "Intermédiaire",
   "comment": "Commentaire",
@@ -123,7 +123,9 @@ class CodegenLoader extends AssetLoader{
   "stats": "Statistiques",
   "planification": "Planification",
   "clients": "Clients",
-  "history": "Historique"
+  "history": "Historique",
+  "noClients": "Aucun client trouvé",
+  "percentageSymbol": "%"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"fr": _fr};
 }

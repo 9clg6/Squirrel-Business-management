@@ -116,7 +116,7 @@ class _PinnedOrders extends ConsumerWidget {
                       Center(
                         child: Hero(
                           tag: 'order-${order.id}',
-                          child: Text(order.clientContact),
+                          child: Text(order.client?.name ?? ""),
                         ),
                       ),
                     ),
@@ -404,7 +404,7 @@ class _OrdersList extends ConsumerWidget {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 8),
                                   child: TextVariant(
-                                    order.clientContact,
+                                    order.client?.name ?? "",
                                     variantType: TextVariantType.bodyMedium,
                                   ),
                                 ),
@@ -557,7 +557,7 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
                 DateFormat('MMMM').format(DateTime.now()),
               ],
             ),
-            variantType: TextVariantType.bodyMedium,
+            variantType: TextVariantType.bodySmall,
           ),
           const SizedBox(height: 10),
           TextVariant(

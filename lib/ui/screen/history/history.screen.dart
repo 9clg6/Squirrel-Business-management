@@ -140,7 +140,7 @@ class _OrdersList extends ConsumerWidget {
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 8),
                                   child: TextVariant(
-                                    order.clientContact,
+                                    order.client?.name ?? "",
                                     variantType: TextVariantType.bodyMedium,
                                   ),
                                 ),

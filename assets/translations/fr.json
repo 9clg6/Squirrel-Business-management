@@ -107,5 +107,7 @@
   "stats": "Statistiques",
   "planification": "Planification",
   "clients": "Clients",
-  "history": "Historique"
+  "history": "Historique",
+  "noClients": "Aucun client trouvé",
+  "percentageSymbol": "%"
 }

@@ -7,7 +7,7 @@ part of 'order_details.view_model.dart';
 // **************************************************************************
 
 String _$orderDetailsViewModelHash() =>
-    r'd51db21e942d9106153536317092410a98e291e2';
+    r'8e46f15fe701c2c3d11e22da76e05c1d24f97fa8';
 
 /// [OrderDetailsViewModel]
 ///

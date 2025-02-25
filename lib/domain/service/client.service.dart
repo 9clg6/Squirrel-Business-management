@@ -1,70 +1,91 @@
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
-import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/state/client.state.dart';
-import 'package:squirrel/domain/state/order.state.dart';
 
 /// [ClientService]
 class ClientService extends StateNotifier<ClientState> {
-  /// Order service
-  late final OrderService _orderService;
-
   /// Client state
   ClientState get clientState => state;
 
   /// Constructor
   ///
-  ClientService(this._orderService) : super(ClientState.initial()) {
-    _init();
+  ClientService() : super(ClientState.initial());
+
+  /// Get client by id
+  /// @param [id] id
+  /// @return [Client] client
+  ///
+  Client getClientById(String id) {
+    return state.clients.firstWhere((client) => client.id == id);
   }
 
-  /// Init
+  /// Get client by name or create client
+  /// @param [clientContact] client contact
+  /// @return [Client] client
   ///
-  void _init() {
-    _mapClientsFromOrders(_orderService.state.allOrder);
-
-    _orderService.addListener((OrderState s) {
-      _mapClientsFromOrders(s.allOrder);
-    });
+  Client? getClientByName(String clientContact) {
+    return state.clients.firstWhereOrNull(
+      (client) =>
+          client.name.toLowerCase().trim() ==
+          clientContact.toLowerCase().trim(),
+    );
   }
 
-  /// Map clients from orders
-  /// @param orders: List<Order>
+  /// Create client with order
+  /// @param [client] client
+  /// @param [order] order
+  /// @return [Client] client
   ///
-  void _mapClientsFromOrders(List<Order> orders) {
-    final clientsMap =
-        _orderService.state.allOrder.fold<Map<String, Map<String, dynamic>>>(
-      {},
-      (map, order) {
-        final clientName = order.clientContact;
-        if (!map.containsKey(clientName)) {
-          map[clientName] = {
-            'totalOrders': 0,
-            'totalAmount': 0.0,
-            'totalCommissions': 0.0,
-          };
-        }
-        map[clientName]!['totalOrders'] =
-            (map[clientName]!['totalOrders'] as int) + 1;
-        map[clientName]!['totalAmount'] =
-            (map[clientName]!['totalAmount'] as double) + order.price;
-        map[clientName]!['totalCommissions'] =
-            (map[clientName]!['totalCommissions'] as double) + order.commission;
-        return map;
-      },
+  Client createClientWithOrder(String clientName, Order order) {
+    final client = Client(
+      name: clientName.trim(),
+      orderQuantity: 1,
+      orderTotalAmount: order.price,
+      commissionTotalAmount: order.commission,
+      firstOrderDate: order.startDate,
     );
 
-    // Convertir la map en liste de clients
-    final clients = clientsMap.entries.map((entry) {
-      return Client(
-        name: entry.key,
-        orderQuantity: entry.value['totalOrders'] as int,
-        orderTotalAmount: entry.value['totalAmount'] as double,
-        commissionTotalAmount: entry.value['totalCommissions'] as double,
-      );
-    }).toList();
+    state = state.copyWith(clients: [...state.clients, client]);
 
-    state = state.copyWith(clients: clients);
+    return client;
+  }
+
+  /// Update client with new order information
+  /// @param [client] client to update
+  /// @param [order] order to add to client statistics
+  /// @throws StateError if client is not found
+  void updateClient(
+    Client client, {
+    required Order order,
+  }) {
+    final int clientIndex = state.clients.indexWhere(
+      (c) => c.id == client.id,
+    );
+
+    if (clientIndex == -1) {
+      throw StateError('Client with id ${client.id} not found');
+    }
+
+    final clientTemp = state.clients[clientIndex];
+    final DateTime newLastOrderDate = order.startDate.isAfter(
+            clientTemp.lastOrderDate ?? DateTime.fromMillisecondsSinceEpoch(0))
+        ? order.startDate
+        : clientTemp.lastOrderDate ?? order.startDate;
+
+    final clientUpdated = clientTemp.copyWith(
+      orderQuantity: clientTemp.orderQuantity + 1,
+      orderTotalAmount: clientTemp.orderTotalAmount + order.price,
+      commissionTotalAmount:
+          clientTemp.commissionTotalAmount + order.commission,
+      lastOrderDate: newLastOrderDate,
+    );
+
+    state = state.copyWith(clients: [
+      ...state.clients.take(clientIndex),
+      clientUpdated,
+      ...state.clients.skip(clientIndex + 1),
+    ]);
   }
 }

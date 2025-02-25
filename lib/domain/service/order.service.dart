@@ -3,53 +3,79 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:squirrel/data/storage/hive_secure_storage.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
+import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/enums/headers.enum.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/enums/priority.enum.dart';
+import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
 /// [OrderService]
 class OrderService extends StateNotifier<OrderState> {
-  final HiveSecureStorage hiveService;
+  /// Hive service
+  final StorageInterface hiveService;
 
+  /// Client service
+  late final ClientService clientService;
+
+  /// Order state
   OrderState get orderState => state;
 
+  /// Orders key
+  static const ordersKey = 'orders';
+
   /// Public constructor
+  /// @param [hiveService] hive service
   ///
-  OrderService(this.hiveService) : super(OrderState.initial()) {
+  OrderService(
+    this.hiveService,
+    this.clientService,
+  ) : super(OrderState.initial()) {
     _loadOrders();
+    _isInitialLoad = true;
     addListener(_save);
   }
 
+  /// Variable to track initial load
+  bool _isInitialLoad = false;
+
   /// Load orders
   ///
-  void _loadOrders() {
+  Future<void> _loadOrders() async {
     log('Loading orders');
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final String? o = await hiveService.get('orders');
+      final String? o = await hiveService.get(ordersKey);
       if (o != null) {
         final orders = jsonDecode(o) as List;
         final ordersList = orders.map((e) => Order.fromJson(e)).toList();
         state = state.copyWith(orders: ordersList);
       }
+      _isInitialLoad = false;
     });
   }
 
   /// Save orders
+  /// @param [os] order state
   ///
   void _save(OrderState os) {
+    if (_isInitialLoad) return;
+
     log('Saving orders');
     if (os.orders.isEmpty) return;
     hiveService.set(
-      'orders',
+      ordersKey,
       jsonEncode(os.orders.map((e) => e.toJson()).toList()),
     );
   }
 
-  /// Méthode utilitaire pour trouver un ordre et déterminer s'il est épinglé
+  /// Method to find an order and determine if it is pinned
+  /// @param [order] order
+  /// @return [int] index of the order
+  /// @return [bool] if the order is pinned
+  ///
   (int, bool) _findOrder(Order order) {
     var indexOrder = state.orders.indexWhere((o) => o.id == order.id);
     var isPinned = false;
@@ -62,7 +88,11 @@ class OrderService extends StateNotifier<OrderState> {
     return (indexOrder, isPinned);
   }
 
-  /// Méthode utilitaire pour mettre à jour un ordre
+  /// Method to update an order
+  /// @param [updatedOrder] updated order
+  /// @param [indexOrder] index of the order
+  /// @param [isPinned] if the order is pinned
+  ///
   void _updateOrder(
     Order updatedOrder,
     int indexOrder,
@@ -206,8 +236,8 @@ class OrderService extends StateNotifier<OrderState> {
       switch (selectedHeader) {
         case Headers.client:
           return ascending
-              ? a.clientContact.compareTo(b.clientContact)
-              : b.clientContact.compareTo(a.clientContact);
+              ? a.client!.id.compareTo(b.client!.id)
+              : b.client!.id.compareTo(a.client!.id);
         case Headers.status:
           return ascending
               ? a.status.index.compareTo(b.status.index)
@@ -308,7 +338,11 @@ class OrderService extends StateNotifier<OrderState> {
     );
   }
 
-  /// Méthode utilitaire pour trouver un ordre par son ID
+  /// Method to find an order by its id
+  /// @param [id] id
+  /// @return [int] index of the order
+  /// @return [bool] if the order is pinned
+  ///
   (int, bool) _findOrderById(String id) {
     var indexOrder = state.orders.indexWhere((o) => o.id == id);
     var isPinned = false;
@@ -322,16 +356,32 @@ class OrderService extends StateNotifier<OrderState> {
   }
 
   /// Add order
+  /// @param [order] order
   ///
   void addOrder(Order order) {
+    Client? client;
+
+    final tempClient =
+        clientService.getClientByName(order.clientName);
+
+    if (tempClient == null) {
+      client = clientService.createClientWithOrder(
+        order.clientName,
+        order,
+      );
+    } else {
+      client = tempClient;
+      clientService.updateClient(
+        client,
+        order: order,
+      );
+    }
+
     state = state.copyWith(
-      orders: [...state.orders, order],
+      orders: [
+        ...state.orders,
+        order.copyWith(client: client),
+      ],
     );
-  }
-
-  /// Get client by id
-  ///
-  void getClientById(){
-
   }
 }

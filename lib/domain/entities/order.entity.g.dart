@@ -9,7 +9,9 @@ part of 'order.entity.dart';
 abstract class _$OrderCWProxy {
   Order id(String? id);
 
-  Order clientContact(String clientContact);
+  Order client(Client? client);
+
+  Order clientName(String clientName);
 
   Order intermediaryContact(String intermediaryContact);
 
@@ -47,7 +49,8 @@ abstract class _$OrderCWProxy {
   /// ````
   Order call({
     String? id,
-    String? clientContact,
+    Client? client,
+    String? clientName,
     String? intermediaryContact,
     double? internalProcessingFee,
     String? trackId,
@@ -75,8 +78,10 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
   Order id(String? id) => this(id: id);
 
   @override
-  Order clientContact(String clientContact) =>
-      this(clientContact: clientContact);
+  Order client(Client? client) => this(client: client);
+
+  @override
+  Order clientName(String clientName) => this(clientName: clientName);
 
   @override
   Order intermediaryContact(String intermediaryContact) =>
@@ -134,7 +139,8 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
   /// ````
   Order call({
     Object? id = const $CopyWithPlaceholder(),
-    Object? clientContact = const $CopyWithPlaceholder(),
+    Object? client = const $CopyWithPlaceholder(),
+    Object? clientName = const $CopyWithPlaceholder(),
     Object? intermediaryContact = const $CopyWithPlaceholder(),
     Object? internalProcessingFee = const $CopyWithPlaceholder(),
     Object? trackId = const $CopyWithPlaceholder(),
@@ -155,11 +161,15 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
           ? _value.id
           // ignore: cast_nullable_to_non_nullable
           : id as String?,
-      clientContact:
-          clientContact == const $CopyWithPlaceholder() || clientContact == null
-              ? _value.clientContact
+      client: client == const $CopyWithPlaceholder()
+          ? _value.client
+          // ignore: cast_nullable_to_non_nullable
+          : client as Client?,
+      clientName:
+          clientName == const $CopyWithPlaceholder() || clientName == null
+              ? _value.clientName
               // ignore: cast_nullable_to_non_nullable
-              : clientContact as String,
+              : clientName as String,
       intermediaryContact:
           intermediaryContact == const $CopyWithPlaceholder() ||
                   intermediaryContact == null
@@ -238,7 +248,10 @@ extension $OrderCopyWith on Order {
 
 Order _$OrderFromJson(Map<String, dynamic> json) => Order(
       id: json['id'] as String?,
-      clientContact: json['clientContact'] as String,
+      client: json['client'] == null
+          ? null
+          : Client.fromJson(json['client'] as Map<String, dynamic>),
+      clientName: json['clientName'] as String,
       intermediaryContact: json['intermediaryContact'] as String,
       internalProcessingFee: (json['internalProcessingFee'] as num).toDouble(),
       trackId: json['trackId'] as String,
@@ -261,7 +274,8 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
 
 Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'id': instance.id,
-      'clientContact': instance.clientContact,
+      'client': instance.client,
+      'clientName': instance.clientName,
       'intermediaryContact': instance.intermediaryContact,
       'internalProcessingFee': instance.internalProcessingFee,
       'trackId': instance.trackId,

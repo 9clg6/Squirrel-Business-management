@@ -38,6 +38,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
           children: [
             Container(
               width: double.infinity,
@@ -50,64 +51,69 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                   width: 1,
                 ),
               ),
-              child: DataTable(
-                dataRowColor: computeDataRowColor(colorScheme),
-                showCheckboxColumn: false,
-                columns: [
-                  DataColumn(
-                    label: TextVariant(
-                      LocaleKeys.clientName.tr(),
-                      variantType: TextVariantType.bodyMedium,
+              child: state.clients.isEmpty
+                  ? Center(
+                      child: TextVariant(
+                        LocaleKeys.noClients.tr(),
+                        variantType: TextVariantType.titleMedium,
+                      ),
+                    )
+                  : DataTable(
+                      dataRowColor: computeDataRowColor(colorScheme),
+                      showCheckboxColumn: false,
+                      columns: [
+                        DataColumn(
+                          label: TextVariant(
+                            LocaleKeys.clientName.tr(),
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                        DataColumn(
+                          label: TextVariant(
+                            LocaleKeys.totalOrders.tr(),
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                        DataColumn(
+                          label: TextVariant(
+                            LocaleKeys.totalAmount.tr(),
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                        DataColumn(
+                          label: TextVariant(
+                            LocaleKeys.totalCommissions.tr(),
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                      ],
+                      rows: state.clients
+                          .map((entry) => DataRow(
+                                onSelectChanged: (bool? value) {
+                                  viewModel.selectClient(entry.name);
+                                },
+                                cells: [
+                                  DataCell(Text(entry.name)),
+                                  DataCell(
+                                    Text(
+                                      entry.orderQuantity.toString(),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      entry.orderTotalAmount.toStringAsFixed(2),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      entry.commissionTotalAmount
+                                          .toStringAsFixed(2),
+                                    ),
+                                  ),
+                                ],
+                              ))
+                          .toList(),
                     ),
-                  ),
-                  DataColumn(
-                    label: TextVariant(
-                      LocaleKeys.totalOrders.tr(),
-                      variantType: TextVariantType.bodyMedium,
-                    ),
-                  ),
-                  DataColumn(
-                    label: TextVariant(
-                      LocaleKeys.totalAmount.tr(),
-                      variantType: TextVariantType.bodyMedium,
-                    ),
-                  ),
-                  DataColumn(
-                    label: TextVariant(
-                      LocaleKeys.totalCommissions.tr(),
-                      variantType: TextVariantType.bodyMedium,
-                    ),
-                  ),
-                ],
-                rows: state.clients
-                    .map((entry) => DataRow(
-                          onSelectChanged: (bool? value) {
-                            viewModel.selectClient(entry.name);
-                          },
-                          cells: [
-                            DataCell(Text(entry.name)),
-                            DataCell(
-                              Text(
-                                entry.orderQuantity.toString(),
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                entry.orderTotalAmount?.toStringAsFixed(2) ??
-                                    '-',
-                              ),
-                            ),
-                            DataCell(
-                              Text(
-                                entry.commissionTotalAmount
-                                        ?.toStringAsFixed(2) ??
-                                    '-',
-                              ),
-                            ),
-                          ],
-                        ))
-                    .toList(),
-              ),
             ),
           ],
         ),

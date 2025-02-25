@@ -332,8 +332,8 @@ class RowQuickStats extends ConsumerWidget {
                   const Gap(10),
                   TextVariant(
                     businessTypeState.isService
-                        ? LocaleKeys.bestProducts.tr()
-                        : LocaleKeys.bestShops.tr(),
+                        ? LocaleKeys.bestShops.tr()
+                        : LocaleKeys.bestProducts.tr(),
                     variantType: TextVariantType.bodySmall,
                     fontWeight: FontWeight.bold,
                   ),
@@ -392,7 +392,7 @@ class RowQuickStats extends ConsumerWidget {
                         {},
                         (map, order) => map
                           ..update(
-                            order.clientContact,
+                            order.client?.name ?? "",
                             (value) => {
                               'count': value['count'] + 1,
                               'total': value['total'] + order.price,
@@ -465,7 +465,7 @@ class RowQuickStats extends ConsumerWidget {
                         {},
                         (map, order) => map
                           ..update(
-                            order.clientContact,
+                            order.client?.name ?? "",
                             (value) => value + 1,
                             ifAbsent: () => 1,
                           ),

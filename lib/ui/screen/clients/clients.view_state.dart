@@ -15,7 +15,6 @@ class ClientsScreenState extends ViewStateAbs {
   /// Selected client
   final String? selectedClient;
 
-  ///
   /// Clients
   ///
   final List<Client> clients;
