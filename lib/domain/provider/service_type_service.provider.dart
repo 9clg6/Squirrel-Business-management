@@ -2,7 +2,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
-import 'package:squirrel/domain/state/service_type.state.dart';
+import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 

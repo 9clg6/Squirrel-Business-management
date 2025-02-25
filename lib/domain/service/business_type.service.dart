@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
-import 'package:squirrel/domain/state/service_type.state.dart';
+import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
 
 /// [BusinessTypeService]

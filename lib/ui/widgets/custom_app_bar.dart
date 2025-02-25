@@ -5,7 +5,7 @@ import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/provider/request_service.provider.dart';
 import 'package:squirrel/domain/provider/service_type_service.provider.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
-import 'package:squirrel/domain/state/service_type.state.dart';
+import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
