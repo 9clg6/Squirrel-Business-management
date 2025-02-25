@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'service_type.state.dart';
+part of 'business_type.state.dart';
 
 // **************************************************************************
 // CopyWithGenerator
