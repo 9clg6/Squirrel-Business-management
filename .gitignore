@@ -25,3 +25,22 @@ doc/api/
 
 .flutter-plugins
 .flutter-plugins-dependencies
+
+# Firebase configuration files
+firebase.json
+google-services.json
+GoogleService-Info.plist
+firebase_options.dart
+.firebaserc
+firebase-debug.log
+firebase-debug.*.log
+ui-debug.log
+.firebase/
+**/node_modules/
+
+# Firebase Admin SDK
+**/serviceAccountKey.json
+**/service-account-*.json
+
+# Local Emulator Suite
+**/firebase-export-*
