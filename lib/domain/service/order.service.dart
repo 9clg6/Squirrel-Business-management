@@ -336,6 +336,11 @@ class OrderService extends StateNotifier<OrderState> {
       indexOrder,
       isPinned,
     );
+
+    clientService.updateClient(
+      order.client!,
+      order: order,
+    );
   }
 
   /// Method to find an order by its id

@@ -6,9 +6,7 @@ import 'package:squirrel/ui/screen/clients/clients.view_state.dart';
 
 part 'clients.view_model.g.dart';
 
-///
 /// [Clients]
-///
 @riverpod
 class Clients extends _$Clients {
   late final ClientService _clientService;
@@ -17,7 +15,6 @@ class Clients extends _$Clients {
   /// 
   Clients() : _clientService = injector<ClientService>();
 
-  ///
   /// Build
   ///
   @override
@@ -30,9 +27,9 @@ class Clients extends _$Clients {
     );
   }
 
-  ///
   /// Gestionnaire de changement d'état
-  ///
+  /// @param s : [ClientState]
+  /// 
   void _onClientStateChanged(ClientState s) {
     state = ClientsScreenState.initial().copyWith(
       loading: false,
@@ -40,9 +37,9 @@ class Clients extends _$Clients {
     );
   }
 
-  ///
   /// Select client
-  ///
+  /// @param key : [String]
+  /// 
   void selectClient(String key) {
     state = state.copyWith(selectedClient: key);
   }

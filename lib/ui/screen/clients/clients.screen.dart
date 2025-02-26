@@ -5,26 +5,24 @@ import 'package:squirrel/foundation/utils/util.dart';
 import 'package:squirrel/ui/screen/clients/clients.view_model.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
-///
 /// Second screen
 ///
 class ClientsScreen extends ConsumerStatefulWidget {
-  ///
   /// Constructor
-  ///
+  /// @param key : [Key]
+  /// 
   const ClientsScreen({super.key});
 
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _ClientsScreenState();
 }
 
-///
 /// State of the second screen
-///
 class _ClientsScreenState extends ConsumerState<ClientsScreen> {
-  ///
   /// Builds the second screen
-  ///
+  /// @param context : [BuildContext]
+  /// @return [Widget]
+  /// 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;

@@ -119,39 +119,15 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         ),
         const Gap(22),
         if (!timeRemainInDays)
-          TextVariant(
-            LocaleKeys.contactYourProviderToRenew.tr(),
-            variantType: TextVariantType.bodyMedium,
-            color: colorScheme.onSurface,
-            fontWeight: FontWeight.bold,
-          ),
-        const Gap(10),
-        IconButton(
-          onPressed: () {},
-          style: IconButton.styleFrom(
-            backgroundColor: colorScheme.surface,
-            fixedSize: const Size(15, 15),
-            hoverColor: colorScheme.primaryContainer,
-          ),
-          icon: const Icon(
-            Icons.notifications,
-            size: 18,
-          ),
-        ),
-        const Gap(10),
-        IconButton(
-          onPressed: () {},
-          style: IconButton.styleFrom(
-            backgroundColor: colorScheme.surface,
-            fixedSize: const Size(15, 15),
-            hoverColor: colorScheme.primaryContainer,
-          ),
-          icon: const Icon(
-            Icons.person,
-            size: 18,
-          ),
-        ),
-        const Gap(10),
+          ...[
+            TextVariant(
+              LocaleKeys.contactYourProviderToRenew.tr(),
+              variantType: TextVariantType.bodyMedium,
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
+            const Gap(10),
+          ],
         Consumer(
           builder: (context, ref, child) {
             final requestServiceNotifier =

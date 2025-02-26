@@ -55,7 +55,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
         () => domainModule.provideNavigatorKey());
     gh.singleton<_i216.NavigatorService>(() => domainModule.navigatorService());
-    gh.singleton<_i1025.ClientService>(() => domainModule.clientService());
     gh.factory<_i397.AuthenticationDataSource>(
         () => dataModule.authenticationDataSourceImpl());
     gh.factory<_i201.AuthenticationRepository>(() => dataModule
@@ -79,6 +78,8 @@ extension GetItInjectableX on _i174.GetIt {
       () => dataModule.hiveSecureStorage(gh<_i1072.SecureStorageService>()),
       preResolve: true,
     );
+    gh.singleton<_i1025.ClientService>(() =>
+        domainModule.clientService(gh<_i1041.HiveSecureStorageService>()));
     gh.factory<_i939.PreferencesLocalDataSource>(() => dataModule
         .preferencesLocalDataSourcesImpl(gh<_i241.HiveSecureStorage>()));
     await gh.singletonAsync<_i1038.AuthService>(

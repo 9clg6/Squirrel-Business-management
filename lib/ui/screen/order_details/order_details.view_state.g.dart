@@ -11,6 +11,8 @@ abstract class _$OrderDetailsScreenStateCWProxy {
 
   OrderDetailsScreenState order(Order? order);
 
+  OrderDetailsScreenState client(Client? client);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OrderDetailsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -20,6 +22,7 @@ abstract class _$OrderDetailsScreenStateCWProxy {
   OrderDetailsScreenState call({
     bool? loading,
     Order? order,
+    Client? client,
   });
 }
 
@@ -37,6 +40,9 @@ class _$OrderDetailsScreenStateCWProxyImpl
   OrderDetailsScreenState order(Order? order) => this(order: order);
 
   @override
+  OrderDetailsScreenState client(Client? client) => this(client: client);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OrderDetailsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -47,6 +53,7 @@ class _$OrderDetailsScreenStateCWProxyImpl
   OrderDetailsScreenState call({
     Object? loading = const $CopyWithPlaceholder(),
     Object? order = const $CopyWithPlaceholder(),
+    Object? client = const $CopyWithPlaceholder(),
   }) {
     return OrderDetailsScreenState(
       loading: loading == const $CopyWithPlaceholder() || loading == null
@@ -57,6 +64,10 @@ class _$OrderDetailsScreenStateCWProxyImpl
           ? _value.order
           // ignore: cast_nullable_to_non_nullable
           : order as Order?,
+      client: client == const $CopyWithPlaceholder()
+          ? _value.client
+          // ignore: cast_nullable_to_non_nullable
+          : client as Client?,
     );
   }
 }

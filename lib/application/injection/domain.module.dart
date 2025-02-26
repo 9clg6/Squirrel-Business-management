@@ -114,5 +114,5 @@ abstract class DomainModule {
 
   /// Allow to inject [ClientService]
   @singleton
-  ClientService clientService() => ClientService();
+  ClientService clientService(HiveSecureStorageService storage) => ClientService(storage);
 }

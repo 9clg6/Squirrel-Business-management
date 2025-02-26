@@ -73,7 +73,7 @@ class Kernel {
   /// Build [app] surrounded by all necessary widgets
   /// @param [app] app
   /// @return [Widget] widget of the app
-  /// 
+  ///
   Widget build(Widget app) {
     return EasyLocalization(
       supportedLocales: const <Locale>[Locale('fr')],

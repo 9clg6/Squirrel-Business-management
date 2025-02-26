@@ -1,17 +1,63 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/state/client.state.dart';
+import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
 /// [ClientService]
 class ClientService extends StateNotifier<ClientState> {
+  static const String _storageKey = 'clients';
+
+  final StorageInterface _storage;
+
+  
+  bool _isInitialLoad = true;
+
   /// Client state
   ClientState get clientState => state;
 
   /// Constructor
   ///
-  ClientService() : super(ClientState.initial());
+  ClientService(this._storage) : super(ClientState.initial()) {
+    _loadClients();
+    _isInitialLoad = true;
+    addListener(_save);
+  }
+
+
+  /// Load clients
+  ///
+  Future<void> _loadClients() async {
+    log('Loading clients');
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+      final String? o = await _storage.get(_storageKey);
+      if (o != null) {
+        final clients = jsonDecode(o) as List;
+        final clientsList = clients.map((e) => Client.fromJson(e)).toList();
+        state = state.copyWith(clients: clientsList);
+      }
+      _isInitialLoad = false;
+    });
+  }
+
+  /// Save orders
+  /// @param [os] order state
+  ///
+  void _save(ClientState os) {
+    if (_isInitialLoad) return;
+
+    log('Saving clients');
+    if (os.clients.isEmpty) return;
+    _storage.set(
+      _storageKey,
+      jsonEncode(os.clients.map((e) => e.toJson()).toList()),
+    );
+  }
 
   /// Get client by id
   /// @param [id] id
@@ -56,6 +102,7 @@ class ClientService extends StateNotifier<ClientState> {
   /// @param [client] client to update
   /// @param [order] order to add to client statistics
   /// @throws StateError if client is not found
+  /// 
   void updateClient(
     Client client, {
     required Order order,

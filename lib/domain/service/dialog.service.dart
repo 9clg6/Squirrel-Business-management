@@ -1,5 +1,6 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
+import 'package:gap/gap.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/ui/dialog/confirmation_dialog.dart';
@@ -152,6 +153,69 @@ class DialogService {
       barrierDismissible: false,
       context: navigatorKey.currentContext!,
       builder: (_) => const UseConditionsDialog(),
+    );
+  }
+
+  Future<void> showInComingDialog() async {
+    return showDialog<void>(
+      context: navigatorKey.currentContext!,
+      builder: (_) => const AlertDialog(
+        title: TextVariant(
+          "Fonctionnalités à venir",
+          variantType: TextVariantType.titleMedium,
+          fontWeight: FontWeight.bold,
+        ),
+        icon: Icon(
+          Icons.rocket_launch_rounded,
+          size: 42,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextVariant(
+              "Nous travaillons actuellement sur les prochaines versions, qui inclueront :",
+              variantType: TextVariantType.bodyMedium,
+              fontWeight: FontWeight.bold,
+            ),
+            Gap(28),
+            TextVariant(
+              "- Le lien entre le Bot de commande Telegram et le logiciel, pour visualiser les commandes reçus en temps réel",
+              variantType: TextVariantType.bodyMedium,
+            ),
+            Gap(10),
+            TextVariant(
+              "- L'ajout et la gestion du système de parrainage lors des commandes",
+              variantType: TextVariantType.bodyMedium,
+            ),
+            Gap(10),
+            TextVariant(
+              "- L'interface de gestion des clients",
+              variantType: TextVariantType.bodyMedium,
+            ),
+            Gap(10),
+            TextVariant(
+              "- L'interface \"Planification\" si l'idée est soutenue par vous",
+              variantType: TextVariantType.bodyMedium,
+            ),
+            Gap(10),
+            TextVariant(
+              "- L'ajout de nouvelles statistiques en fonction des demandes",
+              variantType: TextVariantType.bodyMedium,
+            ),
+            Gap(10),
+            TextVariant(
+              "- Un système de remontée de bug et de suggestions",
+              variantType: TextVariantType.bodyMedium,
+            ),
+            Gap(28),
+            TextVariant(
+              "N'hésitez pas à remonter les bugs, faire des suggestions, demandes etc. Cela sera recompensé. 🎁",
+              variantType: TextVariantType.bodyMedium,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

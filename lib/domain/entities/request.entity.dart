@@ -1,6 +1,8 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
 
+part 'request.entity.g.dart';
+
 /// [Request]
 @CopyWith()
 class Request with EquatableMixin {

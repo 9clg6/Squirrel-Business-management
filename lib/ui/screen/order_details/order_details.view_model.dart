@@ -44,7 +44,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   @override
   OrderDetailsScreenState build() => OrderDetailsScreenState.initial();
-
+  
   /// Init
   /// @param [o] order
   ///
@@ -63,6 +63,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
       state = state.copyWith(
         loading: false,
         order: o,
+        client: _clientService.getClientById(state.order!.client!.id),
       );
     });
   }

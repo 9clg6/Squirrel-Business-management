@@ -14,7 +14,7 @@ class App extends StatefulWidget {
 
   /// Creates the state of the app widget.
   /// @return [State<App>] state of the app widget
-  /// 
+  ///
   @override
   State<App> createState() => _AppState();
 }
@@ -24,7 +24,7 @@ class _AppState extends State<App> {
   /// Builds the app widget.
   /// @param [context] context
   /// @return [Widget] widget of the app widget
-  /// 
+  ///
   @override
   Widget build(BuildContext context) {
     final TextTheme textTheme = createTextTheme();

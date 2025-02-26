@@ -928,9 +928,9 @@ class _OrderDetailHeader extends ConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.watch(orderDetailsViewModelProvider);
-    final order = state.order;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final OrderDetailsScreenState state = ref.watch(orderDetailsViewModelProvider);
+    final Order? order = state.order;
 
     // Si l'ordre n'est pas encore chargé, afficher un indicateur de chargement
     if (order == null) {
@@ -958,22 +958,22 @@ class _OrderDetailHeader extends ConsumerWidget {
                 children: [
                   _StatsCard(
                     subtitle: LocaleKeys.numberOfOrders.tr(),
-                    title: order.client?.orderQuantity.toString() ?? "",
+                    title: state.client?.orderQuantity.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.sponsorship.tr(),
-                    title: order.client?.sponsorshipQuantity.toString() ?? "",
+                    title: state.client?.sponsorshipQuantity.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.totalAmount.tr(),
-                    title: order.client?.orderTotalAmount.toString() ?? "",
+                    title: state.client?.orderTotalAmount.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.firstOrder.tr(),
-                    title: order.client?.firstOrderDate?.toDDMMYYYY() ?? "",
+                    title: state.client?.firstOrderDate?.toDDMMYYYY() ?? "",
                   ),
                 ],
               )),

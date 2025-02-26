@@ -8,9 +8,7 @@ part of 'clients.view_model.dart';
 
 String _$clientsHash() => r'a52438af985a299a2d1228fe65d495726143dd7f';
 
-///
 /// [Clients]
-///
 ///
 /// Copied from [Clients].
 @ProviderFor(Clients)
