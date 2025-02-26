@@ -5,6 +5,7 @@ import 'package:sidebarx/sidebarx.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Custom side bar
 class CustomSideBar extends StatefulWidget {
@@ -179,10 +180,37 @@ class _CustomSideBarState extends State<CustomSideBar> {
                 ],
               ),
             ),
-            FilledButton.icon(
-              icon: const Icon(Icons.rocket_launch_rounded),
-              label: const Text("À venir"),
-              onPressed: () => injector<DialogService>().showInComingDialog(),
+            StreamBuilder<bool>(
+              stream: controller.extendStream,
+              builder: (context, snapshot) {
+                return InkWell(
+                  onTap: () => injector<DialogService>().showInComingDialog(),
+                  child: AnimatedContainer(
+                    duration: const Duration(seconds: 1),
+                    curve: Curves.easeInOut,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                    decoration: BoxDecoration(
+                      color: colorScheme.primary,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.rocket_launch_rounded,
+                        ),
+                        if (snapshot.data == true) ...[
+                          const Gap(5),
+                          const TextVariant(
+                            "À venir",
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ]
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
             const Gap(12),
           ],
