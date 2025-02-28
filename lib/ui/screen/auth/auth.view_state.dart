@@ -3,14 +3,23 @@ import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'auth.view_state.g.dart';
 
+/// [AuthScreenState]
 @CopyWith()
-class AuthState extends ViewStateAbs {
+class AuthScreenState extends ViewStateAbs {
+  /// Loading
   final bool loading;
 
-  AuthState({required this.loading});
+  /// Constructor
+  /// @param [loading] loading
+  ///
+  AuthScreenState({required this.loading});
 
-  AuthState.initial() : loading = true;
+  /// Initial
+  ///
+  AuthScreenState.initial() : loading = true;
 
+  /// Props
+  /// 
   @override
   List<Object?> get props => <Object?>[
         loading,

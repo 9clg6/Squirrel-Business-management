@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/provider/auth_service.provider.dart';
 import 'package:squirrel/domain/provider/request_service.provider.dart';
 import 'package:squirrel/domain/provider/service_type_service.provider.dart';
-import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Custom app bar
-class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   /// Constructor
   /// @param [key] key
   ///
@@ -22,14 +21,13 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   /// @return [Widget] widget of the app bar
   ///
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final authService = injector<AuthService>();
+    final authState = ref.watch(authServiceNotifierProvider);
     final Duration timeRemain =
-        authService.expirationDate!.difference(DateTime.now());
-    final bool timeRemainInDays = timeRemain.inDays > 0;
-    final int timeRemainAdjuster =
-        timeRemainInDays ? timeRemain.inDays : timeRemain.inHours;
+        authState.expirationDate!.difference(DateTime.now());
+    final int daysRemain = timeRemain.inDays;
+    final int hoursRemain = timeRemain.inHours % 24;
 
     return AppBar(
       elevation: 0,
@@ -52,16 +50,24 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         TextVariant(
           LocaleKeys.yourLicenseWillExpireIn.tr(
             args: [
-              timeRemainInDays
-                  ? timeRemainAdjuster.toString()
-                  : timeRemainAdjuster.toString(),
-              timeRemainInDays ? LocaleKeys.days.tr() : LocaleKeys.hours.tr(),
+              daysRemain.toString(),
+              hoursRemain.toString(),
             ],
           ),
           variantType: TextVariantType.bodyMedium,
           color: colorScheme.onSurface,
           fontWeight: FontWeight.bold,
         ),
+        const Gap(22),
+        if (daysRemain <= 0) ...[
+          TextVariant(
+            LocaleKeys.contactYourProviderToRenew.tr(),
+            variantType: TextVariantType.bodySmall,
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
+          const Gap(10),
+        ],
         const Gap(22),
         Consumer(
           builder: (context, ref, child) {
@@ -118,16 +124,6 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
           },
         ),
         const Gap(22),
-        if (!timeRemainInDays)
-          ...[
-            TextVariant(
-              LocaleKeys.contactYourProviderToRenew.tr(),
-              variantType: TextVariantType.bodyMedium,
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.bold,
-            ),
-            const Gap(10),
-          ],
         Consumer(
           builder: (context, ref, child) {
             final requestServiceNotifier =

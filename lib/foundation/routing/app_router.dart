@@ -25,7 +25,7 @@ final GlobalKey<NavigatorState> shellNavigatorKey =
     GlobalKey<NavigatorState>(debugLabel: 'shell');
 
 String? _authRedirect(BuildContext context, GoRouterState state) {
-  final bool isAuthenticated = injector<AuthService>().isUserAuthenticated;
+  final bool isAuthenticated = injector<AuthService>().authState.isUserAuthenticated;
   final bool isAuthRoute = state.matchedLocation == '/auth';
 
   if (!isAuthenticated) {

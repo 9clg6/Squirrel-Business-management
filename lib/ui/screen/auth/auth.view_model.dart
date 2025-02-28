@@ -25,10 +25,10 @@ class Auth extends _$Auth {
   }
 
   /// Build
-  /// @return [AuthState]
+  /// @return [AuthScreenState]
   ///
   @override
-  AuthState build() => AuthState.initial();
+  AuthScreenState build() => AuthScreenState.initial();
 
   /// Login
   /// @param [licenseKey] license key

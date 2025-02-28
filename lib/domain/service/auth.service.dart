@@ -2,17 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
 import 'package:squirrel/domain/service/request_service.dart';
+import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 import 'package:squirrel/foundation/routing/app_router.dart';
 
 /// [AuthService]
-class AuthService {
+class AuthService extends StateNotifier<AuthState> {
   /// License id key
   static const String _license = 'licenseKey';
 
@@ -28,17 +30,8 @@ class AuthService {
   /// Request service
   late final RequestService _requestService;
 
-  /// Is user authenticated
-  bool _isUserAuthenticated = false;
-  bool get isUserAuthenticated => _isUserAuthenticated;
-
-  /// License id
-  String? _licenseId;
-  String? get licenseId => _licenseId;
-
-  /// Expiration date
-  DateTime? _expirationDate;
-  DateTime? get expirationDate => _expirationDate;
+  /// Auth state
+  AuthState get authState => state;
 
   Timer? _timer;
 
@@ -53,7 +46,7 @@ class AuthService {
     this._checkValidityUseCase,
     this._secureStorageService,
     this._requestService,
-  );
+  ) : super(AuthState.initial());
 
   /// Inject auth service
   /// @param [loginUseCase] login use case
@@ -125,13 +118,6 @@ class AuthService {
     }
   }
 
-  /// Dispose
-  /// @return [void]
-  ///
-  void dispose() {
-    _timer?.cancel();
-  }
-
   /// Periodic check validity
   /// @return [void]
   ///
@@ -150,7 +136,8 @@ class AuthService {
         }
       } on Exception catch (e) {
         log('Error during periodic check validity: $e');
-        if (_expirationDate != null && _expirationDate!.isAfter(DateTime.now())) {
+        if (authState.expirationDate != null &&
+            authState.expirationDate!.isAfter(DateTime.now())) {
           log('License is not valid');
           _setUserAuthenticated(
             false,
@@ -167,10 +154,10 @@ class AuthService {
   /// @return [bool] true if expired
   ///
   bool isLicenseExpiredLocally() {
-    if (_expirationDate == null) {
+    if (authState.expirationDate == null) {
       return true;
     }
-    return DateTime.now().isAfter(_expirationDate!);
+    return DateTime.now().isAfter(authState.expirationDate!);
   }
 
   /// Check validity of license
@@ -178,13 +165,13 @@ class AuthService {
   ///
   Future<bool> checkValidity() async {
     log('Start check validity');
-    
+
     // Vérification locale de l'expiration avant d'appeler le serveur
     if (isLicenseExpiredLocally()) {
       log('License is expired locally');
       return false;
     }
-    
+
     final String? license = await _secureStorageService.get(_license);
 
     if (license == null) {
@@ -221,9 +208,11 @@ class AuthService {
     DateTime? expirationDate,
   }) {
     log('Set user authenticated: $isAuthenticated');
-    _isUserAuthenticated = isAuthenticated;
-    _licenseId = licenseId;
-    _expirationDate = expirationDate;
+    state = state.copyWith(
+      isUserAuthenticated: isAuthenticated,
+      licenseId: licenseId,
+      expirationDate: expirationDate,
+    );
   }
 
   /// Login
