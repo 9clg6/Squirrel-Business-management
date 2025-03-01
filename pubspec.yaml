@@ -88,6 +88,9 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
+
+  # Launcher icons
+  flutter_launcher_icons: ^0.14.3
   
   # Lints
   flutter_lints: ^4.0.0
@@ -125,6 +128,7 @@ flutter:
   assets:
     - assets/translations/
     - assets/images/
+    - .env
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a
