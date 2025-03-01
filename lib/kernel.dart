@@ -7,6 +7,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:squirrel/application/config/app_config.dart';
 import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/ui/app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -47,36 +48,85 @@ class Kernel {
   /// Proceed to all initialization
   ///
   Future<void> bootstrap() async {
-    await _ensureInitialized();
+    try {
+      await _ensureInitialized();
+      logInfo('Initialisation réussie');
+    } catch (e, stackTrace) {
+      logException(e, stackTrace, 'Erreur lors de l\'initialisation');
+      // Continuer malgré l'erreur pour éviter un écran noir
+    }
   }
 
   /// Ensure all initialization is done
   ///
   Future<void> _ensureInitialized() async {
+    logInfo('Début de l\'initialisation');
     WidgetsFlutterBinding.ensureInitialized();
+
+    // Initialiser le système de logs le plus tôt possible
+    await SelectiveFileOutput.initLogFile();
+
+    // Le système de logs est déjà initialisé dans main.dart
+    logInfo('WidgetsFlutterBinding initialisé');
 
     injector.registerSingleton<AppConfig>(appConfig);
     injector.registerSingletonAsync<EnvService>(
       () async => await EnvService.injector(),
     );
 
-    await injector.isReady<EnvService>();
+    try {
+      await injector.isReady<EnvService>();
+      logInfo('EnvService initialisé');
 
-    final EnvService envService = injector<EnvService>();
+      final EnvService envService = injector<EnvService>();
+      logInfo('URL Supabase: ${envService.supabaseUrl}');
 
-    await Supabase.initialize(
-      url: envService.supabaseUrl,
-      anonKey: envService.supabaseAnonKey,
-    );
+      try {
+        await Supabase.initialize(
+          url: envService.supabaseUrl,
+          anonKey: envService.supabaseAnonKey,
+        );
+        logInfo('Supabase initialisé');
+      } catch (e, stackTrace) {
+        logException(
+            e, stackTrace, 'Erreur lors de l\'initialisation de Supabase');
+        // Continuer sans Supabase
+      }
 
-    await Hive.initFlutter();
+      try {
+        await Hive.initFlutter();
+        logInfo('Hive initialisé');
+      } catch (e, stackTrace) {
+        logException(e, stackTrace, 'Erreur lors de l\'initialisation de Hive');
+        // Continuer sans Hive
+      }
 
-    // Register app config
-    final GetIt getIt = await initializeInjections(appConfig.environment.name);
-    await getIt.allReady();
+      // Register app config
+      try {
+        final GetIt getIt =
+            await initializeInjections(appConfig.environment.name);
+        await getIt.allReady();
+        logInfo('Injections initialisées');
+      } catch (e, stackTrace) {
+        logException(
+            e, stackTrace, 'Erreur lors de l\'initialisation des injections');
+        // Continuer malgré l'erreur
+      }
 
-    // Initialize translations
-    await EasyLocalization.ensureInitialized();
+      // Initialize translations
+      try {
+        await EasyLocalization.ensureInitialized();
+        logInfo('Traductions initialisées');
+      } catch (e, stackTrace) {
+        logException(
+            e, stackTrace, 'Erreur lors de l\'initialisation des traductions');
+        // Continuer malgré l'erreur
+      }
+    } catch (e, stackTrace) {
+      logException(
+          e, stackTrace, 'Erreur lors de l\'initialisation des services');
+      // Continuer malgré l'erreur
+    }
   }
 
   /// Build [app] surrounded by all necessary widgets

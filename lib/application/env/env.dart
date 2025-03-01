@@ -1,4 +1,5 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:squirrel/foundation/utils/logger.util.dart';
 
 /// Environment variables
 ///
@@ -12,15 +13,21 @@ class EnvService {
 
   /// Supabase URL
   ///
-  String get supabaseUrl => dotenv.env['SUPABASE_URL']!;
+  String get supabaseUrl => dotenv.env['SUPABASE_URL'] ?? '';
 
   /// Supabase Anon Key
   ///
-  String get supabaseAnonKey => dotenv.env['SUPABASE_ANON_KEY']!;
+  String get supabaseAnonKey => dotenv.env['SUPABASE_ANON_KEY'] ?? '';
 
   /// Initialize the environment variables
   ///
   static Future<void> _init() async {
-    await dotenv.load(fileName: '.env');
+    try {
+      await dotenv.load(fileName: '.env');
+      logInfo('Fichier .env chargé avec succès');
+    } catch (e, stackTrace) {
+      logException(e, stackTrace, 'Erreur lors du chargement du fichier .env');
+      // Continuer sans le fichier .env
+    }
   }
 }
