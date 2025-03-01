@@ -4,6 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:squirrel/domain/provider/auth_service.provider.dart';
 import 'package:squirrel/domain/provider/request_service.provider.dart';
 import 'package:squirrel/domain/provider/service_type_service.provider.dart';
+import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
@@ -23,11 +24,13 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final authState = ref.watch(authServiceNotifierProvider);
+    final AuthState authState = ref.watch(authServiceNotifierProvider);
+
     final Duration timeRemain =
         authState.expirationDate!.difference(DateTime.now());
     final int daysRemain = timeRemain.inDays;
     final int hoursRemain = timeRemain.inHours % 24;
+    final int minutesRemain = timeRemain.inMinutes % 60;
 
     return AppBar(
       elevation: 0,
@@ -52,6 +55,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
             args: [
               daysRemain.toString(),
               hoursRemain.toString(),
+              minutesRemain.toString(),
             ],
           ),
           variantType: TextVariantType.bodyMedium,

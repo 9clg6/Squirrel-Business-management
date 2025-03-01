@@ -4,6 +4,7 @@ import 'dart:developer';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
+import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
 import 'package:squirrel/domain/service/request_service.dart';
@@ -68,54 +69,11 @@ class AuthService extends StateNotifier<AuthState> {
       requestService,
     );
 
-    await authService._getSavedLicenceAndCheckValidity();
+    await authService.loadLicense();
+    await authService.checkValidity();
     authService._periodicCheckValidity();
+
     return authService;
-  }
-
-  /// Get saved licence
-  /// @return [void]
-  ///
-  Future<void> _getSavedLicenceAndCheckValidity() async {
-    log('Start get saved licence and check validity');
-    final String? license = await _secureStorageService.get(_license);
-
-    if (license != null) {
-      log('License found: $license');
-      final LoginResultLocalModel loginResult =
-          LoginResultLocalModel.fromJson(jsonDecode(license));
-
-      final bool isValid = await _checkValidityUseCase.execute(
-        loginResult.licenseKey,
-      );
-
-      _requestService.addRequest(
-        Request(
-          name: 'Check license validity',
-          description: 'Vérification de la validité de la licence',
-          destination: 'Serveur de validation',
-          parameters: {
-            'licenseKey': loginResult.licenseKey,
-          },
-          date: DateTime.now(),
-        ),
-      );
-
-      if (isValid) {
-        log('License is valid');
-        _setUserAuthenticated(
-          true,
-          licenseId: loginResult.licenseKey,
-          expirationDate: loginResult.expirationDate,
-        );
-      } else {
-        log('License is not valid');
-        _setUserAuthenticated(
-          false,
-          licenseId: null,
-        );
-      }
-    }
   }
 
   /// Periodic check validity
@@ -125,15 +83,7 @@ class AuthService extends StateNotifier<AuthState> {
     _timer = Timer.periodic(const Duration(hours: 5), (timer) async {
       try {
         log('Start periodic check validity');
-        final bool isValid = await checkValidity();
-        if (!isValid) {
-          log('License is not valid');
-          _setUserAuthenticated(
-            false,
-            licenseId: null,
-          );
-          appRouter.go('/auth');
-        }
+        await checkValidity();
       } on Exception catch (e) {
         log('Error during periodic check validity: $e');
         if (authState.expirationDate != null &&
@@ -157,44 +107,95 @@ class AuthService extends StateNotifier<AuthState> {
     if (authState.expirationDate == null) {
       return true;
     }
-    return DateTime.now().isAfter(authState.expirationDate!);
+
+    // Conversion en UTC pour éviter les problèmes de fuseau horaire
+    final DateTime now = DateTime.now().toUtc();
+    final DateTime expirationDate = authState.expirationDate!.toUtc();
+    
+    // On crée une date d'expiration qui inclut toute la journée (23:59:59)
+    final DateTime endOfExpirationDay = DateTime.utc(
+      expirationDate.year,
+      expirationDate.month,
+      expirationDate.day,
+      23,
+      59,
+      59,
+    );
+
+    // Ajout de logs pour le débogage
+    log('Date actuelle (UTC): $now');
+    log('Date d\'expiration (UTC): $endOfExpirationDay');
+
+    return now.isAfter(endOfExpirationDay);
   }
 
   /// Check validity of license
-  /// @return [bool] validity
+  /// @return [void]
   ///
-  Future<bool> checkValidity() async {
+  Future<void> checkValidity() async {
     log('Start check validity');
 
     // Vérification locale de l'expiration avant d'appeler le serveur
     if (isLicenseExpiredLocally()) {
       log('License is expired locally');
-      return false;
+      _setUserAuthenticated(
+        false,
+        licenseId: null,
+      );
+      appRouter.go('/auth');
+      return;
     }
 
     final String? license = await _secureStorageService.get(_license);
 
     if (license == null) {
       log('License not found');
-      return false;
+      _setUserAuthenticated(
+        false,
+        licenseId: null,
+      );
+      return;
     }
-    log('License found: $license');
-    final LoginResultLocalModel loginResult =
-        LoginResultLocalModel.fromJson(jsonDecode(license));
 
-    _requestService.addRequest(
-      Request(
-        name: 'Check license validity',
-        description: 'Vérification de la validité de la licence',
-        destination: 'Serveur de validation',
-        parameters: {
-          'licenseKey': loginResult.licenseKey,
-        },
-        date: DateTime.now(),
-      ),
-    );
+    try {
+      final LoginResultLocalModel localLicense =
+          LoginResultLocalModel.fromJson(jsonDecode(license));
 
-    return _checkValidityUseCase.execute(loginResult.licenseKey);
+      log('License found: ${localLicense.licenseKey}');
+      log('Expiration date from storage: ${localLicense.expirationDate}');
+
+      _requestService.addRequest(
+        Request(
+          name: 'Check license validity',
+          description: 'Vérification de la validité de la licence',
+          destination: 'Serveur de validation',
+          parameters: {
+            'licenseKey': localLicense.licenseKey,
+          },
+          date: DateTime.now(),
+        ),
+      );
+
+      final CheckValidityEntity result =
+          await _checkValidityUseCase.execute(localLicense.licenseKey);
+
+      log('Check validity result: valid=${result.valid}, expiration=${result.expirationDate}');
+
+      if (result.valid) {
+        _setUserAuthenticated(
+          true,
+          licenseId: localLicense.licenseKey,
+          expirationDate: result.expirationDate,
+        );
+      }
+    } catch (e) {
+      log('Error during check validity: $e');
+      _setUserAuthenticated(
+        false,
+        licenseId: null,
+      );
+      return;
+    }
   }
 
   /// Set user authenticated
@@ -207,11 +208,19 @@ class AuthService extends StateNotifier<AuthState> {
     String? licenseId,
     DateTime? expirationDate,
   }) {
-    log('Set user authenticated: $isAuthenticated');
+    log('Set user $licenseId authenticate state to $isAuthenticated and expiration date to $expirationDate');
+
+    // S'assurer que la date d'expiration est en UTC avant de la stocker
+    final DateTime? localExpirationDate = expirationDate?.toUtc();
+
+    if (localExpirationDate != null) {
+      log('Date d\'expiration convertie en UTC: $localExpirationDate');
+    }
+
     state = state.copyWith(
       isUserAuthenticated: isAuthenticated,
       licenseId: licenseId,
-      expirationDate: expirationDate,
+      expirationDate: localExpirationDate,
     );
   }
 
@@ -256,5 +265,32 @@ class AuthService extends StateNotifier<AuthState> {
     }
 
     return loginResult.valid;
+  }
+
+  /// Load license
+  /// @return [void]
+  ///
+  Future<void> loadLicense() async {
+    final String? license = await _secureStorageService.get(_license);
+
+    if (license != null) {
+      try {
+        final LoginResultLocalModel localLicense =
+            LoginResultLocalModel.fromJson(jsonDecode(license));
+
+        log('Chargement de la licence: ${localLicense.licenseKey}');
+        log('Date d\'expiration chargée: ${localLicense.expirationDate}');
+
+        _setUserAuthenticated(
+          true,
+          licenseId: localLicense.licenseKey,
+          expirationDate: localLicense.expirationDate,
+        );
+      } catch (e) {
+        log('Erreur lors du chargement de la licence: $e');
+        // En cas d'erreur, on considère qu'il n'y a pas de licence valide
+        _setUserAuthenticated(false);
+      }
+    }
   }
 }

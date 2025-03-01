@@ -1,3 +1,4 @@
+import 'package:squirrel/data/model/remote/check_validity.remote_model.dart';
 import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
 
 /// [AuthenticationDataSource]
@@ -10,7 +11,7 @@ abstract class AuthenticationDataSource {
 
   /// Check validity of license
   /// @param [licenseKey] license key
-  /// @return [LoginResultRemoteModel] login result remote model
+  /// @return [CheckValidityRemoteModel] check validity remote model
   ///
-  Future<bool> checkValidity(String licenseKey);
+  Future<CheckValidityRemoteModel> checkValidity(String licenseKey);
 }

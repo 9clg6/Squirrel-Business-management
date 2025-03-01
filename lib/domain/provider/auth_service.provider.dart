@@ -19,9 +19,7 @@ class AuthServiceNotifier extends _$AuthServiceNotifier {
     final service = injector.get<AuthService>();
 
     service.addListener(
-      (s) {
-        state = s;
-      },
+      (s) => state = s,
     );
 
     return service.authState;
