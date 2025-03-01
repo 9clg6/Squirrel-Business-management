@@ -140,3 +140,8 @@ flutter:
       fonts:
         - asset: assets/icons/InitIcons.ttf
 
+flutter_icons:
+  image_path: "assets/images/app_logo.jpg"
+  macos: true
+  windows: true
+  linux: true

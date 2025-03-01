@@ -56,7 +56,11 @@ class Kernel {
     WidgetsFlutterBinding.ensureInitialized();
 
     injector.registerSingleton<AppConfig>(appConfig);
-    injector.registerSingleton<EnvService>(await EnvService.injector());
+    injector.registerSingletonAsync<EnvService>(
+      () async => await EnvService.injector(),
+    );
+
+    await injector.isReady<EnvService>();
 
     final EnvService envService = injector<EnvService>();
 

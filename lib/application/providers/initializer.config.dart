@@ -12,7 +12,6 @@ import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:squirrel/application/env/env.dart' as _i714;
 import 'package:squirrel/application/injection/data.module.dart' as _i70;
 import 'package:squirrel/application/injection/domain.module.dart' as _i844;
 import 'package:squirrel/data/local_data_source/preferences/preferences_local.data_source.dart'
@@ -56,10 +55,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
         () => domainModule.provideNavigatorKey());
     gh.singleton<_i216.NavigatorService>(() => domainModule.navigatorService());
-    await gh.singletonAsync<_i714.EnvService>(
-      () => dataModule.envService(),
-      preResolve: true,
-    );
     gh.factory<_i397.AuthenticationDataSource>(
         () => dataModule.authenticationDataSourceImpl());
     gh.factory<_i201.AuthenticationRepository>(() => dataModule

@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/foundation/routing/app_router.dart';
 import 'package:squirrel/foundation/theming/theme.dart';
@@ -20,7 +21,17 @@ class App extends StatefulWidget {
 }
 
 /// The state of the app widget.
+///
 class _AppState extends State<App> {
+  @override
+  void initState() {
+    super.initState();
+    SystemChrome.setEnabledSystemUIMode(
+      SystemUiMode.manual,
+      overlays: [],
+    );
+  }
+
   /// Builds the app widget.
   /// @param [context] context
   /// @return [Widget] widget of the app widget
