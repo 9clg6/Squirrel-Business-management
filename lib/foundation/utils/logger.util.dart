@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:logger/logger.dart';
@@ -38,7 +39,7 @@ class SelectiveFileOutput extends LogOutput {
           '=== Session de log démarrée le ${DateTime.now()} ===\n',
           mode: FileMode.append);
     } catch (e) {
-      print('Erreur lors de l\'initialisation du fichier de log: $e');
+      log('Erreur lors de l\'initialisation du fichier de log: $e');
     }
   }
 
@@ -57,7 +58,7 @@ class SelectiveFileOutput extends LogOutput {
           );
         }
       } on Exception catch (e) {
-        print('Erreur lors de l\'écriture dans le fichier de log: $e');
+        log('Erreur lors de l\'écriture dans le fichier de log: $e');
       }
     }
   }
@@ -70,7 +71,6 @@ final logger = Logger(
     lineLength: 80,
     colors: true,
     printEmojis: true,
-    printTime: true,
   ),
   output: SelectiveFileOutput(),
 );
