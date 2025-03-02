@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/provider/service_type_service.provider.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
-import 'package:squirrel/foundation/routing/app_router.dart';
 import 'package:squirrel/foundation/utils/util.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
@@ -135,7 +135,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                       variantType: TextVariantType.titleLarge,
                     ),
                     IconButton(
-                      onPressed: appRouter.pop,
+                      onPressed: context.pop,
                       icon: const Icon(Icons.close),
                     ),
                   ],
@@ -360,7 +360,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     InkWell(
-                      onTap: appRouter.pop,
+                      onTap: context.pop,
                       child: Container(
                         width: 150,
                         height: 40,
@@ -401,7 +401,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                           parsedDate = order?.startDate;
                         }
 
-                        appRouter.pop<Order>(
+                        context.pop<Order>(
                           order?.copyWith(
                             clientName: clientController.text,
                             intermediaryContact: intermediaryController.text,

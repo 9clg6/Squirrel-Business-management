@@ -2,7 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
-import 'package:squirrel/foundation/routing/app_router.dart';
+import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_state.dart';
 
 part 'add_order_action.view_model.g.dart';
@@ -10,10 +10,12 @@ part 'add_order_action.view_model.g.dart';
 @riverpod
 class AddOrderAction extends _$AddOrderAction {
   late final DialogService _dialogService;
+  late final NavigatorService _navigatorService;
 
   @override
   AddOrderActionViewState build() {
     _dialogService = injector<DialogService>();
+    _navigatorService = injector<NavigatorService>();
     return AddOrderActionViewState.initial();
   }
 
@@ -31,7 +33,7 @@ class AddOrderAction extends _$AddOrderAction {
   /// Navigate back
   ///
   void navigateBack({OrderAction? result}) {
-    appRouter.pop<OrderAction?>(result);
+    _navigatorService.navigateBack(result: result);
   }
 
   void navigateBackWithResult() {

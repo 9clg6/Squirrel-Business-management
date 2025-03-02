@@ -16,7 +16,6 @@ import 'package:squirrel/domain/service/secure_storage.service.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
 import 'package:squirrel/domain/use_case/get_theme.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
-import 'package:squirrel/foundation/routing/app_router.dart';
 
 @module
 abstract class DomainModule {
@@ -69,17 +68,27 @@ abstract class DomainModule {
     CheckValidityUseCase checkValidityUseCase,
     HiveSecureStorage hiveSecureStorage,
     RequestService requestService,
+    @Named('root') GlobalKey<NavigatorState> navigatorKey,
   ) async =>
       AuthService.inject(
         loginUseCase,
         checkValidityUseCase,
         hiveSecureStorage,
         requestService,
+        navigatorKey,
       );
 
   /// Provide the navigatorKey
   @singleton
-  GlobalKey<NavigatorState> provideNavigatorKey() => rootNavigatorKey;
+  @Named('root')
+  GlobalKey<NavigatorState> provideNavigatorKey() =>
+      GlobalKey<NavigatorState>(debugLabel: 'root');
+
+  /// Provide the shellNavigatorKey
+  @singleton
+  @Named('shell')
+  GlobalKey<NavigatorState> provideShellNavigatorKey() =>
+      GlobalKey<NavigatorState>(debugLabel: 'shell');
 
   /// Allow to inject [GetThemeUseCase]
   @injectable
@@ -98,12 +107,17 @@ abstract class DomainModule {
 
   /// Allow to inject [DialogService]
   @singleton
-  DialogService dialogService(GlobalKey<NavigatorState> navigatorKey) =>
+  DialogService dialogService(
+    @Named('root') GlobalKey<NavigatorState> navigatorKey,
+  ) =>
       DialogService(navigatorKey);
 
   /// Allow to inject [NavigatorService]
   @singleton
-  NavigatorService navigatorService() => NavigatorService();
+  NavigatorService navigatorService(
+    @Named('root') GlobalKey<NavigatorState> navigatorKey,
+  ) =>
+      NavigatorService(navigatorKey);
 
   /// Allow to inject [BusinessTypeService]
   @singleton
@@ -114,5 +128,6 @@ abstract class DomainModule {
 
   /// Allow to inject [ClientService]
   @singleton
-  ClientService clientService(HiveSecureStorageService storage) => ClientService(storage);
+  ClientService clientService(HiveSecureStorageService storage) =>
+      ClientService(storage);
 }

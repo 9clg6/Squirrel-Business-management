@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:go_router/go_router.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
-import 'package:squirrel/foundation/routing/app_router.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 class UseConditionsDialog extends StatelessWidget {
@@ -183,7 +183,7 @@ class _CountdownTimerState extends State<_CountdownTimer> {
             style: FilledButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
             ),
-            onPressed: () => appRouter.pop(true),
+            onPressed: () => context.pop(true),
             child: const TextVariant(
               'J\'accepte',
               variantType: TextVariantType.bodyMedium,

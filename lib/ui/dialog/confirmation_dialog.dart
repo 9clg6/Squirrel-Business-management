@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
-import 'package:squirrel/foundation/routing/app_router.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Confirmation dialog
@@ -65,7 +65,7 @@ class ConfirmationDialog extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   InkWell(
-                    onTap: appRouter.pop,
+                    onTap: context.pop,
                     child: Container(
                       width: 150,
                       height: 40,
@@ -79,9 +79,8 @@ class ConfirmationDialog extends StatelessWidget {
                   const SizedBox(width: 16),
                   InkWell(
                     onTap: () {
-                      appRouter
-                        ..pop()
-                        ..pop();
+                      context.pop();
+                      context.pop();
                       onConfirm();
                     },
                     child: Container(

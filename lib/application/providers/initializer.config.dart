@@ -52,19 +52,26 @@ extension GetItInjectableX on _i174.GetIt {
     final dataModule = _$DataModule();
     gh.factory<_i558.FlutterSecureStorage>(() => domainModule.storage());
     gh.singleton<_i392.RequestService>(() => domainModule.requestService());
-    gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
-        () => domainModule.provideNavigatorKey());
-    gh.singleton<_i216.NavigatorService>(() => domainModule.navigatorService());
     gh.factory<_i397.AuthenticationDataSource>(
         () => dataModule.authenticationDataSourceImpl());
+    gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
+      () => domainModule.provideNavigatorKey(),
+      instanceName: 'root',
+    );
+    gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
+      () => domainModule.provideShellNavigatorKey(),
+      instanceName: 'shell',
+    );
     gh.factory<_i201.AuthenticationRepository>(() => dataModule
         .authenticationRepository(gh<_i397.AuthenticationDataSource>()));
     gh.factory<_i677.LoginUseCase>(
         () => domainModule.loginUseCase(gh<_i201.AuthenticationRepository>()));
     gh.factory<_i365.CheckValidityUseCase>(() => domainModule
         .checkValidityUseCase(gh<_i201.AuthenticationRepository>()));
-    gh.singleton<_i635.DialogService>(() => domainModule
-        .dialogService(gh<_i409.GlobalKey<_i409.NavigatorState>>()));
+    gh.singleton<_i635.DialogService>(() => domainModule.dialogService(
+        gh<_i409.GlobalKey<_i409.NavigatorState>>(instanceName: 'root')));
+    gh.singleton<_i216.NavigatorService>(() => domainModule.navigatorService(
+        gh<_i409.GlobalKey<_i409.NavigatorState>>(instanceName: 'root')));
     await gh.singletonAsync<_i1072.SecureStorageService>(
       () => domainModule.secureStorageService(gh<_i558.FlutterSecureStorage>()),
       preResolve: true,
@@ -88,6 +95,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i365.CheckValidityUseCase>(),
         gh<_i241.HiveSecureStorage>(),
         gh<_i392.RequestService>(),
+        gh<_i409.GlobalKey<_i409.NavigatorState>>(instanceName: 'root'),
       ),
       preResolve: true,
     );

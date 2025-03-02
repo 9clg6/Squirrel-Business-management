@@ -7,6 +7,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:squirrel/application/config/app_config.dart';
 import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/ui/app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -66,6 +67,19 @@ class Kernel {
     // Initialiser le système de logs le plus tôt possible
     await SelectiveFileOutput.initLogFile();
 
+    // Initialize translations
+    try {
+      await EasyLocalization.ensureInitialized();
+      logInfo('Traductions initialisées');
+    } catch (e, stackTrace) {
+      logException(
+        e,
+        stackTrace,
+        'Erreur lors de l\'initialisation des traductions',
+      );
+      // Continuer malgré l'erreur
+    }
+
     // Le système de logs est déjà initialisé dans main.dart
     logInfo('WidgetsFlutterBinding initialisé');
 
@@ -75,7 +89,7 @@ class Kernel {
     );
 
     try {
-      await injector.isReady<EnvService>();
+      await injector.allReady();
       logInfo('EnvService initialisé');
 
       final EnvService envService = injector<EnvService>();
@@ -103,28 +117,41 @@ class Kernel {
 
       // Register app config
       try {
-        final GetIt getIt =
-            await initializeInjections(appConfig.environment.name);
+        final GetIt getIt = await initializeInjections(
+          appConfig.environment.name,
+        );
         await getIt.allReady();
         logInfo('Injections initialisées');
       } catch (e, stackTrace) {
         logException(
-            e, stackTrace, 'Erreur lors de l\'initialisation des injections');
-        // Continuer malgré l'erreur
-      }
-
-      // Initialize translations
-      try {
-        await EasyLocalization.ensureInitialized();
-        logInfo('Traductions initialisées');
-      } catch (e, stackTrace) {
-        logException(
-            e, stackTrace, 'Erreur lors de l\'initialisation des traductions');
-        // Continuer malgré l'erreur
+          e,
+          stackTrace,
+          'Erreur lors de l\'initialisation des injections',
+        );
+        // Continuer malgré l'erreur, mais enregistrer les services essentiels si possible
+        try {
+          // Si l'erreur est liée à un service spécifique, essayer d'initialiser les services de base
+          logInfo('Tentative d\'initialisation des services essentiels après erreur');
+          
+          // Vérifier si AuthService est déjà enregistré, sinon essayer de l'enregistrer
+          if (!injector.isRegistered<AuthService>()) {
+            logInfo('AuthService non enregistré, tentative d\'enregistrement manuel');
+            // Ici, vous pourriez ajouter un enregistrement manuel simplifié si nécessaire
+          }
+        } catch (innerError, innerStackTrace) {
+          logException(
+            innerError,
+            innerStackTrace,
+            'Erreur lors de la tentative de récupération des injections',
+          );
+        }
       }
     } catch (e, stackTrace) {
       logException(
-          e, stackTrace, 'Erreur lors de l\'initialisation des services');
+        e,
+        stackTrace,
+        'Erreur lors de l\'initialisation des services',
+      );
       // Continuer malgré l'erreur
     }
   }

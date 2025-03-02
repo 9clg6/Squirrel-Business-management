@@ -2,7 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
@@ -12,12 +14,14 @@ import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
-import 'package:squirrel/foundation/routing/app_router.dart';
 
 /// [AuthService]
 class AuthService extends StateNotifier<AuthState> {
   /// License id key
   static const String _license = 'licenseKey';
+
+  /// Navigator key
+  final GlobalKey<NavigatorState> _navigatorKey;
 
   /// Login use case
   final LoginUseCase _loginUseCase;
@@ -47,6 +51,7 @@ class AuthService extends StateNotifier<AuthState> {
     this._checkValidityUseCase,
     this._secureStorageService,
     this._requestService,
+    this._navigatorKey,
   ) : super(AuthState.initial());
 
   /// Inject auth service
@@ -61,12 +66,14 @@ class AuthService extends StateNotifier<AuthState> {
     CheckValidityUseCase checkValidityUseCase,
     StorageInterface secureStorageService,
     RequestService requestService,
+    GlobalKey<NavigatorState> navigatorKey,
   ) async {
     final authService = AuthService._(
       loginUseCase,
       checkValidityUseCase,
       secureStorageService,
       requestService,
+      navigatorKey,
     );
 
     await authService.loadLicense();
@@ -94,7 +101,7 @@ class AuthService extends StateNotifier<AuthState> {
             licenseId: null,
           );
           _timer?.cancel();
-          appRouter.go('/auth');
+          _navigatorKey.currentContext?.goNamed('auth');
         }
       }
     });
@@ -142,7 +149,7 @@ class AuthService extends StateNotifier<AuthState> {
         false,
         licenseId: null,
       );
-      appRouter.go('/auth');
+      _navigatorKey.currentContext?.goNamed('auth');
       return;
     }
 
