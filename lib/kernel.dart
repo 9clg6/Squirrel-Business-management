@@ -7,7 +7,6 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:squirrel/application/config/app_config.dart';
 import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/application/providers/initializer.dart';
-import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/ui/app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -31,9 +30,7 @@ class Kernel {
   /// Run the application
   ///
   void run() {
-    if (!appConfig.isTest) {
-      _run();
-    }
+    _run();
   }
 
   /// Run the application
@@ -49,13 +46,7 @@ class Kernel {
   /// Proceed to all initialization
   ///
   Future<void> bootstrap() async {
-    try {
-      await _ensureInitialized();
-      logInfo('Initialisation réussie');
-    } catch (e, stackTrace) {
-      logException(e, stackTrace, 'Erreur lors de l\'initialisation');
-      // Continuer malgré l'erreur pour éviter un écran noir
-    }
+    await _ensureInitialized();
   }
 
   /// Ensure all initialization is done
@@ -63,97 +54,24 @@ class Kernel {
   Future<void> _ensureInitialized() async {
     logInfo('Début de l\'initialisation');
     WidgetsFlutterBinding.ensureInitialized();
-
-    // Initialiser le système de logs le plus tôt possible
     await SelectiveFileOutput.initLogFile();
 
-    // Initialize translations
-    try {
-      await EasyLocalization.ensureInitialized();
-      logInfo('Traductions initialisées');
-    } catch (e, stackTrace) {
-      logException(
-        e,
-        stackTrace,
-        'Erreur lors de l\'initialisation des traductions',
-      );
-      // Continuer malgré l'erreur
-    }
-
-    // Le système de logs est déjà initialisé dans main.dart
-    logInfo('WidgetsFlutterBinding initialisé');
-
+    await Hive.initFlutter();
     injector.registerSingleton<AppConfig>(appConfig);
     injector.registerSingletonAsync<EnvService>(
       () async => await EnvService.injector(),
     );
 
-    try {
-      await injector.allReady();
-      logInfo('EnvService initialisé');
+    final GetIt getIt = await initializeInjections();
+    await getIt.allReady();
 
-      final EnvService envService = injector<EnvService>();
-      logInfo('URL Supabase: ${envService.supabaseUrl}');
+    final EnvService envService = injector<EnvService>();
+    await Supabase.initialize(
+      url: envService.supabaseUrl,
+      anonKey: envService.supabaseAnonKey,
+    );
 
-      try {
-        await Supabase.initialize(
-          url: envService.supabaseUrl,
-          anonKey: envService.supabaseAnonKey,
-        );
-        logInfo('Supabase initialisé');
-      } catch (e, stackTrace) {
-        logException(
-            e, stackTrace, 'Erreur lors de l\'initialisation de Supabase');
-        // Continuer sans Supabase
-      }
-
-      try {
-        await Hive.initFlutter();
-        logInfo('Hive initialisé');
-      } catch (e, stackTrace) {
-        logException(e, stackTrace, 'Erreur lors de l\'initialisation de Hive');
-        // Continuer sans Hive
-      }
-
-      // Register app config
-      try {
-        final GetIt getIt = await initializeInjections(
-          appConfig.environment.name,
-        );
-        await getIt.allReady();
-        logInfo('Injections initialisées');
-      } catch (e, stackTrace) {
-        logException(
-          e,
-          stackTrace,
-          'Erreur lors de l\'initialisation des injections',
-        );
-        // Continuer malgré l'erreur, mais enregistrer les services essentiels si possible
-        try {
-          // Si l'erreur est liée à un service spécifique, essayer d'initialiser les services de base
-          logInfo('Tentative d\'initialisation des services essentiels après erreur');
-          
-          // Vérifier si AuthService est déjà enregistré, sinon essayer de l'enregistrer
-          if (!injector.isRegistered<AuthService>()) {
-            logInfo('AuthService non enregistré, tentative d\'enregistrement manuel');
-            // Ici, vous pourriez ajouter un enregistrement manuel simplifié si nécessaire
-          }
-        } catch (innerError, innerStackTrace) {
-          logException(
-            innerError,
-            innerStackTrace,
-            'Erreur lors de la tentative de récupération des injections',
-          );
-        }
-      }
-    } catch (e, stackTrace) {
-      logException(
-        e,
-        stackTrace,
-        'Erreur lors de l\'initialisation des services',
-      );
-      // Continuer malgré l'erreur
-    }
+    await EasyLocalization.ensureInitialized();
   }
 
   /// Build [app] surrounded by all necessary widgets

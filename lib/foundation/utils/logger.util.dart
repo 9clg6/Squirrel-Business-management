@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:logger/logger.dart';
@@ -24,41 +23,33 @@ class SelectiveFileOutput extends LogOutput {
   static Future<void> initLogFile() async {
     if (_cachedLogFile != null) return;
 
-    try {
-      final Directory documentsDir = await getApplicationDocumentsDirectory();
-      final String logFilePath = '${documentsDir.path}/app_logs.txt';
-      _cachedLogFile = File(logFilePath);
+    final Directory documentsDir = await getApplicationDocumentsDirectory();
+    final String logFilePath = '${documentsDir.path}/app_logs.txt';
+    _cachedLogFile = File(logFilePath);
 
-      // Créer le fichier s'il n'existe pas
-      if (!await _cachedLogFile!.exists()) {
-        await _cachedLogFile!.create(recursive: true);
-      }
-
-      // Ajouter un en-tête avec la date de démarrage
-      await _cachedLogFile!.writeAsString(
-          '=== Session de log démarrée le ${DateTime.now()} ===\n',
-          mode: FileMode.append);
-    } catch (e) {
-      log('Erreur lors de l\'initialisation du fichier de log: $e');
+    // Créer le fichier s'il n'existe pas
+    if (!await _cachedLogFile!.exists()) {
+      await _cachedLogFile!.create(recursive: true);
     }
+
+    // Ajouter un en-tête avec la date de démarrage
+    await _cachedLogFile!.writeAsString(
+        '=== Session de log démarrée le ${DateTime.now()} ===\n',
+        mode: FileMode.append);
   }
 
   @override
   void output(OutputEvent event) {
     // Toujours afficher dans la console
     _consoleOutput.output(event);
-    
+
     // Écrire dans le fichier de log uniquement si c'est une erreur
     if (_logFile != null && event.level.index >= Level.error.index) {
-      try {
-        for (var line in event.lines) {
-          _logFile!.writeAsString(
-            '${DateTime.now()} [${event.level}] $line\n',
-            mode: FileMode.append,
-          );
-        }
-      } on Exception catch (e) {
-        log('Erreur lors de l\'écriture dans le fichier de log: $e');
+      for (var line in event.lines) {
+        _logFile!.writeAsString(
+          '${DateTime.now()} [${event.level}] $line\n',
+          mode: FileMode.append,
+        );
       }
     }
   }

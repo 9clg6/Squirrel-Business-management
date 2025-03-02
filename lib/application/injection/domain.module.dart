@@ -38,6 +38,7 @@ abstract class DomainModule {
   FlutterSecureStorage storage() => const FlutterSecureStorage(
         mOptions: MacOsOptions(
           accessibility: KeychainAccessibility.unlocked,
+          synchronizable: true,
         ),
       );
 
@@ -60,6 +61,18 @@ abstract class DomainModule {
   @singleton
   RequestService requestService() => RequestService();
 
+  /// Provide the navigatorKey
+  @singleton
+  @Named('root')
+  GlobalKey<NavigatorState> provideNavigatorKey() =>
+      GlobalKey<NavigatorState>(debugLabel: 'root');
+
+  /// Provide the shellNavigatorKey
+  @singleton
+  @Named('shell')
+  GlobalKey<NavigatorState> provideShellNavigatorKey() =>
+      GlobalKey<NavigatorState>(debugLabel: 'shell');
+
   /// Allow to inject [AuthService]
   @singleton
   @preResolve
@@ -77,18 +90,6 @@ abstract class DomainModule {
         requestService,
         navigatorKey,
       );
-
-  /// Provide the navigatorKey
-  @singleton
-  @Named('root')
-  GlobalKey<NavigatorState> provideNavigatorKey() =>
-      GlobalKey<NavigatorState>(debugLabel: 'root');
-
-  /// Provide the shellNavigatorKey
-  @singleton
-  @Named('shell')
-  GlobalKey<NavigatorState> provideShellNavigatorKey() =>
-      GlobalKey<NavigatorState>(debugLabel: 'shell');
 
   /// Allow to inject [GetThemeUseCase]
   @injectable
