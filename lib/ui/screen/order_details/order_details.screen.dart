@@ -246,12 +246,10 @@ class _OrderActionsRow extends ConsumerWidget {
       children: [
         FilledButton.icon(
           onPressed: viewModel.editOrder,
-          label: const Text(
-            "Editer la commande",
-            style: TextStyle(
-              fontWeight: FontWeight.w400,
-              fontSize: 12,
-            ),
+          label: TextVariant(
+            LocaleKeys.editOrder.tr(),
+            variantType: TextVariantType.bodyMedium,
+            fontSize: 12,
           ),
           icon: const Icon(Icons.edit),
           style: FilledButton.styleFrom(
@@ -276,6 +274,27 @@ class _OrderActionsRow extends ConsumerWidget {
             foregroundColor: colorScheme.onPrimary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
+            ),
+          ),
+        ),
+        const SizedBox(width: 10),
+        FilledButton.icon(
+          onPressed: viewModel.markAsFailed,
+          label: const TextVariant(
+            "Marquer comme échouée",
+            variantType: TextVariantType.bodyMedium,
+            fontSize: 12,
+          ),
+          icon: const Icon(Icons.error_outline),
+          style: FilledButton.styleFrom(
+            backgroundColor: colorScheme.surface,
+            foregroundColor: colorScheme.onSurface,
+            overlayColor: colorScheme.secondary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+              side: BorderSide(
+                color: colorScheme.surface,
+              ),
             ),
           ),
         ),
@@ -929,10 +948,10 @@ class _OrderDetailHeader extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final OrderDetailsScreenState state = ref.watch(orderDetailsViewModelProvider);
+    final OrderDetailsScreenState state =
+        ref.watch(orderDetailsViewModelProvider);
     final Order? order = state.order;
 
-    // Si l'ordre n'est pas encore chargé, afficher un indicateur de chargement
     if (order == null) {
       return const Center(child: CircularProgressIndicator());
     }

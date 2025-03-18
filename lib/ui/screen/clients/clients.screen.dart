@@ -10,7 +10,7 @@ import 'package:squirrel/ui/widgets/text_variant.dart';
 class ClientsScreen extends ConsumerStatefulWidget {
   /// Constructor
   /// @param key : [Key]
-  /// 
+  ///
   const ClientsScreen({super.key});
 
   @override
@@ -22,7 +22,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
   /// Builds the second screen
   /// @param context : [BuildContext]
   /// @return [Widget]
-  /// 
+  ///
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -84,6 +84,12 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                             variantType: TextVariantType.bodyMedium,
                           ),
                         ),
+                        DataColumn(
+                          label: TextVariant(
+                            LocaleKeys.totalSponsors.tr(),
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
                       ],
                       rows: state.clients
                           .map((entry) => DataRow(
@@ -106,6 +112,11 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
                                     Text(
                                       entry.commissionTotalAmount
                                           .toStringAsFixed(2),
+                                    ),
+                                  ),
+                                  DataCell(
+                                    Text(
+                                      entry.sponsorshipQuantity.toString(),
                                     ),
                                   ),
                                 ],

@@ -3,8 +3,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/provider/service_type_service.provider.dart';
+import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/utils/util.dart';
@@ -69,11 +72,23 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
   /// Order comment controller
   late final TextEditingController commentController;
 
+  /// Mentor controller
+  late final TextEditingController mentorController;
+
   /// Is creation
   late final bool isCreation;
 
   /// Is commission percentage
   late bool isCommissionPercentage;
+
+  /// Has mentor
+  late bool hasMentor = widget.order?.sponsor != null;
+
+  /// Sponsor
+  Client? sponsor;
+
+  /// Is hovering sponsor
+  late bool _isHoveringSponsor = false;
 
   /// Constructor
   ///
@@ -104,6 +119,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
         TextEditingController(text: widget.order?.intermediaryContact);
     clientController = TextEditingController(text: widget.order?.client?.name);
     commentController = TextEditingController(text: widget.order?.note);
+    mentorController = TextEditingController(text: widget.order?.sponsor);
     formKey = GlobalKey<FormState>();
   }
 
@@ -165,6 +181,81 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                   validator: validator(LocaleKeys.client.tr()),
                 ),
                 const Gap(32),
+                Column(
+                  children: [
+                    Row(
+                      children: [
+                        Checkbox(
+                          value: hasMentor,
+                          onChanged: (value) {
+                            setState(() {
+                              hasMentor = value ?? false;
+                            });
+                          },
+                        ),
+                        const Gap(8),
+                        TextVariant(
+                          "Commande parrainée ?",
+                          color: colorScheme.onSurface,
+                        ),
+                      ],
+                    ),
+                    if (hasMentor) ...[
+                      const Gap(16),
+                      MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        onEnter: (event) {
+                          setState(() {
+                            _isHoveringSponsor = true;
+                          });
+                        },
+                        onExit: (event) {
+                          setState(() {
+                            _isHoveringSponsor = false;
+                          });
+                        },
+                        child: InkWell(
+                          onTap: () async {
+                            final Client? client =
+                                await injector<DialogService>()
+                                    .showSelectMentorDialog();
+
+                            setState(() {
+                              sponsor = client;
+                              hasMentor = sponsor != null;
+                            });
+                          },
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: _isHoveringSponsor
+                                  ? colorScheme.primary
+                                  : colorScheme.surface,
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(
+                                color: colorScheme.outline,
+                                width: 1,
+                              ),
+                            ),
+                            child: TextVariant(
+                              sponsor != null
+                                  ? "Parrain: ${sponsor?.name}"
+                                  : "Sélectionner le parrain",
+                              color: _isHoveringSponsor
+                                  ? colorScheme.onPrimary
+                                  : colorScheme.onSurface,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ]
+                  ],
+                ),
+                const Gap(32),
                 Row(
                   children: [
                     Expanded(
@@ -176,7 +267,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                         validator: validator(LocaleKeys.orderDate.tr(), true),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const Gap(16),
                     Expanded(
                       child: TextFormField(
                         controller: orderDurationController,
@@ -229,7 +320,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             ],
                           ),
                         ),
-                        const SizedBox(width: 16),
+                        const Gap(16),
                         Expanded(
                           child: TextFormField(
                             controller: orderInternalFeesController,
@@ -368,7 +459,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                         child: Text(LocaleKeys.cancel.tr()),
                       ),
                     ),
-                    const SizedBox(width: 16),
+                    const Gap(16),
                     InkWell(
                       onTap: () {
                         if (formKey.currentState?.validate() == false) return;
@@ -421,6 +512,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             trackId: trackIdController.text,
                             method: methodController.text,
                             note: commentController.text,
+                            sponsor: hasMentor ? sponsor?.name : null,
                           ),
                         );
                       },

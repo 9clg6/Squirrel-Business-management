@@ -20,6 +20,10 @@ abstract class  LocaleKeys {
   static const orderAmount = 'orderAmount';
   static const commission = 'commission';
   static const internalFees = 'internalFees';
+  static const sponsor = 'sponsor';
+  static const sponsorName = 'sponsorName';
+  static const editOrderSponsor = 'editOrderSponsor';
+  static const totalSponsors = 'totalSponsors';
   static const percentage = 'percentage';
   static const amount = 'amount';
   static const method = 'method';

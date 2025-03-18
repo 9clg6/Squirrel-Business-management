@@ -19,6 +19,7 @@ class Order with EquatableMixin, SerializableMixin {
   final String id;
   final Client? client;
   final String clientName;
+  final String? sponsor;
   final String intermediaryContact;
   final double internalProcessingFee;
   final String trackId;
@@ -54,6 +55,7 @@ class Order with EquatableMixin, SerializableMixin {
     String? id,
     required this.client,
     required this.clientName,
+    this.sponsor,
     required this.intermediaryContact,
     required this.internalProcessingFee,
     required this.trackId,
@@ -102,6 +104,8 @@ class Order with EquatableMixin, SerializableMixin {
   List<Object?> get props => [
         id,
         client,
+        clientName,
+        sponsor,
         intermediaryContact,
         startDate,
         estimatedDuration,

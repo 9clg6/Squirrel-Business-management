@@ -11,7 +11,7 @@ fvm flutter build macos --release --obfuscate --split-debug-info=/Users/x/Develo
 2) cd /Users/x/Developer/aiir_gestion/build/macos/Build/Products/Release
 
 3) Forcer signature
-codesign --sign "Apple Development: filipzarago@gmail.com (HA4LLM4343)" Squirrel.app/ -f
+codesign --sign "Apple Development: x" Squirrel.app/ -f
 
 4) Supprimer et créer un nouvel installeur à partir du build de Release
 rm -rf Squirrel\ App.dmg ; appdmg config.json "Squirrel App.dmg"

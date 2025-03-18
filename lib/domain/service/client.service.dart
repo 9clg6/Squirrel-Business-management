@@ -15,7 +15,6 @@ class ClientService extends StateNotifier<ClientState> {
 
   final StorageInterface _storage;
 
-  
   bool _isInitialLoad = true;
 
   /// Client state
@@ -28,7 +27,6 @@ class ClientService extends StateNotifier<ClientState> {
     _isInitialLoad = true;
     addListener(_save);
   }
-
 
   /// Load clients
   ///
@@ -93,19 +91,70 @@ class ClientService extends StateNotifier<ClientState> {
       firstOrderDate: order.startDate,
     );
 
-    state = state.copyWith(clients: [...state.clients, client]);
+    state = state.copyWith(
+      clients: [
+        ...state.clients,
+        client,
+      ],
+    );
+
+    if (order.sponsor != null) {
+      final sponsor = getClientByName(order.sponsor!);
+      if (sponsor != null) {
+        final updatedSponsor = sponsor.copyWith(
+          sponsorshipQuantity: sponsor.sponsorshipQuantity + 1,
+        );
+
+        final int sponsorIndex =
+            state.clients.indexWhere((c) => c.id == sponsor.id);
+        state = state.copyWith(
+          clients: [
+            ...state.clients.take(sponsorIndex),
+            updatedSponsor,
+            ...state.clients.skip(sponsorIndex + 1),
+          ],
+        );
+      }
+    }
 
     return client;
   }
 
   /// Update client with new order information
   /// @param [client] client to update
-  /// @param [order] order to add to client statistics
+  /// @param [newVersion] new version of client
   /// @throws StateError if client is not found
-  /// 
+  ///
   void updateClient(
     Client client, {
+    required Client newVersion,
+  }) {
+    final int clientIndex = state.clients.indexWhere(
+      (c) => c.id == client.id,
+    );
+
+    if (clientIndex == -1) {
+      throw StateError('Client with id ${client.id} not found');
+    }
+
+    state = state.copyWith(
+      clients: [
+        ...state.clients.take(clientIndex),
+        newVersion,
+        ...state.clients.skip(clientIndex + 1),
+      ],
+    );
+  }
+
+  /// Update client with new order information
+  /// @param [client] client to update
+  /// @param [order] order to add to client statistics
+  /// @throws StateError if client is not found
+  ///
+  void updateClientWithOrder(
+    Client client, {
     required Order order,
+    required bool isNewOrder,
   }) {
     final int clientIndex = state.clients.indexWhere(
       (c) => c.id == client.id,
@@ -122,17 +171,43 @@ class ClientService extends StateNotifier<ClientState> {
         : clientTemp.lastOrderDate ?? order.startDate;
 
     final clientUpdated = clientTemp.copyWith(
-      orderQuantity: clientTemp.orderQuantity + 1,
-      orderTotalAmount: clientTemp.orderTotalAmount + order.price,
-      commissionTotalAmount:
-          clientTemp.commissionTotalAmount + order.commission,
+      orderQuantity: isNewOrder
+          ? clientTemp.orderQuantity + 1
+          : clientTemp.orderQuantity,
+      orderTotalAmount: isNewOrder
+          ? clientTemp.orderTotalAmount + order.price
+          : clientTemp.orderTotalAmount,
+      commissionTotalAmount: isNewOrder
+          ? clientTemp.commissionTotalAmount + order.commission
+          : clientTemp.commissionTotalAmount,
       lastOrderDate: newLastOrderDate,
     );
 
-    state = state.copyWith(clients: [
-      ...state.clients.take(clientIndex),
-      clientUpdated,
-      ...state.clients.skip(clientIndex + 1),
-    ]);
+    state = state.copyWith(
+      clients: [
+        ...state.clients.take(clientIndex),
+        clientUpdated,
+        ...state.clients.skip(clientIndex + 1),
+      ],
+    );
+
+    if (order.sponsor != null) {
+      final sponsor = getClientByName(order.sponsor!);
+      if (sponsor != null) {
+        final updatedSponsor = sponsor.copyWith(
+          sponsorshipQuantity: sponsor.sponsorshipQuantity + 1,
+        );
+
+        final int sponsorIndex =
+            state.clients.indexWhere((c) => c.id == sponsor.id);
+        state = state.copyWith(
+          clients: [
+            ...state.clients.take(sponsorIndex),
+            updatedSponsor,
+            ...state.clients.skip(sponsorIndex + 1),
+          ],
+        );
+      }
+    }
   }
 }

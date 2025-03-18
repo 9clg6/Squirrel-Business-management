@@ -13,6 +13,8 @@ abstract class _$OrderCWProxy {
 
   Order clientName(String clientName);
 
+  Order sponsor(String? sponsor);
+
   Order intermediaryContact(String intermediaryContact);
 
   Order internalProcessingFee(double internalProcessingFee);
@@ -51,6 +53,7 @@ abstract class _$OrderCWProxy {
     String? id,
     Client? client,
     String? clientName,
+    String? sponsor,
     String? intermediaryContact,
     double? internalProcessingFee,
     String? trackId,
@@ -82,6 +85,9 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
 
   @override
   Order clientName(String clientName) => this(clientName: clientName);
+
+  @override
+  Order sponsor(String? sponsor) => this(sponsor: sponsor);
 
   @override
   Order intermediaryContact(String intermediaryContact) =>
@@ -141,6 +147,7 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
     Object? id = const $CopyWithPlaceholder(),
     Object? client = const $CopyWithPlaceholder(),
     Object? clientName = const $CopyWithPlaceholder(),
+    Object? sponsor = const $CopyWithPlaceholder(),
     Object? intermediaryContact = const $CopyWithPlaceholder(),
     Object? internalProcessingFee = const $CopyWithPlaceholder(),
     Object? trackId = const $CopyWithPlaceholder(),
@@ -170,6 +177,10 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
               ? _value.clientName
               // ignore: cast_nullable_to_non_nullable
               : clientName as String,
+      sponsor: sponsor == const $CopyWithPlaceholder()
+          ? _value.sponsor
+          // ignore: cast_nullable_to_non_nullable
+          : sponsor as String?,
       intermediaryContact:
           intermediaryContact == const $CopyWithPlaceholder() ||
                   intermediaryContact == null
@@ -252,6 +263,7 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
           ? null
           : Client.fromJson(json['client'] as Map<String, dynamic>),
       clientName: json['clientName'] as String,
+      sponsor: json['sponsor'] as String?,
       intermediaryContact: json['intermediaryContact'] as String,
       internalProcessingFee: (json['internalProcessingFee'] as num).toDouble(),
       trackId: json['trackId'] as String,
@@ -276,6 +288,7 @@ Map<String, dynamic> _$OrderToJson(Order instance) => <String, dynamic>{
       'id': instance.id,
       'client': instance.client,
       'clientName': instance.clientName,
+      'sponsor': instance.sponsor,
       'intermediaryContact': instance.intermediaryContact,
       'internalProcessingFee': instance.internalProcessingFee,
       'trackId': instance.trackId,

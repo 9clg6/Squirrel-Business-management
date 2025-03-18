@@ -36,9 +36,11 @@ abstract class DomainModule {
   ///
   @injectable
   FlutterSecureStorage storage() => const FlutterSecureStorage(
+        wOptions: WindowsOptions(),
         mOptions: MacOsOptions(
-          accessibility: KeychainAccessibility.unlocked,
           synchronizable: true,
+          accessibility: KeychainAccessibility.unlocked,
+          accountName: 'squirrel_app_keychain',
         ),
       );
 

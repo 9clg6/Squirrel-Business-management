@@ -17,7 +17,6 @@ class Client with EquatableMixin, SerializableMixin {
   final double commissionTotalAmount;
   final int orderQuantity;
   final int sponsorshipQuantity;
-  final String? sponsorName;
   final DateTime? lastOrderDate;
   final DateTime? firstOrderDate;
 
@@ -40,7 +39,6 @@ class Client with EquatableMixin, SerializableMixin {
     this.commissionTotalAmount = 0,
     this.orderQuantity = 0,
     this.sponsorshipQuantity = 0,
-    this.sponsorName,
     this.lastOrderDate,
     this.firstOrderDate,
   }) : id = id ?? const Uuid().v4();
@@ -55,7 +53,6 @@ class Client with EquatableMixin, SerializableMixin {
         orderTotalAmount,
         orderQuantity,
         sponsorshipQuantity,
-        sponsorName,
         lastOrderDate,
         firstOrderDate,
         commissionTotalAmount,

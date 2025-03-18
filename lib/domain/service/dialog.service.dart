@@ -2,9 +2,11 @@ import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
+import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/ui/dialog/confirmation_dialog.dart';
 import 'package:squirrel/ui/dialog/edit_or_create_order_dialog.dart';
+import 'package:squirrel/ui/dialog/select_mentor.dialog.dart';
 import 'package:squirrel/ui/dialog/use_conditions.dialog.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.screen.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -216,6 +218,23 @@ class DialogService {
           ],
         ),
       ),
+    );
+  }
+
+  /// Show select mentor dialog
+  ///
+  Future<Client?> showSelectMentorDialog() async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.showSelectClientDialog()');
+      return null;
+    }
+
+    return showDialog<Client>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => const SelectMentorDialog(),
     );
   }
 }

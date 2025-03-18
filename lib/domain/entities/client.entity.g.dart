@@ -21,8 +21,6 @@ abstract class _$ClientCWProxy {
 
   Client sponsorshipQuantity(int sponsorshipQuantity);
 
-  Client sponsorName(String? sponsorName);
-
   Client lastOrderDate(DateTime? lastOrderDate);
 
   Client firstOrderDate(DateTime? firstOrderDate);
@@ -41,7 +39,6 @@ abstract class _$ClientCWProxy {
     double? commissionTotalAmount,
     int? orderQuantity,
     int? sponsorshipQuantity,
-    String? sponsorName,
     DateTime? lastOrderDate,
     DateTime? firstOrderDate,
   });
@@ -78,9 +75,6 @@ class _$ClientCWProxyImpl implements _$ClientCWProxy {
       this(sponsorshipQuantity: sponsorshipQuantity);
 
   @override
-  Client sponsorName(String? sponsorName) => this(sponsorName: sponsorName);
-
-  @override
   Client lastOrderDate(DateTime? lastOrderDate) =>
       this(lastOrderDate: lastOrderDate);
 
@@ -104,7 +98,6 @@ class _$ClientCWProxyImpl implements _$ClientCWProxy {
     Object? commissionTotalAmount = const $CopyWithPlaceholder(),
     Object? orderQuantity = const $CopyWithPlaceholder(),
     Object? sponsorshipQuantity = const $CopyWithPlaceholder(),
-    Object? sponsorName = const $CopyWithPlaceholder(),
     Object? lastOrderDate = const $CopyWithPlaceholder(),
     Object? firstOrderDate = const $CopyWithPlaceholder(),
   }) {
@@ -143,10 +136,6 @@ class _$ClientCWProxyImpl implements _$ClientCWProxy {
               ? _value.sponsorshipQuantity
               // ignore: cast_nullable_to_non_nullable
               : sponsorshipQuantity as int,
-      sponsorName: sponsorName == const $CopyWithPlaceholder()
-          ? _value.sponsorName
-          // ignore: cast_nullable_to_non_nullable
-          : sponsorName as String?,
       lastOrderDate: lastOrderDate == const $CopyWithPlaceholder()
           ? _value.lastOrderDate
           // ignore: cast_nullable_to_non_nullable
@@ -178,7 +167,6 @@ Client _$ClientFromJson(Map<String, dynamic> json) => Client(
           (json['commissionTotalAmount'] as num?)?.toDouble() ?? 0,
       orderQuantity: (json['orderQuantity'] as num?)?.toInt() ?? 0,
       sponsorshipQuantity: (json['sponsorshipQuantity'] as num?)?.toInt() ?? 0,
-      sponsorName: json['sponsorName'] as String?,
       lastOrderDate: json['lastOrderDate'] == null
           ? null
           : DateTime.parse(json['lastOrderDate'] as String),
@@ -195,7 +183,6 @@ Map<String, dynamic> _$ClientToJson(Client instance) => <String, dynamic>{
       'commissionTotalAmount': instance.commissionTotalAmount,
       'orderQuantity': instance.orderQuantity,
       'sponsorshipQuantity': instance.sponsorshipQuantity,
-      'sponsorName': instance.sponsorName,
       'lastOrderDate': instance.lastOrderDate?.toIso8601String(),
       'firstOrderDate': instance.firstOrderDate?.toIso8601String(),
     };

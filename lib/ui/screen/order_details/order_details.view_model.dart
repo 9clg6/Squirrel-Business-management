@@ -44,7 +44,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   @override
   OrderDetailsScreenState build() => OrderDetailsScreenState.initial();
-  
+
   /// Init
   /// @param [o] order
   ///
@@ -147,5 +147,14 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
     if (order != null) {
       _orderService.updateOrder(order);
     }
+  }
+
+  /// Mark as failed
+  ///
+  void markAsFailed() {
+    _orderService.updateOrderStatus(
+      state.order!,
+      OrderStatus.failed,
+    );
   }
 }

@@ -337,9 +337,10 @@ class OrderService extends StateNotifier<OrderState> {
       isPinned,
     );
 
-    clientService.updateClient(
+    clientService.updateClientWithOrder(
       order.client!,
       order: order,
+      isNewOrder: false,
     );
   }
 
@@ -376,9 +377,10 @@ class OrderService extends StateNotifier<OrderState> {
       );
     } else {
       client = tempClient;
-      clientService.updateClient(
+      clientService.updateClientWithOrder(
         client,
         order: order,
+        isNewOrder: true,
       );
     }
 

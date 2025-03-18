@@ -54,7 +54,7 @@ class Kernel {
   Future<void> _ensureInitialized() async {
     logInfo('Début de l\'initialisation');
     WidgetsFlutterBinding.ensureInitialized();
-    await SelectiveFileOutput.initLogFile();
+    //await SelectiveFileOutput.initLogFile();
 
     await Hive.initFlutter();
     injector.registerSingleton<AppConfig>(appConfig);

@@ -27,7 +27,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final AuthState authState = ref.watch(authServiceNotifierProvider);
 
     final Duration timeRemain =
-        authState.expirationDate!.difference(DateTime.now());
+        authState.expirationDate?.difference(DateTime.now()) ?? const Duration(days: 0);
     final int daysRemain = timeRemain.inDays;
     final int hoursRemain = timeRemain.inHours % 24;
     final int minutesRemain = timeRemain.inMinutes % 60;
