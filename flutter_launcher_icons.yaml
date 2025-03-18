@@ -1,12 +1,16 @@
 # flutter pub run flutter_launcher_icons
 flutter_launcher_icons:
-  image_path: "assets/images/app_logo.jpg"
+  # Pour macOS, assurez-vous que votre image source (logo.png) :
+  # 1. Est un carré parfait (idéalement 1024x1024 pixels)
+  # 2. A déjà des coins arrondis intégrés au design (pas de transparence)
+  # 3. Utilise un fond opaque qui s'harmonise avec votre design
+  image_path: "assets/images/logo.png"
 
   windows:
     generate: true
-    image_path: "assets/images/app_logo.jpg"
+    image_path: "assets/images/logo.png"
     icon_size: 48 # min:48, max:256, default: 48
 
   macos:
     generate: true
-    image_path: "assets/images/app_logo.jpg"
+    image_path: "assets/images/logo.png"

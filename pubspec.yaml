@@ -122,6 +122,18 @@ dev_dependencies:
   # Json serializable
   json_serializable: ^6.7.1
 
+
+flutter_launcher_icons:
+  image_path: "assets/images/logo.png"
+  windows:
+    generate: true
+    image_path: "assets/images/logo.png"
+    icon_size: 48
+    
+  macos:
+    generate: true
+    image_path: "assets/images/logo.png"
+
 flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -142,9 +154,3 @@ flutter:
     - family: InitIcons
       fonts:
         - asset: assets/icons/InitIcons.ttf
-
-flutter_icons:
-  image_path: "assets/images/app_logo.jpg"
-  macos: true
-  windows: true
-  linux: true
