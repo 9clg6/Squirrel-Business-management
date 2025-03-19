@@ -11,6 +11,7 @@ import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/utils/util.dart';
+import 'package:squirrel/ui/widgets/help_text.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 class EditOrAddOrderDialog extends ConsumerStatefulWidget {
@@ -173,12 +174,38 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                       : LocaleKeys.product.tr()),
                 ),
                 const Gap(32),
-                TextFormField(
-                  controller: clientController,
-                  decoration: InputDecoration(
-                    labelText: LocaleKeys.clientName.tr(),
-                  ),
-                  validator: validator(LocaleKeys.client.tr()),
+                Column(
+                  children: [
+                    TextFormField(
+                      controller: clientController,
+                      decoration: InputDecoration(
+                        labelText: LocaleKeys.clientName.tr(),
+                        suffix: InkWell(
+                          onTap: () async {
+                            final client = await injector<DialogService>()
+                                .showSelectClientDialog();
+
+                            if (client != null) {
+                              setState(() {
+                                clientController.text = client.name;
+                              });
+                            }
+                          },
+                          child: TextVariant(
+                            "Sélectionner un client",
+                            variantType: TextVariantType.bodyMedium,
+                            color: colorScheme.primary,
+                          ),
+                        ),
+                      ),
+                      validator: validator(LocaleKeys.client.tr()),
+                    ),
+                    const Gap(8),
+                    const HelpText(
+                      text:
+                          "Si vous saisissez le nom d'un client sans le sélectionner via le bouton, il sera automatiquement ajouté à la liste des clients.\nPour sélectionner un client existant, cliquez sur le champs puis cliquez sur le bouton \"Sélectionner un client\".",
+                    ),
+                  ],
                 ),
                 const Gap(32),
                 Column(
@@ -218,7 +245,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                           onTap: () async {
                             final Client? client =
                                 await injector<DialogService>()
-                                    .showSelectMentorDialog();
+                                    .showSelectClientDialog(isSponsor: true);
 
                             setState(() {
                               sponsor = client;

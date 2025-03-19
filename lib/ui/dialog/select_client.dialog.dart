@@ -6,23 +6,34 @@ import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
-/// Select Mentor dialog
+/// Select client dialog
 ///
-class SelectMentorDialog extends StatefulWidget {
-  const SelectMentorDialog({super.key});
+class SelectClientDialog extends StatefulWidget {
+  /// Constructor
+  /// @param super.key
+  ///
+  const SelectClientDialog({
+    super.key,
+    this.isSponsor = false,
+  });
 
+  /// Is sponsor
+  final bool isSponsor;
+
+  /// Create state
+  /// @return State<SelectClientDialog>
+  ///
   @override
-  State<SelectMentorDialog> createState() => _SelectMentorDialogState();
+  State<SelectClientDialog> createState() => _SelectClientDialogState();
 }
 
-class _SelectMentorDialogState extends State<SelectMentorDialog> {
+class _SelectClientDialogState extends State<SelectClientDialog> {
   /// Client service
   late final List<Client> clients;
 
   /// Constructor
-  /// @param super.key
   ///
-  _SelectMentorDialogState() {
+  _SelectClientDialogState() {
     clients = injector<ClientService>().clientState.clients;
   }
 
@@ -46,15 +57,18 @@ class _SelectMentorDialogState extends State<SelectMentorDialog> {
                     const Text('Aucun client trouvé'),
                   ]
                 : [
-                    const TextVariant(
-                      "Sélectionner un parrain",
+                    TextVariant(
+                      widget.isSponsor
+                          ? "Sélectionner un parrain"
+                          : "Sélectionner un client",
                       variantType: TextVariantType.titleMedium,
                     ),
                     const Gap(6),
-                    const TextVariant(
-                      "Un parrain ne peut être qu'un client existant",
-                      variantType: TextVariantType.bodySmall,
-                    ),
+                    if (widget.isSponsor)
+                      const TextVariant(
+                        "Un parrain ne peut être qu'un client existant",
+                        variantType: TextVariantType.bodySmall,
+                      ),
                     const Gap(12),
                     Divider(
                       height: 1,

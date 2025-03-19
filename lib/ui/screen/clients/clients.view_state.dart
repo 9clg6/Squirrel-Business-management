@@ -5,13 +5,13 @@ import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 part 'clients.view_state.g.dart';
 
 /// [ClientsScreenState]
-@CopyWith()
+@CopyWith(copyWithNull: true)
 class ClientsScreenState extends ViewStateAbs {
   /// Loading state
   final bool loading;
 
   /// Selected client
-  final String? selectedClient;
+  final Client? selectedClient;
 
   /// Clients
   final List<Client> clients;
@@ -20,15 +20,15 @@ class ClientsScreenState extends ViewStateAbs {
   /// @param loading : [bool]
   /// @param selectedClient : [String?]
   /// @param clients : [List<Client>]
-  /// 
-  ClientsScreenState(
-    this.loading,
-    this.selectedClient,
-    this.clients,
-  );
+  ///
+  ClientsScreenState({
+    required this.loading,
+    required this.selectedClient,
+    required this.clients,
+  });
 
   /// Initial state
-  /// 
+  ///
   ClientsScreenState.initial()
       : loading = true,
         selectedClient = null,

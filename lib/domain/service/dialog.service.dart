@@ -4,19 +4,26 @@ import 'package:gap/gap.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/ui/dialog/client_details.dialog.dart';
 import 'package:squirrel/ui/dialog/confirmation_dialog.dart';
 import 'package:squirrel/ui/dialog/edit_or_create_order_dialog.dart';
-import 'package:squirrel/ui/dialog/select_mentor.dialog.dart';
+import 'package:squirrel/ui/dialog/select_client.dialog.dart';
 import 'package:squirrel/ui/dialog/use_conditions.dialog.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.screen.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
+/// The dialog service
 class DialogService {
+  /// The navigator key
   final GlobalKey<NavigatorState> navigatorKey;
 
+  /// Constructor
+  /// @param navigatorKey: The navigator key
+  ///
   DialogService(this.navigatorKey);
 
   /// Show add order action dialog
+  /// @return The added order action
   ///
   Future<OrderAction?> showAddOrderActionDialog() async {
     final context = navigatorKey.currentContext;
@@ -32,6 +39,9 @@ class DialogService {
     );
   }
 
+  /// Show date picker dialog
+  /// @return The selected date
+  ///
   Future<List<DateTime?>?> showDatePickerDialog() async {
     final context = navigatorKey.currentContext;
 
@@ -56,6 +66,10 @@ class DialogService {
   }
 
   /// Show confirmation dialog
+  /// @param title: The title of the dialog
+  /// @param message: The message to display in the dialog
+  /// @param onConfirm: The function to call when the user confirms the dialog
+  /// @return The result of the dialog
   ///
   Future<void> showConfirmationDialog(
     String title,
@@ -73,6 +87,9 @@ class DialogService {
   }
 
   /// Show edit order dialog
+  /// @param isCreation: Whether the order is being created or edited
+  /// @param order: The order to edit
+  /// @return The edited order
   ///
   Future<Order?> showEditOrderDialog({
     bool isCreation = false,
@@ -94,6 +111,9 @@ class DialogService {
     );
   }
 
+  /// Show select range date dialog
+  /// @return The selected range date
+  ///
   Future<List<DateTime?>?> selectRangeDate() async {
     final context = navigatorKey.currentContext;
 
@@ -122,6 +142,9 @@ class DialogService {
     );
   }
 
+  /// Show error dialog
+  /// @param message: The message to display in the dialog
+  ///
   void showError(String message) {
     final context = navigatorKey.currentContext;
 
@@ -150,6 +173,8 @@ class DialogService {
     );
   }
 
+  /// Show use conditions dialog
+  ///
   Future<bool?> showUseConditions() async {
     return showDialog<bool>(
       barrierDismissible: false,
@@ -158,6 +183,8 @@ class DialogService {
     );
   }
 
+  /// Show in coming dialog
+  ///
   Future<void> showInComingDialog() async {
     return showDialog<void>(
       context: navigatorKey.currentContext!,
@@ -183,11 +210,6 @@ class DialogService {
             Gap(28),
             TextVariant(
               "- Le lien entre le Bot de commande Telegram et le logiciel, pour visualiser les commandes reçus en temps réel",
-              variantType: TextVariantType.bodyMedium,
-            ),
-            Gap(10),
-            TextVariant(
-              "- L'ajout et la gestion du système de parrainage lors des commandes",
               variantType: TextVariantType.bodyMedium,
             ),
             Gap(10),
@@ -221,9 +243,12 @@ class DialogService {
     );
   }
 
-  /// Show select mentor dialog
+  /// Show select client dialog
+  /// @return The selected client
   ///
-  Future<Client?> showSelectMentorDialog() async {
+  Future<Client?> showSelectClientDialog({
+    bool isSponsor = false,
+  }) async {
     final context = navigatorKey.currentContext;
 
     if (context == null) {
@@ -234,7 +259,19 @@ class DialogService {
     return showDialog<Client>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => const SelectMentorDialog(),
+      builder: (_) => SelectClientDialog(isSponsor: isSponsor),
+    );
+  }
+
+  /// Show client details dialog
+  /// @param client: The client to show
+  ///
+  Future<void> showClientDetailsDialog(Client client) async {
+    return showDialog<void>(
+      context: navigatorKey.currentContext!,
+      barrierDismissible: true,
+      useSafeArea: true,
+      builder: (_) => ClientDetailDialog(client: client),
     );
   }
 }

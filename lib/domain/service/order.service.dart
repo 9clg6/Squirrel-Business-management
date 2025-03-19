@@ -367,8 +367,7 @@ class OrderService extends StateNotifier<OrderState> {
   void addOrder(Order order) {
     Client? client;
 
-    final tempClient =
-        clientService.getClientByName(order.clientName);
+    final Client? tempClient = clientService.getClientByName(order.clientName);
 
     if (tempClient == null) {
       client = clientService.createClientWithOrder(

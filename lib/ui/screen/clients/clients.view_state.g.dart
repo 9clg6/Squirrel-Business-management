@@ -9,7 +9,7 @@ part of 'clients.view_state.dart';
 abstract class _$ClientsScreenStateCWProxy {
   ClientsScreenState loading(bool loading);
 
-  ClientsScreenState selectedClient(String? selectedClient);
+  ClientsScreenState selectedClient(Client? selectedClient);
 
   ClientsScreenState clients(List<Client> clients);
 
@@ -21,7 +21,7 @@ abstract class _$ClientsScreenStateCWProxy {
   /// ````
   ClientsScreenState call({
     bool? loading,
-    String? selectedClient,
+    Client? selectedClient,
     List<Client>? clients,
   });
 }
@@ -36,7 +36,7 @@ class _$ClientsScreenStateCWProxyImpl implements _$ClientsScreenStateCWProxy {
   ClientsScreenState loading(bool loading) => this(loading: loading);
 
   @override
-  ClientsScreenState selectedClient(String? selectedClient) =>
+  ClientsScreenState selectedClient(Client? selectedClient) =>
       this(selectedClient: selectedClient);
 
   @override
@@ -56,15 +56,15 @@ class _$ClientsScreenStateCWProxyImpl implements _$ClientsScreenStateCWProxy {
     Object? clients = const $CopyWithPlaceholder(),
   }) {
     return ClientsScreenState(
-      loading == const $CopyWithPlaceholder() || loading == null
+      loading: loading == const $CopyWithPlaceholder() || loading == null
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
           : loading as bool,
-      selectedClient == const $CopyWithPlaceholder()
+      selectedClient: selectedClient == const $CopyWithPlaceholder()
           ? _value.selectedClient
           // ignore: cast_nullable_to_non_nullable
-          : selectedClient as String?,
-      clients == const $CopyWithPlaceholder() || clients == null
+          : selectedClient as Client?,
+      clients: clients == const $CopyWithPlaceholder() || clients == null
           ? _value.clients
           // ignore: cast_nullable_to_non_nullable
           : clients as List<Client>,
@@ -77,4 +77,20 @@ extension $ClientsScreenStateCopyWith on ClientsScreenState {
   // ignore: library_private_types_in_public_api
   _$ClientsScreenStateCWProxy get copyWith =>
       _$ClientsScreenStateCWProxyImpl(this);
+
+  /// Copies the object with the specific fields set to `null`. If you pass `false` as a parameter, nothing will be done and it will be ignored. Don't do it. Prefer `copyWith(field: null)` or `ClientsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  ///
+  /// Usage
+  /// ```dart
+  /// ClientsScreenState(...).copyWithNull(firstField: true, secondField: true)
+  /// ````
+  ClientsScreenState copyWithNull({
+    bool selectedClient = false,
+  }) {
+    return ClientsScreenState(
+      loading: loading,
+      selectedClient: selectedClient == true ? null : this.selectedClient,
+      clients: clients,
+    );
+  }
 }

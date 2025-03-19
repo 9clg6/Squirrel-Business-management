@@ -93,6 +93,7 @@ class Index extends _$Index {
       order: Order.empty(),
       isCreation: true,
     );
+    
     if (order != null) {
       _orderService.addOrder(order);
     }
