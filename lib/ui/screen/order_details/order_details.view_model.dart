@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
@@ -46,14 +47,18 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
       );
       if (order == null) return;
 
-      state = state.copyWith(order: order);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        state = state.copyWith(order: order);
+      });
     });
 
-    state = state.copyWith(
-      loading: false,
-      order: o,
-      client: _clientService.getClientById(o.client!.id),
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state = state.copyWith(
+        loading: false,
+        order: o,
+        client: _clientService.getClientById(o.client!.id),
+      );
+    });
   }
 
   /// Get client by id

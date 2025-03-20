@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
@@ -57,15 +58,17 @@ class Index extends _$Index {
     if (state.pinnedOrders.contains(order)) {
       unpinOrder(order);
     } else {
-      state = state.copyWith(
-        pinnedOrders: [
-          ...state.pinnedOrders,
-          order,
-        ],
-        orders: [
-          ...state.orders.where((e) => e != order),
-        ],
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        state = state.copyWith(
+          pinnedOrders: [
+            ...state.pinnedOrders,
+            order,
+          ],
+          orders: [
+            ...state.orders.where((e) => e != order),
+          ],
+        );
+      });
     }
   }
 
@@ -73,13 +76,15 @@ class Index extends _$Index {
   /// @param [order] order
   ///
   void unpinOrder(Order order) {
-    state = state.copyWith(
-      pinnedOrders: state.pinnedOrders.where((e) => e != order).toList(),
-      orders: [
-        ...state.orders,
-        order,
-      ],
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state = state.copyWith(
+        pinnedOrders: state.pinnedOrders.where((e) => e != order).toList(),
+        orders: [
+          ...state.orders,
+          order,
+        ],
+      );
+    });
   }
 
   /// Select order
@@ -87,24 +92,26 @@ class Index extends _$Index {
   ///
   void selectOrder(Order? order) {
     if (order == null) return;
-    if (state.showComboBox == false) {
-      state = state.copyWith(
-        showComboBox: true,
-      );
-    }
-    if (state.selectedOrders.contains(order)) {
-      state = state.copyWith(
-        selectedOrders: [
-          ...state.selectedOrders.where(
-            (element) => element != order,
-          )
-        ],
-      );
-    } else {
-      state = state.copyWith(
-        selectedOrders: [...state.selectedOrders, order],
-      );
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (state.showComboBox == false) {
+        state = state.copyWith(
+          showComboBox: true,
+        );
+      }
+      if (state.selectedOrders.contains(order)) {
+        state = state.copyWith(
+          selectedOrders: [
+            ...state.selectedOrders.where(
+              (element) => element != order,
+            )
+          ],
+        );
+      } else {
+        state = state.copyWith(
+          selectedOrders: [...state.selectedOrders, order],
+        );
+      }
+    });
   }
 
   /// Select all orders
@@ -113,45 +120,49 @@ class Index extends _$Index {
     if (state.selectedOrders.length == state.orders.length) {
       unselectOrder();
     } else {
-      state = state.copyWith(
-        selectedOrders: state.orders,
-      );
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        state = state.copyWith(
+          selectedOrders: state.orders,
+        );
+      });
     }
   }
 
   /// Unselect order
   ///
   void unselectOrder() {
-    state = state.copyWith(
-      selectedOrders: [],
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state = state.copyWith(
+        selectedOrders: [],
+      );
+    });
   }
 
   /// Delete selected orders
   ///
   void deleteSelectedOrders() {
-    state = state.copyWith(
-      orders: [
-        ...state.orders.where(
-          (e) => !state.selectedOrders.contains(e),
-        ),
-      ],
-      selectedOrders: [],
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state = state.copyWith(
+        orders: [
+          ...state.orders.where(
+            (e) => !state.selectedOrders.contains(e),
+          ),
+        ],
+        selectedOrders: [],
+      );
+    });
   }
 
   /// Show combo box
   ///
   void showComboBox() {
-    final newComboBoxState = !state.showComboBox;
-    state = state.copyWith(
-      showComboBox: newComboBoxState,
-    );
-    if (!newComboBoxState) {
+    final bool newComboBoxState = !state.showComboBox;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
-        selectedOrders: [],
+        showComboBox: newComboBoxState,
+        selectedOrders: newComboBoxState == false ? [] : state.selectedOrders,
       );
-    }
+    });
   }
 
   /// Sort orders
@@ -195,11 +206,13 @@ class Index extends _$Index {
           return 0;
       }
     });
-    state = state.copyWith(
-      orders: orders,
-      sortColumnIndex: columnIndex,
-      sortAscending: ascending,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state = state.copyWith(
+        orders: orders,
+        sortColumnIndex: columnIndex,
+        sortAscending: ascending,
+      );
+    });
   }
 
   /// Navigate to details
@@ -228,10 +241,12 @@ class Index extends _$Index {
   void _updateState(OrderState s) {
     log('[Index] Updating state');
 
-    state = state.copyWith(
-      orders: s.orders,
-      nextAction: s.nextAction,
-      loading: s.isLoading,
-    );
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      state = state.copyWith(
+        orders: s.orders,
+        nextAction: s.nextAction,
+        loading: s.isLoading,
+      );
+    });
   }
 }
