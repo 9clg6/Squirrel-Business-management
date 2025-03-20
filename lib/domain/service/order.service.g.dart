@@ -1,28 +1,27 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'index.view_model.dart';
+part of 'order.service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$indexHash() => r'c70ee21d19194b04b2fc139c2d1a3d088a7bbbfa';
+String _$orderServiceHash() => r'654af97f65e79ac2837dffc5d7f3f8ef7a6881b2';
 
+/// [OrderService]
 ///
-/// [Index]
-///
-///
-/// Copied from [Index].
-@ProviderFor(Index)
-final indexProvider = NotifierProvider<Index, IndexScreenState>.internal(
-  Index.new,
-  name: r'indexProvider',
+/// Copied from [OrderService].
+@ProviderFor(OrderService)
+final orderServiceProvider =
+    AsyncNotifierProvider<OrderService, OrderState>.internal(
+  OrderService.new,
+  name: r'orderServiceProvider',
   debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$indexHash,
+      const bool.fromEnvironment('dart.vm.product') ? null : _$orderServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$Index = Notifier<IndexScreenState>;
+typedef _$OrderService = AsyncNotifier<OrderState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

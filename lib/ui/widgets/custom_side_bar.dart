@@ -52,6 +52,11 @@ class _CustomSideBarState extends State<CustomSideBar> {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
 
+    // Définition des constantes pour les paddings et border radius
+    const double itemPadding = 10.0;
+    const double borderRadiusInner = 10.0;
+    const double borderRadiusOuter = borderRadiusInner + itemPadding;
+
     return SafeArea(
       child: Align(
         alignment: Alignment.topCenter,
@@ -70,13 +75,13 @@ class _CustomSideBarState extends State<CustomSideBar> {
                   width: 60,
                   decoration: BoxDecoration(
                     color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(borderRadiusOuter),
                     border: Border.all(
                       color: colorScheme.outline.withValues(alpha: .2),
                       width: 1,
                     ),
                   ),
-                  hoverColor: colorScheme.primaryContainer,
+                  hoverColor: colorScheme.secondary,
                   hoverTextStyle: TextStyle(
                     color: colorScheme.onSurface,
                   ),
@@ -86,16 +91,23 @@ class _CustomSideBarState extends State<CustomSideBar> {
                   selectedIconTheme: IconThemeData(
                     color: colorScheme.onSurface,
                   ),
-                  selectedItemPadding: const EdgeInsets.all(10),
+                  selectedTextStyle: TextStyle(
+                    color: colorScheme.onPrimary,
+                  ),
+                  selectedItemPadding: const EdgeInsets.all(itemPadding),
                   selectedItemTextPadding: const EdgeInsets.only(left: 12),
                   selectedItemDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(borderRadiusInner),
                     color: colorScheme.primary,
+                    border: Border.all(
+                      color: colorScheme.outline.withValues(alpha: .2),
+                      width: 1,
+                    ),
                   ),
                   itemTextPadding: const EdgeInsets.only(left: 8),
-                  itemPadding: const EdgeInsets.all(10),
+                  itemPadding: const EdgeInsets.all(itemPadding),
                   itemDecoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
+                    borderRadius: BorderRadius.circular(borderRadiusInner),
                     border: Border.all(
                       color: colorScheme.surface.withValues(alpha: .5),
                     ),
@@ -106,7 +118,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
                   margin: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(borderRadiusOuter),
                     border: Border.all(
                       color: colorScheme.outline.withValues(alpha: .2),
                       width: 1,

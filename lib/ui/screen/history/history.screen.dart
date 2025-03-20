@@ -91,12 +91,17 @@ class _OrdersList extends ConsumerWidget {
                   )
                 : DataTable(
                     columnSpacing: 46,
-                    border: TableBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
                     dataRowColor: computeDataRowColor(colorScheme),
                     dataTextStyle: textTheme.bodyMedium?.copyWith(
                       overflow: TextOverflow.ellipsis,
+                    ),
+                    decoration: BoxDecoration(
+                      border: Border(
+                        bottom: BorderSide(
+                          color: colorScheme.outline.withValues(alpha: .2),
+                          width: 1,
+                        ),
+                      ),
                     ),
                     headingTextStyle: textTheme.titleMedium,
                     horizontalMargin: 12,

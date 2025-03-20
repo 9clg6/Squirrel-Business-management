@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:injectable/injectable.dart';
+import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/data/repository/auth/authentication.repository.dart';
 import 'package:squirrel/data/repository/preferences/preferences.repository.dart';
 import 'package:squirrel/data/storage/hive_secure_storage.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
-import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
-import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/service/secure_storage.service.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
@@ -19,6 +18,11 @@ import 'package:squirrel/domain/use_case/login.use_case.dart';
 
 @module
 abstract class DomainModule {
+  /// Allow to inject [EnvService]
+  @injectable
+  @preResolve
+  Future<EnvService> envService() async => await EnvService.injector();
+
   /// Allow to inject [LoginUseCase]
   @injectable
   LoginUseCase loginUseCase(
@@ -84,6 +88,7 @@ abstract class DomainModule {
     HiveSecureStorage hiveSecureStorage,
     RequestService requestService,
     @Named('root') GlobalKey<NavigatorState> navigatorKey,
+    EnvService envService,
   ) async =>
       AuthService.inject(
         loginUseCase,
@@ -91,6 +96,7 @@ abstract class DomainModule {
         hiveSecureStorage,
         requestService,
         navigatorKey,
+        envService,
       );
 
   /// Allow to inject [GetThemeUseCase]
@@ -99,14 +105,6 @@ abstract class DomainModule {
     PreferencesRepository preferencesRepository,
   ) =>
       GetThemeUseCase(preferencesRepository);
-
-  /// Allow to inject [OrderService]
-  @singleton
-  OrderService orderService(
-    HiveSecureStorage hiveService,
-    ClientService clientService,
-  ) =>
-      OrderService(hiveService, clientService);
 
   /// Allow to inject [DialogService]
   @singleton
@@ -126,11 +124,8 @@ abstract class DomainModule {
   @singleton
   @preResolve
   Future<BusinessTypeService> serviceTypeService(
-          HiveSecureStorageService secureStorageService) =>
+    HiveSecureStorageService secureStorageService,
+  ) =>
       BusinessTypeService.inject(secureStorageService);
 
-  /// Allow to inject [ClientService]
-  @singleton
-  ClientService clientService(HiveSecureStorageService storage) =>
-      ClientService(storage);
 }

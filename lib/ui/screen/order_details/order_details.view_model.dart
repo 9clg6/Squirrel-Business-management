@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
@@ -26,46 +25,35 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Dialog service
   late final DialogService _dialogService;
 
-  /// Constructor
-  ///
-  factory OrderDetailsViewModel() {
-    return OrderDetailsViewModel._();
-  }
-
-  /// Private constructor
-  ///
-  OrderDetailsViewModel._() {
-    _orderService = injector<OrderService>();
-    _clientService = injector<ClientService>();
-    _dialogService = injector<DialogService>();
-  }
-
   /// Build
   ///
   @override
-  OrderDetailsScreenState build() => OrderDetailsScreenState.initial();
+  OrderDetailsScreenState build() {
+    _orderService = ref.read(orderServiceProvider.notifier);
+    _clientService = ref.read(clientServiceProvider.notifier);
+    _dialogService = injector<DialogService>();
+
+    return OrderDetailsScreenState.initial();
+  }
 
   /// Init
   /// @param [o] order
   ///
   Future<void> init({required Order o}) async {
-    _orderService.addListener((s) {
-      final order = s.allOrder.firstWhereOrNull(
+    ref.listen(orderServiceProvider, (_, next) {
+      final order = next.value!.orders.firstWhereOrNull(
         (e) => e.id == o.id,
       );
       if (order == null) return;
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        state = state.copyWith(order: order);
-      });
+
+      state = state.copyWith(order: order);
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      state = state.copyWith(
-        loading: false,
-        order: o,
-        client: _clientService.getClientById(state.order!.client!.id),
-      );
-    });
+    state = state.copyWith(
+      loading: false,
+      order: o,
+      client: _clientService.getClientById(o.client!.id),
+    );
   }
 
   /// Get client by id

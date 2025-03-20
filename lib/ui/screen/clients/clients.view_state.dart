@@ -29,10 +29,9 @@ class ClientsScreenState extends ViewStateAbs {
 
   /// Initial state
   ///
-  ClientsScreenState.initial()
+  ClientsScreenState.initial(this.clients)
       : loading = true,
-        selectedClient = null,
-        clients = [];
+        selectedClient = null;
 
   /// Get props
   ///

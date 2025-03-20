@@ -1,7 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 import 'package:squirrel/application/config/app_config.dart';
-import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/application/providers/initializer.config.dart';
 
 ///
@@ -15,7 +14,6 @@ final GetIt injector = GetIt.instance;
 @InjectableInit(
   ignoreUnregisteredTypes: <Type>[
     AppConfig,
-    EnvService,
   ],
 )
 Future<GetIt> initializeInjections() async {

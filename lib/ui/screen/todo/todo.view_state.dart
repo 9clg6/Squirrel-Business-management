@@ -1,5 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
-import 'package:squirrel/domain/state/order.state.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'todo.view_state.g.dart';
@@ -11,28 +11,30 @@ class TodoScreenState extends ViewStateAbs {
   final bool? loading;
 
   /// Order state
-  final OrderState orderState;
+  final List<Order> orders;
 
   /// Constructor
   /// @param [loading] loading
-  /// @param [orderState] order state
-  /// 
+  /// @param [orders] orders
+  ///
   TodoScreenState(
     this.loading,
-    this.orderState,
+    this.orders,
   );
 
   /// Initial state
-  /// 
-  TodoScreenState.initial()
-      : loading = true,
-        orderState = OrderState.initial();
+  /// @param [orders] orders
+  ///
+  TodoScreenState.initial(
+    this.orders, {
+    this.loading = true,
+  });
 
   /// Get props
-  /// 
+  ///
   @override
   List<Object?> get props => <Object?>[
         loading,
-        orderState,
+        orders,
       ];
 }

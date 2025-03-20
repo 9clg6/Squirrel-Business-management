@@ -19,19 +19,14 @@ class TodoScreen extends ConsumerStatefulWidget {
 
 /// State of the todo screen
 class _TodoScreenState extends ConsumerState<TodoScreen> {
-  /// Column position
-  Map<OrderStatus, double> columnPosition = {};
-
   /// Builds the todo screen
   /// @param [context] context
   /// @return [Widget] widget of the todo screen
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final orderStatusLength = OrderStatus.values.length;
     const double paddingWidth = 8;
-    final TodoViewModel viewModel = ref.read(todoViewModelProvider.notifier);
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
@@ -52,8 +47,6 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
                   parentSize: parentSize,
                   orderStatusLength: orderStatusLength,
                   paddingWidth: paddingWidth,
-                  colorScheme: colorScheme,
-                  viewModel: viewModel,
                   status: status,
                 );
               },
@@ -75,10 +68,6 @@ class TodoStatusColumn extends ConsumerWidget {
 
   /// Padding width
   final double paddingWidth;
-  final ColorScheme colorScheme;
-
-  /// View model
-  final TodoViewModel viewModel;
 
   /// Status
   final OrderStatus status;
@@ -88,7 +77,6 @@ class TodoStatusColumn extends ConsumerWidget {
   /// @param [orderStatusLength] order status length
   /// @param [paddingWidth] padding width
   /// @param [colorScheme] color scheme
-  /// @param [viewModel] view model
   /// @param [status] status
   ///
   const TodoStatusColumn({
@@ -96,8 +84,6 @@ class TodoStatusColumn extends ConsumerWidget {
     required this.parentSize,
     required this.orderStatusLength,
     required this.paddingWidth,
-    required this.colorScheme,
-    required this.viewModel,
     required this.status,
   });
 
@@ -109,6 +95,8 @@ class TodoStatusColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(todoViewModelProvider);
+    final viewModel = ref.read(todoViewModelProvider.notifier);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       width: (parentSize / orderStatusLength) - paddingWidth,
@@ -122,45 +110,55 @@ class TodoStatusColumn extends ConsumerWidget {
       ),
       child: DragTarget<Order>(
         onAcceptWithDetails: (data) {
-          viewModel.updateOrderStatus(
-            data.data,
-            status,
-          );
+          if (data.data.status != status) {
+            viewModel.updateOrderStatus(
+              data.data,
+              status,
+            );
+          }
         },
-        builder: (context, candidateData, rejectedData) {
-          return Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 12,
-              horizontal: 12,
+        builder: (_, candidateData, __) {
+          return Container(
+            decoration: BoxDecoration(
+              color: candidateData.isNotEmpty 
+                ? colorScheme.surface.withValues(alpha: .8) 
+                : colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(
-                  height: 40,
-                  child: Center(
-                    child: TextVariant(
-                      status.name,
-                      variantType: TextVariantType.labelMedium,
-                      fontWeight: FontWeight.w600,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                vertical: 12,
+                horizontal: 12,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  SizedBox(
+                    height: 40,
+                    child: Center(
+                      child: TextVariant(
+                        status.name,
+                        variantType: TextVariantType.labelMedium,
+                        fontWeight: FontWeight.w600,
+                      ),
                     ),
                   ),
-                ),
-                Divider(
-                  color: colorScheme.outline,
-                  height: 24,
-                  thickness: 0.5,
-                ),
-                ...state.orderState.allOrder
-                    .where((o) => o.status == status)
-                    .map(
-                      (e) => TodoItem(
-                        status: status,
-                        order: e,
-                      ),
-                    )
-              ],
+                  Divider(
+                    color: colorScheme.outline,
+                    height: 24,
+                    thickness: 0.5,
+                  ),
+                  ...state.orders
+                      .where((o) => o.status == status)
+                      .map(
+                        (e) => TodoItem(
+                          status: status,
+                          order: e,
+                        ),
+                      )
+                ],
+              ),
             ),
           );
         },

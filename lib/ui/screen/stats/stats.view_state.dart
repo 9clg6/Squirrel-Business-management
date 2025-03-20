@@ -118,7 +118,7 @@ class StatsScreenState extends ViewStateAbs {
   /// @param [hoveredShop] hovered shop
   /// @param [dateRange] date range
   /// @param [chartType] chart type
-  /// 
+  ///
   StatsScreenState({
     required this.loading,
     required this.orders,
@@ -129,10 +129,10 @@ class StatsScreenState extends ViewStateAbs {
 
   /// Initial state
   ///
-  StatsScreenState.initial()
-      : loading = true,
-        orders = [],
-        hoveredShop = null,
+  StatsScreenState.initial(
+    this.orders, {
+    this.loading = true,
+  })  : hoveredShop = null,
         dateRange = DateTimeRange(
           start: DateTime.now().subtract(const Duration(days: 5)),
           end: DateTime.now(),

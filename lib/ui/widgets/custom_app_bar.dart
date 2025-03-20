@@ -27,7 +27,8 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
     final AuthState authState = ref.watch(authServiceNotifierProvider);
 
     final Duration timeRemain =
-        authState.expirationDate?.difference(DateTime.now()) ?? const Duration(days: 0);
+        authState.expirationDate?.difference(DateTime.now()) ??
+            const Duration(days: 0);
     final int daysRemain = timeRemain.inDays;
     final int hoursRemain = timeRemain.inHours % 24;
     final int minutesRemain = timeRemain.inMinutes % 60;
@@ -98,11 +99,15 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       if (bState.businessType == BusinessType.service)
                         Icon(
                           Icons.check_circle_outline,
-                          color: colorScheme.onPrimary,
+                          color: colorScheme.onSurface,
                           size: 16,
                         ),
                       const Gap(10),
-                      const TextVariant("Mode service")
+                      TextVariant(
+                        "Mode service",
+                        variantType: TextVariantType.bodyMedium,
+                        color: colorScheme.onSurface,
+                      )
                     ],
                   ),
                   Row(
@@ -110,11 +115,15 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                       if (bState.businessType == BusinessType.shop)
                         Icon(
                           Icons.check_circle_outline,
-                          color: colorScheme.onPrimary,
+                          color: colorScheme.onSurface,
                           size: 16,
                         ),
                       const Gap(10),
-                      const TextVariant("Mode boutique")
+                      TextVariant(
+                        "Mode boutique",
+                        variantType: TextVariantType.bodyMedium,
+                        color: colorScheme.onSurface,
+                      )
                     ],
                   ),
                 ]
@@ -140,15 +149,20 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 LocaleKeys.requestWeb.tr(),
                 variantType: TextVariantType.bodyMedium,
               ),
-              icon: const Icon(
+              icon: Icon(
                 Icons.language,
                 size: 18,
+                color: colorScheme.onSurface,
               ),
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.resolveWith<Color>(
-                  (_) => requestService.isRequestShow
+              style: FilledButton.styleFrom(
+                backgroundColor: requestService.isRequestShow
                       ? colorScheme.primary
                       : colorScheme.surface,
+                foregroundColor: colorScheme.onSurface,
+                overlayColor: colorScheme.secondary,
+                side: BorderSide(
+                  color: colorScheme.outline.withValues(alpha: .5),
+                  width: 1,
                 ),
               ),
             );

@@ -9,7 +9,7 @@ part of 'todo.view_state.dart';
 abstract class _$TodoScreenStateCWProxy {
   TodoScreenState loading(bool? loading);
 
-  TodoScreenState orderState(OrderState orderState);
+  TodoScreenState orders(List<Order> orders);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `TodoScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -19,7 +19,7 @@ abstract class _$TodoScreenStateCWProxy {
   /// ````
   TodoScreenState call({
     bool? loading,
-    OrderState? orderState,
+    List<Order>? orders,
   });
 }
 
@@ -33,8 +33,7 @@ class _$TodoScreenStateCWProxyImpl implements _$TodoScreenStateCWProxy {
   TodoScreenState loading(bool? loading) => this(loading: loading);
 
   @override
-  TodoScreenState orderState(OrderState orderState) =>
-      this(orderState: orderState);
+  TodoScreenState orders(List<Order> orders) => this(orders: orders);
 
   @override
 
@@ -46,17 +45,17 @@ class _$TodoScreenStateCWProxyImpl implements _$TodoScreenStateCWProxy {
   /// ````
   TodoScreenState call({
     Object? loading = const $CopyWithPlaceholder(),
-    Object? orderState = const $CopyWithPlaceholder(),
+    Object? orders = const $CopyWithPlaceholder(),
   }) {
     return TodoScreenState(
       loading == const $CopyWithPlaceholder()
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
           : loading as bool?,
-      orderState == const $CopyWithPlaceholder() || orderState == null
-          ? _value.orderState
+      orders == const $CopyWithPlaceholder() || orders == null
+          ? _value.orders
           // ignore: cast_nullable_to_non_nullable
-          : orderState as OrderState,
+          : orders as List<Order>,
     );
   }
 }

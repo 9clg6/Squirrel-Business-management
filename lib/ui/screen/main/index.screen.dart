@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:squirrel/domain/provider/service_type_service.provider.dart';
+import 'package:squirrel/domain/service/order.service.dart';
+import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/enums/headers.enum.dart';
-import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/utils/util.dart';
@@ -32,15 +33,24 @@ class _MainScreenState extends ConsumerState<MainScreen> {
   ///
   @override
   Widget build(BuildContext context) {
+    final AsyncValue<OrderState> state = ref.watch(orderServiceProvider);
+
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-      body: const CustomScrollView(
-        physics: ClampingScrollPhysics(),
-        slivers: [
-          _ResumeHeader(),
-          _Body(),
-        ],
-      ),
+      body: switch (state) {
+        AsyncData(:final isLoading) => isLoading
+            ? const Center(child: CircularProgressIndicator())
+            : const CustomScrollView(
+                physics: ClampingScrollPhysics(),
+                slivers: [
+                  _ResumeHeader(),
+                  _Body(),
+                ],
+              ),
+        AsyncLoading() => const Center(child: CircularProgressIndicator()),
+        AsyncError(:final error) => Center(child: Text(error.toString())),
+        AsyncValue<OrderState>() => throw UnimplementedError(),
+      },
     );
   }
 }
@@ -51,8 +61,8 @@ class _PinnedOrders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
-    final viewModel = ref.read(indexProvider.notifier);
-    if (state.orderState.pinnedOrders.isEmpty) return const SizedBox();
+    final Index viewModel = ref.read(indexProvider.notifier);
+    if (state.pinnedOrders.isEmpty) return const SizedBox();
 
     final colorScheme = Theme.of(context).colorScheme;
 
@@ -61,7 +71,7 @@ class _PinnedOrders extends ConsumerWidget {
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: colorScheme.outline.withValues(alpha: .2),
+          color: colorScheme.outline.withValues(alpha: .3),
           width: 1,
         ),
       ),
@@ -97,7 +107,7 @@ class _PinnedOrders extends ConsumerWidget {
                       ),
               showCheckboxColumn: false,
               horizontalMargin: 12,
-              dividerThickness: .5,
+              dividerThickness: 1,
               columns: Headers.values
                   .map((e) => DataColumn(
                         label: Text(e.label),
@@ -106,7 +116,7 @@ class _PinnedOrders extends ConsumerWidget {
                         onSort: viewModel.sortOrders,
                       ))
                   .toList(),
-              rows: state.orderState.pinnedOrders.map((order) {
+              rows: state.pinnedOrders.map((order) {
                 return DataRow(
                   onSelectChanged: (_) {
                     viewModel.navigateToDetails(order);
@@ -178,7 +188,7 @@ class _PinnedOrders extends ConsumerWidget {
                         child: IconButton(
                           onPressed: () => viewModel.pinOrder(order),
                           icon: Icon(
-                            state.orderState.pinnedOrders.contains(order)
+                            state.pinnedOrders.contains(order)
                                 ? Icons.push_pin
                                 : Icons.push_pin_outlined,
                           ),
@@ -244,9 +254,19 @@ class _OrdersList extends ConsumerWidget {
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: .2),
-          width: 1,
+        border: Border(
+          top: BorderSide(
+            color: colorScheme.outline.withValues(alpha: .3),
+            width: 1,
+          ),
+          left: BorderSide(
+            color: colorScheme.outline.withValues(alpha: .3),
+            width: 1,
+          ),
+          right: BorderSide(
+            color: colorScheme.outline.withValues(alpha: .3),
+            width: 1,
+          ),
         ),
       ),
       width: double.infinity,
@@ -279,7 +299,7 @@ class _OrdersList extends ConsumerWidget {
                         ),
                       ),
                       child: TextVariant(
-                        state.orderState.showComboBox
+                        state.showComboBox
                             ? LocaleKeys.hide.tr()
                             : LocaleKeys.select.tr(),
                         variantType: TextVariantType.bodyMedium,
@@ -292,11 +312,12 @@ class _OrdersList extends ConsumerWidget {
                       icon: Icon(
                         Icons.add,
                         size: 20,
-                        color: colorScheme.onPrimary,
+                        color: colorScheme.onSurface,
                       ),
                       label: TextVariant(
                         LocaleKeys.add.tr(),
                         variantType: TextVariantType.bodyMedium,
+                        color: colorScheme.onSurface,
                       ),
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -309,7 +330,7 @@ class _OrdersList extends ConsumerWidget {
                       ),
                     ),
                     const Gap(10),
-                    if (state.orderState.selectedOrders.isNotEmpty)
+                    if (state.selectedOrders.isNotEmpty)
                       TextButton.icon(
                         onPressed: viewModel.deleteSelectedOrders,
                         icon: const Icon(Icons.delete),
@@ -323,177 +344,171 @@ class _OrdersList extends ConsumerWidget {
               ],
             ),
           ),
-          SizedBox(
-            width: double.infinity,
-            child: state.orderState.orders.isEmpty
-                ? SizedBox(
-                    height: 100,
-                    child: Center(
-                      child: TextVariant(
-                        LocaleKeys.noOrdersFound.tr(),
-                        variantType: TextVariantType.bodyMedium,
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: SizedBox(
+              width: double.infinity,
+              child: state.orders.isEmpty
+                  ? SizedBox(
+                      height: 100,
+                      child: Center(
+                        child: TextVariant(
+                          LocaleKeys.noOrdersFound.tr(),
+                          variantType: TextVariantType.bodyMedium,
+                        ),
                       ),
-                    ),
-                  )
-                : DataTable(
-                    columnSpacing: 46,
-                    border: TableBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    dataRowColor: computeDataRowColor(colorScheme),
-                    dataTextStyle: textTheme.bodyMedium?.copyWith(
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    headingTextStyle: textTheme.titleMedium,
-                    showCheckboxColumn: state.orderState.showComboBox,
-                    horizontalMargin: 12,
-                    dividerThickness: .5,
-                    onSelectAll: (_) {
-                      viewModel.selectAll();
-                    },
-                    sortColumnIndex: state.orderState.sortColumnIndex,
-                    sortAscending: state.orderState.sortAscending,
-                    columns: Headers.values
-                        .map(
-                          (e) => DataColumn(
-                            label: TextVariant(
-                              e == Headers.store
-                                  ? businessTypeNotifier.getServiceTypeWording(
-                                      "x",
-                                      type: businessTypeState,
-                                    )
-                                  : e.label,
-                              variantType: TextVariantType.bodyMedium,
+                    )
+                  : DataTable(
+                      columnSpacing: 46,
+                      dataRowColor: computeDataRowColor(colorScheme),
+                      dataTextStyle: textTheme.bodyMedium?.copyWith(
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      headingTextStyle: textTheme.titleMedium,
+                      showCheckboxColumn: state.showComboBox,
+                      horizontalMargin: 12,
+                      dividerThickness: 1,
+                      onSelectAll: (_) {
+                        viewModel.selectAll();
+                      },
+                      sortColumnIndex: state.sortColumnIndex,
+                      sortAscending: state.sortAscending,
+                      columns: Headers.values
+                          .map(
+                            (e) => DataColumn(
+                              label: TextVariant(
+                                e == Headers.store
+                                    ? businessTypeNotifier
+                                        .getServiceTypeWording(
+                                        "x",
+                                        type: businessTypeState,
+                                      )
+                                    : e.label,
+                                variantType: TextVariantType.bodyMedium,
+                              ),
+                              numeric: e.isNumeric,
+                              headingRowAlignment: MainAxisAlignment.center,
+                              onSort: viewModel.sortOrders,
                             ),
-                            numeric: e.isNumeric,
-                            headingRowAlignment: MainAxisAlignment.center,
-                            onSort: viewModel.sortOrders,
-                          ),
-                        )
-                        .toList(),
-                    rows: state.orderState.orders
-                        .where((order) => ![
-                              OrderStatus.canceled,
-                              OrderStatus.failed,
-                              OrderStatus.finished,
-                            ].contains(order.status))
-                        .map((order) {
-                      return DataRow(
-                        selected:
-                            state.orderState.selectedOrders.contains(order),
-                        onLongPress: () => viewModel.selectOrder(order),
-                        onSelectChanged: (bool? value) {
-                          if (state.orderState.showComboBox) {
-                            viewModel.selectOrder(order);
-                          } else {
-                            if (context.mounted) {
-                              context.pushNamed(
-                                'order-details',
-                                pathParameters: {'orderId': order.id},
-                                extra: order,
-                              );
+                          )
+                          .toList(),
+                      rows: state.orders.map((order) {
+                        return DataRow(
+                          selected: state.selectedOrders.contains(order),
+                          onLongPress: () => viewModel.selectOrder(order),
+                          onSelectChanged: (bool? value) {
+                            if (state.showComboBox) {
+                              viewModel.selectOrder(order);
+                            } else {
+                              if (context.mounted) {
+                                context.pushNamed(
+                                  'order-details',
+                                  pathParameters: {'orderId': order.id},
+                                  extra: order,
+                                );
+                              }
                             }
-                          }
-                        },
-                        cells: [
-                          DataCell(
-                            Hero(
-                              tag: 'order-${order.id}',
-                              child: Center(
-                                child: Container(
-                                  padding:
-                                      const EdgeInsets.symmetric(vertical: 8),
-                                  child: TextVariant(
-                                    order.client?.name ?? "",
-                                    variantType: TextVariantType.bodyMedium,
+                          },
+                          cells: [
+                            DataCell(
+                              Hero(
+                                tag: 'order-${order.id}',
+                                child: Center(
+                                  child: Container(
+                                    padding:
+                                        const EdgeInsets.symmetric(vertical: 8),
+                                    child: TextVariant(
+                                      order.client?.name ?? "",
+                                      variantType: TextVariantType.bodyMedium,
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: StatusCard(
-                                status: order.status,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: TextVariant(
-                                order.shopName,
-                                variantType: TextVariantType.bodyMedium,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: TextVariant(
-                                order.startDate.toDDMMYYYY(),
-                                variantType: TextVariantType.bodyMedium,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: TextVariant(
-                                order.endDate?.toDDMMYYYY() ?? "",
-                                variantType: TextVariantType.bodyMedium,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: TextVariant(
-                                "${order.price}€",
-                                variantType: TextVariantType.bodyMedium,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: TextVariant(
-                                "${order.commission}€",
-                                variantType: TextVariantType.bodyMedium,
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: IconButton(
-                                onPressed: () {
-                                  if (context.mounted) {
-                                    context.pushNamed(
-                                      'order-details',
-                                      pathParameters: {'orderId': order.id},
-                                      extra: order,
-                                    );
-                                  }
-                                },
-                                icon: const Icon(Icons.open_in_new),
-                                tooltip: LocaleKeys.open.tr(),
-                              ),
-                            ),
-                          ),
-                          DataCell(
-                            Center(
-                              child: IconButton(
-                                onPressed: () {
-                                  viewModel.pinOrder(order);
-                                },
-                                icon: Icon(
-                                  state.orderState.pinnedOrders.contains(order)
-                                      ? Icons.push_pin
-                                      : Icons.push_pin_outlined,
+                            DataCell(
+                              Center(
+                                child: StatusCard(
+                                  status: order.status,
                                 ),
-                                tooltip: LocaleKeys.pin.tr(),
                               ),
                             ),
-                          ),
-                        ],
-                      );
-                    }).toList(),
-                  ),
+                            DataCell(
+                              Center(
+                                child: TextVariant(
+                                  order.shopName,
+                                  variantType: TextVariantType.bodyMedium,
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Center(
+                                child: TextVariant(
+                                  order.startDate.toDDMMYYYY(),
+                                  variantType: TextVariantType.bodyMedium,
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Center(
+                                child: TextVariant(
+                                  order.endDate?.toDDMMYYYY() ?? "",
+                                  variantType: TextVariantType.bodyMedium,
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Center(
+                                child: TextVariant(
+                                  "${order.price}€",
+                                  variantType: TextVariantType.bodyMedium,
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Center(
+                                child: TextVariant(
+                                  "${order.commission}€",
+                                  variantType: TextVariantType.bodyMedium,
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Center(
+                                child: IconButton(
+                                  onPressed: () {
+                                    if (context.mounted) {
+                                      context.pushNamed(
+                                        'order-details',
+                                        pathParameters: {'orderId': order.id},
+                                        extra: order,
+                                      );
+                                    }
+                                  },
+                                  icon: const Icon(Icons.open_in_new),
+                                  tooltip: LocaleKeys.open.tr(),
+                                ),
+                              ),
+                            ),
+                            DataCell(
+                              Center(
+                                child: IconButton(
+                                  onPressed: () {
+                                    viewModel.pinOrder(order);
+                                  },
+                                  icon: Icon(
+                                    state.pinnedOrders.contains(order)
+                                        ? Icons.push_pin
+                                        : Icons.push_pin_outlined,
+                                  ),
+                                  tooltip: LocaleKeys.pin.tr(),
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      }).toList(),
+                    ),
+            ),
           ),
         ],
       ),
@@ -563,7 +578,7 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
           TextVariant(
             LocaleKeys.priceWithSymbol.tr(
               args: [
-                state.orderState.orders
+                state.orders
                     .where((order) => order.startDate.month == currentMonth)
                     .fold(
                       0,
@@ -588,11 +603,12 @@ class _TotalContainer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(indexProvider);
     final colorScheme = Theme.of(context).colorScheme;
+
     return Container(
       width: 250,
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outline.withValues(alpha: .2),
@@ -610,7 +626,7 @@ class _TotalContainer extends ConsumerWidget {
           TextVariant(
             LocaleKeys.priceWithSymbol.tr(
               args: [
-                state.orderState.allOrder
+                state.orders
                     .fold(
                       0,
                       (sum, order) =>
@@ -644,69 +660,81 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
     final state = ref.watch(indexProvider);
     final colorScheme = Theme.of(context).colorScheme;
 
-    return MouseRegion(
-      cursor: state.orderState.nextAction != null
-          ? SystemMouseCursors.click
-          : SystemMouseCursors.basic,
-      onExit: (_) {
-        if (state.orderState.nextAction != null) {
-          setState(() => isHover = false);
-        }
-      },
-      onHover: (_) {
-        if (state.orderState.nextAction != null) {
-          setState(() => isHover = true);
-        }
-      },
-      child: GestureDetector(
-        onTap: () {
-          viewModel.navigateToDetails(
-            state.orderState.nextAction!.keys.first,
-          );
-        },
-        child: Container(
-          width: 250,
-          padding: const EdgeInsets.all(20),
-          decoration: BoxDecoration(
-            color: isHover ? colorScheme.primaryContainer : colorScheme.surface,
-            borderRadius: BorderRadius.circular(20),
-            border: Border.all(
-              color: colorScheme.outline.withValues(alpha: .2),
-              width: 1,
+    return switch (state) {
+      AsyncError(:final error) => TextVariant(
+          error.toString(),
+          variantType: TextVariantType.bodyMedium,
+        ),
+      AsyncLoading() => const CircularProgressIndicator(),
+      AsyncData(:final OrderState value) => MouseRegion(
+          cursor: state.nextAction != null
+              ? SystemMouseCursors.click
+              : SystemMouseCursors.basic,
+          onExit: (_) {
+            if (value.nextAction != null) {
+              setState(() => isHover = false);
+            }
+          },
+          onHover: (_) {
+            if (state.nextAction != null) {
+              setState(() => isHover = true);
+            }
+          },
+          child: GestureDetector(
+            onTap: () {
+              viewModel.navigateToDetails(
+                state.nextAction!.keys.first,
+              );
+            },
+            child: Container(
+              width: 250,
+              padding: const EdgeInsets.all(20),
+              decoration: BoxDecoration(
+                color: isHover
+                    ? colorScheme.primaryContainer
+                    : colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(
+                  color: colorScheme.outline.withValues(alpha: .2),
+                  width: 1,
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextVariant(
+                    LocaleKeys.nextAction.tr(),
+                    variantType: TextVariantType.bodySmall,
+                    color:
+                        isHover ? colorScheme.onPrimary : colorScheme.onSurface,
+                  ),
+                  const SizedBox(height: 10),
+                  if (state.nextAction != null)
+                    TextVariant(
+                      state.nextAction!.keys.firstOrNull?.actions.firstOrNull
+                              ?.date
+                              .toDDMMYYYY() ??
+                          "",
+                      variantType: TextVariantType.titleLarge,
+                      color: isHover
+                          ? colorScheme.onPrimary
+                          : colorScheme.onSurface,
+                    )
+                  else
+                    TextVariant(
+                      LocaleKeys.noNextAction.tr(),
+                      variantType: TextVariantType.bodyMedium,
+                      color: colorScheme.onSurface,
+                    ),
+                  const SizedBox(height: 10),
+                  if (state.nextAction != null)
+                    HelpText(text: LocaleKeys.clickToSeeDetails.tr()),
+                ],
+              ),
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextVariant(
-                LocaleKeys.nextAction.tr(),
-                variantType: TextVariantType.bodySmall,
-                color: isHover ? colorScheme.onPrimary : colorScheme.onSurface,
-              ),
-              const SizedBox(height: 10),
-              if (state.orderState.nextAction != null)
-                TextVariant(
-                  state.orderState.nextAction!.keys.firstOrNull?.actions
-                          .firstOrNull?.date
-                          .toDDMMYYYY() ??
-                      "",
-                  variantType: TextVariantType.titleLarge,
-                  color:
-                      isHover ? colorScheme.onPrimary : colorScheme.onSurface,
-                )
-              else
-                TextVariant(
-                  LocaleKeys.noNextAction.tr(),
-                  variantType: TextVariantType.bodyMedium,
-                  color: colorScheme.onSurface,
-                ),
-              const SizedBox(height: 10),
-              if (state.orderState.nextAction != null)
-                HelpText(text: LocaleKeys.clickToSeeDetails.tr()),
-            ],
-          ),
         ),
-      ),
-    );
+      IndexScreenState() => const SizedBox.shrink(),
+    };
   }
 }

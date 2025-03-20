@@ -2,53 +2,52 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/data/storage/hive_secure_storage.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/state/client.state.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
+part 'client.service.g.dart';
+
 /// [ClientService]
-class ClientService extends StateNotifier<ClientState> {
+@Riverpod(keepAlive: true)
+class ClientService extends _$ClientService {
+  /// Storage
+  late final StorageInterface _storage;
+
+  /// Storage key
   static const String _storageKey = 'clients';
 
-  final StorageInterface _storage;
-
-  bool _isInitialLoad = true;
-
-  /// Client state
-  ClientState get clientState => state;
-
-  /// Constructor
+  /// Build
   ///
-  ClientService(this._storage) : super(ClientState.initial()) {
-    _loadClients();
-    _isInitialLoad = true;
-    addListener(_save);
+  @override
+  Future<ClientState> build() async {
+    _storage = injector<HiveSecureStorage>();
+
+    return await _loadClients();
   }
 
   /// Load clients
   ///
-  Future<void> _loadClients() async {
+  Future<ClientState> _loadClients() async {
     log('Loading clients');
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final String? o = await _storage.get(_storageKey);
-      if (o != null) {
-        final clients = jsonDecode(o) as List;
-        final clientsList = clients.map((e) => Client.fromJson(e)).toList();
-        state = state.copyWith(clients: clientsList);
-      }
-      _isInitialLoad = false;
-    });
+    final String? o = await _storage.get(_storageKey);
+    if (o != null) {
+      final clients = jsonDecode(o) as List;
+      return ClientState.initial(
+        clients: clients.map((e) => Client.fromJson(e)).toList(),
+      );
+    }
+    return ClientState.initial();
   }
 
   /// Save orders
   /// @param [os] order state
   ///
   void _save(ClientState os) {
-    if (_isInitialLoad) return;
-
     log('Saving clients');
     if (os.clients.isEmpty) return;
     _storage.set(
@@ -62,7 +61,7 @@ class ClientService extends StateNotifier<ClientState> {
   /// @return [Client] client
   ///
   Client getClientById(String id) {
-    return state.clients.firstWhere((client) => client.id == id);
+    return state.value!.clients.firstWhere((client) => client.id == id);
   }
 
   /// Get client by name or create client
@@ -70,7 +69,7 @@ class ClientService extends StateNotifier<ClientState> {
   /// @return [Client] client
   ///
   Client? getClientByName(String clientContact) {
-    return state.clients.firstWhereOrNull(
+    return state.value!.clients.firstWhereOrNull(
       (client) =>
           client.name.toLowerCase().trim() ==
           clientContact.toLowerCase().trim(),
@@ -91,11 +90,13 @@ class ClientService extends StateNotifier<ClientState> {
       firstOrderDate: order.startDate,
     );
 
-    state = state.copyWith(
-      clients: [
-        ...state.clients,
-        client,
-      ],
+    state = AsyncData(
+      state.value!.copyWith(
+        clients: [
+          ...state.value!.clients,
+          client,
+        ],
+      ),
     );
 
     if (order.sponsor != null) {
@@ -106,16 +107,21 @@ class ClientService extends StateNotifier<ClientState> {
         );
 
         final int sponsorIndex =
-            state.clients.indexWhere((c) => c.id == sponsor.id);
-        state = state.copyWith(
-          clients: [
-            ...state.clients.take(sponsorIndex),
-            updatedSponsor,
-            ...state.clients.skip(sponsorIndex + 1),
-          ],
+            state.value!.clients.indexWhere((c) => c.id == sponsor.id);
+
+        state = AsyncData(
+          state.value!.copyWith(
+            clients: [
+              ...state.value!.clients.take(sponsorIndex),
+              updatedSponsor,
+              ...state.value!.clients.skip(sponsorIndex + 1),
+            ],
+          ),
         );
       }
     }
+
+    _save(state.value!);
 
     return client;
   }
@@ -129,7 +135,7 @@ class ClientService extends StateNotifier<ClientState> {
     Client client, {
     required Client newVersion,
   }) {
-    final int clientIndex = state.clients.indexWhere(
+    final int clientIndex = state.value!.clients.indexWhere(
       (c) => c.id == client.id,
     );
 
@@ -137,13 +143,17 @@ class ClientService extends StateNotifier<ClientState> {
       throw StateError('Client with id ${client.id} not found');
     }
 
-    state = state.copyWith(
-      clients: [
-        ...state.clients.take(clientIndex),
-        newVersion,
-        ...state.clients.skip(clientIndex + 1),
-      ],
+    state = AsyncData(
+      state.value!.copyWith(
+        clients: [
+          ...state.value!.clients.take(clientIndex),
+          newVersion,
+          ...state.value!.clients.skip(clientIndex + 1),
+        ],
+      ),
     );
+
+    _save(state.value!);
   }
 
   /// Update client with new order information
@@ -156,7 +166,7 @@ class ClientService extends StateNotifier<ClientState> {
     required Order order,
     required bool isNewOrder,
   }) {
-    final int clientIndex = state.clients.indexWhere(
+    final int clientIndex = state.value!.clients.indexWhere(
       (c) => c.id == client.id,
     );
 
@@ -164,16 +174,15 @@ class ClientService extends StateNotifier<ClientState> {
       throw StateError('Client with id ${client.id} not found');
     }
 
-    final clientTemp = state.clients[clientIndex];
+    final clientTemp = state.value!.clients[clientIndex];
     final DateTime newLastOrderDate = order.startDate.isAfter(
             clientTemp.lastOrderDate ?? DateTime.fromMillisecondsSinceEpoch(0))
         ? order.startDate
         : clientTemp.lastOrderDate ?? order.startDate;
 
     final clientUpdated = clientTemp.copyWith(
-      orderQuantity: isNewOrder
-          ? clientTemp.orderQuantity + 1
-          : clientTemp.orderQuantity,
+      orderQuantity:
+          isNewOrder ? clientTemp.orderQuantity + 1 : clientTemp.orderQuantity,
       orderTotalAmount: isNewOrder
           ? clientTemp.orderTotalAmount + order.price
           : clientTemp.orderTotalAmount,
@@ -183,12 +192,14 @@ class ClientService extends StateNotifier<ClientState> {
       lastOrderDate: newLastOrderDate,
     );
 
-    state = state.copyWith(
-      clients: [
-        ...state.clients.take(clientIndex),
-        clientUpdated,
-        ...state.clients.skip(clientIndex + 1),
-      ],
+    state = AsyncData(
+      state.value!.copyWith(
+        clients: [
+          ...state.value!.clients.take(clientIndex),
+          clientUpdated,
+          ...state.value!.clients.skip(clientIndex + 1),
+        ],
+      ),
     );
 
     if (order.sponsor != null) {
@@ -199,15 +210,19 @@ class ClientService extends StateNotifier<ClientState> {
         );
 
         final int sponsorIndex =
-            state.clients.indexWhere((c) => c.id == sponsor.id);
-        state = state.copyWith(
-          clients: [
-            ...state.clients.take(sponsorIndex),
-            updatedSponsor,
-            ...state.clients.skip(sponsorIndex + 1),
-          ],
+            state.value!.clients.indexWhere((c) => c.id == sponsor.id);
+        state = AsyncData(
+          state.value!.copyWith(
+            clients: [
+              ...state.value!.clients.take(sponsorIndex),
+              updatedSponsor,
+              ...state.value!.clients.skip(sponsorIndex + 1),
+            ],
+          ),
         );
       }
     }
+
+    _save(state.value!);
   }
 }

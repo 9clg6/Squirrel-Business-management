@@ -14,16 +14,14 @@ class ClientState with EquatableMixin {
   /// @param clients: List<Client>
   ///
   ClientState({
-    required this.clients,
+    this.clients = const [],
   });
 
   /// Initial
   ///
-  factory ClientState.initial() {
-    return ClientState(
-      clients: [],
-    );
-  }
+  ClientState.initial({
+    this.clients = const [],
+  });
 
   /// Props
   ///

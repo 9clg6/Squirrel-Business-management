@@ -9,15 +9,7 @@ part of 'order.state.dart';
 abstract class _$OrderStateCWProxy {
   OrderState orders(List<Order> orders);
 
-  OrderState selectedOrders(List<Order> selectedOrders);
-
-  OrderState showComboBox(bool showComboBox);
-
-  OrderState pinnedOrders(List<Order> pinnedOrders);
-
-  OrderState sortColumnIndex(int sortColumnIndex);
-
-  OrderState sortAscending(bool sortAscending);
+  OrderState isLoading(bool isLoading);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OrderState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -27,11 +19,7 @@ abstract class _$OrderStateCWProxy {
   /// ````
   OrderState call({
     List<Order>? orders,
-    List<Order>? selectedOrders,
-    bool? showComboBox,
-    List<Order>? pinnedOrders,
-    int? sortColumnIndex,
-    bool? sortAscending,
+    bool? isLoading,
   });
 }
 
@@ -45,24 +33,7 @@ class _$OrderStateCWProxyImpl implements _$OrderStateCWProxy {
   OrderState orders(List<Order> orders) => this(orders: orders);
 
   @override
-  OrderState selectedOrders(List<Order> selectedOrders) =>
-      this(selectedOrders: selectedOrders);
-
-  @override
-  OrderState showComboBox(bool showComboBox) =>
-      this(showComboBox: showComboBox);
-
-  @override
-  OrderState pinnedOrders(List<Order> pinnedOrders) =>
-      this(pinnedOrders: pinnedOrders);
-
-  @override
-  OrderState sortColumnIndex(int sortColumnIndex) =>
-      this(sortColumnIndex: sortColumnIndex);
-
-  @override
-  OrderState sortAscending(bool sortAscending) =>
-      this(sortAscending: sortAscending);
+  OrderState isLoading(bool isLoading) => this(isLoading: isLoading);
 
   @override
 
@@ -74,42 +45,17 @@ class _$OrderStateCWProxyImpl implements _$OrderStateCWProxy {
   /// ````
   OrderState call({
     Object? orders = const $CopyWithPlaceholder(),
-    Object? selectedOrders = const $CopyWithPlaceholder(),
-    Object? showComboBox = const $CopyWithPlaceholder(),
-    Object? pinnedOrders = const $CopyWithPlaceholder(),
-    Object? sortColumnIndex = const $CopyWithPlaceholder(),
-    Object? sortAscending = const $CopyWithPlaceholder(),
+    Object? isLoading = const $CopyWithPlaceholder(),
   }) {
     return OrderState(
       orders: orders == const $CopyWithPlaceholder() || orders == null
           ? _value.orders
           // ignore: cast_nullable_to_non_nullable
           : orders as List<Order>,
-      selectedOrders: selectedOrders == const $CopyWithPlaceholder() ||
-              selectedOrders == null
-          ? _value.selectedOrders
+      isLoading: isLoading == const $CopyWithPlaceholder() || isLoading == null
+          ? _value.isLoading
           // ignore: cast_nullable_to_non_nullable
-          : selectedOrders as List<Order>,
-      showComboBox:
-          showComboBox == const $CopyWithPlaceholder() || showComboBox == null
-              ? _value.showComboBox
-              // ignore: cast_nullable_to_non_nullable
-              : showComboBox as bool,
-      pinnedOrders:
-          pinnedOrders == const $CopyWithPlaceholder() || pinnedOrders == null
-              ? _value.pinnedOrders
-              // ignore: cast_nullable_to_non_nullable
-              : pinnedOrders as List<Order>,
-      sortColumnIndex: sortColumnIndex == const $CopyWithPlaceholder() ||
-              sortColumnIndex == null
-          ? _value.sortColumnIndex
-          // ignore: cast_nullable_to_non_nullable
-          : sortColumnIndex as int,
-      sortAscending:
-          sortAscending == const $CopyWithPlaceholder() || sortAscending == null
-              ? _value.sortAscending
-              // ignore: cast_nullable_to_non_nullable
-              : sortAscending as bool,
+          : isLoading as bool,
     );
   }
 }

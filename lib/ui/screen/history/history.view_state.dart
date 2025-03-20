@@ -24,9 +24,7 @@ class HistoryState extends ViewStateAbs {
 
   /// Initial state
   ///
-  HistoryState.initial()
-      : loading = true,
-        orders = <Order>[];
+  HistoryState.initial(this.orders) : loading = true;
 
   /// Get props
   ///

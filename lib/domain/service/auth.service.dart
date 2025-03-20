@@ -2,9 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
@@ -14,6 +16,7 @@ import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 /// [AuthService]
 class AuthService extends StateNotifier<AuthState> {
@@ -67,6 +70,7 @@ class AuthService extends StateNotifier<AuthState> {
     StorageInterface secureStorageService,
     RequestService requestService,
     GlobalKey<NavigatorState> navigatorKey,
+    EnvService envService,
   ) async {
     final authService = AuthService._(
       loginUseCase,
@@ -74,6 +78,12 @@ class AuthService extends StateNotifier<AuthState> {
       secureStorageService,
       requestService,
       navigatorKey,
+    );
+
+    await Supabase.initialize(
+      url: envService.supabaseUrl,
+      anonKey: envService.supabaseAnonKey,
+      debug: kDebugMode,
     );
 
     await authService.loadLicense();
@@ -118,7 +128,7 @@ class AuthService extends StateNotifier<AuthState> {
     // Conversion en UTC pour éviter les problèmes de fuseau horaire
     final DateTime now = DateTime.now().toUtc();
     final DateTime expirationDate = authState.expirationDate!.toUtc();
-    
+
     // On crée une date d'expiration qui inclut toute la journée (23:59:59)
     final DateTime endOfExpirationDay = DateTime.utc(
       expirationDate.year,

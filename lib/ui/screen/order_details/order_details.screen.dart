@@ -41,7 +41,9 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   ///
   @override
   void initState() {
-    ref.read(orderDetailsViewModelProvider.notifier).init(o: widget.order);
+    ref.read(orderDetailsViewModelProvider.notifier).init(
+          o: widget.order,
+        );
     super.initState();
   }
 
@@ -251,7 +253,10 @@ class _OrderActionsRow extends ConsumerWidget {
             variantType: TextVariantType.bodyMedium,
             fontSize: 12,
           ),
-          icon: const Icon(Icons.edit),
+          icon: Icon(
+            Icons.edit,
+            color: colorScheme.onSurface,
+          ),
           style: FilledButton.styleFrom(
             backgroundColor: colorScheme.primary,
             foregroundColor: colorScheme.onPrimary,
@@ -268,7 +273,10 @@ class _OrderActionsRow extends ConsumerWidget {
             variantType: TextVariantType.bodyMedium,
             fontSize: 12,
           ),
-          icon: const Icon(Icons.delete_outline),
+          icon: Icon(
+            Icons.delete_outline,
+            color: colorScheme.onSurface,
+          ),
           style: FilledButton.styleFrom(
             backgroundColor: colorScheme.primary,
             foregroundColor: colorScheme.onPrimary,
@@ -285,8 +293,15 @@ class _OrderActionsRow extends ConsumerWidget {
             variantType: TextVariantType.bodyMedium,
             fontSize: 12,
           ),
-          icon: const Icon(Icons.error_outline),
+          icon: Icon(
+            Icons.error_outline,
+            color: colorScheme.onSurface,
+          ),
           style: FilledButton.styleFrom(
+            side: BorderSide(
+              color: colorScheme.outline.withValues(alpha: .2),
+              width: 1,
+            ),
             backgroundColor: colorScheme.surface,
             foregroundColor: colorScheme.onSurface,
             overlayColor: colorScheme.secondary,
@@ -389,7 +404,7 @@ class _ActionsHistory extends ConsumerWidget {
                   ),
                   icon: Icon(
                     Icons.add,
-                    color: colorScheme.onPrimary,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ],

@@ -10,56 +10,40 @@ import 'package:squirrel/ui/screen/stats/stats.view_state.dart';
 part 'stats.view_model.g.dart';
 
 /// [StatsViewModel]
-@riverpod
+@Riverpod(keepAlive: true)
 class StatsViewModel extends _$StatsViewModel {
-  /// Order service
-  late final OrderService _orderService;
+  bool _isInitialized = false;
 
   /// Dialog service
   late final DialogService _dialogService;
-
-  /// Constructor
-  /// @param [_orderService] order service
-  /// @param [_dialogService] dialog service
-  ///
-  StatsViewModel._(
-    this._orderService,
-    this._dialogService,
-  ) {
-    _init();
-    _orderService.addListener(updateOrdersListener);
-  }
-
-  /// Update orders
-  ///
-  void updateOrdersListener(OrderState state) {
-    state = state.copyWith(orders: state.allOrder);
-  }
-
-  /// Factory
-  ///
-  factory StatsViewModel() => StatsViewModel._(
-        injector<OrderService>(),
-        injector<DialogService>(),
-      );
 
   /// Build
   /// @return [StatsScreenState] state of the stats screen
   ///
   @override
   StatsScreenState build() {
-    return StatsScreenState.initial();
+    if (!_isInitialized) {
+      _dialogService = injector<DialogService>();
+      _isInitialized = true;
+    }
+
+    ref.listen(orderServiceProvider, (_, next) {
+      updateOrdersListener(next.value!);
+    });
+
+    return StatsScreenState.initial(
+      ref.watch(orderServiceProvider).value!.orders,
+      loading: ref.watch(orderServiceProvider).value!.isLoading,
+    );
   }
 
-  /// Initialize
+  /// Update orders
+  /// @param [orderState] order state
   ///
-  void _init() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      state = state.copyWith(
-        orders: _orderService.orderState.allOrder,
-        loading: false,
-      );
-    });
+  void updateOrdersListener(OrderState orderState) {
+    state = state.copyWith(
+      orders: orderState.orders,
+    );
   }
 
   /// Change hovered shop

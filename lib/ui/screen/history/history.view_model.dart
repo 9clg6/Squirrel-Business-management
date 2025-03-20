@@ -1,44 +1,32 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
-import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/ui/screen/history/history.view_state.dart';
 
 part 'history.view_model.g.dart';
 
 /// [History]
-@riverpod
+@Riverpod(keepAlive: true)
 class History extends _$History {
-  late OrderService _orderService;
-
   /// Build
   ///
   @override
   HistoryState build() {
-    _orderService = injector<OrderService>();
+    final state = ref.watch(orderServiceProvider);
 
-    _orderService.addListener((s) {
-      state = _mapOrderStateToHistoryState(s);
+    ref.listen(orderServiceProvider, (_, next) {
+      _onOrderChange(next.value!);
     });
 
-    return _mapOrderStateToHistoryState(_orderService.orderState);
+    return HistoryState.initial(state.value!.endedOrders);
   }
 
-  /// Map order state to history state
-  /// @param [orderState] order state
-  /// @return [HistoryState] history state
+  /// On order change
+  /// @param orderState [OrderState]
   ///
-  HistoryState _mapOrderStateToHistoryState(OrderState orderState) {
-    return HistoryState(
-      loading: false,
-      orders: orderState.allOrder
-          .where((order) => [
-                OrderStatus.canceled,
-                OrderStatus.failed,
-                OrderStatus.finished,
-              ].contains(order.status))
-          .toList(),
+  void _onOrderChange(OrderState orderState) {
+    state = state.copyWith(
+      orders: orderState.endedOrders,
     );
   }
 }

@@ -12,15 +12,14 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
-  /// File path: assets/images/app_logo.png
-  AssetGenImage get appLogo =>
-      const AssetGenImage('assets/images/app_logo.png');
+  /// File path: assets/images/logo.png
+  AssetGenImage get logo => const AssetGenImage('assets/images/logo.png');
 
   /// File path: assets/images/wip.svg
   String get wip => 'assets/images/wip.svg';
 
   /// List of all assets
-  List<dynamic> get values => [appLogo, wip];
+  List<dynamic> get values => [logo, wip];
 }
 
 class $AssetsTranslationsGen {

@@ -1,71 +1,80 @@
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/data/storage/hive_secure_storage.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
-import 'package:squirrel/foundation/enums/headers.enum.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/enums/priority.enum.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
+part 'order.service.g.dart';
+
 /// [OrderService]
-class OrderService extends StateNotifier<OrderState> {
+@Riverpod(keepAlive: true)
+class OrderService extends _$OrderService {
   /// Hive service
-  final StorageInterface hiveService;
+  late final StorageInterface _hiveService;
 
   /// Client service
-  late final ClientService clientService;
-
-  /// Order state
-  OrderState get orderState => state;
+  late final ClientService _clientService;
 
   /// Orders key
   static const ordersKey = 'orders';
 
-  /// Public constructor
-  /// @param [hiveService] hive service
+  /// Build
   ///
-  OrderService(
-    this.hiveService,
-    this.clientService,
-  ) : super(OrderState.initial()) {
-    _loadOrders();
-    _isInitialLoad = true;
-    addListener(_save);
+  @override
+  Future<OrderState> build() async {
+    _hiveService = injector<HiveSecureStorage>();
+    _clientService = ref.read(clientServiceProvider.notifier);
+    return await _loadOrders();
   }
-
-  /// Variable to track initial load
-  bool _isInitialLoad = false;
 
   /// Load orders
   ///
-  Future<void> _loadOrders() async {
-    log('Loading orders');
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
-      final String? o = await hiveService.get(ordersKey);
+  Future<OrderState> _loadOrders() async {
+    log('[OrderService] Loading orders');
+
+    try {
+      final String? o = await _hiveService.get(ordersKey);
       if (o != null) {
         final orders = jsonDecode(o) as List;
         final ordersList = orders.map((e) => Order.fromJson(e)).toList();
-        state = state.copyWith(orders: ordersList);
+
+        return OrderState.initial(
+          orders: ordersList,
+          isLoading: false,
+        );
+      } else {
+        // Mettre à jour l'état même si aucune donnée n'est chargée
+        return OrderState.initial(
+          orders: [],
+          isLoading: false,
+        );
       }
-      _isInitialLoad = false;
-    });
+    } catch (e) {
+      // En cas d'erreur, marquer comme non chargement et journaliser l'erreur
+      log('[OrderService] Error loading orders: $e');
+      return OrderState.initial(
+        orders: [],
+        isLoading: false,
+      );
+    }
   }
 
   /// Save orders
   /// @param [os] order state
   ///
   void _save(OrderState os) {
-    if (_isInitialLoad) return;
-
-    log('Saving orders');
+    log('[OrderService] Saving orders');
     if (os.orders.isEmpty) return;
-    hiveService.set(
+    _hiveService.set(
       ordersKey,
       jsonEncode(os.orders.map((e) => e.toJson()).toList()),
     );
@@ -74,270 +83,158 @@ class OrderService extends StateNotifier<OrderState> {
   /// Method to find an order and determine if it is pinned
   /// @param [order] order
   /// @return [int] index of the order
-  /// @return [bool] if the order is pinned
   ///
-  (int, bool) _findOrder(Order order) {
-    var indexOrder = state.orders.indexWhere((o) => o.id == order.id);
-    var isPinned = false;
-
-    if (indexOrder == -1) {
-      indexOrder = state.pinnedOrders.indexWhere((o) => o.id == order.id);
-      isPinned = true;
-    }
-
-    return (indexOrder, isPinned);
+  int _findOrder(Order order) {
+    log('findOrder');
+    return state.value!.orders.indexWhere((o) => o.id == order.id);
   }
 
   /// Method to update an order
   /// @param [updatedOrder] updated order
   /// @param [indexOrder] index of the order
-  /// @param [isPinned] if the order is pinned
   ///
   void _updateOrder(
     Order updatedOrder,
     int indexOrder,
-    bool isPinned,
   ) {
+    log('updateOrder');
     if (indexOrder == -1) return;
 
-    if (isPinned) {
-      final updatedPinnedOrders = List<Order>.from(state.pinnedOrders)
-        ..replaceRange(
-          indexOrder,
-          indexOrder + 1,
-          [updatedOrder],
-        );
-      state = state.copyWith(
-        pinnedOrders: updatedPinnedOrders,
+    final updatedOrders = List<Order>.from(state.value!.orders)
+      ..replaceRange(
+        indexOrder,
+        indexOrder + 1,
+        [updatedOrder],
       );
-    } else {
-      final updatedOrders = List<Order>.from(state.orders)
-        ..replaceRange(
-          indexOrder,
-          indexOrder + 1,
-          [updatedOrder],
-        );
-      state = state.copyWith(
+
+    log('[OrderService] Updated orders');
+
+    state = AsyncData(
+      state.value!.copyWith(
         orders: updatedOrders,
-      );
-    }
+      ),
+    );
+
+    _save(state.value!);
   }
 
   /// Update order status
+  /// @order order
+  /// @status status
+  ///
   void updateOrderStatus(Order order, OrderStatus status) {
-    final (indexOrder, isPinned) = _findOrder(order);
-    if (indexOrder == -1) return;
+    final indexOrder = _findOrder(order);
+    if (indexOrder == -1) {
+      log('[OrderService] Order not found: ${order.id}');
+      return;
+    }
 
+    if (order.status == status) {
+      log('[OrderService] Same status, no update needed');
+      return; // Éviter les mises à jour inutiles
+    }
+
+    log('[OrderService] Updating status: ${order.status.name} -> ${status.name} for order ${order.shopName}');
     final updatedOrder = order.copyWith(status: status);
-    _updateOrder(updatedOrder, indexOrder, isPinned);
-  }
 
-  /// Pin order
-  void pinOrder(Order order) {
-    if (state.pinnedOrders.contains(order)) {
-      unpinOrder(order);
-    } else {
-      state = state.copyWith(
-        pinnedOrders: [
-          ...state.pinnedOrders,
-          order,
-        ],
-        orders: [
-          ...state.orders.where((e) => e != order),
-        ],
-      );
-    }
-  }
-
-  /// Unpin order
-  ///
-  void unpinOrder(Order order) {
-    state = state.copyWith(
-      pinnedOrders: state.pinnedOrders.where((e) => e != order).toList(),
-      orders: [
-        ...state.orders,
-        order,
-      ],
-    );
-  }
-
-  /// Select order
-  ///
-  void selectOrder(Order? order) {
-    if (order == null) return;
-    if (state.showComboBox == false) {
-      state = state.copyWith(
-        showComboBox: true,
-      );
-    }
-    if (state.selectedOrders.contains(order)) {
-      state = state.copyWith(
-        selectedOrders: [
-          ...state.selectedOrders.where(
-            (element) => element != order,
-          )
-        ],
-      );
-    } else {
-      state = state.copyWith(
-        selectedOrders: [...state.selectedOrders, order],
-      );
-    }
-  }
-
-  void selectAll() {
-    if (state.selectedOrders.length == state.orders.length) {
-      unselectOrder();
-    } else {
-      state = state.copyWith(
-        selectedOrders: state.orders,
-      );
-    }
-  }
-
-  ///
-  /// Unselect order
-  ///
-  void unselectOrder() {
-    state = state.copyWith(
-      selectedOrders: [],
-    );
-  }
-
-  void deleteSelectedOrders() {
-    state = state.copyWith(
-      orders: [
-        ...state.orders.where(
-          (e) => !state.selectedOrders.contains(e),
-        ),
-      ],
-      selectedOrders: [],
-    );
-  }
-
-  void showComboBox() {
-    final newComboBoxState = !state.showComboBox;
-    state = state.copyWith(
-      showComboBox: newComboBoxState,
-    );
-    if (!newComboBoxState) {
-      state = state.copyWith(
-        selectedOrders: [],
-      );
-    }
-  }
-
-  /// Sort orders
-  ///
-  void sortOrders(int columnIndex, bool ascending) {
-    final Headers selectedHeader = Headers.values[columnIndex];
-    final orders = state.orders;
-    orders.sort((a, b) {
-      switch (selectedHeader) {
-        case Headers.client:
-          return ascending
-              ? a.client!.id.compareTo(b.client!.id)
-              : b.client!.id.compareTo(a.client!.id);
-        case Headers.status:
-          return ascending
-              ? a.status.index.compareTo(b.status.index)
-              : b.status.index.compareTo(a.status.index);
-        case Headers.store:
-          return ascending
-              ? a.shopName.compareTo(b.shopName)
-              : b.shopName.compareTo(a.shopName);
-        case Headers.startDate:
-          return ascending
-              ? a.startDate.compareTo(b.startDate)
-              : b.startDate.compareTo(a.startDate);
-        case Headers.endDate:
-          return ascending
-              ? a.endDate!.compareTo(b.endDate!)
-              : b.endDate!.compareTo(a.endDate!);
-        case Headers.price:
-          return ascending
-              ? a.price.compareTo(b.price)
-              : b.price.compareTo(a.price);
-        case Headers.commission:
-          return ascending
-              ? a.commission.compareTo(b.commission)
-              : b.commission.compareTo(a.commission);
-        default:
-          return 0;
-      }
-    });
-    state = state.copyWith(
-      orders: orders,
-      sortColumnIndex: columnIndex,
-      sortAscending: ascending,
-    );
+    _updateOrder(updatedOrder, indexOrder);
   }
 
   /// Update order priority
   /// Cycles through priority values: normal -> high -> urgent -> normal
+  /// @param [order] order
+  ///
   void updateOrderPriority(Order order) {
     final nextPriority =
         Priority.values[(order.priority.index + 1) % Priority.values.length];
+
     final updatedOrder = order.copyWith(
       priority: nextPriority,
     );
+    log('[OrderService] Updated priority: ${nextPriority.name}');
 
-    final (indexOrder, isPinned) = _findOrder(order);
-    _updateOrder(updatedOrder, indexOrder, isPinned);
+    _updateOrder(
+      updatedOrder,
+      _findOrder(order),
+    );
   }
 
   /// Add order action
+  /// @param [order] order
+  /// @param [orderAction] order action
   ///
   void addOrderAction(Order order, OrderAction orderAction) {
-    final (indexOrder, isPinned) = _findOrder(order);
+    final indexOrder = _findOrder(order);
     if (indexOrder == -1) return;
 
     final updatedOrder = order.copyWith(
       actions: [...order.actions, orderAction],
     );
 
-    _updateOrder(updatedOrder, indexOrder, isPinned);
+    log('[OrderService] Added action: ${orderAction.date}');
+
+    _updateOrder(updatedOrder, indexOrder);
   }
 
   /// Delete order action
+  /// @param [action] action
+  /// @param [order] order
   ///
   void deleteOrderAction(OrderAction action, Order order) {
-    final (indexOrder, isPinned) = _findOrder(order);
-    if (indexOrder == -1) return;
+    final indexOrder = _findOrder(order);
+    if (indexOrder == -1) {
+      log('[OrderService] Order not found: ${order.id}');
+      return;
+    }
 
     final updatedOrder = order.copyWith(
       actions: order.actions.where((e) => e != action).toList(),
     );
 
-    _updateOrder(updatedOrder, indexOrder, isPinned);
+    log('[OrderService] Deleted action: ${action.date}');
+
+    _updateOrder(updatedOrder, indexOrder);
   }
 
   /// Delete order
+  /// @param [order] order
   ///
   void deleteOrder(Order order) {
-    final (indexOrder, isPinned) = _findOrder(order);
-    if (indexOrder == -1) return;
+    final indexOrder = _findOrder(order);
+    if (indexOrder == -1) {
+      log('[OrderService] Order not found: ${order.id}');
+      return;
+    }
 
-    state = state.copyWith(
-      orders: [
-        ...state.orders.where((e) => e != order),
-      ],
+    log('[OrderService] Deleted order: ${order.shopName}');
+
+    state = AsyncData(
+      state.value!.copyWith(
+        orders: [
+          ...state.value!.orders.where((e) => e != order),
+        ],
+      ),
     );
   }
 
   /// Update order
+  /// @param [order] order
   ///
   void updateOrder(Order order) {
-    final (indexOrder, isPinned) = _findOrderById(order.id);
-    if (indexOrder == -1) return;
+    final indexOrder = _findOrderById(order.id);
+    if (indexOrder == -1) {
+      log('[OrderService] Order not found: ${order.id}');
+      return;
+    }
 
     _updateOrder(
       order,
       indexOrder,
-      isPinned,
     );
 
-    clientService.updateClientWithOrder(
+    log('[OrderService] Updated order}');
+
+    _clientService.updateClientWithOrder(
       order.client!,
       order: order,
       isNewOrder: false,
@@ -349,16 +246,12 @@ class OrderService extends StateNotifier<OrderState> {
   /// @return [int] index of the order
   /// @return [bool] if the order is pinned
   ///
-  (int, bool) _findOrderById(String id) {
-    var indexOrder = state.orders.indexWhere((o) => o.id == id);
-    var isPinned = false;
-
-    if (indexOrder == -1) {
-      indexOrder = state.pinnedOrders.indexWhere((o) => o.id == id);
-      isPinned = true;
+  int _findOrderById(String id) {
+    final index = state.value!.orders.indexWhere((o) => o.id == id);
+    if (index == -1) {
+      log('[OrderService] Order not found: $id');
     }
-
-    return (indexOrder, isPinned);
+    return index;
   }
 
   /// Add order
@@ -367,27 +260,33 @@ class OrderService extends StateNotifier<OrderState> {
   void addOrder(Order order) {
     Client? client;
 
-    final Client? tempClient = clientService.getClientByName(order.clientName);
+    final Client? tempClient = _clientService.getClientByName(order.clientName);
 
     if (tempClient == null) {
-      client = clientService.createClientWithOrder(
+      client = _clientService.createClientWithOrder(
         order.clientName,
         order,
       );
+      log('[OrderService] Created client: ${client.name}');
     } else {
       client = tempClient;
-      clientService.updateClientWithOrder(
+      _clientService.updateClientWithOrder(
         client,
         order: order,
         isNewOrder: true,
       );
-    }
+      log('[OrderService] Updated client: ${client.name}');
 
-    state = state.copyWith(
-      orders: [
-        ...state.orders,
-        order.copyWith(client: client),
-      ],
-    );
+      log('[OrderService] Added order: ${order.shopName}');
+
+      state = AsyncData(
+        state.value!.copyWith(
+          orders: [
+            ...state.value!.orders,
+            order.copyWith(client: client),
+          ],
+        ),
+      );
+    }
   }
 }

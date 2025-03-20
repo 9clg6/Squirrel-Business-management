@@ -8,13 +8,13 @@ class MaterialTheme {
   static ColorScheme lightScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
-      primary: Color(0xff005454),
-      surfaceTint: Color(0xff016a6a),
-      onPrimary: Color(0xffffffff),
-      primaryContainer: Color(0xff0d6e6e),
-      onPrimaryContainer: Color(0xff9dedec),
-      secondary: Color(0xff006766),
-      onSecondary: Color(0xffffffff),
+      primary: Color(0xFFFF6600),          // --primary-100
+      surfaceTint: Color(0xFFFF6600),      // --primary-100
+      onPrimary: Color(0xFFFFFFFF),        // --text-100
+      primaryContainer: Color(0xFFff983f),  // --primary-200
+      onPrimaryContainer: Color(0xFFffffa1), // --primary-300
+      secondary: Color(0xFFff983f),        // --primary-200
+      onSecondary: Color(0xFFFFFFFF),  
       secondaryContainer: Color(0xff288180),
       onSecondaryContainer: Color(0xfff3fffe),
       tertiary: Color(0xff02696a),
@@ -25,7 +25,7 @@ class MaterialTheme {
       onError: Color(0xffffffff),
       errorContainer: Color(0xffe1262c),
       onErrorContainer: Color(0xfffffbff),
-      surface: Color(0xfffbf9fa),
+      surface: Color(0xffffffff),
       onSurface: Color(0xff1b1c1d),
       onSurfaceVariant: Color(0xff43474c),
       outline: Color(0xff74777c),
@@ -46,7 +46,7 @@ class MaterialTheme {
       onTertiaryFixed: Color(0xff002020),
       tertiaryFixedDim: Color(0xff85d4d4),
       onTertiaryFixedVariant: Color(0xff004f50),
-      surfaceDim: Color(0xffdbd9db),
+      surfaceDim: Color(0xffFCFAFC),
       surfaceBright: Color(0xfffbf9fa),
       surfaceContainerLowest: Color(0xffffffff),
       surfaceContainerLow: Color(0xfff5f3f4),

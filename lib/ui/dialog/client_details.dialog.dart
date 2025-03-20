@@ -77,7 +77,6 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
                 Row(
                   children: [
                     Container(
-                      width: 400,
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
                         color: colorScheme.surface,

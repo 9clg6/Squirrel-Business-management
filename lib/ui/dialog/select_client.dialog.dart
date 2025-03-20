@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/service/client.service.dart';
+import 'package:squirrel/domain/state/client.state.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Select client dialog
 ///
-class SelectClientDialog extends StatefulWidget {
+class SelectClientDialog extends ConsumerStatefulWidget {
   /// Constructor
   /// @param super.key
   ///
@@ -24,17 +25,17 @@ class SelectClientDialog extends StatefulWidget {
   /// @return State<SelectClientDialog>
   ///
   @override
-  State<SelectClientDialog> createState() => _SelectClientDialogState();
+  ConsumerState<SelectClientDialog> createState() => _SelectClientDialogState();
 }
 
-class _SelectClientDialogState extends State<SelectClientDialog> {
+class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
   /// Client service
-  late final List<Client> clients;
+  late final AsyncValue<ClientState> clients;
 
   /// Constructor
   ///
   _SelectClientDialogState() {
-    clients = injector<ClientService>().clientState.clients;
+    clients = ref.watch(clientServiceProvider);
   }
 
   /// Build
@@ -52,56 +53,63 @@ class _SelectClientDialogState extends State<SelectClientDialog> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: clients.isEmpty
-                ? [
-                    const Text('Aucun client trouvé'),
-                  ]
-                : [
-                    TextVariant(
-                      widget.isSponsor
-                          ? "Sélectionner un parrain"
-                          : "Sélectionner un client",
-                      variantType: TextVariantType.titleMedium,
+            children: switch (clients) {
+              AsyncData(:final ClientState value) => [
+                  TextVariant(
+                    widget.isSponsor
+                        ? "Sélectionner un parrain"
+                        : "Sélectionner un client",
+                    variantType: TextVariantType.titleMedium,
+                  ),
+                  const Gap(6),
+                  if (widget.isSponsor)
+                    const TextVariant(
+                      "Un parrain ne peut être qu'un client existant",
+                      variantType: TextVariantType.bodySmall,
                     ),
-                    const Gap(6),
-                    if (widget.isSponsor)
-                      const TextVariant(
-                        "Un parrain ne peut être qu'un client existant",
-                        variantType: TextVariantType.bodySmall,
+                  const Gap(12),
+                  Divider(
+                    height: 1,
+                    color: colorScheme.outline.withValues(alpha: 0.5),
+                  ),
+                  const Gap(12),
+                  ...value.clients.map((client) => _ClientItem(
+                        client: client,
+                        isLast: value.clients.last == client,
+                      )),
+                  const Gap(12),
+                  InkWell(
+                    onTap: () {
+                      context.pop();
+                    },
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.secondary,
+                        borderRadius: BorderRadius.circular(8),
                       ),
-                    const Gap(12),
-                    Divider(
-                      height: 1,
-                      color: colorScheme.outline.withValues(alpha: 0.5),
-                    ),
-                    const Gap(12),
-                    ...clients.map((client) => _ClientItem(
-                          client: client,
-                          isLast: clients.last == client,
-                        )),
-                    const Gap(12),
-                    InkWell(
-                      onTap: () {
-                        context.pop();
-                      },
-                      child: Container(
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).colorScheme.secondary,
-                          borderRadius: BorderRadius.circular(8),
-                        ),
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 12,
-                        ),
-                        child: TextVariant(
-                          "Aucun",
-                          variantType: TextVariantType.bodyMedium,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                        vertical: 12,
+                      ),
+                      child: TextVariant(
+                        "Aucun",
+                        variantType: TextVariantType.bodyMedium,
+                        color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
-                  ],
+                  ),
+                ],
+              AsyncError(:final error) => [
+                  Text(error.toString()),
+                ],
+              AsyncLoading() => [
+                  const CircularProgressIndicator(),
+                ],
+              AsyncValue() => [
+                  const Text('Aucun client trouvé'),
+                ],
+            },
           ),
         ),
       ),

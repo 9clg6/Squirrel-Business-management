@@ -12,6 +12,7 @@ import 'package:flutter/material.dart' as _i409;
 import 'package:flutter_secure_storage/flutter_secure_storage.dart' as _i558;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:squirrel/application/env/env.dart' as _i714;
 import 'package:squirrel/application/injection/data.module.dart' as _i70;
 import 'package:squirrel/application/injection/domain.module.dart' as _i844;
 import 'package:squirrel/data/local_data_source/preferences/preferences_local.data_source.dart'
@@ -25,12 +26,10 @@ import 'package:squirrel/data/repository/preferences/preferences.repository.dart
 import 'package:squirrel/data/storage/hive_secure_storage.dart' as _i241;
 import 'package:squirrel/domain/service/auth.service.dart' as _i1038;
 import 'package:squirrel/domain/service/business_type.service.dart' as _i363;
-import 'package:squirrel/domain/service/client.service.dart' as _i1025;
 import 'package:squirrel/domain/service/dialog.service.dart' as _i635;
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart'
     as _i1041;
 import 'package:squirrel/domain/service/navigator.service.dart' as _i216;
-import 'package:squirrel/domain/service/order.service.dart' as _i483;
 import 'package:squirrel/domain/service/request_service.dart' as _i392;
 import 'package:squirrel/domain/service/secure_storage.service.dart' as _i1072;
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart' as _i365;
@@ -50,6 +49,10 @@ extension GetItInjectableX on _i174.GetIt {
     );
     final domainModule = _$DomainModule();
     final dataModule = _$DataModule();
+    await gh.factoryAsync<_i714.EnvService>(
+      () => domainModule.envService(),
+      preResolve: true,
+    );
     gh.factory<_i558.FlutterSecureStorage>(() => domainModule.storage());
     gh.singleton<_i392.RequestService>(() => domainModule.requestService());
     gh.factory<_i397.AuthenticationDataSource>(
@@ -85,8 +88,6 @@ extension GetItInjectableX on _i174.GetIt {
       () => dataModule.hiveSecureStorage(gh<_i1072.SecureStorageService>()),
       preResolve: true,
     );
-    gh.singleton<_i1025.ClientService>(() =>
-        domainModule.clientService(gh<_i1041.HiveSecureStorageService>()));
     gh.factory<_i939.PreferencesLocalDataSource>(() => dataModule
         .preferencesLocalDataSourcesImpl(gh<_i241.HiveSecureStorage>()));
     await gh.singletonAsync<_i1038.AuthService>(
@@ -96,13 +97,10 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i241.HiveSecureStorage>(),
         gh<_i392.RequestService>(),
         gh<_i409.GlobalKey<_i409.NavigatorState>>(instanceName: 'root'),
+        gh<_i714.EnvService>(),
       ),
       preResolve: true,
     );
-    gh.singleton<_i483.OrderService>(() => domainModule.orderService(
-          gh<_i241.HiveSecureStorage>(),
-          gh<_i1025.ClientService>(),
-        ));
     await gh.singletonAsync<_i363.BusinessTypeService>(
       () => domainModule
           .serviceTypeService(gh<_i1041.HiveSecureStorageService>()),

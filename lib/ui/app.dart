@@ -58,9 +58,6 @@ class _AppState extends State<App> {
     final TextTheme textTheme = createTextTheme();
     final MaterialTheme theme = MaterialTheme(textTheme);
 
-    final Brightness brightness =
-        View.of(context).platformDispatcher.platformBrightness;
-
     return Builder(
       builder: (context) {
         return MediaQuery(
@@ -73,8 +70,7 @@ class _AppState extends State<App> {
               debugShowCheckedModeBanner: false,
               localizationsDelegates: context.localizationDelegates,
               supportedLocales: context.supportedLocales,
-              theme:
-                  brightness == Brightness.light ? theme.light() : theme.dark(),
+              theme: theme.light(),
               locale: context.locale,
               builder: (_, child) => child!,
             ),
