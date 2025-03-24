@@ -7,7 +7,7 @@ part of 'check_validity.use_case.dart';
 // **************************************************************************
 
 String _$checkValidityUseCaseHash() =>
-    r'4657941f2a7473495331ac9849bbcec4691f59b4';
+    r'a7ca31d29321cdeaa5a6e85528b440202a54d45e';
 
 /// [CheckValidityUseCase]
 ///

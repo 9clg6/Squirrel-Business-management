@@ -29,15 +29,6 @@ class SelectClientDialog extends ConsumerStatefulWidget {
 }
 
 class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
-  /// Client service
-  late final AsyncValue<ClientState> clients;
-
-  /// Constructor
-  ///
-  _SelectClientDialogState() {
-    clients = ref.watch(clientServiceProvider);
-  }
-
   /// Build
   /// @param context
   /// @return Widget
@@ -45,6 +36,8 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+    final clients = ref.watch(clientServiceProvider);
+    
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.all(16),

@@ -105,7 +105,6 @@ class OrderService extends _$OrderService {
     Order updatedOrder,
     int indexOrder,
   ) {
-    log('updateOrder');
     if (indexOrder == -1) return;
 
     final updatedOrders = List<Order>.from(state.value!.orders)
@@ -234,17 +233,45 @@ class OrderService extends _$OrderService {
       log('[OrderService] Order not found: ${order.id}');
       return;
     }
+    
+    // Récupérer le client correspondant au clientName, ou utiliser celui déjà présent
+    Client? clientToUse;
+    
+    // Si le nom du client a changé, chercher le nouveau client par son nom
+    if (order.client == null || order.client!.name != order.clientName) {
+      clientToUse = _clientService.getClientByName(order.clientName);
+      
+      // Si aucun client avec ce nom n'existe, en créer un nouveau
+      if (clientToUse == null) {
+        clientToUse = _clientService.createClientWithOrder(
+          order.clientName,
+          order,
+        );
+        log('[OrderService] Created new client: ${clientToUse.name}');
+      } else {
+        log('[OrderService] Found existing client: ${clientToUse.name}');
+      }
+    } else {
+      // Utiliser le client actuel, mais s'assurer d'avoir sa version la plus récente
+      clientToUse = _clientService.getClientById(order.client!.id);
+    }
+    
+    // Mettre à jour la commande avec le client associé
+    final orderWithUpdatedClient = order.copyWith(
+      client: clientToUse,
+    );
 
     _updateOrder(
-      order,
+      orderWithUpdatedClient,
       indexOrder,
     );
 
-    log('[OrderService] Updated order}');
+    log('[OrderService] Updated order for client: ${orderWithUpdatedClient.clientName}');
 
+    // Mettre à jour les statistiques du client
     _clientService.updateClientWithOrder(
-      order.client!,
-      order: order,
+      clientToUse,
+      order: orderWithUpdatedClient,
       isNewOrder: false,
     );
   }

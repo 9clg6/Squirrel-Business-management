@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
@@ -15,7 +14,7 @@ import 'package:squirrel/ui/screen/order_details/order_details.view_state.dart';
 part 'order_details.view_model.g.dart';
 
 /// [OrderDetailsViewModel]
-@Riverpod()
+@Riverpod(keepAlive: true)
 class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Order service
   late final OrderService _orderService;
@@ -26,39 +25,30 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Dialog service
   late final DialogService _dialogService;
 
+  bool _isInitialized = false;
+
   /// Build
   ///
   @override
-  OrderDetailsScreenState build() {
-    _orderService = ref.watch(orderServiceProvider.notifier);
-    _clientService = ref.watch(clientServiceProvider.notifier);
-    _dialogService = injector<DialogService>();
+  OrderDetailsScreenState build(Order o) {
+    if (!_isInitialized) {
+      _orderService = ref.watch(orderServiceProvider.notifier);
+      _clientService = ref.watch(clientServiceProvider.notifier);
+      _dialogService = injector<DialogService>();
+      _isInitialized = true;
+    }
 
-    return OrderDetailsScreenState.initial();
-  }
-
-  /// Init
-  /// @param [o] order
-  ///
-  Future<void> init({required Order o}) async {
     ref.listen(orderServiceProvider, (_, next) {
+      if (!_isInitialized) return;
       final order = next.value!.orders.firstWhereOrNull(
         (e) => e.id == o.id,
       );
       if (order == null) return;
 
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        state = state.copyWith(order: order);
-      });
+      state = state.copyWith(order: order);
     });
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      state = state.copyWith(
-        loading: false,
-        order: o,
-        client: _clientService.getClientById(o.client!.id),
-      );
-    });
+    return OrderDetailsScreenState.initial(order: o);
   }
 
   /// Get client by id

@@ -29,8 +29,6 @@ class Index extends _$Index {
   ///
   @override
   IndexScreenState build() {
-    /// QUEL ORDRE
-    /// EVITER INJECTOR ET GARDER REF
     if (!_isInitialized) {
       _navigatorService = injector<NavigatorService>();
       _dialogService = injector<DialogService>();
@@ -41,15 +39,12 @@ class Index extends _$Index {
     }
     final state = ref.watch(orderServiceProvider);
 
-    /// OU METTRE CA
     ref.listen(orderServiceProvider, (_, next) {
-      log('Index listen');
       _updateState(next.value!);
     });
 
-    log('Index build state: $state');
     return IndexScreenState.initial(
-      state.value!.orders,
+      state.value!.runningOrder,
       state.value!.nextAction,
       loading: false,
     );
@@ -245,12 +240,10 @@ class Index extends _$Index {
   void _updateState(OrderState s) {
     log('[Index] Updating state');
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      state = state.copyWith(
-        orders: s.orders,
-        nextAction: s.nextAction,
-        loading: s.isLoading,
-      );
-    });
+    state = state.copyWith(
+      orders: s.runningOrder,
+      nextAction: s.nextAction,
+      loading: s.isLoading,
+    );
   }
 }

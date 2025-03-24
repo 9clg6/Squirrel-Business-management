@@ -201,14 +201,28 @@ class _AppState extends State<App> {
     );
   }
 
-  String? _authRedirect(BuildContext context, GoRouterState state) {
-    bool isAuthenticated = false;
-
+  Future<String?> _authRedirect(BuildContext context, GoRouterState state) async {
+    // Capture du conteneur et du service d'authentification avant toute opération asynchrone
     final container = ProviderScope.containerOf(context);
     final authService = container.read(authServiceProvider);
 
+    // Vérifier si l'état d'authentification est en cours de chargement
+    if (authService.isLoading) {
+      // Si en cours de chargement, ne pas rediriger
+      return null;
+    }
+
+    bool isAuthenticated = false;
+
     try {
-      isAuthenticated = authService.value?.isUserAuthenticated ?? false;
+      // Si le service n'est pas initialisé, charger l'utilisateur
+      if (authService.value?.isInitialized == false) {
+        // Capturer l'état d'authentification après le chargement asynchrone
+        final authState = await container.read(authServiceProvider.notifier).loadUser();
+        isAuthenticated = authState?.isUserAuthenticated ?? false;
+      } else {
+        isAuthenticated = authService.value?.isUserAuthenticated ?? false;
+      }
     } catch (e) {
       logException(
         e,
@@ -218,17 +232,26 @@ class _AppState extends State<App> {
       isAuthenticated = false;
     }
 
+    // Le traitement du résultat est synchrone, donc pas besoin de vérifier mounted
     final bool isAuthRoute = state.matchedLocation == '/auth';
-
+    
+    // Empêcher la boucle de redirection
+    // Si on est déjà sur /auth et pas authentifié, rester sur /auth
+    if (!isAuthenticated && isAuthRoute) {
+      return null;
+    }
+    
+    // Si on n'est pas authentifié et pas sur /auth, rediriger vers /auth
     if (!isAuthenticated) {
-      if (isAuthRoute) return null;
-
       return '/auth';
     }
-
+    
+    // Si on est authentifié et sur /auth, rediriger vers /main
     if (isAuthenticated && isAuthRoute) {
       return '/main';
     }
+    
+    // Si on est authentifié et pas sur /auth, ne pas rediriger
     return null;
   }
 }

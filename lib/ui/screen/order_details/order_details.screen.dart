@@ -38,16 +38,6 @@ class OrderDetailsScreen extends ConsumerStatefulWidget {
 
 /// State of the order details screen
 class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
-  /// Initializes the order details screen
-  ///
-  @override
-  void initState() {
-    ref.read(orderDetailsViewModelProvider.notifier).init(
-          o: widget.order,
-        );
-    super.initState();
-  }
-
   /// Builds the order details screen
   /// @param [context] context
   /// @return [Widget] widget
@@ -55,23 +45,11 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.watch(orderDetailsViewModelProvider);
-
-    if (state.loading == true) {
-      return Scaffold(
-        backgroundColor: colorScheme.surfaceDim,
-        body: Center(
-          child: CircularProgressIndicator(
-            color: colorScheme.primary,
-          ),
-        ),
-      );
-    }
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceDim,
       appBar: const _OrderDetailAppBar(),
-      body: const _OrderDetailBody(),
+      body: _OrderDetailBody(order: widget.order),
     );
   }
 }
@@ -79,9 +57,15 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 /// Body of the order details screen
 ///
 class _OrderDetailBody extends StatelessWidget {
+  /// Order
+  final Order order;
+
   /// Constructor
+  /// @param [order] order
   ///
-  const _OrderDetailBody();
+  const _OrderDetailBody({
+    required this.order,
+  });
 
   /// Builds the body of the order details screen
   /// @param [context] context
@@ -89,17 +73,17 @@ class _OrderDetailBody extends StatelessWidget {
   ///
   @override
   Widget build(BuildContext context) {
-    return const SingleChildScrollView(
-      padding: EdgeInsets.all(16),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(16),
       child: Column(
         children: [
-          _OrderActionsRow(),
-          SizedBox(height: 16),
-          _OrderDetailHeader(),
-          SizedBox(height: 16),
-          _OrderQuickDetails(),
-          SizedBox(height: 16),
-          _OrderDetailsContent(),
+          _OrderActionsRow(order),
+          const SizedBox(height: 16),
+          _OrderDetailHeader(order),
+          const SizedBox(height: 16),
+          _OrderQuickDetails(order),
+          const SizedBox(height: 16),
+          _OrderDetailsContent(order),
         ],
       ),
     );
@@ -109,9 +93,14 @@ class _OrderDetailBody extends StatelessWidget {
 /// Order quick details
 ///
 class _OrderQuickDetails extends ConsumerWidget {
+  final Order order;
+
   /// Constructor
+  /// @param [order] order
   ///
-  const _OrderQuickDetails();
+  const _OrderQuickDetails(
+    this.order,
+  );
 
   /// Builds the order quick details
   /// @param [context] context
@@ -121,9 +110,9 @@ class _OrderQuickDetails extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    final state = ref.watch(orderDetailsViewModelProvider);
+    final state = ref.watch(orderDetailsViewModelProvider(order));
     final businessState = ref.watch(businessTypeServiceProvider);
-    final order = state.order;
+    final stateOrder = state.order;
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -151,7 +140,7 @@ class _OrderQuickDetails extends ConsumerWidget {
                     fontSize: 12,
                   ),
                   TextVariant(
-                    order!.shopName,
+                    stateOrder!.shopName,
                     variantType: TextVariantType.titleLarge,
                     fontSize: 16,
                   ),
@@ -175,7 +164,7 @@ class _OrderQuickDetails extends ConsumerWidget {
               TextVariant(
                 LocaleKeys.priceWithSymbol.tr(
                   args: [
-                    order?.price.toString() ?? "",
+                    stateOrder?.price.toString() ?? "",
                   ],
                 ),
                 variantType: TextVariantType.titleLarge,
@@ -199,7 +188,7 @@ class _OrderQuickDetails extends ConsumerWidget {
               TextVariant(
                 LocaleKeys.priceWithSymbol.tr(
                   args: [
-                    order?.commission.toString() ?? "",
+                    stateOrder?.commission.toString() ?? "",
                   ],
                 ),
                 variantType: TextVariantType.titleLarge,
@@ -223,8 +212,8 @@ class _OrderQuickDetails extends ConsumerWidget {
               TextVariant(
                 LocaleKeys.priceWithSymbol.tr(
                   args: [
-                    (order?.commission ??
-                            0 - (order?.internalProcessingFee ?? 0))
+                    (stateOrder?.commission ??
+                            0 - (stateOrder?.internalProcessingFee ?? 0))
                         .toString(),
                   ],
                 ),
@@ -242,12 +231,19 @@ class _OrderQuickDetails extends ConsumerWidget {
 /// Order actions row
 ///
 class _OrderActionsRow extends ConsumerWidget {
-  const _OrderActionsRow();
+  final Order order;
+
+  /// Constructor
+  /// @param [order] order
+  ///
+  const _OrderActionsRow(
+    this.order,
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final viewModel = ref.read(orderDetailsViewModelProvider.notifier);
+    final viewModel = ref.read(orderDetailsViewModelProvider(order).notifier);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -327,9 +323,14 @@ class _OrderActionsRow extends ConsumerWidget {
 ///
 ///
 class _OrderDetailsContent extends StatelessWidget {
+  final Order order;
+
   /// Constructor
+  /// @param [order] order
   ///
-  const _OrderDetailsContent();
+  const _OrderDetailsContent(
+    this.order,
+  );
 
   /// Builds the order details content
   ///
@@ -352,15 +353,15 @@ class _OrderDetailsContent extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const _StatusRow(),
+            _StatusRow(order),
             Divider(
               color: colorScheme.outline.withValues(alpha: .2),
               height: 46,
               thickness: 1,
             ),
-            const _SummaryOrder(),
+            _SummaryOrder(order),
             const SizedBox(height: 16),
-            const _OrderInformations(),
+            _OrderInformations(order),
           ],
         ),
       ),
@@ -369,16 +370,23 @@ class _OrderDetailsContent extends StatelessWidget {
 }
 
 class _ActionsHistory extends ConsumerWidget {
-  const _ActionsHistory();
+  final Order order;
+
+  /// Constructor
+  /// @param [order] order
+  ///
+  const _ActionsHistory(
+    this.order,
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final OrderDetailsViewModel viewModel =
-        ref.read(orderDetailsViewModelProvider.notifier);
+        ref.read(orderDetailsViewModelProvider(order).notifier);
     final OrderDetailsScreenState state =
-        ref.watch(orderDetailsViewModelProvider);
-    final Order? order = state.order;
+        ref.watch(orderDetailsViewModelProvider(order));
+    final Order? orderState = state.order;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -426,7 +434,7 @@ class _ActionsHistory extends ConsumerWidget {
           ],
         ),
         const SizedBox(height: 4),
-        if (order?.actions.isEmpty == true)
+        if (orderState?.actions.isEmpty == true)
           TextVariant(
             LocaleKeys.noOrderAction.tr(),
             variantType: TextVariantType.labelLarge,
@@ -446,20 +454,20 @@ class _ActionsHistory extends ConsumerWidget {
                 padding: const EdgeInsets.only(left: 7),
                 child: Container(
                   width: 2,
-                  height: (order!.actions.length * 48.0),
+                  height: (orderState!.actions.length * 48.0),
                   color: colorScheme.primary,
                 ),
               ),
               Column(
-                children: order.actions.asMap().entries.map((entry) {
+                children: orderState.actions.asMap().entries.map((entry) {
                   final index = entry.key;
                   final action = entry.value;
                   final isFirst = index == 0;
                   int? dayDiffBetweenActions;
 
                   // Calculer la différence pour toutes les actions sauf la dernière (la plus récente)
-                  if (index < order.actions.length - 1) {
-                    final nextDate = order.actions[index + 1].date;
+                  if (index < orderState.actions.length - 1) {
+                    final nextDate = orderState.actions[index + 1].date;
                     dayDiffBetweenActions =
                         action.date.difference(nextDate).inDays;
                   }
@@ -550,14 +558,21 @@ class _ActionsHistory extends ConsumerWidget {
 }
 
 class _OrderInformations extends ConsumerWidget {
-  const _OrderInformations();
+  final Order order;
+
+  /// Constructor
+  /// @param [order] order
+  ///
+  const _OrderInformations(
+    this.order,
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
-    final state = ref.watch(orderDetailsViewModelProvider);
-    final order = state.order;
+    final state = ref.watch(orderDetailsViewModelProvider(order));
+    final orderState = state.order;
     final businessTypeState = ref.watch(businessTypeServiceProvider);
 
     return Container(
@@ -595,7 +610,7 @@ class _OrderInformations extends ConsumerWidget {
               ),
               Expanded(
                 child: SelectableText(
-                  order!.startDate.toDDMMYYYY(),
+                  orderState!.startDate.toDDMMYYYY(),
                 ),
               ),
             ],
@@ -613,7 +628,7 @@ class _OrderInformations extends ConsumerWidget {
               ),
               Expanded(
                 child: SelectableText(
-                  order.trackId,
+                  orderState.trackId,
                 ),
               ),
             ],
@@ -631,7 +646,7 @@ class _OrderInformations extends ConsumerWidget {
               ),
               Expanded(
                 child: SelectableText(
-                  order.endDate!.toDDMMYYYY(),
+                  orderState.endDate!.toDDMMYYYY(),
                 ),
               ),
             ],
@@ -649,7 +664,7 @@ class _OrderInformations extends ConsumerWidget {
               ),
               Expanded(
                 child: SelectableText(
-                  order.method,
+                  orderState.method,
                 ),
               ),
             ],
@@ -685,7 +700,7 @@ class _OrderInformations extends ConsumerWidget {
               ),
               Expanded(
                 child: SelectableText(
-                  order.intermediaryContact,
+                  orderState.intermediaryContact,
                 ),
               ),
             ],
@@ -705,7 +720,7 @@ class _OrderInformations extends ConsumerWidget {
                 child: SelectableText(
                   LocaleKeys.priceWithSymbol.tr(
                     args: [
-                      order.internalProcessingFee.toString(),
+                      orderState.internalProcessingFee.toString(),
                     ],
                   ),
                 ),
@@ -719,14 +734,21 @@ class _OrderInformations extends ConsumerWidget {
 }
 
 class _SummaryOrder extends ConsumerWidget {
-  const _SummaryOrder();
+  final Order order;
+
+  /// Constructor
+  /// @param [order] order
+  ///
+  const _SummaryOrder(
+    this.order,
+  );
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.watch(orderDetailsViewModelProvider);
-    final order = state.order;
-    final viewModel = ref.read(orderDetailsViewModelProvider.notifier);
+    final state = ref.watch(orderDetailsViewModelProvider(order));
+    final viewModel = ref.read(orderDetailsViewModelProvider(order).notifier);
+    final orderState = state.order;
 
     return Container(
       width: double.infinity,
@@ -754,20 +776,20 @@ class _SummaryOrder extends ConsumerWidget {
                   ),
                   const Gap(4),
                   TextVariant(
-                    state.order!.nextActionDate?.toDDMMYYYY() ??
+                    orderState!.nextActionDate?.toDDMMYYYY() ??
                         LocaleKeys.noNextAction.tr(),
                     variantType: TextVariantType.headlineMedium,
                   ),
                   const Gap(16),
                   TextVariant(
-                    state.order!.nextAction?.description ??
+                    orderState.nextAction?.description ??
                         LocaleKeys.noNextAction.tr(),
                     variantType: TextVariantType.bodyMedium,
                     fontWeight: FontWeight.w400,
                   ),
                   const Gap(16),
                   InkWell(
-                    onTap: () => viewModel.updateOrderPriority(order),
+                    onTap: () => viewModel.updateOrderPriority(orderState),
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: Tooltip(
@@ -802,13 +824,13 @@ class _SummaryOrder extends ConsumerWidget {
                                     width: 10,
                                     height: 10,
                                     decoration: BoxDecoration(
-                                      color: order!.priority.color,
+                                      color: orderState.priority.color,
                                       borderRadius: BorderRadius.circular(2),
                                     ),
                                   ),
                                   const SizedBox(width: 16),
                                   TextVariant(
-                                    order.priority.name,
+                                    orderState.priority.name,
                                     variantType: TextVariantType.bodyMedium,
                                     fontWeight: FontWeight.w400,
                                   ),
@@ -835,9 +857,9 @@ class _SummaryOrder extends ConsumerWidget {
                 width: 60,
               ),
             ),
-            const Expanded(
+            Expanded(
               flex: 3,
-              child: _ActionsHistory(),
+              child: _ActionsHistory(order),
             ),
           ],
         ),
@@ -847,7 +869,14 @@ class _SummaryOrder extends ConsumerWidget {
 }
 
 class _StatusRow extends ConsumerWidget {
-  const _StatusRow();
+  final Order order;
+
+  /// Constructor
+  /// @param [order] order
+  ///
+  const _StatusRow(
+    this.order,
+  );
 
   static const double _borderRadius = 10;
   static const double _opacity = .2;
@@ -856,9 +885,9 @@ class _StatusRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
 
-    final state = ref.watch(orderDetailsViewModelProvider);
-    final viewModel = ref.read(orderDetailsViewModelProvider.notifier);
-    final order = state.order;
+    final state = ref.watch(orderDetailsViewModelProvider(order));
+    final viewModel = ref.read(orderDetailsViewModelProvider(order).notifier);
+    final orderState = state.order;
 
     return Column(
       children: [
@@ -875,16 +904,16 @@ class _StatusRow extends ConsumerWidget {
               children: OrderStatus.values.take(4).indexed.map(
                 (e) {
                   final OrderStatus currentStatus = e.$2;
-                  final isCurrentStatus = order!.status == currentStatus;
+                  final isCurrentStatus = orderState!.status == currentStatus;
                   final isPreviousStatus =
-                      e.$1 < OrderStatus.values.indexOf(order.status);
+                      e.$1 < OrderStatus.values.indexOf(orderState.status);
 
                   return Expanded(
                     child: MouseRegion(
                       cursor: SystemMouseCursors.click,
                       child: InkWell(
                         onTap: () => viewModel.updateOrderStatus(
-                          order,
+                          orderState,
                           currentStatus,
                         ),
                         child: Container(
@@ -894,7 +923,7 @@ class _StatusRow extends ConsumerWidget {
                             color: isPreviousStatus
                                 ? colorScheme.outline
                                 : isCurrentStatus
-                                    ? order.status.color
+                                    ? orderState.status.color
                                     : colorScheme.surface,
                           ),
                           child: Text(e.$2.name),
@@ -960,9 +989,14 @@ class _StatsCard extends ConsumerWidget {
 }
 
 class _OrderDetailHeader extends ConsumerWidget {
+  final Order order;
+
   /// Constructor
+  /// @param [order] order
   ///
-  const _OrderDetailHeader();
+  const _OrderDetailHeader(
+    this.order,
+  );
 
   /// Builds the order detail header
   ///
@@ -970,10 +1004,10 @@ class _OrderDetailHeader extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final OrderDetailsScreenState state =
-        ref.watch(orderDetailsViewModelProvider);
-    final Order? order = state.order;
+        ref.watch(orderDetailsViewModelProvider(order));
+    final Order? orderState = state.order;
 
-    if (order == null) {
+    if (orderState == null) {
       return const Center(child: CircularProgressIndicator());
     }
 
@@ -990,7 +1024,7 @@ class _OrderDetailHeader extends ConsumerWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const _ClientInfoCard(),
+          _ClientInfoCard(order),
           Expanded(
               flex: 5,
               child: Row(
@@ -998,22 +1032,22 @@ class _OrderDetailHeader extends ConsumerWidget {
                 children: [
                   _StatsCard(
                     subtitle: LocaleKeys.numberOfOrders.tr(),
-                    title: state.client?.orderQuantity.toString() ?? "",
+                    title: orderState.client?.orderQuantity.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.sponsorship.tr(),
-                    title: state.client?.sponsorshipQuantity.toString() ?? "",
+                    title: orderState.client?.sponsorshipQuantity.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.totalAmount.tr(),
-                    title: state.client?.orderTotalAmount.toString() ?? "",
+                    title: orderState.client?.orderTotalAmount.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.firstOrder.tr(),
-                    title: state.client?.firstOrderDate?.toDDMMYYYY() ?? "",
+                    title: orderState.client?.firstOrderDate?.toDDMMYYYY() ?? "",
                   ),
                 ],
               )),
@@ -1024,17 +1058,21 @@ class _OrderDetailHeader extends ConsumerWidget {
 }
 
 class _ClientInfoCard extends ConsumerWidget {
+  final Order order;
   /// Constructor
+  /// @param [order] order
   ///
-  const _ClientInfoCard();
+  const _ClientInfoCard(
+    this.order,
+  );
 
   /// Builds the client info card
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.watch(orderDetailsViewModelProvider);
-    final order = state.order;
+    final state = ref.watch(orderDetailsViewModelProvider(order));
+    final orderState = state.order;
 
     return Expanded(
       child: ListTile(
@@ -1044,22 +1082,22 @@ class _ClientInfoCard extends ConsumerWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextVariant(
-                order?.client?.name ?? "",
+                orderState?.client?.name ?? "",
                 variantType: TextVariantType.bodyMedium,
               ),
             ],
           ),
         ),
         title: Hero(
-          tag: "order-${order?.id}",
+          tag: "order-${orderState?.id}",
           child: TextVariant(
-            order?.client?.name ?? "",
+            orderState?.client?.name ?? "",
             variantType: TextVariantType.bodyMedium,
           ),
         ),
         leading: CircleAvatar(
           child: TextVariant(
-            order?.client?.name[0] ?? "",
+            orderState?.client?.name[0] ?? "",
             variantType: TextVariantType.bodyMedium,
           ),
         ),

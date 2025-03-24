@@ -17,19 +17,15 @@ class CheckValidityUseCase extends _$CheckValidityUseCase
   CheckValidityUseCase build() {
     return CheckValidityUseCase();
   }
-
-  /// Authentication repository
-
-  /// Constructor
-  CheckValidityUseCase();
-
+  
   /// Execute use case
   /// @param [params] params
   /// @return [CheckValidityEntity] check validity entity
   ///
   @override
   Future<CheckValidityEntity> execute(String params) async {
-    return await ref.read(authenticationRepositoryImplProvider.notifier).checkValidity(params);
+    return await ref
+        .read(authenticationRepositoryImplProvider.notifier)
+        .checkValidity(params);
   }
-
 }

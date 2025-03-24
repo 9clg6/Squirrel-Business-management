@@ -39,16 +39,14 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       body: switch (state) {
-        AsyncData(:final isLoading) => isLoading
-            ? const Center(child: CircularProgressIndicator())
-            : const CustomScrollView(
-                physics: ClampingScrollPhysics(),
-                slivers: [
-                  _ResumeHeader(),
-                  _Body(),
-                ],
-              ),
         AsyncLoading() => const Center(child: CircularProgressIndicator()),
+        AsyncData() => const CustomScrollView(
+            physics: ClampingScrollPhysics(),
+            slivers: [
+              _ResumeHeader(),
+              _Body(),
+            ],
+          ),
         AsyncError(:final error) => Center(child: Text(error.toString())),
         AsyncValue<OrderState>() => throw UnimplementedError(),
       },

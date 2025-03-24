@@ -7,11 +7,7 @@ part of 'order_details.view_state.dart';
 // **************************************************************************
 
 abstract class _$OrderDetailsScreenStateCWProxy {
-  OrderDetailsScreenState loading(bool loading);
-
   OrderDetailsScreenState order(Order? order);
-
-  OrderDetailsScreenState client(Client? client);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `OrderDetailsScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -20,9 +16,7 @@ abstract class _$OrderDetailsScreenStateCWProxy {
   /// OrderDetailsScreenState(...).copyWith(id: 12, name: "My name")
   /// ````
   OrderDetailsScreenState call({
-    bool? loading,
     Order? order,
-    Client? client,
   });
 }
 
@@ -34,13 +28,7 @@ class _$OrderDetailsScreenStateCWProxyImpl
   final OrderDetailsScreenState _value;
 
   @override
-  OrderDetailsScreenState loading(bool loading) => this(loading: loading);
-
-  @override
   OrderDetailsScreenState order(Order? order) => this(order: order);
-
-  @override
-  OrderDetailsScreenState client(Client? client) => this(client: client);
 
   @override
 
@@ -51,23 +39,13 @@ class _$OrderDetailsScreenStateCWProxyImpl
   /// OrderDetailsScreenState(...).copyWith(id: 12, name: "My name")
   /// ````
   OrderDetailsScreenState call({
-    Object? loading = const $CopyWithPlaceholder(),
     Object? order = const $CopyWithPlaceholder(),
-    Object? client = const $CopyWithPlaceholder(),
   }) {
     return OrderDetailsScreenState(
-      loading: loading == const $CopyWithPlaceholder() || loading == null
-          ? _value.loading
-          // ignore: cast_nullable_to_non_nullable
-          : loading as bool,
       order: order == const $CopyWithPlaceholder()
           ? _value.order
           // ignore: cast_nullable_to_non_nullable
           : order as Order?,
-      client: client == const $CopyWithPlaceholder()
-          ? _value.client
-          // ignore: cast_nullable_to_non_nullable
-          : client as Client?,
     );
   }
 }

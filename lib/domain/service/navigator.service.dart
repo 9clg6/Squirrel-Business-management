@@ -27,7 +27,18 @@ class NavigatorService {
   /// Navigate to home
   ///
   Future<void> navigateToHome() async {
-    navigatorKey.currentContext?.goNamed('main');
+    // Vérifier si le contexte est déjà sur l'écran principal pour éviter des navigations inutiles
+    final BuildContext? context = navigatorKey.currentContext;
+    if (context != null) {
+      final String currentRoute = GoRouterState.of(context).matchedLocation;
+      
+      // Si déjà sur la page d'accueil, ne pas naviguer à nouveau
+      if (currentRoute == '/main') {
+        return;
+      }
+      
+      context.goNamed('main');
+    }
   }
 
   /// Navigate back

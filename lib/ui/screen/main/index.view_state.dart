@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
@@ -67,9 +65,7 @@ class IndexScreenState extends ViewStateAbs {
         sortColumnIndex = 0,
         sortAscending = true,
         selectedOrders = <Order>[],
-        scrollController = ScrollController(){
-          log('IndexScreenState.initial');
-        }
+        scrollController = ScrollController();
 
   /// Get props
   ///
