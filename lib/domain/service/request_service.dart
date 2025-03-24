@@ -1,25 +1,35 @@
 import 'dart:developer';
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
 import 'package:squirrel/domain/state/request.state.dart';
 
-/// [RequestService]
-class RequestService extends StateNotifier<RequestState> {
-  /// Request
-  RequestState get requestState => state;
+part 'request_service.g.dart';
 
-  /// Constructor
+/// [RequestService]
+@Riverpod(
+  keepAlive: true,
+  dependencies: [],
+)
+class RequestService extends _$RequestService {
+  /// Build
   ///
-  RequestService() : super(RequestState.initial());
+  @override
+  RequestState build() {
+    log('🔌 Initializing RequestService');
+    return RequestState.initial();
+  }
 
   /// Add request
+  /// @param [request] request to add
   ///
   void addRequest(Request request) {
-    state = state.copyWith(requests: [
-      ...state.requests,
-      request,
-    ]);
+    state = state.copyWith(
+      requests: [
+        ...state.requests,
+        request,
+      ],
+    );
     log('Request added: ${request.name}');
   }
 

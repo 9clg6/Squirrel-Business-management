@@ -10,7 +10,9 @@ import 'package:squirrel/ui/screen/stats/stats.view_state.dart';
 part 'stats.view_model.g.dart';
 
 /// [StatsViewModel]
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+)
 class StatsViewModel extends _$StatsViewModel {
   bool _isInitialized = false;
 

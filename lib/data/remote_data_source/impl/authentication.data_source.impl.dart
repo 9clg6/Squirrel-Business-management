@@ -1,11 +1,24 @@
 import 'dart:developer';
 
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/data/model/remote/check_validity.remote_model.dart';
 import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
 import 'package:squirrel/data/remote_data_source/authentication.data_source.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class AuthenticationDataSourceImpl extends AuthenticationDataSource {
+part 'authentication.data_source.impl.g.dart';
+
+/// [AuthenticationDataSourceImpl]
+@Riverpod(
+  dependencies: [],
+)
+class AuthenticationDataSourceImpl extends _$AuthenticationDataSourceImpl
+    implements AuthenticationDataSource {
+  @override
+  AuthenticationDataSourceImpl build() {
+    return AuthenticationDataSourceImpl();
+  }
+
   @override
   Future<LoginResultRemoteModel> login(String licenseKey) async {
     try {

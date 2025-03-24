@@ -176,9 +176,16 @@ class DialogService {
   /// Show use conditions dialog
   ///
   Future<bool?> showUseConditions() async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.showUseConditions()');
+      return null;
+    }
+
     return showDialog<bool>(
       barrierDismissible: false,
-      context: navigatorKey.currentContext!,
+      context: context,
       builder: (_) => const UseConditionsDialog(),
     );
   }
@@ -186,8 +193,15 @@ class DialogService {
   /// Show in coming dialog
   ///
   Future<void> showInComingDialog() async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.showInComingDialog()');
+      return;
+    }
+
     return showDialog<void>(
-      context: navigatorKey.currentContext!,
+      context: context,
       builder: (_) => const AlertDialog(
         title: TextVariant(
           "Fonctionnalités à venir",
@@ -267,8 +281,15 @@ class DialogService {
   /// @param client: The client to show
   ///
   Future<void> showClientDetailsDialog(Client client) async {
+    final context = navigatorKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.showClientDetailsDialog()');
+      return;
+    }
+
     return showDialog<void>(
-      context: navigatorKey.currentContext!,
+      context: context,
       barrierDismissible: true,
       useSafeArea: true,
       builder: (_) => ClientDetailDialog(client: client),

@@ -1,40 +1,39 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'dart:developer';
+
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
+
+part 'business_type.service.g.dart';
 
 /// [BusinessTypeService]
-class BusinessTypeService extends StateNotifier<BusinessTypeState> {
+@Riverpod(keepAlive: true)
+class BusinessTypeService extends _$BusinessTypeService {
   /// Key for secure storage
   static const String _businessTypeKey = "business_type";
 
   /// Secure storage service
-  final HiveSecureStorageService _storageService;
+  late final HiveSecureStorageService _storageService;
 
-  /// State of the service
-  BusinessTypeState get businessTypeState => state;
+  bool _isInitialized = false;
 
-  /// Constructor
+  /// Build
   ///
-  BusinessTypeService._(
-    this._storageService,
-    BusinessType type,
-  ) : super(
-          BusinessTypeState.initial().copyWith(businessType: type),
-        );
+  @override
+  Future<BusinessTypeState> build() async {
+    if (!_isInitialized) {
+      log('🔌 Initializing BusinessTypeService');
+      _storageService = injector<HiveSecureStorageService>();
+      _isInitialized = true;
+    }
 
-  /// Inject
-  /// @param [secureStorageService] Secure storage service
-  /// @return [BusinessTypeService] business type service filled with data
-  ///
-  static Future<BusinessTypeService> inject(
-      HiveSecureStorageService secureStorageService) async {
-    final String? businessType =
-        await secureStorageService.get(_businessTypeKey);
+    final String? businessType = await _storageService.get(_businessTypeKey);
 
-    return BusinessTypeService._(
-      secureStorageService,
-      BusinessType.values.firstWhere(
+    return BusinessTypeState.initial(
+      businessType: BusinessType.values.firstWhere(
         (bT) => bT.name == businessType,
         orElse: () => BusinessType.service,
       ),
@@ -45,14 +44,18 @@ class BusinessTypeService extends StateNotifier<BusinessTypeState> {
   ///
   void invertServiceType() {
     late BusinessType type;
-    switch (state.businessType) {
+    switch (state.value?.businessType) {
       case BusinessType.service:
         type = BusinessType.shop;
-        state = state.copyWith(businessType: type);
+        state = AsyncData(
+          state.value!.copyWith(businessType: type),
+        );
         break;
       default:
         type = BusinessType.service;
-        state = state.copyWith(businessType: type);
+        state = AsyncData(
+          state.value!.copyWith(businessType: type),
+        );
         break;
     }
     _saveBusinessType(type);
@@ -66,5 +69,55 @@ class BusinessTypeService extends StateNotifier<BusinessTypeState> {
       _businessTypeKey,
       type.name,
     );
+  }
+
+  /// Get service type wording
+  /// @param [key] key of the translation
+  /// @return Associated and corresponding translation for associated service type
+  ///
+  String getServiceTypeWording(
+    String key, {
+    required BusinessTypeState type,
+  }) {
+    switch (type.businessType) {
+      case BusinessType.service:
+        return _getServiceTypeWordingForService(key);
+      case BusinessType.shop:
+        return _getServiceTypeWordingForShop(key);
+    }
+  }
+
+  /// Get service type wording for service
+  /// @param [key] key of the translation
+  /// @return Associated and corresponding translation for service
+  ///
+  String _getServiceTypeWordingForService(String key) {
+    switch (key) {
+      case "xName":
+        return LocaleKeys.shopName.tr();
+      case "bestX":
+        return LocaleKeys.bestShops.tr();
+      case "x":
+        return LocaleKeys.shop.tr();
+      default:
+        return "";
+    }
+  }
+
+  /// Get service type wording for shop
+  /// @param [key] key of the translation
+  /// @return Associated and corresponding translation for shop
+  ///
+  String _getServiceTypeWordingForShop(String key) {
+    switch (key) {
+      case "xName":
+        return LocaleKeys.productName.tr();
+      case "bestX":
+        return LocaleKeys.bestProducts.tr();
+      case "x":
+        return LocaleKeys.product.tr();
+      default:
+        return "";
+    }
   }
 }

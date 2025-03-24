@@ -10,15 +10,22 @@ class BusinessTypeState with EquatableMixin {
   /// Type of app use
   final BusinessType businessType;
 
+  /// Check if the use is for service
   bool get isService => businessType == BusinessType.service;
 
   /// Constructor
   /// @param [businessType] type of service
+  /// 
   BusinessTypeState({
     required this.businessType,
   });
 
-  BusinessTypeState.initial() : businessType = BusinessType.service;
+  /// Initial
+  /// @param [businessType] type of service
+  /// 
+  BusinessTypeState.initial({
+    required this.businessType,
+  });
 
   /// Props
   ///

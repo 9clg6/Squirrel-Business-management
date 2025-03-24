@@ -3,7 +3,8 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:squirrel/domain/provider/service_type_service.provider.dart';
+import 'package:squirrel/domain/service/business_type.service.dart';
+import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/chart_type.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
@@ -292,7 +293,7 @@ class RowQuickStats extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
     final state = ref.watch(statsViewModelProvider);
-    final businessTypeState = ref.watch(businessTypeServiceNotifierProvider);
+    final businessTypeState = ref.watch(businessTypeServiceProvider);
 
     return IntrinsicHeight(
       child: Row(
@@ -330,13 +331,16 @@ class RowQuickStats extends ConsumerWidget {
                     ),
                   ),
                   const Gap(10),
-                  TextVariant(
-                    businessTypeState.isService
-                        ? LocaleKeys.bestShops.tr()
-                        : LocaleKeys.bestProducts.tr(),
-                    variantType: TextVariantType.bodySmall,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  switch (businessTypeState) {
+                    AsyncData(value: BusinessTypeState()) => TextVariant(
+                        businessTypeState.value.isService
+                            ? LocaleKeys.bestShops.tr()
+                            : LocaleKeys.bestProducts.tr(),
+                        variantType: TextVariantType.bodySmall,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    _ => const SizedBox.shrink(),
+                  },
                   const Gap(10),
                   ...state.totalByShop.entries.map(
                     (entry) => TextVariant(

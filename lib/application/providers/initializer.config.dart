@@ -17,24 +17,16 @@ import 'package:squirrel/application/injection/data.module.dart' as _i70;
 import 'package:squirrel/application/injection/domain.module.dart' as _i844;
 import 'package:squirrel/data/local_data_source/preferences/preferences_local.data_source.dart'
     as _i939;
-import 'package:squirrel/data/remote_data_source/authentication.data_source.dart'
-    as _i397;
-import 'package:squirrel/data/repository/auth/authentication.repository.dart'
-    as _i201;
 import 'package:squirrel/data/repository/preferences/preferences.repository.dart'
     as _i513;
 import 'package:squirrel/data/storage/hive_secure_storage.dart' as _i241;
-import 'package:squirrel/domain/service/auth.service.dart' as _i1038;
-import 'package:squirrel/domain/service/business_type.service.dart' as _i363;
 import 'package:squirrel/domain/service/dialog.service.dart' as _i635;
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart'
     as _i1041;
 import 'package:squirrel/domain/service/navigator.service.dart' as _i216;
 import 'package:squirrel/domain/service/request_service.dart' as _i392;
 import 'package:squirrel/domain/service/secure_storage.service.dart' as _i1072;
-import 'package:squirrel/domain/use_case/check_validity.use_case.dart' as _i365;
 import 'package:squirrel/domain/use_case/get_theme.use_case.dart' as _i173;
-import 'package:squirrel/domain/use_case/login.use_case.dart' as _i677;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
@@ -55,26 +47,12 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i558.FlutterSecureStorage>(() => domainModule.storage());
     gh.singleton<_i392.RequestService>(() => domainModule.requestService());
-    gh.factory<_i397.AuthenticationDataSource>(
-        () => dataModule.authenticationDataSourceImpl());
     gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
-      () => domainModule.provideNavigatorKey(),
-      instanceName: 'root',
-    );
-    gh.singleton<_i409.GlobalKey<_i409.NavigatorState>>(
-      () => domainModule.provideShellNavigatorKey(),
-      instanceName: 'shell',
-    );
-    gh.factory<_i201.AuthenticationRepository>(() => dataModule
-        .authenticationRepository(gh<_i397.AuthenticationDataSource>()));
-    gh.factory<_i677.LoginUseCase>(
-        () => domainModule.loginUseCase(gh<_i201.AuthenticationRepository>()));
-    gh.factory<_i365.CheckValidityUseCase>(() => domainModule
-        .checkValidityUseCase(gh<_i201.AuthenticationRepository>()));
-    gh.singleton<_i635.DialogService>(() => domainModule.dialogService(
-        gh<_i409.GlobalKey<_i409.NavigatorState>>(instanceName: 'root')));
-    gh.singleton<_i216.NavigatorService>(() => domainModule.navigatorService(
-        gh<_i409.GlobalKey<_i409.NavigatorState>>(instanceName: 'root')));
+        () => domainModule.provideShellNavigatorKey());
+    gh.singleton<_i635.DialogService>(() => domainModule
+        .dialogService(gh<_i409.GlobalKey<_i409.NavigatorState>>()));
+    gh.singleton<_i216.NavigatorService>(() => domainModule
+        .navigatorService(gh<_i409.GlobalKey<_i409.NavigatorState>>()));
     await gh.singletonAsync<_i1072.SecureStorageService>(
       () => domainModule.secureStorageService(gh<_i558.FlutterSecureStorage>()),
       preResolve: true,
@@ -90,22 +68,6 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i939.PreferencesLocalDataSource>(() => dataModule
         .preferencesLocalDataSourcesImpl(gh<_i241.HiveSecureStorage>()));
-    await gh.singletonAsync<_i1038.AuthService>(
-      () => domainModule.authService(
-        gh<_i677.LoginUseCase>(),
-        gh<_i365.CheckValidityUseCase>(),
-        gh<_i241.HiveSecureStorage>(),
-        gh<_i392.RequestService>(),
-        gh<_i409.GlobalKey<_i409.NavigatorState>>(instanceName: 'root'),
-        gh<_i714.EnvService>(),
-      ),
-      preResolve: true,
-    );
-    await gh.singletonAsync<_i363.BusinessTypeService>(
-      () => domainModule
-          .serviceTypeService(gh<_i1041.HiveSecureStorageService>()),
-      preResolve: true,
-    );
     gh.factory<_i513.PreferencesRepository>(() => dataModule
         .preferencesRepository(gh<_i939.PreferencesLocalDataSource>()));
     gh.factory<_i173.GetThemeUseCase>(

@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
-import 'package:squirrel/domain/provider/service_type_service.provider.dart';
+import 'package:squirrel/domain/service/business_type.service.dart';
+import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
@@ -121,7 +122,7 @@ class _OrderQuickDetails extends ConsumerWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     final state = ref.watch(orderDetailsViewModelProvider);
-    final businessState = ref.watch(businessTypeServiceNotifierProvider);
+    final businessState = ref.watch(businessTypeServiceProvider);
     final order = state.order;
 
     return Container(
@@ -138,23 +139,26 @@ class _OrderQuickDetails extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TextVariant(
-                businessState.isService
-                    ? LocaleKeys.shop.tr()
-                    : LocaleKeys.product.tr(),
-                variantType: TextVariantType.bodyMedium,
-                fontSize: 12,
+          switch (businessState) {
+            AsyncData(value: BusinessTypeState()) => Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextVariant(
+                    businessState.value.isService
+                        ? LocaleKeys.shop.tr()
+                        : LocaleKeys.product.tr(),
+                    variantType: TextVariantType.bodyMedium,
+                    fontSize: 12,
+                  ),
+                  TextVariant(
+                    order!.shopName,
+                    variantType: TextVariantType.titleLarge,
+                    fontSize: 16,
+                  ),
+                ],
               ),
-              TextVariant(
-                order!.shopName,
-                variantType: TextVariantType.titleLarge,
-                fontSize: 16,
-              ),
-            ],
-          ),
+            _ => const SizedBox.shrink(),
+          },
           VerticalDivider(
             color: colorScheme.outline,
             width: 1,
@@ -171,7 +175,7 @@ class _OrderQuickDetails extends ConsumerWidget {
               TextVariant(
                 LocaleKeys.priceWithSymbol.tr(
                   args: [
-                    order.price.toString(),
+                    order?.price.toString() ?? "",
                   ],
                 ),
                 variantType: TextVariantType.titleLarge,
@@ -195,7 +199,7 @@ class _OrderQuickDetails extends ConsumerWidget {
               TextVariant(
                 LocaleKeys.priceWithSymbol.tr(
                   args: [
-                    order.commission.toString(),
+                    order?.commission.toString() ?? "",
                   ],
                 ),
                 variantType: TextVariantType.titleLarge,
@@ -219,7 +223,9 @@ class _OrderQuickDetails extends ConsumerWidget {
               TextVariant(
                 LocaleKeys.priceWithSymbol.tr(
                   args: [
-                    (order.commission - order.internalProcessingFee).toString(),
+                    (order?.commission ??
+                            0 - (order?.internalProcessingFee ?? 0))
+                        .toString(),
                   ],
                 ),
                 variantType: TextVariantType.titleLarge,
@@ -552,7 +558,7 @@ class _OrderInformations extends ConsumerWidget {
     final textTheme = Theme.of(context).textTheme;
     final state = ref.watch(orderDetailsViewModelProvider);
     final order = state.order;
-    final businessTypeState = ref.watch(businessTypeServiceNotifierProvider);
+    final businessTypeState = ref.watch(businessTypeServiceProvider);
 
     return Container(
       width: double.infinity,
@@ -651,19 +657,19 @@ class _OrderInformations extends ConsumerWidget {
           const SizedBox(height: 32),
           Row(
             children: [
-              Expanded(
-                child: SelectableText(
-                  businessTypeState.isService
-                      ? LocaleKeys.shop.tr()
-                      : LocaleKeys.product.tr(),
-                  style: textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w400,
+              switch (businessTypeState) {
+                AsyncData(value: BusinessTypeState()) => Expanded(
+                    child: SelectableText(
+                      businessTypeState.value.isService
+                          ? LocaleKeys.shop.tr()
+                          : LocaleKeys.product.tr(),
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w400,
+                      ),
+                    ),
                   ),
-                ),
-              ),
-              Expanded(
-                child: SelectableText(order.shopName),
-              ),
+                _ => const SizedBox.shrink(),
+              },
             ],
           ),
           const SizedBox(height: 32),

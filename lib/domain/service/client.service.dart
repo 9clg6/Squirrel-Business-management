@@ -13,7 +13,9 @@ import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 part 'client.service.g.dart';
 
 /// [ClientService]
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+)
 class ClientService extends _$ClientService {
   /// Storage
   late final StorageInterface _storage;
@@ -21,11 +23,17 @@ class ClientService extends _$ClientService {
   /// Storage key
   static const String _storageKey = 'clients';
 
+  bool _isInitialized = false;
+
   /// Build
   ///
   @override
   Future<ClientState> build() async {
-    _storage = injector<HiveSecureStorage>();
+    if (!_isInitialized) {
+      log('🔌 Initializing ClientService');
+      _storage = injector<HiveSecureStorage>();
+      _isInitialized = true;
+    }
 
     return await _loadClients();
   }

@@ -10,9 +10,12 @@ import 'package:squirrel/ui/screen/todo/todo.view_state.dart';
 part 'todo.view_model.g.dart';
 
 /// [TodoViewModel]
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+)
 class TodoViewModel extends _$TodoViewModel {
   bool _isInitialized = false;
+
   /// Navigator service
   late final NavigatorService _navigatorService;
 
@@ -25,7 +28,7 @@ class TodoViewModel extends _$TodoViewModel {
   TodoScreenState build() {
     if (!_isInitialized) {
       _navigatorService = injector<NavigatorService>();
-      _orderService = ref.read(orderServiceProvider.notifier);
+      _orderService = ref.watch(orderServiceProvider.notifier);
       _isInitialized = true;
     }
 

@@ -5,8 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
-import 'package:squirrel/domain/provider/request_service.provider.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
+import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/theming/theme.dart';
 import 'package:squirrel/foundation/utils/logger.util.dart';
@@ -83,19 +83,15 @@ class _AppState extends State<App> {
   GoRouter _appRouter() {
     return GoRouter(
       debugLogDiagnostics: true,
-      navigatorKey:
-          injector.get<GlobalKey<NavigatorState>>(instanceName: 'root'),
+      navigatorKey: injector.get<GlobalKey<NavigatorState>>(),
       initialLocation: '/main',
       redirect: _authRedirect,
       routes: [
-        // Route d'authentification
         GoRoute(
           path: '/auth',
           name: 'auth',
           builder: (context, state) => const AuthScreen(),
         ),
-
-        // Routes protégées
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
             final bool isAuthRoute = state.uri.toString() == '/auth';
@@ -103,7 +99,7 @@ class _AppState extends State<App> {
             return Consumer(
               builder: (context, ref, child) {
                 final RequestState requestState =
-                    ref.watch(requestServiceNotifierProvider);
+                    ref.watch(requestServiceProvider);
 
                 return Scaffold(
                   appBar: !isAuthRoute ? const CustomAppBar() : null,
@@ -208,22 +204,17 @@ class _AppState extends State<App> {
   String? _authRedirect(BuildContext context, GoRouterState state) {
     bool isAuthenticated = false;
 
+    final container = ProviderScope.containerOf(context);
+    final authService = container.read(authServiceProvider);
+
     try {
-      // Vérifier si AuthService est déjà enregistré
-      if (injector.isRegistered<AuthService>()) {
-        isAuthenticated = injector<AuthService>().authState.isUserAuthenticated;
-        logInfo(
-            'AuthService trouvé, état d\'authentification: $isAuthenticated');
-      } else {
-        logInfo(
-            'AuthService non encore enregistré, redirection vers l\'authentification');
-        // Si AuthService n'est pas encore enregistré, considérer l'utilisateur comme non authentifié
-        isAuthenticated = false;
-      }
+      isAuthenticated = authService.value?.isUserAuthenticated ?? false;
     } catch (e) {
-      logException(e, StackTrace.current,
-          'Erreur lors de la vérification de l\'authentification');
-      // En cas d'erreur, considérer l'utilisateur comme non authentifié
+      logException(
+        e,
+        StackTrace.current,
+        'Erreur lors de la vérification de l\'authentification',
+      );
       isAuthenticated = false;
     }
 

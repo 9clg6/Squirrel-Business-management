@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
@@ -10,39 +12,50 @@ part 'auth.view_model.g.dart';
 
 /// [Auth]
 ///
-@riverpod
+@Riverpod(
+  keepAlive: true,
+  dependencies: [
+    AuthService,
+  ],
+)
 class Auth extends _$Auth {
   late final DialogService _dialogService;
   late final NavigatorService _navigatorService;
   late final AuthService _authService;
 
-  /// Constructor
-  ///
-  Auth() {
-    _dialogService = injector<DialogService>();
-    _navigatorService = injector<NavigatorService>();
-    _authService = injector<AuthService>();
-  }
+  bool _isInitialized = false;
 
-  /// Build
-  /// @return [AuthScreenState]
-  ///
   @override
-  AuthScreenState build() => AuthScreenState.initial();
+  AuthScreenState build() {
+    if (!_isInitialized) {
+      log('🔌 Initializing AuthViewModel');
+      _dialogService = injector<DialogService>();
+      _navigatorService = injector<NavigatorService>();
+      _authService = ref.watch(authServiceProvider.notifier);
+      _isInitialized = true;
+    }
+
+    return AuthScreenState.initial(l: false);
+  }
 
   /// Login
   /// @param [licenseKey] license key
-  /// 
+  ///
   Future<void> login(String licenseKey) async {
+    state = state.copyWith(isRequestLoading: true);
     final bool result = await _authService.login(licenseKey);
 
     if (result) {
-      final result = await _dialogService.showUseConditions();
-      if (result == true) {
+      final useConditionsResult = await _dialogService.showUseConditions();
+      if (useConditionsResult == true) {
         _navigatorService.navigateToHome();
+      } else if (useConditionsResult == null) {
+        log('Impossible d\'afficher les conditions d\'utilisation: contexte null');
+        _dialogService.showError(LocaleKeys.impossibleToConnect.tr());
       }
     } else {
       _dialogService.showError(LocaleKeys.impossibleToConnect.tr());
     }
+    state = state.copyWith(isRequestLoading: false);
   }
 }

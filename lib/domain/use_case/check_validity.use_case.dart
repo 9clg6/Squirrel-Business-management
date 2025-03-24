@@ -1,13 +1,27 @@
-import 'package:squirrel/data/repository/auth/authentication.repository.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/data/repository/auth/impl/authentication.repository.impl.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/use_case/abstraction/use_case_abs.dart';
 
-class CheckValidityUseCase implements UseCaseWithParams<Future<CheckValidityEntity>, String> {
+part 'check_validity.use_case.g.dart';
+
+/// [CheckValidityUseCase]
+@Riverpod(
+  dependencies: [
+    AuthenticationRepositoryImpl,
+  ],
+)
+class CheckValidityUseCase extends _$CheckValidityUseCase
+    implements UseCaseWithParams<Future<CheckValidityEntity>, String> {
+  @override
+  CheckValidityUseCase build() {
+    return CheckValidityUseCase();
+  }
+
   /// Authentication repository
-  final AuthenticationRepository _authenticationRepository;
 
   /// Constructor
-  CheckValidityUseCase(this._authenticationRepository);
+  CheckValidityUseCase();
 
   /// Execute use case
   /// @param [params] params
@@ -15,7 +29,7 @@ class CheckValidityUseCase implements UseCaseWithParams<Future<CheckValidityEnti
   ///
   @override
   Future<CheckValidityEntity> execute(String params) async {
-    return await _authenticationRepository.checkValidity(params);
+    return await ref.read(authenticationRepositoryImplProvider.notifier).checkValidity(params);
   }
 
 }

@@ -15,7 +15,7 @@ import 'package:squirrel/ui/screen/order_details/order_details.view_state.dart';
 part 'order_details.view_model.g.dart';
 
 /// [OrderDetailsViewModel]
-@riverpod
+@Riverpod()
 class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Order service
   late final OrderService _orderService;
@@ -30,8 +30,8 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   @override
   OrderDetailsScreenState build() {
-    _orderService = ref.read(orderServiceProvider.notifier);
-    _clientService = ref.read(clientServiceProvider.notifier);
+    _orderService = ref.watch(orderServiceProvider.notifier);
+    _clientService = ref.watch(clientServiceProvider.notifier);
     _dialogService = injector<DialogService>();
 
     return OrderDetailsScreenState.initial();

@@ -16,7 +16,9 @@ part 'index.view_model.g.dart';
 ///
 /// [Index]
 ///
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+)
 class Index extends _$Index {
   bool _isInitialized = false;
   late final OrderService _orderService;
@@ -32,7 +34,9 @@ class Index extends _$Index {
     if (!_isInitialized) {
       _navigatorService = injector<NavigatorService>();
       _dialogService = injector<DialogService>();
-      _orderService = ref.read(orderServiceProvider.notifier);
+
+      _orderService = ref.watch(orderServiceProvider.notifier);
+
       _isInitialized = true;
     }
     final state = ref.watch(orderServiceProvider);

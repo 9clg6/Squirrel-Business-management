@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:squirrel/domain/provider/service_type_service.provider.dart';
+import 'package:squirrel/domain/service/business_type.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
+import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/enums/headers.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
@@ -246,9 +247,8 @@ class _OrdersList extends ConsumerWidget {
     final Index viewModel = ref.read(indexProvider.notifier);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final businessTypeState = ref.watch(businessTypeServiceNotifierProvider);
-    final businessTypeNotifier =
-        ref.read(businessTypeServiceNotifierProvider.notifier);
+    final businessTypeState = ref.watch(businessTypeServiceProvider);
+    final businessTypeNotifier = ref.read(businessTypeServiceProvider.notifier);
 
     return Container(
       decoration: BoxDecoration(
@@ -375,21 +375,29 @@ class _OrdersList extends ConsumerWidget {
                       sortAscending: state.sortAscending,
                       columns: Headers.values
                           .map(
-                            (e) => DataColumn(
-                              label: TextVariant(
-                                e == Headers.store
-                                    ? businessTypeNotifier
-                                        .getServiceTypeWording(
-                                        "x",
-                                        type: businessTypeState,
-                                      )
-                                    : e.label,
-                                variantType: TextVariantType.bodyMedium,
-                              ),
-                              numeric: e.isNumeric,
-                              headingRowAlignment: MainAxisAlignment.center,
-                              onSort: viewModel.sortOrders,
-                            ),
+                            (e) => switch (businessTypeState) {
+                              AsyncData(value: BusinessTypeState()) =>
+                                DataColumn(
+                                  label: TextVariant(
+                                    e == Headers.store
+                                        ? businessTypeNotifier
+                                            .getServiceTypeWording(
+                                            "x",
+                                            type: businessTypeState.value,
+                                          )
+                                        : e.label,
+                                    variantType: TextVariantType.bodyMedium,
+                                  ),
+                                  numeric: e.isNumeric,
+                                  headingRowAlignment: MainAxisAlignment.center,
+                                  onSort: viewModel.sortOrders,
+                                ),
+                              _ => const DataColumn(
+                                  label: Center(
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                ),
+                            },
                           )
                           .toList(),
                       rows: state.orders.map((order) {

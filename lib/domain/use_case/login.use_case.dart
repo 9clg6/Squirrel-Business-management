@@ -1,16 +1,26 @@
-import 'package:squirrel/data/repository/auth/authentication.repository.dart';
+import 'dart:developer';
+
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/data/repository/auth/impl/authentication.repository.impl.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/use_case/abstraction/use_case_abs.dart';
 
-/// [LoginUseCase]
-class LoginUseCase implements UseCaseWithParams<Future<LoginResultEntity>, String> {
-  /// Authentication repository
-  final AuthenticationRepository _authenticationRepository;
+part 'login.use_case.g.dart';
 
-  /// Constructor
-  /// @param [_authenticationRepository] authentication repository
-  ///
-  LoginUseCase(this._authenticationRepository);
+/// [LoginUseCase]
+@Riverpod(
+  dependencies: [
+    AuthenticationRepositoryImpl,
+  ],
+)
+class LoginUseCase extends _$LoginUseCase
+    implements UseCaseWithParams<Future<LoginResultEntity>, String> {
+
+  @override
+  LoginUseCase build() {
+    log('🔌 Initializing LoginUseCase');
+    return LoginUseCase();
+  }
 
   /// Login
   /// @param [licenseKey] license key
@@ -18,6 +28,6 @@ class LoginUseCase implements UseCaseWithParams<Future<LoginResultEntity>, Strin
   ///
   @override
   Future<LoginResultEntity> execute(String licenseKey) async {
-    return await _authenticationRepository.login(licenseKey);
+    return await ref.read(authenticationRepositoryImplProvider.notifier).login(licenseKey);
   }
 }

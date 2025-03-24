@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:squirrel/application/env/env.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
+import 'package:squirrel/data/storage/hive_secure_storage.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
@@ -16,21 +16,27 @@ import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
+
+part 'auth.service.g.dart';
 
 /// [AuthService]
-class AuthService extends StateNotifier<AuthState> {
+@Riverpod(
+  keepAlive: true,
+  dependencies: [
+    RequestService,
+    LoginUseCase,
+    CheckValidityUseCase,
+  ],
+)
+class AuthService extends _$AuthService {
   /// License id key
   static const String _license = 'licenseKey';
 
   /// Navigator key
-  final GlobalKey<NavigatorState> _navigatorKey;
-
-  /// Login use case
-  final LoginUseCase _loginUseCase;
+  late final GlobalKey<NavigatorState> _navigatorKey;
 
   /// Check validity use case
-  final CheckValidityUseCase _checkValidityUseCase;
+  late final CheckValidityUseCase _checkValidityUseCase;
 
   /// Secure storage service
   late final StorageInterface _secureStorageService;
@@ -38,59 +44,32 @@ class AuthService extends StateNotifier<AuthState> {
   /// Request service
   late final RequestService _requestService;
 
-  /// Auth state
-  AuthState get authState => state;
+  /// Is initialized
+  bool _isInitialized = false;
 
+  /// Timer
   Timer? _timer;
 
-  /// Constructor
-  /// @param [_loginUseCase] login use case
-  /// @param [_secureStorageService] secure storage service
-  /// @param [_requestService] request service
-  /// @param [_checkValidityUseCase] check validity use case
+  /// Build
   ///
-  AuthService._(
-    this._loginUseCase,
-    this._checkValidityUseCase,
-    this._secureStorageService,
-    this._requestService,
-    this._navigatorKey,
-  ) : super(AuthState.initial());
+  @override
+  Future<AuthState> build() async {
+    if (!_isInitialized) {
+      log('🔌 Initializing AuthService');
+      _secureStorageService = injector.get<HiveSecureStorage>();
+      _requestService = ref.watch(requestServiceProvider.notifier);
+      _navigatorKey =
+          injector.get<GlobalKey<NavigatorState>>(instanceName: 'root');
+      _checkValidityUseCase = ref.watch(checkValidityUseCaseProvider.notifier);
 
-  /// Inject auth service
-  /// @param [loginUseCase] login use case
-  /// @param [secureStorageService] secure storage service
-  /// @param [requestService] request service
-  /// @param [checkValidityUseCase] check validity use case
-  /// @return [AuthService] auth service
-  ///
-  static Future<AuthService> inject(
-    LoginUseCase loginUseCase,
-    CheckValidityUseCase checkValidityUseCase,
-    StorageInterface secureStorageService,
-    RequestService requestService,
-    GlobalKey<NavigatorState> navigatorKey,
-    EnvService envService,
-  ) async {
-    final authService = AuthService._(
-      loginUseCase,
-      checkValidityUseCase,
-      secureStorageService,
-      requestService,
-      navigatorKey,
-    );
+      _isInitialized = true;
+    }
 
-    await Supabase.initialize(
-      url: envService.supabaseUrl,
-      anonKey: envService.supabaseAnonKey,
-      debug: kDebugMode,
-    );
+    await loadLicense();
+    await checkValidity();
+    _periodicCheckValidity();
 
-    await authService.loadLicense();
-    await authService.checkValidity();
-    authService._periodicCheckValidity();
-
-    return authService;
+    return AuthState.initial();
   }
 
   /// Periodic check validity
@@ -103,8 +82,8 @@ class AuthService extends StateNotifier<AuthState> {
         await checkValidity();
       } on Exception catch (e) {
         log('Error during periodic check validity: $e');
-        if (authState.expirationDate != null &&
-            authState.expirationDate!.isAfter(DateTime.now())) {
+        if (state.value?.expirationDate != null &&
+            state.value!.expirationDate!.isAfter(DateTime.now())) {
           log('License is not valid');
           _setUserAuthenticated(
             false,
@@ -121,13 +100,13 @@ class AuthService extends StateNotifier<AuthState> {
   /// @return [bool] true if expired
   ///
   bool isLicenseExpiredLocally() {
-    if (authState.expirationDate == null) {
+    if (state.value?.expirationDate == null) {
       return true;
     }
 
     // Conversion en UTC pour éviter les problèmes de fuseau horaire
     final DateTime now = DateTime.now().toUtc();
-    final DateTime expirationDate = authState.expirationDate!.toUtc();
+    final DateTime expirationDate = state.value!.expirationDate!.toUtc();
 
     // On crée une date d'expiration qui inclut toute la journée (23:59:59)
     final DateTime endOfExpirationDay = DateTime.utc(
@@ -234,10 +213,18 @@ class AuthService extends StateNotifier<AuthState> {
       log('Date d\'expiration convertie en UTC: $localExpirationDate');
     }
 
-    state = state.copyWith(
-      isUserAuthenticated: isAuthenticated,
-      licenseId: licenseId,
-      expirationDate: localExpirationDate,
+    state = AsyncData(
+      state.hasValue
+          ? state.value!.copyWith(
+              isUserAuthenticated: isAuthenticated,
+              licenseId: licenseId,
+              expirationDate: localExpirationDate,
+            )
+          : AuthState(
+              isUserAuthenticated: false,
+              licenseId: licenseId,
+              expirationDate: expirationDate,
+            ),
     );
   }
 
@@ -261,7 +248,7 @@ class AuthService extends StateNotifier<AuthState> {
     );
 
     final LoginResultEntity loginResult =
-        await _loginUseCase.execute(licenseKey);
+        await ref.read(loginUseCaseProvider.notifier).execute(licenseKey);
 
     if (loginResult.valid) {
       log('Login successful');
@@ -287,7 +274,7 @@ class AuthService extends StateNotifier<AuthState> {
   /// Load license
   /// @return [void]
   ///
-  Future<void> loadLicense() async {
+  Future<(bool, String, DateTime?)?> loadLicense() async {
     final String? license = await _secureStorageService.get(_license);
 
     if (license != null) {
@@ -298,16 +285,31 @@ class AuthService extends StateNotifier<AuthState> {
         log('Chargement de la licence: ${localLicense.licenseKey}');
         log('Date d\'expiration chargée: ${localLicense.expirationDate}');
 
-        _setUserAuthenticated(
-          true,
-          licenseId: localLicense.licenseKey,
-          expirationDate: localLicense.expirationDate,
-        );
+        if (_isInitialized) {
+          _setUserAuthenticated(
+            true,
+            licenseId: localLicense.licenseKey,
+            expirationDate: localLicense.expirationDate,
+          );
+          return null;
+        } else {
+          return (
+            true,
+            localLicense.licenseKey,
+            localLicense.expirationDate,
+          );
+        }
       } catch (e) {
         log('Erreur lors du chargement de la licence: $e');
         // En cas d'erreur, on considère qu'il n'y a pas de licence valide
-        _setUserAuthenticated(false);
+        if (_isInitialized) {
+          _setUserAuthenticated(false);
+        } else {
+          return null;
+        }
       }
     }
+
+    return null;
   }
 }

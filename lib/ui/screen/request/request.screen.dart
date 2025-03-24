@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
-import 'package:squirrel/domain/provider/request_service.provider.dart';
+import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -28,7 +28,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final requestServiceState = ref.watch(requestServiceNotifierProvider);
+    final requestServiceState = ref.watch(requestServiceProvider);
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceDim,

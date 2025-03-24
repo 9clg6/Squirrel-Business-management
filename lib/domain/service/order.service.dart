@@ -16,7 +16,9 @@ import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 part 'order.service.g.dart';
 
 /// [OrderService]
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+)
 class OrderService extends _$OrderService {
   /// Hive service
   late final StorageInterface _hiveService;
@@ -27,12 +29,18 @@ class OrderService extends _$OrderService {
   /// Orders key
   static const ordersKey = 'orders';
 
+  bool _isInitialized = false;
+
   /// Build
   ///
   @override
   Future<OrderState> build() async {
-    _hiveService = injector<HiveSecureStorage>();
-    _clientService = ref.read(clientServiceProvider.notifier);
+    if (!_isInitialized) {
+      log('🔌 Initializing OrderService');
+      _hiveService = injector<HiveSecureStorage>();
+      _clientService = ref.read(clientServiceProvider.notifier);
+      _isInitialized = true;
+    }
     return await _loadOrders();
   }
 

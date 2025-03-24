@@ -9,19 +9,28 @@ class AuthScreenState extends ViewStateAbs {
   /// Loading
   final bool loading;
 
+  final bool isRequestLoading;
+
   /// Constructor
   /// @param [loading] loading
+  /// @param [isRequestLoading] is request loading
   ///
-  AuthScreenState({required this.loading});
+  AuthScreenState({
+    required this.loading,
+    required this.isRequestLoading,
+  });
 
   /// Initial
   ///
-  AuthScreenState.initial() : loading = true;
+  AuthScreenState.initial({bool l = true})
+      : loading = l,
+        isRequestLoading = false;
 
   /// Props
-  /// 
+  ///
   @override
   List<Object?> get props => <Object?>[
         loading,
+        isRequestLoading,
       ];
 }

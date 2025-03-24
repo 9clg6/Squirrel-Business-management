@@ -6,7 +6,9 @@ import 'package:squirrel/ui/screen/history/history.view_state.dart';
 part 'history.view_model.g.dart';
 
 /// [History]
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+)
 class History extends _$History {
   /// Build
   ///

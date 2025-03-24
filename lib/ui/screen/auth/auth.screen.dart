@@ -14,14 +14,16 @@ class AuthScreen extends ConsumerStatefulWidget {
 }
 
 class _AuthScreenState extends ConsumerState<AuthScreen> {
-  bool _isLoading = false;
-
   final _licenseKeyController = TextEditingController();
-
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authProvider);
+
+    if (authState.loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       body: Center(
@@ -56,7 +58,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ),
               ),
               const Gap(20),
-              _isLoading
+              authState.isRequestLoading
                   ? CircularProgressIndicator(
                       backgroundColor: Colors.grey[300],
                       strokeWidth: 4,
@@ -65,11 +67,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                   : FilledButton(
                       onPressed: () async {
                         if (_formKey.currentState!.validate()) {
-                          setState(() => _isLoading = true);
                           await ref
-                              .read(authProvider.notifier)
+                              .watch(authProvider.notifier)
                               .login(_licenseKeyController.text);
-                          setState(() => _isLoading = false);
                         }
                       },
                       child: TextVariant(

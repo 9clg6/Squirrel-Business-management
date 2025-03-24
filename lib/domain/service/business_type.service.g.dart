@@ -1,29 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'request_service.provider.dart';
+part of 'business_type.service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$requestServiceNotifierHash() =>
-    r'f6f231425750eff50a1446dd7cc5f3ba05f1c4d9';
+String _$businessTypeServiceHash() =>
+    r'7997d4e2d49b8000d582879c42c20b688e777d4b';
 
-/// [RequestServiceNotifier]
+/// [BusinessTypeService]
 ///
-/// Copied from [RequestServiceNotifier].
-@ProviderFor(RequestServiceNotifier)
-final requestServiceNotifierProvider =
-    NotifierProvider<RequestServiceNotifier, RequestState>.internal(
-  RequestServiceNotifier.new,
-  name: r'requestServiceNotifierProvider',
+/// Copied from [BusinessTypeService].
+@ProviderFor(BusinessTypeService)
+final businessTypeServiceProvider =
+    AsyncNotifierProvider<BusinessTypeService, BusinessTypeState>.internal(
+  BusinessTypeService.new,
+  name: r'businessTypeServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$requestServiceNotifierHash,
+      : _$businessTypeServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$RequestServiceNotifier = Notifier<RequestState>;
+typedef _$BusinessTypeService = AsyncNotifier<BusinessTypeState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
