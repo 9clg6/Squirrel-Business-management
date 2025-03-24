@@ -6,7 +6,7 @@ part of 'order.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$orderServiceHash() => r'1d7d3ddc2e9caac6176eb3879e1c529b6cbd3f47';
+String _$orderServiceHash() => r'ce03094e461d99477f21666c631edc36c5cdd149';
 
 /// [OrderService]
 ///
@@ -18,8 +18,16 @@ final orderServiceProvider =
   name: r'orderServiceProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$orderServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[
+    hiveSecureStorageServiceProvider,
+    clientServiceProvider
+  ],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    hiveSecureStorageServiceProvider,
+    ...?hiveSecureStorageServiceProvider.allTransitiveDependencies,
+    clientServiceProvider,
+    ...?clientServiceProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$OrderService = AsyncNotifier<OrderState>;

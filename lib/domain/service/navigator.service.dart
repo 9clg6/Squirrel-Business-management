@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/foundation/enums/router.enum.dart';
 
 /// Navigator service
 class NavigatorService {
@@ -18,7 +19,7 @@ class NavigatorService {
   ///
   void navigateToDetails(Order order) {
     navigatorKey.currentContext?.goNamed(
-      'order-details',
+      RouterEnum.orderDetails.name,
       pathParameters: {'orderId': order.id},
       extra: order,
     );
@@ -27,17 +28,15 @@ class NavigatorService {
   /// Navigate to home
   ///
   Future<void> navigateToHome() async {
-    // Vérifier si le contexte est déjà sur l'écran principal pour éviter des navigations inutiles
     final BuildContext? context = navigatorKey.currentContext;
     if (context != null) {
       final String currentRoute = GoRouterState.of(context).matchedLocation;
       
-      // Si déjà sur la page d'accueil, ne pas naviguer à nouveau
-      if (currentRoute == '/main') {
+      if (currentRoute == RouterEnum.main.name) {
         return;
       }
       
-      context.goNamed('main');
+      context.goNamed(RouterEnum.main.name);
     }
   }
 

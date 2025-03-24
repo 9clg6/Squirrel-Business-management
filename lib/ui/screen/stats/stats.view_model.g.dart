@@ -6,7 +6,7 @@ part of 'stats.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$statsViewModelHash() => r'8823e521c44f20f5d6f5471dfecfe52dee8dc4f8';
+String _$statsViewModelHash() => r'17c1c61241b15df88638c58647564c48df578028';
 
 /// [StatsViewModel]
 ///
@@ -19,8 +19,11 @@ final statsViewModelProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$statsViewModelHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[orderServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    orderServiceProvider,
+    ...?orderServiceProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$StatsViewModel = Notifier<StatsScreenState>;

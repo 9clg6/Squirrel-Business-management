@@ -1,7 +1,6 @@
 import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
@@ -10,7 +9,11 @@ import 'package:squirrel/foundation/localizations/localizations.dart';
 part 'business_type.service.g.dart';
 
 /// [BusinessTypeService]
-@Riverpod(keepAlive: true)
+@Riverpod(
+  dependencies: [
+    HiveSecureStorageService,
+  ],
+)
 class BusinessTypeService extends _$BusinessTypeService {
   /// Key for secure storage
   static const String _businessTypeKey = "business_type";
@@ -26,7 +29,7 @@ class BusinessTypeService extends _$BusinessTypeService {
   Future<BusinessTypeState> build() async {
     if (!_isInitialized) {
       log('🔌 Initializing BusinessTypeService');
-      _storageService = injector<HiveSecureStorageService>();
+      _storageService = ref.watch(hiveSecureStorageServiceProvider.notifier);
       _isInitialized = true;
     }
 
@@ -41,6 +44,7 @@ class BusinessTypeService extends _$BusinessTypeService {
   }
 
   /// Invert service type
+  /// @return [void] void
   ///
   void invertServiceType() {
     late BusinessType type;
@@ -63,6 +67,7 @@ class BusinessTypeService extends _$BusinessTypeService {
 
   /// Save business type
   /// @param [type] business type
+  /// @return [void] void
   ///
   void _saveBusinessType(BusinessType type) {
     _storageService.set(
@@ -73,6 +78,7 @@ class BusinessTypeService extends _$BusinessTypeService {
 
   /// Get service type wording
   /// @param [key] key of the translation
+  /// @param [type] business type
   /// @return Associated and corresponding translation for associated service type
   ///
   String getServiceTypeWording(

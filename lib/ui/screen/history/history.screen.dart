@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/headers.enum.dart';
+import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/utils/util.dart';
@@ -148,7 +149,7 @@ class _OrdersList extends ConsumerWidget {
                             onSelectChanged: (bool? value) {
                               if (context.mounted) {
                                 context.pushNamed(
-                                  'order-details',
+                                  RouterEnum.orderDetails.name,
                                   pathParameters: {'orderId': order.id},
                                   extra: order,
                                 );
@@ -227,7 +228,7 @@ class _OrdersList extends ConsumerWidget {
                                     onPressed: () {
                                       if (context.mounted) {
                                         context.pushNamed(
-                                          'order-details',
+                                          RouterEnum.orderDetails.name,
                                           pathParameters: {'orderId': order.id},
                                           extra: order,
                                         );

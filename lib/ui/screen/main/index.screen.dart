@@ -7,6 +7,7 @@ import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/enums/headers.enum.dart';
+import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/foundation/utils/util.dart';
@@ -425,7 +426,7 @@ class _OrdersList extends ConsumerWidget {
                             } else {
                               if (context.mounted) {
                                 context.pushNamed(
-                                  'order-details',
+                                  RouterEnum.orderDetails.name,
                                   pathParameters: {'orderId': order.id},
                                   extra: order,
                                 );

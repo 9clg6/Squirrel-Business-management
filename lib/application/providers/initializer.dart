@@ -3,13 +3,11 @@ import 'package:injectable/injectable.dart';
 import 'package:squirrel/application/config/app_config.dart';
 import 'package:squirrel/application/providers/initializer.config.dart';
 
-///
 /// The injector instance
-///
 final GetIt injector = GetIt.instance;
 
-///
 /// Setup injector
+/// @return [Future<GetIt>] injector
 ///
 @InjectableInit(
   ignoreUnregisteredTypes: <Type>[
@@ -17,5 +15,5 @@ final GetIt injector = GetIt.instance;
   ],
 )
 Future<GetIt> initializeInjections() async {
-  return await GetIt.I.init();
+  return GetIt.I.init();
 }

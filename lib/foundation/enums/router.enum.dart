@@ -5,6 +5,11 @@ enum RouterEnum {
   orderDetails('/order-details', 'orderDetails'),
   orderCreate('/order-create', 'orderCreate'),
   orderEdit('/order-edit', 'orderEdit'),
+  todo('/todo', 'todo'),
+  stats('/stats', 'stats'),
+  planner('/planner', 'planner'),
+  clients('/clients', 'clients'),
+  history('/history', 'history'),
   orderDelete('/order-delete', 'orderDelete');
 
   /// Enum for the routes.

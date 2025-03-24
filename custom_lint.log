@@ -3718,3 +3718,180 @@ at:
 [_ProviderDependenciesFix] 2025-03-21T21:05:20.005378 #18     _Timer._handleMessage (dart:isolate-patch/timer_impl.dart:429:5)
 [_ProviderDependenciesFix] 2025-03-21T21:05:20.005378 #19     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:184:12)
 [_ProviderDependenciesFix] 2025-03-21T21:05:20.005378
+The request analysis.updateContent failed with the following error:
+RequestErrorCode.PLUGIN_ERROR
+A request threw the exception:PathNotFoundException(path=/Users/clement/Developer/aiir_gestion/lib/application/injection/domain.module.dart; message=Cannot retrieve modification time)
+#0      _PhysicalFile.modificationStamp (package:analyzer/file_system/physical_file_system.dart:118:7)
+#1      _OverlayFile.modificationStamp (package:analyzer/file_system/overlay_file_system.dart:142:18)
+#2      FileSource.contentsFromFile (package:analyzer/source/file_source.dart:56:12)
+#3      FileSource.contents (package:analyzer/source/file_source.dart:43:12)
+#4      ExpectLint.run (package:custom_lint_builder/src/expect_lint.dart:37:23)
+#5      _ClientAnalyzerPlugin.analyzeFile.<anonymous closure> (package:custom_lint_builder/src/client.dart:977:41)
+<asynchronous suspension>
+#6      _ClientAnalyzerPlugin._runOperation (package:custom_lint_builder/src/client.dart:1094:14)
+<asynchronous suspension>
+#7      _ClientAnalyzerPlugin.analyzeFile (package:custom_lint_builder/src/client.dart:931:5)
+<asynchronous suspension>
+#8      ServerPlugin.analyzeFiles (package:analyzer_plugin/plugin/plugin.dart:111:9)
+<asynchronous suspension>
+#9      ServerPlugin.handleAffectedFiles (package:analyzer_plugin/plugin/plugin.dart:212:5)
+<asynchronous suspension>
+#10     ServerPlugin.contentChanged.<anonymous closure> (package:analyzer_plugin/plugin/plugin.dart:142:9)
+<asynchronous suspension>
+#11     ServerPlugin._forAnalysisContexts (package:analyzer_plugin/plugin/plugin.dart:508:9)
+<asynchronous suspension>
+#12     ServerPlugin.contentChanged (package:analyzer_plugin/plugin/plugin.dart:137:7)
+<asynchronous suspension>
+#13     ServerPlugin.handleAnalysisUpdateContent (package:analyzer_plugin/plugin/plugin.dart:351:5)
+<asynchronous suspension>
+#14     ServerPlugin._getResponse (package:analyzer_plugin/plugin/plugin.dart:546:18)
+<asynchronous suspension>
+#15     ServerPlugin._onRequest (package:analyzer_plugin/plugin/plugin.dart:597:18)
+<asynchronous suspension>
+
+at:
+#0      SocketCustomLintServerToClientChannel.sendCustomLintRequest.<anonymous closure> (package:custom_lint/src/v2/server_to_client_channel.dart:268:11)
+#1      _$CustomLintResponseAnalyzerPluginResponseImpl.map (package:custom_lint/src/v2/protocol.freezed.dart:928:34)
+#2      SocketCustomLintServerToClientChannel.sendCustomLintRequest (package:custom_lint/src/v2/server_to_client_channel.dart:262:14)
+<asynchronous suspension>
+#3      SocketCustomLintServerToClientChannel.sendAnalyzerPluginRequest (package:custom_lint/src/v2/server_to_client_channel.dart:234:22)
+<asynchronous suspension>
+#4      CustomLintServer._handleRequest.<anonymous closure>.<anonymous closure> (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:190:17)
+<asynchronous suspension>
+#5      PendingOperation.run (package:custom_lint/src/async_operation.dart:22:14)
+<asynchronous suspension>
+#6      CustomLintServer._handleRequest (package:custom_lint/src/v2/custom_lint_analyzer_plugin.dart:173:22)
+<asynchronous suspension>
+
+[IgnoreCode] 2025-03-24T18:48:24.682021 Plugin IgnoreCode threw while analyzing /Users/clement/Developer/aiir_gestion/lib/domain/use_case/get_theme.use_case.dart:
+[IgnoreCode] 2025-03-24T18:48:24.682021 InconsistentAnalysisException: Requested result might be inconsistent with previously returned results
+[IgnoreCode] 2025-03-24T18:48:24.682021
+[IgnoreCode] 2025-03-24T18:48:24.682021 #0      AnalysisSessionImpl.checkConsistency (package:analyzer/src/dart/analysis/session.dart:61:7)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #1      AnalysisSessionImpl.getResolvedUnit (package:analyzer/src/dart/analysis/session.dart:160:5)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #2      ChangeBuilderImpl._createDartFileEditBuilder (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:320:33)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #3      ChangeBuilderImpl.addDartFileEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:153:23)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #4      ChangeBuilderImpl.addDartFileEdit.<anonymous closure> (package:custom_lint_core/src/change_reporter.dart:241:35)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #5      new Future.<anonymous closure> (dart:async/future.dart:258:40)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #6      _rootRun (dart:async/zone.dart:1406:47)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #7      _CustomZone.run (dart:async/zone.dart:1317:19)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #8      _CustomZone.runGuarded (dart:async/zone.dart:1225:7)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #9      _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1265:23)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #10     _rootRun (dart:async/zone.dart:1414:13)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #11     _CustomZone.run (dart:async/zone.dart:1317:19)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #12     _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:1249:23)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #13     Timer._createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:18:15)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #14     _Timer._runTimers (dart:isolate-patch/timer_impl.dart:398:19)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #15     _Timer._handleMessage (dart:isolate-patch/timer_impl.dart:429:5)
+[IgnoreCode] 2025-03-24T18:48:24.682021 #16     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:184:12)
+[IgnoreCode] 2025-03-24T18:48:24.682021
+[IgnoreCode] 2025-03-24T18:48:24.687325 Plugin IgnoreCode threw while analyzing /Users/clement/Developer/aiir_gestion/lib/domain/use_case/get_theme.use_case.dart:
+[IgnoreCode] 2025-03-24T18:48:24.687325 InconsistentAnalysisException: Requested result might be inconsistent with previously returned results
+[IgnoreCode] 2025-03-24T18:48:24.687325
+[IgnoreCode] 2025-03-24T18:48:24.687325 #0      AnalysisSessionImpl.checkConsistency (package:analyzer/src/dart/analysis/session.dart:61:7)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #1      AnalysisSessionImpl.getResolvedUnit (package:analyzer/src/dart/analysis/session.dart:160:5)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #2      ChangeBuilderImpl._createDartFileEditBuilder (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:320:33)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #3      ChangeBuilderImpl.addDartFileEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:153:23)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #4      ChangeBuilderImpl.addDartFileEdit.<anonymous closure> (package:custom_lint_core/src/change_reporter.dart:241:35)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #5      new Future.<anonymous closure> (dart:async/future.dart:258:40)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #6      _rootRun (dart:async/zone.dart:1406:47)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #7      _CustomZone.run (dart:async/zone.dart:1317:19)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #8      _CustomZone.runGuarded (dart:async/zone.dart:1225:7)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #9      _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1265:23)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #10     _rootRun (dart:async/zone.dart:1414:13)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #11     _CustomZone.run (dart:async/zone.dart:1317:19)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #12     _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:1249:23)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #13     Timer._createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:18:15)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #14     _Timer._runTimers (dart:isolate-patch/timer_impl.dart:398:19)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #15     _Timer._handleMessage (dart:isolate-patch/timer_impl.dart:429:5)
+[IgnoreCode] 2025-03-24T18:48:24.687325 #16     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:184:12)
+[IgnoreCode] 2025-03-24T18:48:24.687325
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 Plugin AddBuildMethodFix threw while analyzing /Users/clement/Developer/aiir_gestion/lib/domain/use_case/get_theme.use_case.dart:
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 InconsistentAnalysisException: Requested result might be inconsistent with previously returned results
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #0      AnalysisSessionImpl.checkConsistency (package:analyzer/src/dart/analysis/session.dart:61:7)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #1      AnalysisSessionImpl.getResolvedUnit (package:analyzer/src/dart/analysis/session.dart:160:5)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #2      ChangeBuilderImpl._createDartFileEditBuilder (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:320:33)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #3      ChangeBuilderImpl.addDartFileEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:153:23)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #4      ChangeBuilderImpl.addDartFileEdit.<anonymous closure> (package:custom_lint_core/src/change_reporter.dart:241:35)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #5      new Future.<anonymous closure> (dart:async/future.dart:258:40)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #6      _rootRun (dart:async/zone.dart:1406:47)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #7      _CustomZone.run (dart:async/zone.dart:1317:19)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #8      _CustomZone.runGuarded (dart:async/zone.dart:1225:7)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #9      _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1265:23)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #10     _rootRun (dart:async/zone.dart:1414:13)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #11     _CustomZone.run (dart:async/zone.dart:1317:19)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #12     _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:1249:23)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #13     Timer._createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:18:15)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #14     _Timer._runTimers (dart:isolate-patch/timer_impl.dart:398:19)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #15     _Timer._handleMessage (dart:isolate-patch/timer_impl.dart:429:5)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637 #16     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:184:12)
+[AddBuildMethodFix] 2025-03-24T18:48:24.687637
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 Plugin _ProviderDependenciesFix threw while analyzing /Users/clement/Developer/aiir_gestion/lib/domain/use_case/get_theme.use_case.dart:
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 ConflictingEditException: {"offset":557,"length":96,"replacement":"[PreferencesRepositoryImpl]"} conflicts with {"offset":557,"length":96,"replacement":"[PreferencesRepositoryImpl]"}
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #0      addEditForSource (package:analyzer_plugin/src/protocol/protocol_internal.dart:77:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #1      SourceFileEdit.add (package:analyzer_plugin/protocol/protocol_common.dart:3778:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #2      FileEditBuilderImpl._addEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:623:14)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #3      FileEditBuilderImpl._addEditBuilder (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:638:5)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #4      FileEditBuilderImpl.addSimpleReplacement (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:580:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #5      _ProviderDependenciesFix.run.<anonymous closure>.<anonymous closure> (package:riverpod_lint/src/lints/provider_dependencies.dart:205:17)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #6      ChangeBuilderImpl.addDartFileEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:169:26)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #7      ChangeBuilderImpl.addDartFileEdit.<anonymous closure> (package:custom_lint_core/src/change_reporter.dart:241:35)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #8      new Future.<anonymous closure> (dart:async/future.dart:258:40)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #9      _rootRun (dart:async/zone.dart:1406:47)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #10     _CustomZone.run (dart:async/zone.dart:1317:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #11     _CustomZone.runGuarded (dart:async/zone.dart:1225:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #12     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1265:23)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #13     _rootRun (dart:async/zone.dart:1414:13)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #14     _CustomZone.run (dart:async/zone.dart:1317:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #15     _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:1249:23)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #16     Timer._createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:18:15)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #17     _Timer._runTimers (dart:isolate-patch/timer_impl.dart:398:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #18     _Timer._handleMessage (dart:isolate-patch/timer_impl.dart:429:5)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048 #19     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:184:12)
+[_ProviderDependenciesFix] 2025-03-24T18:55:47.929048
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 Plugin _ProviderDependenciesFix threw while analyzing /Users/clement/Developer/aiir_gestion/lib/domain/use_case/get_theme.use_case.dart:
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 ConflictingEditException: {"offset":557,"length":96,"replacement":"[PreferencesRepositoryImpl]"} conflicts with {"offset":557,"length":96,"replacement":"[PreferencesRepositoryImpl]"}
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #0      addEditForSource (package:analyzer_plugin/src/protocol/protocol_internal.dart:77:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #1      SourceFileEdit.add (package:analyzer_plugin/protocol/protocol_common.dart:3778:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #2      FileEditBuilderImpl._addEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:623:14)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #3      FileEditBuilderImpl._addEditBuilder (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:638:5)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #4      FileEditBuilderImpl.addSimpleReplacement (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:580:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #5      _ProviderDependenciesFix.run.<anonymous closure>.<anonymous closure> (package:riverpod_lint/src/lints/provider_dependencies.dart:205:17)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #6      ChangeBuilderImpl.addDartFileEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:169:26)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #7      ChangeBuilderImpl.addDartFileEdit.<anonymous closure> (package:custom_lint_core/src/change_reporter.dart:241:35)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #8      new Future.<anonymous closure> (dart:async/future.dart:258:40)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #9      _rootRun (dart:async/zone.dart:1406:47)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #10     _CustomZone.run (dart:async/zone.dart:1317:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #11     _CustomZone.runGuarded (dart:async/zone.dart:1225:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #12     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1265:23)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #13     _rootRun (dart:async/zone.dart:1414:13)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #14     _CustomZone.run (dart:async/zone.dart:1317:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #15     _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:1249:23)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #16     Timer._createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:18:15)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #17     _Timer._runTimers (dart:isolate-patch/timer_impl.dart:398:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #18     _Timer._handleMessage (dart:isolate-patch/timer_impl.dart:429:5)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542 #19     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:184:12)
+[_ProviderDependenciesFix] 2025-03-24T18:55:51.746542
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 Plugin _ProviderDependenciesFix threw while analyzing /Users/clement/Developer/aiir_gestion/lib/domain/use_case/get_theme.use_case.dart:
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 ConflictingEditException: {"offset":557,"length":96,"replacement":"[PreferencesRepositoryImpl]"} conflicts with {"offset":557,"length":96,"replacement":"[PreferencesRepositoryImpl]"}
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #0      addEditForSource (package:analyzer_plugin/src/protocol/protocol_internal.dart:77:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #1      SourceFileEdit.add (package:analyzer_plugin/protocol/protocol_common.dart:3778:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #2      FileEditBuilderImpl._addEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:623:14)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #3      FileEditBuilderImpl._addEditBuilder (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:638:5)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #4      FileEditBuilderImpl.addSimpleReplacement (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:580:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #5      _ProviderDependenciesFix.run.<anonymous closure>.<anonymous closure> (package:riverpod_lint/src/lints/provider_dependencies.dart:205:17)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #6      ChangeBuilderImpl.addDartFileEdit (package:analyzer_plugin/src/utilities/change_builder/change_builder_core.dart:169:26)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #7      ChangeBuilderImpl.addDartFileEdit.<anonymous closure> (package:custom_lint_core/src/change_reporter.dart:241:35)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #8      new Future.<anonymous closure> (dart:async/future.dart:258:40)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #9      _rootRun (dart:async/zone.dart:1406:47)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #10     _CustomZone.run (dart:async/zone.dart:1317:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #11     _CustomZone.runGuarded (dart:async/zone.dart:1225:7)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #12     _CustomZone.bindCallbackGuarded.<anonymous closure> (dart:async/zone.dart:1265:23)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #13     _rootRun (dart:async/zone.dart:1414:13)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #14     _CustomZone.run (dart:async/zone.dart:1317:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #15     _CustomZone.bindCallback.<anonymous closure> (dart:async/zone.dart:1249:23)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #16     Timer._createTimer.<anonymous closure> (dart:async-patch/timer_patch.dart:18:15)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #17     _Timer._runTimers (dart:isolate-patch/timer_impl.dart:398:19)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #18     _Timer._handleMessage (dart:isolate-patch/timer_impl.dart:429:5)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601 #19     _RawReceivePort._handleMessage (dart:isolate-patch/isolate_patch.dart:184:12)
+[_ProviderDependenciesFix] 2025-03-24T18:55:53.405601

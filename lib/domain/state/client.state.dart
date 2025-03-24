@@ -18,13 +18,13 @@ class ClientState with EquatableMixin {
   });
 
   /// Initial
+  /// @param clients: List<Client>
   ///
   ClientState.initial({
     this.clients = const [],
   });
 
   /// Props
-  ///
   @override
   List<Object?> get props => [
         clients,

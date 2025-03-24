@@ -6,7 +6,7 @@ part of 'index.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$indexHash() => r'7f62bc3d23ba50e288ba1f07d998f8aed3f62f27';
+String _$indexHash() => r'829c846c5ee6e2d0f9c367d2feddb855308e4053';
 
 ///
 /// [Index]
@@ -19,8 +19,11 @@ final indexProvider = NotifierProvider<Index, IndexScreenState>.internal(
   name: r'indexProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$indexHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[orderServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    orderServiceProvider,
+    ...?orderServiceProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$Index = Notifier<IndexScreenState>;

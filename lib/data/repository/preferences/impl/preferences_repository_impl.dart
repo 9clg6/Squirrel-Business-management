@@ -1,29 +1,48 @@
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/data/local_data_source/preferences/impl/preferences_local.data_source.impl.dart';
 import 'package:squirrel/data/local_data_source/preferences/preferences_local.data_source.dart';
 import 'package:squirrel/data/repository/preferences/preferences.repository.dart';
 import 'package:squirrel/foundation/enums/theme_appareance.enum.dart';
 
-///
+part 'preferences_repository_impl.g.dart';
+
 /// [PreferencesRepositoryImpl]
-///
-class PreferencesRepositoryImpl implements PreferencesRepository {
+@Riverpod(
+  dependencies: [
+    PreferencesLocalDataSourcesImpl,
+  ],
+)
+class PreferencesRepositoryImpl extends _$PreferencesRepositoryImpl
+    implements PreferencesRepository {
   /// Preferences local data source
-  final PreferencesLocalDataSource _localDataSource;
+  late final PreferencesLocalDataSource _localDataSource;
 
-  ///
   /// Constructor
+  /// @param [localDataSource] preferences local data source
   ///
-  PreferencesRepositoryImpl(this._localDataSource);
+  PreferencesRepositoryImpl._(this._localDataSource);
+  PreferencesRepositoryImpl();
 
+  /// Build
+  /// @return [PreferencesRepositoryImpl] preferences repository impl
   ///
+  @override
+  PreferencesRepositoryImpl build() {
+    return PreferencesRepositoryImpl._(
+        ref.read(preferencesLocalDataSourcesImplProvider));
+  }
+
   /// Change theme
+  /// @param [newThemeAppearance] new theme appearance
+  /// @return [Future<void>] void
   ///
   @override
   Future<void> changeTheme(ThemeAppearance newThemeAppearance) async {
     await _localDataSource.saveTheme(newThemeAppearance.name);
   }
 
-  ///
   /// Get current theme
+  /// @return [Future<ThemeAppearance>] current theme
   ///
   @override
   Future<ThemeAppearance> getCurrentTheme() async {
@@ -39,9 +58,9 @@ class PreferencesRepositoryImpl implements PreferencesRepository {
         return ThemeAppearance.system;
     }
   }
-  
-  ///
+
   /// Clear preferences
+  /// @return [Future<void>] void
   ///
   @override
   Future<void> clearPreferences() {

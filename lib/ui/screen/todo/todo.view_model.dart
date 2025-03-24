@@ -12,6 +12,9 @@ part 'todo.view_model.g.dart';
 /// [TodoViewModel]
 @Riverpod(
   keepAlive: true,
+  dependencies: [
+    OrderService,
+  ],
 )
 class TodoViewModel extends _$TodoViewModel {
   bool _isInitialized = false;

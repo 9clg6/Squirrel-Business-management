@@ -6,6 +6,7 @@ import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 
 part 'order.state.g.dart';
 
+/// [OrderState]
 @CopyWith()
 class OrderState with EquatableMixin {
   /// Orders
@@ -25,12 +26,20 @@ class OrderState with EquatableMixin {
     required this.isLoading,
   });
 
+  /// Get props
+  /// @return [List<Object?>] props
+  ///
   @override
   List<Object?> get props => [
         orders,
         isLoading,
       ];
+}
 
+extension OrderStateX on OrderState {
+  /// Ended orders
+  /// @return [List<Order>] ended orders
+  ///
   List<Order> get endedOrders => orders
       .where((order) => [
             OrderStatus.finished,
@@ -40,6 +49,7 @@ class OrderState with EquatableMixin {
       .toList();
 
   /// Running orders
+  /// @return [List<Order>] running orders
   ///
   List<Order> get runningOrder => orders
       .where((order) => ![

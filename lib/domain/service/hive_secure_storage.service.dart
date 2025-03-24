@@ -1,65 +1,187 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/service/secure_storage.service.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
-///
+part 'hive_secure_storage.service.g.dart';
+
 /// [HiveSecureStorageService]
-///
+@Riverpod(
+  keepAlive: true,
+  dependencies: [
+    SecureStorageService,
+  ],
+)
+
 /// Use it when you want to save secured data that won't be backed up by the system.
-class HiveSecureStorageService implements StorageInterface<String?> {
-  final Box<String> _box;
+class HiveSecureStorageService extends _$HiveSecureStorageService
+    implements StorageInterface<String?> {
+  /// Box
+  Box<String>? _box;
 
-  static String get _boxName => r'hive_local_storage';
+  /// Box name
+  static const String _boxName = 'hive_local_storage';
 
-  HiveSecureStorageService._(this._box);
+  /// Is initialized
+  bool _isInitialized = false;
 
-  /// Static method to create a new instance of [HiveSecureStorageService]
-  static Future<HiveSecureStorageService> inject(
-    SecureStorageService secureStorageService,
-  ) async {
-    return HiveSecureStorageService._(
-      await Hive.openBox<String>(
+  /// Encryption key
+  String? _encryptionKey;
+
+  /// Build
+  /// @return [Future<HiveSecureStorageService>] hive secure storage service
+  ///
+  @override
+  Future<HiveSecureStorageService> build() async {
+    if (_isInitialized && _box != null) {
+      return this;
+    }
+
+    await _initialize();
+    return this;
+  }
+
+  Future<void> _initialize() async {
+    if (_isInitialized) return;
+    
+    log('🔌 Initializing HiveSecureStorageService');
+    
+    try {
+      _encryptionKey = await ref.read(secureStorageServiceProvider.future);
+      await _openBox();
+      _isInitialized = true;
+      log('🔌 HiveSecureStorageService initialized successfully');
+    } catch (e) {
+      log('Erreur lors de l\'initialisation de HiveSecureStorageService: $e');
+      rethrow;
+    }
+  }
+
+  Future<void> _openBox() async {
+    if (_box != null && _box!.isOpen) return;
+
+    try {
+      _box = await Hive.openBox<String>(
         _boxName,
-        encryptionCipher:
-            HiveAesCipher(_keyFromString(secureStorageService.key)),
+        encryptionCipher: HiveAesCipher(
+          base64Decode(_encryptionKey!),
+        ),
+      );
+    } catch (e) {
+      if (e.toString().contains('corrupted')) {
+        await _handleCorruptedBox();
+      } else {
+        rethrow;
+      }
+    }
+  }
+
+  Future<void> _handleCorruptedBox() async {
+    log('Suppression de la boîte corrompue');
+    final directory = await getApplicationDocumentsDirectory();
+    final boxPath = Directory('${directory.path}/hive/$_boxName');
+    if (await boxPath.exists()) {
+      await boxPath.delete(recursive: true);
+    }
+    
+    _box = await Hive.openBox<String>(
+      _boxName,
+      encryptionCipher: HiveAesCipher(
+        base64Decode(_encryptionKey!),
       ),
     );
   }
 
-  /// Get list of int from [encryptionKey]
-  static List<int> _keyFromString(String encryptionKey) {
-    String key = encryptionKey;
-    if (key.length > 32) {
-      key = key.substring(0, 32);
-    } else if (key.length < 32) {
-      key = key + key.substring(0, 32 - key.length);
+  /// Ensure box is initialized and return it
+  Future<Box<String>> _ensureBox() async {
+    if (!_isInitialized || _box == null || !_box!.isOpen) {
+      await _initialize();
     }
-    return utf8.encode(key);
+    return _box!;
   }
 
   /// Get data from storage
   @override
-  Future<String?> get(String key) async => _box.get(key);
+  Future<String?> get(String key) async {
+    try {
+      final box = await _ensureBox();
+      return box.get(key);
+    } catch (e) {
+      log('Erreur lors de la récupération de la donnée: $e');
+      return null;
+    }
+  }
 
-  ///
+  /// Delete all data from storage
   @override
-  Future<void> deleteAll() => _box.deleteFromDisk();
+  Future<void> deleteAll() async {
+    try {
+      final box = await _ensureBox();
+      await box.deleteFromDisk();
+    } catch (e) {
+      log('Erreur lors de la suppression des données: $e');
+    }
+  }
 
-  ///
+  /// Clear all data from storage
   @override
-  Future<void> clearAll() => _box.clear();
+  Future<void> clearAll() async {
+    try {
+      final box = await _ensureBox();
+      await box.clear();
+    } catch (e) {
+      log('Erreur lors du nettoyage des données: $e');
+    }
+  }
 
+  /// Contains key
   @override
-  Future<bool> contains(String key) async => _box.containsKey(key);
+  Future<bool> contains(String key) async {
+    try {
+      final box = await _ensureBox();
+      return box.containsKey(key);
+    } catch (e) {
+      log('Erreur lors de la vérification de la clé: $e');
+      return false;
+    }
+  }
 
+  /// Get all data from storage
   @override
-  Future<List<String?>> getAll() async => _box.values.toList();
+  Future<List<String?>> getAll() async {
+    try {
+      final box = await _ensureBox();
+      return box.values.toList();
+    } catch (e) {
+      log('Erreur lors de la récupération des données: $e');
+      return [];
+    }
+  }
 
+  /// Remove key
   @override
-  Future<void> remove(String key) => _box.delete(key);
+  Future<void> remove(String key) async {
+    try {
+      final box = await _ensureBox();
+      await box.delete(key);
+    } catch (e) {
+      log('Erreur lors de la suppression de la clé: $e');
+    }
+  }
 
+  /// Set key
   @override
-  Future<void> set(String key, String value) => _box.put(key, value);
+  Future<void> set(String key, String value) async {
+    try {
+      final box = await _ensureBox();
+      await box.put(key, value);
+    } catch (e) {
+      log('Erreur lors de l\'enregistrement de la donnée: $e');
+    }
+  }
 }

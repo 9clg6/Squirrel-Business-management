@@ -14,11 +14,17 @@ part 'authentication.data_source.impl.g.dart';
 )
 class AuthenticationDataSourceImpl extends _$AuthenticationDataSourceImpl
     implements AuthenticationDataSource {
+  /// Injector
+  ///
   @override
   AuthenticationDataSourceImpl build() {
     return AuthenticationDataSourceImpl();
   }
 
+  /// Login
+  /// @param [licenseKey] license key
+  /// @return [Future<LoginResultRemoteModel>] login result remote model
+  ///
   @override
   Future<LoginResultRemoteModel> login(String licenseKey) async {
     try {

@@ -6,7 +6,7 @@ part of 'clients.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$clientsHash() => r'3df4ce8228c29997c925f851d253c232aea89216';
+String _$clientsHash() => r'93f8fd1107b42ab08a1d5facb7e74bae41137f26';
 
 /// [Clients]
 ///
@@ -17,8 +17,11 @@ final clientsProvider = NotifierProvider<Clients, ClientsScreenState>.internal(
   name: r'clientsProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$clientsHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[clientServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    clientServiceProvider,
+    ...?clientServiceProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$Clients = Notifier<ClientsScreenState>;

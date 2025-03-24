@@ -9,7 +9,12 @@ import 'package:squirrel/ui/screen/clients/clients.view_state.dart';
 part 'clients.view_model.g.dart';
 
 /// [Clients]
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+  dependencies: [
+    ClientService
+  ],
+)
 class Clients extends _$Clients {
   bool _isInitialized = false;
   late final DialogService _dialogService;

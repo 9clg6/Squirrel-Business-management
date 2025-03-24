@@ -7,10 +7,9 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
-import 'package:squirrel/data/storage/hive_secure_storage.dart';
-import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
+import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
@@ -26,68 +25,63 @@ part 'auth.service.g.dart';
     RequestService,
     LoginUseCase,
     CheckValidityUseCase,
+    HiveSecureStorageService,
   ],
 )
 class AuthService extends _$AuthService {
-  /// License id key
   static const String _license = 'licenseKey';
-
-  /// Navigator key
   late final GlobalKey<NavigatorState> _navigatorKey;
-
-  /// Check validity use case
   late final CheckValidityUseCase _checkValidityUseCase;
-
-  /// Secure storage service
   late final StorageInterface _secureStorageService;
-
-  /// Request service
   late final RequestService _requestService;
-
-  /// Timer
   Timer? _timer;
+  bool _isInitialized = false;
+  LoginResultLocalModel? _cachedLicense;
+  DateTime? _lastValidityCheck;
 
   /// Build
   ///
   @override
   Future<AuthState> build() async {
-    _initDependencies();
-    
-    // Définir un état initial "en cours de chargement" avec isInitialized = false
-    state = AsyncData(AuthState.initial(isInitialized: false));
-    
-    // Charger l'utilisateur de manière asynchrone
-    await loadUser();
-    
+    if (!_isInitialized) {
+      await _initializeServices();
+    }
     return state.value ?? AuthState.initial(isInitialized: true);
   }
 
+  Future<void> _initializeServices() async {
+    log('🔌 Initializing AuthService');
+    await _initDependencies();
+    _isInitialized = true;
+    await loadUser();
+  }
+
+  /// Initialize dependencies
+  /// @return [Future<void>]
+  ///
+  Future<void> _initDependencies() async {
+    // Initialiser les services
+    _secureStorageService = ref.read(hiveSecureStorageServiceProvider.notifier);
+    _requestService = ref.read(requestServiceProvider.notifier);
+    _navigatorKey = injector.get<GlobalKey<NavigatorState>>();
+    _checkValidityUseCase = ref.read(checkValidityUseCaseProvider.notifier);
+    
+    // Attendre l'initialisation du storage service qui est critique
+    await ref.read(hiveSecureStorageServiceProvider.future);
+  }
+
+  /// Load user
+  /// @return [Future<AuthState?>] auth state
+  ///
   Future<AuthState?> loadUser() async {
     try {
-      final licenseResult = await loadLicense();
+      final licenseResult = await _loadLicenseFromStorage();
       
       if (licenseResult != null) {
-        final (isValid, licenseKey, expirationDate) = licenseResult;
-        
-        if (isValid) {
-          _setUserAuthenticated(
-            true,
-            licenseId: licenseKey,
-            expirationDate: expirationDate,
-          );
-        } else {
-          _setUserAuthenticated(false);
-        }
+        await _handleLicenseResult(licenseResult);
       } else {
-        // Si pas de licence trouvée, définir explicitement non authentifié
         _setUserAuthenticated(false);
       }
-      
-      // Vérifier la validité après avoir chargé la licence
-      await checkValidity();
-      
-      // Démarrer la vérification périodique
-      _periodicCheckValidity();
       
       return state.value;
     } catch (e) {
@@ -97,64 +91,81 @@ class AuthService extends _$AuthService {
     }
   }
 
-  /// Initialize dependencies
-  /// @return [void]
-  ///
-  void _initDependencies() {
-    log('🔌 Initializing AuthService');
-    _secureStorageService = injector.get<HiveSecureStorage>();
-    _requestService = ref.watch(requestServiceProvider.notifier);
-    _navigatorKey = injector.get<GlobalKey<NavigatorState>>();
-    _checkValidityUseCase = ref.watch(checkValidityUseCaseProvider.notifier);
+  Future<LoginResultLocalModel?> _loadLicenseFromStorage() async {
+    if (_cachedLicense != null) {
+      return _cachedLicense;
+    }
+
+    final String? license = await _secureStorageService.get(_license);
+    if (license == null) return null;
+
+    try {
+      _cachedLicense = LoginResultLocalModel.fromJson(jsonDecode(license));
+      return _cachedLicense;
+    } catch (e) {
+      log('Erreur lors du décodage de la licence: $e');
+      return null;
+    }
   }
 
-  /// Periodic check validity
+  Future<void> _handleLicenseResult(LoginResultLocalModel license) async {
+    log('Chargement de la licence: ${license.licenseKey}');
+    
+    final shouldCheckValidity = _lastValidityCheck == null || 
+        DateTime.now().difference(_lastValidityCheck!) > const Duration(hours: 1);
+
+    if (shouldCheckValidity) {
+      await _checkValidity(license.licenseKey);
+      _lastValidityCheck = DateTime.now();
+    } else {
+      _setUserAuthenticated(
+        true,
+        licenseId: license.licenseKey,
+        expirationDate: license.expirationDate,
+      );
+    }
+  }
+
+  /// Check validity
   /// @return [void]
   ///
-  void _periodicCheckValidity() {
+  Future<void> _checkValidity(String licenseKey) async {
+    try {
+      final result = await _checkValidityUseCase.execute(licenseKey);
+      
+      if (result.valid) {
+        _setUserAuthenticated(
+          true,
+          licenseId: licenseKey,
+          expirationDate: result.expirationDate,
+        );
+        _startPeriodicCheck();
+      } else {
+        _setUserAuthenticated(false);
+        _navigateToAuth();
+      }
+    } catch (e) {
+      log('Erreur lors de la vérification de validité: $e');
+      // Conserver l'état actuel en cas d'erreur de connexion
+    }
+  }
+
+  void _startPeriodicCheck() {
+    if (_timer?.isActive ?? false) return;
+    
     _timer = Timer.periodic(const Duration(hours: 5), (timer) async {
-      try {
-        log('Start periodic check validity');
-        
-        // Capturer le contexte et vérifier avant les opérations asynchrones
-        bool isAlreadyOnAuthScreen = false;
-        final BuildContext? currentContext = _navigatorKey.currentContext;
-        if (currentContext != null) {
-          final String currentRoute = GoRouterState.of(currentContext).matchedLocation;
-          isAlreadyOnAuthScreen = currentRoute == '/auth';
-        }
-        
-        // Si déjà sur l'écran d'auth, ne pas vérifier à nouveau la validité
-        if (isAlreadyOnAuthScreen) {
-          return;
-        }
-        
-        await checkValidity();
-      } on Exception catch (e) {
-        log('Error during periodic check validity: $e');
-        
-        // Vérifier si la licence est encore valide malgré l'erreur
-        if (state.value?.expirationDate != null &&
-            state.value!.expirationDate!.isBefore(DateTime.now())) {
-          log('License is expired during periodic check');
-          _setUserAuthenticated(
-            false,
-            licenseId: null,
-          );
-          _timer?.cancel();
-          
-          // Éviter d'utiliser le contexte après une opération asynchrone
-          // Capture un nouveau contexte au moment de la navigation
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            final BuildContext? contextAfterAsync = _navigatorKey.currentContext;
-            if (contextAfterAsync != null) {
-              final String currentRoute = GoRouterState.of(contextAfterAsync).matchedLocation;
-              if (currentRoute != '/auth') {
-                contextAfterAsync.goNamed('auth');
-              }
-            }
-          });
-        }
+      final currentLicense = await _loadLicenseFromStorage();
+      if (currentLicense != null) {
+        await _checkValidity(currentLicense.licenseKey);
+      }
+    });
+  }
+
+  void _navigateToAuth() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final context = _navigatorKey.currentContext;
+      if (context != null && GoRouterState.of(context).matchedLocation != '/auth') {
+        context.goNamed('auth');
       }
     });
   }
@@ -186,91 +197,6 @@ class AuthService extends _$AuthService {
     log('Date d\'expiration (UTC): $endOfExpirationDay');
 
     return now.isAfter(endOfExpirationDay);
-  }
-
-  /// Check validity
-  /// @return [void]
-  ///
-  Future<void> checkValidity() async {
-    final String? license = await _secureStorageService.get(_license);
-
-    if (license == null) {
-      log('Aucune licence trouvée lors de la vérification de validité');
-      return;
-    }
-
-    try {
-      final LoginResultLocalModel localLicense =
-          LoginResultLocalModel.fromJson(jsonDecode(license));
-
-      log('License found: ${localLicense.licenseKey}');
-      log('Expiration date from storage: ${localLicense.expirationDate}');
-
-      _requestService.addRequest(
-        Request(
-          name: 'Check license validity',
-          description: 'Vérification de la validité de la licence',
-          destination: 'Serveur de validation',
-          parameters: {
-            'licenseKey': localLicense.licenseKey,
-          },
-          date: DateTime.now(),
-        ),
-      );
-
-      try {
-        final CheckValidityEntity result =
-            await _checkValidityUseCase.execute(localLicense.licenseKey);
-
-        log('Check validity result: valid=${result.valid}, expiration=${result.expirationDate}');
-
-        if (result.valid) {
-          _setUserAuthenticated(
-            true,
-            licenseId: localLicense.licenseKey,
-            expirationDate: result.expirationDate,
-          );
-        } else {
-          // Si la licence n'est plus valide, déconnecter l'utilisateur
-          _setUserAuthenticated(
-            false,
-            licenseId: null,
-          );
-          
-          // Rediriger vers l'écran d'authentification si nécessaire
-          // Utilise WidgetsBinding pour gérer le contexte de manière sûre
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            final BuildContext? contextAfterAsync = _navigatorKey.currentContext;
-            if (contextAfterAsync != null) {
-              contextAfterAsync.goNamed('auth');
-            }
-          });
-        }
-      } catch (e) {
-        log('Erreur lors de la vérification de la validité: $e');
-        // En cas d'erreur de vérification, conserver l'état d'authentification actuel
-        // Ne pas déconnecter l'utilisateur immédiatement
-        // Sauf si la date d'expiration locale est dépassée
-        if (localLicense.expirationDate != null &&
-            localLicense.expirationDate!.isBefore(DateTime.now())) {
-          _setUserAuthenticated(
-            false,
-            licenseId: null,
-          );
-          
-          // Utilise WidgetsBinding pour gérer le contexte de manière sûre
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            final BuildContext? contextAfterAsync = _navigatorKey.currentContext;
-            if (contextAfterAsync != null) {
-              contextAfterAsync.goNamed('auth');
-            }
-          });
-        }
-      }
-    } catch (e) {
-      log('Erreur lors du décodage de la licence: $e');
-      // Ne pas déconnecter si simplement on n'arrive pas à décoder
-    }
   }
 
   /// Set user authenticated
@@ -311,86 +237,53 @@ class AuthService extends _$AuthService {
 
   /// Login
   /// @param [licenseKey] license key
-  /// @return [bool] login result
+  /// @return [Future<bool>] login result
   ///
   Future<bool> login(String licenseKey) async {
     log('Start login');
 
-    _requestService.addRequest(
-      Request(
-        name: 'Login',
-        description: 'Connexion à l\'application',
-        destination: 'Serveur de connexion',
-        parameters: {
-          'licenseKey': licenseKey,
-        },
-        date: DateTime.now(),
-      ),
-    );
-
-    final LoginResultEntity loginResult =
-        await ref.read(loginUseCaseProvider.notifier).execute(licenseKey);
-
-    if (loginResult.valid) {
-      log('Login successful');
-      if (_timer != null && !_timer!.isActive) {
-        _periodicCheckValidity();
-      }
-      await _secureStorageService.set(
-        _license,
-        jsonEncode(loginResult.toLocalModel().toJson()),
-      );
-      _setUserAuthenticated(
-        true,
-        licenseId: licenseKey,
-        expirationDate: loginResult.expirationDate,
-      );
-    } else {
-      log('Login failed');
+    if (!_isInitialized) {
+      await _initializeServices();
     }
 
-    return loginResult.valid;
-  }
+    try {
+      _requestService.addRequest(
+        Request(
+          name: 'Login',
+          description: 'Connexion à l\'application',
+          destination: 'Serveur de connexion',
+          parameters: {
+            'licenseKey': licenseKey,
+          },
+          date: DateTime.now(),
+        ),
+      );
 
-  /// Load license
-  /// @return [void]
-  ///
-  Future<(bool, String, DateTime?)?> loadLicense() async {
-    final String? license = await _secureStorageService.get(_license);
+      final LoginResultEntity loginResult =
+          await ref.read(loginUseCaseProvider.notifier).execute(licenseKey);
 
-    if (license != null) {
-      try {
-        final LoginResultLocalModel localLicense =
-            LoginResultLocalModel.fromJson(jsonDecode(license));
-
-        log('Chargement de la licence: ${localLicense.licenseKey}');
-        log('Date d\'expiration chargée: ${localLicense.expirationDate}');
-
-        if (state.value?.isInitialized == true) {
-          _setUserAuthenticated(
-            true,
-            licenseId: localLicense.licenseKey,
-            expirationDate: localLicense.expirationDate,
-          );
-          return null;
-        } else {
-          return (
-            true,
-            localLicense.licenseKey,
-            localLicense.expirationDate,
-          );
+      if (loginResult.valid) {
+        log('Login successful');
+        if (_timer != null && !_timer!.isActive) {
+          _startPeriodicCheck();
         }
-      } catch (e) {
-        log('Erreur lors du chargement de la licence: $e');
-        // En cas d'erreur, on considère qu'il n'y a pas de licence valide
-        if (state.value?.isInitialized == true) {
-          _setUserAuthenticated(false);
-        } else {
-          return null;
-        }
+        await _secureStorageService.set(
+          _license,
+          jsonEncode(loginResult.toLocalModel().toJson()),
+        );
+        _setUserAuthenticated(
+          true,
+          licenseId: licenseKey,
+          expirationDate: loginResult.expirationDate,
+        );
+      } else {
+        log('Login failed');
       }
-    }
 
-    return null;
+      return loginResult.valid;
+    } catch (e) {
+      log('Erreur lors de la connexion: $e');
+      return false;
+    }
   }
 }

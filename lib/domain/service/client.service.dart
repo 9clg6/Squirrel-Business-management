@@ -3,10 +3,9 @@ import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
-import 'package:squirrel/data/storage/hive_secure_storage.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/state/client.state.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
@@ -15,6 +14,9 @@ part 'client.service.g.dart';
 /// [ClientService]
 @Riverpod(
   keepAlive: true,
+  dependencies: [
+    HiveSecureStorageService,
+  ],
 )
 class ClientService extends _$ClientService {
   /// Storage
@@ -31,7 +33,7 @@ class ClientService extends _$ClientService {
   Future<ClientState> build() async {
     if (!_isInitialized) {
       log('🔌 Initializing ClientService');
-      _storage = injector<HiveSecureStorage>();
+      _storage = ref.watch(hiveSecureStorageServiceProvider.notifier);
       _isInitialized = true;
     }
 

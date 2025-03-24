@@ -54,23 +54,26 @@ class Kernel {
   ///
   Future<void> _ensureInitialized() async {
     logInfo('Début de l\'initialisation');
+    
+    // Initialisation de base de Flutter
     WidgetsFlutterBinding.ensureInitialized();
-    //await SelectiveFileOutput.initLogFile();
-
+    await EasyLocalization.ensureInitialized();
+    
+    // Initialisation de Hive
     await Hive.initFlutter();
+    
+    // Injection des dépendances
     injector.registerSingleton<AppConfig>(appConfig);
-
     final GetIt getIt = await initializeInjections();
     await getIt.allReady();
 
+    // Initialisation de Supabase
     final EnvService envService = injector.get<EnvService>();
     await Supabase.initialize(
       url: envService.supabaseUrl,
       anonKey: envService.supabaseAnonKey,
       debug: kDebugMode,
     );
-
-    await EasyLocalization.ensureInitialized();
   }
 
   /// Build [app] surrounded by all necessary widgets

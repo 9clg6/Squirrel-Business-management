@@ -8,6 +8,7 @@ import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/request.state.dart';
+import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/theming/theme.dart';
 import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/foundation/utils/util.dart';
@@ -40,6 +41,8 @@ class App extends StatefulWidget {
 /// The state of the app widget.
 ///
 class _AppState extends State<App> {
+  /// Initializes the state of the app widget.
+  ///
   @override
   void initState() {
     super.initState();
@@ -80,21 +83,24 @@ class _AppState extends State<App> {
     );
   }
 
+  /// Initializes the app router.
+  /// @return [GoRouter] app router
+  ///
   GoRouter _appRouter() {
     return GoRouter(
       debugLogDiagnostics: true,
       navigatorKey: injector.get<GlobalKey<NavigatorState>>(),
-      initialLocation: '/main',
+      initialLocation: RouterEnum.main.path,
       redirect: _authRedirect,
       routes: [
         GoRoute(
-          path: '/auth',
-          name: 'auth',
+          path: RouterEnum.auth.path,
+          name: RouterEnum.auth.name,
           builder: (context, state) => const AuthScreen(),
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
-            final bool isAuthRoute = state.uri.toString() == '/auth';
+            final bool isAuthRoute = state.uri.toString() == RouterEnum.auth.path;
 
             return Consumer(
               builder: (context, ref, child) {
@@ -130,13 +136,13 @@ class _AppState extends State<App> {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/main',
-                  name: 'main',
+                  path: RouterEnum.main.path,
+                  name: RouterEnum.main.name,
                   builder: (context, state) => const MainScreen(),
                   routes: [
                     GoRoute(
-                      path: 'order-details/:orderId',
-                      name: 'order-details',
+                      path: '${RouterEnum.orderDetails.path}/:orderId',
+                      name: RouterEnum.orderDetails.name,
                       builder: (context, state) => OrderDetailsScreen(
                         order: state.extra! as Order,
                       ),
@@ -149,8 +155,8 @@ class _AppState extends State<App> {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/todo',
-                  name: 'todo',
+                  path: RouterEnum.todo.path,
+                  name: RouterEnum.todo.name,
                   builder: (context, state) => const TodoScreen(),
                 ),
               ],
@@ -159,8 +165,8 @@ class _AppState extends State<App> {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/stats',
-                  name: 'stats',
+                  path: RouterEnum.stats.path,
+                  name: RouterEnum.stats.name,
                   builder: (context, state) => const StatsScreen(),
                 ),
               ],
@@ -169,8 +175,8 @@ class _AppState extends State<App> {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/planner',
-                  name: 'planner',
+                  path: RouterEnum.planner.path,
+                  name: RouterEnum.planner.name,
                   builder: (context, state) => const PlannerScreen(),
                 ),
               ],
@@ -179,8 +185,8 @@ class _AppState extends State<App> {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/clients',
-                  name: 'clients',
+                  path: RouterEnum.clients.path,
+                  name: RouterEnum.clients.name,
                   builder: (context, state) => const ClientsScreen(),
                 ),
               ],
@@ -189,8 +195,8 @@ class _AppState extends State<App> {
             StatefulShellBranch(
               routes: [
                 GoRoute(
-                  path: '/history',
-                  name: 'history',
+                  path: RouterEnum.history.path,
+                  name: RouterEnum.history.name,
                   builder: (context, state) => const HistoryScreen(),
                 ),
               ],
@@ -201,6 +207,11 @@ class _AppState extends State<App> {
     );
   }
 
+  /// Redirects the user to the correct route based on their authentication status.
+  /// @param [context] context
+  /// @param [state] state
+  /// @return [String?] redirect route
+  ///
   Future<String?> _authRedirect(BuildContext context, GoRouterState state) async {
     // Capture du conteneur et du service d'authentification avant toute opération asynchrone
     final container = ProviderScope.containerOf(context);
@@ -233,7 +244,7 @@ class _AppState extends State<App> {
     }
 
     // Le traitement du résultat est synchrone, donc pas besoin de vérifier mounted
-    final bool isAuthRoute = state.matchedLocation == '/auth';
+    final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;
     
     // Empêcher la boucle de redirection
     // Si on est déjà sur /auth et pas authentifié, rester sur /auth
@@ -243,12 +254,12 @@ class _AppState extends State<App> {
     
     // Si on n'est pas authentifié et pas sur /auth, rediriger vers /auth
     if (!isAuthenticated) {
-      return '/auth';
+      return RouterEnum.auth.path;
     }
     
     // Si on est authentifié et sur /auth, rediriger vers /main
     if (isAuthenticated && isAuthRoute) {
-      return '/main';
+      return RouterEnum.main.path;
     }
     
     // Si on est authentifié et pas sur /auth, ne pas rediriger

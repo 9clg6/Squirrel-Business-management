@@ -6,7 +6,7 @@ part of 'todo.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$todoViewModelHash() => r'e25885f0fabd86f0234851650c8a3cce9b99eea8';
+String _$todoViewModelHash() => r'5f08b35b0d490052859b8d5564ed1db25e8286a8';
 
 /// [TodoViewModel]
 ///
@@ -19,8 +19,11 @@ final todoViewModelProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$todoViewModelHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[orderServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    orderServiceProvider,
+    ...?orderServiceProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$TodoViewModel = Notifier<TodoScreenState>;

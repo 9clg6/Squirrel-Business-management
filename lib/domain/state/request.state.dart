@@ -14,7 +14,8 @@ class RequestState with EquatableMixin {
   final List<Request> requests;
 
   /// Constructor
-  /// @param isRequestShow
+  /// @param isRequestShow: Is request show
+  /// @param requests: Requests
   ///
   RequestState({
     required this.isRequestShow,

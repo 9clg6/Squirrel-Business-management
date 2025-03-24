@@ -31,6 +31,10 @@ class AuthState with EquatableMixin {
   });
 
   /// Initial
+  /// @param [isInitialized] is initialized
+  /// @param [isUserAuthenticated] is user authenticated
+  /// @param [licenseId] license id
+  /// @param [expirationDate] expiration date
   ///
   AuthState.initial({
     bool? isInitialized,
@@ -39,6 +43,9 @@ class AuthState with EquatableMixin {
     this.expirationDate,
   }) : isInitialized = isInitialized ?? false;
 
+  /// Get props
+  /// @return [List<Object?>] props
+  ///
   @override
   List<Object?> get props => [
         isUserAuthenticated,

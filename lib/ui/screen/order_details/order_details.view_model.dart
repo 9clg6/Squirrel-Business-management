@@ -14,7 +14,13 @@ import 'package:squirrel/ui/screen/order_details/order_details.view_state.dart';
 part 'order_details.view_model.g.dart';
 
 /// [OrderDetailsViewModel]
-@Riverpod(keepAlive: true)
+@Riverpod(
+  keepAlive: true,
+  dependencies: [
+    OrderService,
+    ClientService,
+  ],
+)
 class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   /// Order service
   late final OrderService _orderService;

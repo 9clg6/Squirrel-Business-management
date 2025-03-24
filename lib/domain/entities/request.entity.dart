@@ -26,6 +26,8 @@ class Request with EquatableMixin {
   /// @param destination: Destination of the request
   /// @param description: Description of the request
   /// @param date: Date of the request
+  /// @param parameters: Parameters of the request
+  ///
   Request({
     this.name,
     this.destination,
@@ -38,6 +40,9 @@ class Request with EquatableMixin {
   ///
   factory Request.initiale() => Request();
 
+  /// Get props
+  /// @return [List<Object?>] props
+  ///
   @override
   List<Object?> get props => [
         name,

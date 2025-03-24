@@ -35,21 +35,50 @@ class Order with EquatableMixin, SerializableMixin {
   final Priority priority;
   final List<OrderAction>? _actions;
 
+  /// Actions
+  ///
   List<OrderAction> get actions =>
       (_actions ?? [])..sort((a, b) => b.date.compareTo(a.date));
+
+  /// Margin
+  ///
   double get margin => commission - internalProcessingFee;
+
+  /// End date
   DateTime? get endDate => startDate.add(estimatedDuration);
 
+  /// Next action
+  ///
   OrderAction? get nextAction =>
       actions.firstWhereOrNull((a) => a.date.isAfter(DateTime.now()));
 
+  /// Next action date
+  ///
   DateTime? get nextActionDate => actions.isNotEmpty
       ? nextAction != null
-          ? actions.first.date
+          ? nextAction!.date
           : endDate
       : endDate;
 
   /// Constructor
+  /// @param id: Id of the order
+  /// @param client: Client of the order
+  /// @param clientName: Name of the client
+  /// @param sponsor: Sponsor of the order
+  /// @param intermediaryContact: Intermediary contact of the order
+  /// @param internalProcessingFee: Internal processing fee of the order
+  /// @param trackId: Track id of the order
+  /// @param startDate: Start date of the order
+  /// @param estimatedDuration: Estimated duration of the order
+  /// @param shopName: Shop name of the order
+  /// @param price: Price of the order
+  /// @param commissionRatio: Commission ratio of the order
+  /// @param commission: Commission of the order
+  /// @param status: Status of the order
+  /// @param method: Method of the order
+  /// @param note: Note of the order
+  /// @param actions: Actions of the order
+  /// @param priority: Priority of the order
   ///
   Order({
     String? id,
@@ -94,12 +123,22 @@ class Order with EquatableMixin, SerializableMixin {
         note: '',
       );
 
+  /// From json
+  /// @param [json] json
+  /// @return [Order] order
+  ///
   @override
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
 
+  /// To json
+  /// @return [Map<String, dynamic>] json
+  ///
   @override
   Map<String, dynamic> toJson() => _$OrderToJson(this);
 
+  /// Get props
+  /// @return [List<Object?>] props
+  /// 
   @override
   List<Object?> get props => [
         id,

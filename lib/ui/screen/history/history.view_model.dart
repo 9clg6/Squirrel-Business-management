@@ -8,6 +8,9 @@ part 'history.view_model.g.dart';
 /// [History]
 @Riverpod(
   keepAlive: true,
+  dependencies: [
+    OrderService,
+  ],
 )
 class History extends _$History {
   /// Build

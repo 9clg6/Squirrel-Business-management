@@ -58,9 +58,16 @@ class Client with EquatableMixin, SerializableMixin {
         commissionTotalAmount,
       ];
 
+  /// To json
+  /// @return [Map<String, dynamic>] json
+  ///
   @override
   Map<String, dynamic> toJson() => _$ClientToJson(this);
 
+  /// From json
+  /// @param [json] json
+  /// @return [Client] client
+  ///
   @override
   factory Client.fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
 }

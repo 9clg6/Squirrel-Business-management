@@ -13,6 +13,9 @@ part 'check_validity.use_case.g.dart';
 )
 class CheckValidityUseCase extends _$CheckValidityUseCase
     implements UseCaseWithParams<Future<CheckValidityEntity>, String> {
+  /// Build
+  /// @return [CheckValidityUseCase] check validity use case
+  ///
   @override
   CheckValidityUseCase build() {
     return CheckValidityUseCase();

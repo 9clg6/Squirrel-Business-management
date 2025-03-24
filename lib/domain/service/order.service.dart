@@ -2,12 +2,11 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
-import 'package:squirrel/data/storage/hive_secure_storage.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/client.service.dart';
+import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/enums/priority.enum.dart';
@@ -18,6 +17,10 @@ part 'order.service.g.dart';
 /// [OrderService]
 @Riverpod(
   keepAlive: true,
+  dependencies: [
+    HiveSecureStorageService,
+    ClientService,
+  ],
 )
 class OrderService extends _$OrderService {
   /// Hive service
@@ -29,22 +32,25 @@ class OrderService extends _$OrderService {
   /// Orders key
   static const ordersKey = 'orders';
 
+  /// Is initialized
   bool _isInitialized = false;
 
   /// Build
+  /// @return [Future<OrderState>] order state
   ///
   @override
   Future<OrderState> build() async {
     if (!_isInitialized) {
       log('🔌 Initializing OrderService');
-      _hiveService = injector<HiveSecureStorage>();
-      _clientService = ref.read(clientServiceProvider.notifier);
+      _hiveService = ref.watch(hiveSecureStorageServiceProvider.notifier);
+      _clientService = ref.watch(clientServiceProvider.notifier);
       _isInitialized = true;
     }
     return await _loadOrders();
   }
 
   /// Load orders
+  /// @return [Future<OrderState>] order state
   ///
   Future<OrderState> _loadOrders() async {
     log('[OrderService] Loading orders');
@@ -78,6 +84,7 @@ class OrderService extends _$OrderService {
 
   /// Save orders
   /// @param [os] order state
+  /// @return [void] void
   ///
   void _save(OrderState os) {
     log('[OrderService] Saving orders');
@@ -233,14 +240,14 @@ class OrderService extends _$OrderService {
       log('[OrderService] Order not found: ${order.id}');
       return;
     }
-    
+
     // Récupérer le client correspondant au clientName, ou utiliser celui déjà présent
     Client? clientToUse;
-    
+
     // Si le nom du client a changé, chercher le nouveau client par son nom
     if (order.client == null || order.client!.name != order.clientName) {
       clientToUse = _clientService.getClientByName(order.clientName);
-      
+
       // Si aucun client avec ce nom n'existe, en créer un nouveau
       if (clientToUse == null) {
         clientToUse = _clientService.createClientWithOrder(
@@ -255,7 +262,7 @@ class OrderService extends _$OrderService {
       // Utiliser le client actuel, mais s'assurer d'avoir sa version la plus récente
       clientToUse = _clientService.getClientById(order.client!.id);
     }
-    
+
     // Mettre à jour la commande avec le client associé
     final orderWithUpdatedClient = order.copyWith(
       client: clientToUse,
@@ -293,35 +300,30 @@ class OrderService extends _$OrderService {
   /// @param [order] order
   ///
   void addOrder(Order order) {
-    Client? client;
+    Client? client = _clientService.getClientByName(order.clientName);
 
-    final Client? tempClient = _clientService.getClientByName(order.clientName);
-
-    if (tempClient == null) {
+    if (client == null) {
       client = _clientService.createClientWithOrder(
         order.clientName,
         order,
       );
       log('[OrderService] Created client: ${client.name}');
-    } else {
-      client = tempClient;
-      _clientService.updateClientWithOrder(
-        client,
-        order: order,
-        isNewOrder: true,
-      );
-      log('[OrderService] Updated client: ${client.name}');
-
-      log('[OrderService] Added order: ${order.shopName}');
-
-      state = AsyncData(
-        state.value!.copyWith(
-          orders: [
-            ...state.value!.orders,
-            order.copyWith(client: client),
-          ],
-        ),
-      );
     }
+    _clientService.updateClientWithOrder(
+      client,
+      order: order,
+      isNewOrder: true,
+    );
+    log('[OrderService] Updated client: ${client.name}');
+    log('[OrderService] Added order: ${order.shopName}');
+
+    state = AsyncData(
+      state.value!.copyWith(
+        orders: [
+          ...state.value!.orders,
+          order.copyWith(client: client),
+        ],
+      ),
+    );
   }
 }

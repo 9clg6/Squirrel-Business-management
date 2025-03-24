@@ -18,6 +18,9 @@ part 'index.view_model.g.dart';
 ///
 @Riverpod(
   keepAlive: true,
+  dependencies: [
+    OrderService,
+  ],
 )
 class Index extends _$Index {
   bool _isInitialized = false;

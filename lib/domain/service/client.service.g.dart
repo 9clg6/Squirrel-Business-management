@@ -6,7 +6,7 @@ part of 'client.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$clientServiceHash() => r'b276ff8f231dbd47b0f796677949ed65b7aee959';
+String _$clientServiceHash() => r'f214453dc8d7dd3bfaaf9d1292f9892062f01c94';
 
 /// [ClientService]
 ///
@@ -19,8 +19,11 @@ final clientServiceProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$clientServiceHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
+  dependencies: <ProviderOrFamily>[hiveSecureStorageServiceProvider],
+  allTransitiveDependencies: <ProviderOrFamily>{
+    hiveSecureStorageServiceProvider,
+    ...?hiveSecureStorageServiceProvider.allTransitiveDependencies
+  },
 );
 
 typedef _$ClientService = AsyncNotifier<ClientState>;
