@@ -75,7 +75,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
                   width: 60,
                   decoration: BoxDecoration(
                     color: colorScheme.surface,
-                    borderRadius: BorderRadius.circular(borderRadiusOuter),
+                    borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: colorScheme.outline.withValues(alpha: .2),
                       width: 1,

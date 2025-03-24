@@ -8,13 +8,15 @@ class MaterialTheme {
   static ColorScheme lightScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
-      primary: Color(0xFFFF6600),          // --primary-100
-      surfaceTint: Color(0xFFFF6600),      // --primary-100
-      onPrimary: Color(0xFFFFFFFF),        // --text-100
-      primaryContainer: Color(0xFFff983f),  // --primary-200
+      primary: Color(0xFFFF6600), // --primary-100
+      surfaceTint: Color(0xFFFF6600), // --primary-100
+      onPrimary: Color(0xFFFFFFFF), // --text-100
+      primaryContainer: Color(0xFFff983f), // --primary-200
       onPrimaryContainer: Color(0xFFffffa1), // --primary-300
-      secondary: Color(0xFFff983f),        // --primary-200
-      onSecondary: Color(0xFFFFFFFF),  
+      secondary: Color(0xFFff983f), // --primary-200
+      onSecondary: Color(0xFFFFFFFF),
+      outline: Color(0xff74777c),
+      shadow: Color(0xffD5D5D5),
       secondaryContainer: Color(0xff288180),
       onSecondaryContainer: Color(0xfff3fffe),
       tertiary: Color(0xff02696a),
@@ -28,9 +30,7 @@ class MaterialTheme {
       surface: Color(0xffffffff),
       onSurface: Color(0xff1b1c1d),
       onSurfaceVariant: Color(0xff43474c),
-      outline: Color(0xff74777c),
       outlineVariant: Color(0xffc4c7cc),
-      shadow: Color(0xff000000),
       scrim: Color(0xff000000),
       inverseSurface: Color(0xff303031),
       inversePrimary: Color(0xff84d4d3),
@@ -173,38 +173,38 @@ class MaterialTheme {
   static ColorScheme darkScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
-      primary: Color(0xFFFF6600),          // --primary-100
-      surfaceTint: Color(0xFFFF6600),      // --primary-100
-      onPrimary: Color(0xFFFFFFFF),        // --text-100
-      primaryContainer: Color(0xFFff983f),  // --primary-200
+      primary: Color(0xFFFF6600), // --primary-100
+      surfaceTint: Color(0xFFFF6600), // --primary-100
+      onPrimary: Color(0xFFFFFFFF), // --text-100
+      primaryContainer: Color(0xFFff983f), // --primary-200
       onPrimaryContainer: Color(0xFFffffa1), // --primary-300
-      secondary: Color(0xFFff983f),        // --primary-200
-      onSecondary: Color(0xFFFFFFFF),      // --text-100
+      secondary: Color(0xFFff983f), // --primary-200
+      onSecondary: Color(0xFFFFFFFF), // --text-100
       secondaryContainer: Color(0xFF444648), // --bg-300
       onSecondaryContainer: Color(0xFFe0e0e0), // --text-200
-      tertiary: Color(0xFFF5F5F5),         // --accent-100
-      onTertiary: Color(0xFF1D1F21),       // --bg-100
+      tertiary: Color(0xFFF5F5F5), // --accent-100
+      onTertiary: Color(0xFF1D1F21), // --bg-100
       tertiaryContainer: Color(0xFF929292), // --accent-200
       onTertiaryContainer: Color(0xFFFFFFFF), // --text-100
-      error: Color(0xffffb3ac),            // Gardé la même
-      onError: Color(0xff680008),          // Gardé la même
-      errorContainer: Color(0xffff544e),    // Gardé la même
-      onErrorContainer: Color(0xff4d0004),  // Gardé la même
-      surface: Color(0xFF2c2e30),          // --bg-100
-      onSurface: Color(0xFFFFFFFF),        // --text-100
+      error: Color(0xffffb3ac), // Gardé la même
+      onError: Color(0xff680008), // Gardé la même
+      errorContainer: Color(0xffff544e), // Gardé la même
+      onErrorContainer: Color(0xff4d0004), // Gardé la même
+      surface: Color(0xFF2c2e30), // --bg-100
+      onSurface: Color(0xFFFFFFFF), // --text-100
       onSurfaceVariant: Color(0xFFe0e0e0), // --text-200
-      outline: Color(0xFF929292),          // --accent-200
-      outlineVariant: Color(0xFF444648),   // --bg-300
-      shadow: Color(0xff000000),           // Gardé la même
-      scrim: Color(0xff000000),            // Gardé la même
-      inverseSurface: Color(0xFFFFFFFF),   // --text-100
-      inversePrimary: Color(0xFFFF6600),   // --primary-100
-      surfaceDim: Color(0xFF1D1F21),       // --bg-100
-      surfaceBright: Color(0xFF444648),    // --bg-300
+      outline: Color(0xFF929292), // --accent-200
+      outlineVariant: Color(0xFF444648), // --bg-300
+      shadow: Color(0xff000000), // Gardé la même
+      scrim: Color(0xff000000), // Gardé la même
+      inverseSurface: Color(0xFFFFFFFF), // --text-100
+      inversePrimary: Color(0xFFFF6600), // --primary-100
+      surfaceDim: Color(0xFF1D1F21), // --bg-100
+      surfaceBright: Color(0xFF444648), // --bg-300
       surfaceContainerLowest: Color(0xFF1D1F21), // --bg-100
-      surfaceContainerLow: Color(0xFF2c2e30),    // --bg-200
-      surfaceContainer: Color(0xFF2c2e30),       // --bg-200
-      surfaceContainerHigh: Color(0xFF444648),   // --bg-300
+      surfaceContainerLow: Color(0xFF2c2e30), // --bg-200
+      surfaceContainer: Color(0xFF2c2e30), // --bg-200
+      surfaceContainerHigh: Color(0xFF444648), // --bg-300
       surfaceContainerHighest: Color(0xFF444648), // --bg-300
     );
   }
@@ -323,79 +323,76 @@ class MaterialTheme {
     return theme(darkHighContrastScheme());
   }
 
-
   ThemeData theme(ColorScheme colorScheme) => ThemeData(
-     useMaterial3: true,
-     brightness: colorScheme.brightness,
-     colorScheme: colorScheme,
-     textTheme: textTheme.apply(
-       bodyColor: colorScheme.onSurface,
-       displayColor: colorScheme.onSurface,
-     ),
-     scaffoldBackgroundColor: colorScheme.surface,
-     canvasColor: colorScheme.surface,
-     appBarTheme: AppBarTheme(
-       backgroundColor: colorScheme.surface,
-       elevation: 0,
-       iconTheme: IconThemeData(color: colorScheme.onSurface),
-       titleTextStyle: textTheme.titleLarge?.copyWith(
-         color: colorScheme.onSurface,
-         fontWeight: FontWeight.bold,
-       ),
-     ),
-     floatingActionButtonTheme: FloatingActionButtonThemeData(
-       backgroundColor: colorScheme.primary,
-       foregroundColor: colorScheme.onPrimary,
-     ),
-     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-       backgroundColor: colorScheme.surface,
-       selectedItemColor: colorScheme.primary,
-       unselectedItemColor: colorScheme.onSurfaceVariant,
-     ),
-     cardTheme: CardTheme(
-       color: colorScheme.surfaceContainer,
-       elevation: 0,
-       margin: EdgeInsets.zero,
-       shape: RoundedRectangleBorder(
-         borderRadius: BorderRadius.circular(12),
-       ),
-     ),
-     elevatedButtonTheme: ElevatedButtonThemeData(
-       style: ElevatedButton.styleFrom(
-         backgroundColor: colorScheme.primary,
-         foregroundColor: colorScheme.onPrimary,
-         shape: RoundedRectangleBorder(
-           borderRadius: BorderRadius.circular(8),
-         ),
-         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-       ),
-     ),
-     outlinedButtonTheme: OutlinedButtonThemeData(
-       style: OutlinedButton.styleFrom(
-         side: BorderSide(color: colorScheme.outline),
-         shape: RoundedRectangleBorder(
-           borderRadius: BorderRadius.circular(8),
-         ),
-         padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
-       ),
-     ),
-     inputDecorationTheme: InputDecorationTheme(
-       filled: true,
-       fillColor: colorScheme.surfaceContainerLow,
-       border: OutlineInputBorder(
-         borderRadius: BorderRadius.circular(8),
-         borderSide: BorderSide(color: colorScheme.outline),
-       ),
-       enabledBorder: OutlineInputBorder(
-         borderRadius: BorderRadius.circular(8),
-         borderSide: BorderSide(color: colorScheme.outline),
-       ),
-     ),
-  );
+        useMaterial3: true,
+        brightness: colorScheme.brightness,
+        colorScheme: colorScheme,
+        textTheme: textTheme.apply(
+          bodyColor: colorScheme.onSurface,
+          displayColor: colorScheme.onSurface,
+        ),
+        scaffoldBackgroundColor: colorScheme.surface,
+        canvasColor: colorScheme.surface,
+        appBarTheme: AppBarTheme(
+          backgroundColor: colorScheme.surface,
+          elevation: 0,
+          iconTheme: IconThemeData(color: colorScheme.onSurface),
+          titleTextStyle: textTheme.titleLarge?.copyWith(
+            color: colorScheme.onSurface,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        floatingActionButtonTheme: FloatingActionButtonThemeData(
+          backgroundColor: colorScheme.primary,
+          foregroundColor: colorScheme.onPrimary,
+        ),
+        bottomNavigationBarTheme: BottomNavigationBarThemeData(
+          backgroundColor: colorScheme.surface,
+          selectedItemColor: colorScheme.primary,
+          unselectedItemColor: colorScheme.onSurfaceVariant,
+        ),
+        cardTheme: CardTheme(
+          color: colorScheme.surfaceContainer,
+          elevation: 0,
+          margin: EdgeInsets.zero,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: colorScheme.primary,
+            foregroundColor: colorScheme.onPrimary,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          ),
+        ),
+        outlinedButtonTheme: OutlinedButtonThemeData(
+          style: OutlinedButton.styleFrom(
+            side: BorderSide(color: colorScheme.outline),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(8),
+            ),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 24),
+          ),
+        ),
+        inputDecorationTheme: InputDecorationTheme(
+          filled: true,
+          fillColor: colorScheme.surfaceContainerLow,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: colorScheme.outline),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: colorScheme.outline),
+          ),
+        ),
+      );
 
-
-  List<ExtendedColor> get extendedColors => [
-  ];
+  List<ExtendedColor> get extendedColors => [];
 }
 
 class ExtendedColor {

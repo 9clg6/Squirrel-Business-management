@@ -921,7 +921,7 @@ class _StatusRow extends ConsumerWidget {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                             color: isPreviousStatus
-                                ? colorScheme.outline
+                                ? colorScheme.shadow
                                 : isCurrentStatus
                                     ? orderState.status.color
                                     : colorScheme.surface,

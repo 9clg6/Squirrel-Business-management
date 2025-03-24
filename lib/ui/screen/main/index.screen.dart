@@ -61,17 +61,27 @@ class _PinnedOrders extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
     final Index viewModel = ref.read(indexProvider.notifier);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
     if (state.pinnedOrders.isEmpty) return const SizedBox();
-
-    final colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: .3),
-          width: 1,
+        border: Border(
+          top: BorderSide(
+            color: colorScheme.outline.withValues(alpha: .3),
+            width: 1,
+          ),
+          left: BorderSide(
+            color: colorScheme.outline.withValues(alpha: .3),
+            width: 1,
+          ),
+          right: BorderSide(
+            color: colorScheme.outline.withValues(alpha: .3),
+            width: 1,
+          ),
         ),
       ),
       width: double.infinity,
@@ -90,114 +100,121 @@ class _PinnedOrders extends ConsumerWidget {
               variantType: TextVariantType.titleMedium,
             ),
           ),
-          SizedBox(
-            width: double.infinity,
-            child: DataTable(
-              columnSpacing: 46,
-              border: TableBorder(
-                borderRadius: BorderRadius.circular(20),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(20),
+            child: SizedBox(
+              width: double.infinity,
+              child: DataTable(
+                columnSpacing: 46,
+                dataRowColor: computeDataRowColor(colorScheme),
+                dataTextStyle: textTheme.bodyMedium?.copyWith(
+                  overflow: TextOverflow.ellipsis,
+                ),
+                headingTextStyle: textTheme.titleMedium,
+                showCheckboxColumn: false,
+                horizontalMargin: 12,
+                dividerThickness: 1,
+                columns: Headers.values
+                    .map((e) => DataColumn(
+                          label: TextVariant(
+                            e.label,
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                          numeric: e.isNumeric,
+                          headingRowAlignment: MainAxisAlignment.center,
+                          onSort: viewModel.sortOrders,
+                        ))
+                    .toList(),
+                rows: state.pinnedOrders.map((order) {
+                  return DataRow(
+                    onSelectChanged: (_) {
+                      viewModel.navigateToDetails(order);
+                    },
+                    cells: [
+                      DataCell(
+                        Center(
+                          child: Hero(
+                            tag: 'order-${order.id}',
+                            child: TextVariant(
+                              order.client?.name ?? "",
+                              variantType: TextVariantType.bodyMedium,
+                            ),
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Center(
+                          child: StatusCard(status: order.status),
+                        ),
+                      ),
+                      DataCell(
+                        Center(
+                          child: TextVariant(
+                            order.shopName,
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Center(
+                          child: TextVariant(
+                            order.startDate.toDDMMYYYY(),
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Center(
+                          child: TextVariant(
+                            order.endDate?.toDDMMYYYY() ?? "",
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Center(
+                          child: TextVariant(
+                            "${order.price}€",
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Center(
+                          child: TextVariant(
+                            "${order.commission}€",
+                            variantType: TextVariantType.bodyMedium,
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Center(
+                          child: IconButton(
+                            onPressed: () {
+                              viewModel.navigateToDetails(order);
+                            },
+                            icon: const Icon(Icons.open_in_new),
+                            tooltip: LocaleKeys.open.tr(),
+                          ),
+                        ),
+                      ),
+                      DataCell(
+                        Center(
+                          child: IconButton(
+                            onPressed: () => viewModel.pinOrder(order),
+                            icon: Icon(
+                              state.pinnedOrders.contains(order)
+                                  ? Icons.push_pin
+                                  : Icons.push_pin_outlined,
+                            ),
+                            tooltip: LocaleKeys.pin.tr(),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+                }).toList(),
               ),
-              dataTextStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    overflow: TextOverflow.ellipsis,
-                  ),
-              headingTextStyle:
-                  Theme.of(context).textTheme.titleSmall?.copyWith(
-                        fontWeight: FontWeight.w500,
-                      ),
-              showCheckboxColumn: false,
-              horizontalMargin: 12,
-              dividerThickness: 1,
-              columns: Headers.values
-                  .map((e) => DataColumn(
-                        label: Text(e.label),
-                        numeric: e.isNumeric,
-                        headingRowAlignment: MainAxisAlignment.center,
-                        onSort: viewModel.sortOrders,
-                      ))
-                  .toList(),
-              rows: state.pinnedOrders.map((order) {
-                return DataRow(
-                  onSelectChanged: (_) {
-                    viewModel.navigateToDetails(order);
-                  },
-                  cells: [
-                    DataCell(
-                      Center(
-                        child: Hero(
-                          tag: 'order-${order.id}',
-                          child: Text(order.client?.name ?? ""),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: StatusCard(status: order.status),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: Text(order.shopName),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: Text(order.startDate.toDDMMYYYY()),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: Text(order.endDate?.toDDMMYYYY() ?? ""),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: Text(
-                          LocaleKeys.priceWithSymbol.tr(
-                            args: [
-                              order.price.toString(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: Text(
-                          LocaleKeys.priceWithSymbol.tr(
-                            args: [
-                              order.commission.toString(),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: IconButton(
-                          onPressed: () {
-                            viewModel.navigateToDetails(order);
-                          },
-                          icon: const Icon(Icons.open_in_new),
-                          tooltip: LocaleKeys.open.tr(),
-                        ),
-                      ),
-                    ),
-                    DataCell(
-                      Center(
-                        child: IconButton(
-                          onPressed: () => viewModel.pinOrder(order),
-                          icon: Icon(
-                            state.pinnedOrders.contains(order)
-                                ? Icons.push_pin
-                                : Icons.push_pin_outlined,
-                          ),
-                          tooltip: LocaleKeys.pin.tr(),
-                        ),
-                      ),
-                    ),
-                  ],
-                );
-              }).toList(),
             ),
           ),
         ],
