@@ -6,7 +6,7 @@ part of 'clients.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$clientsHash() => r'93f8fd1107b42ab08a1d5facb7e74bae41137f26';
+String _$clientsHash() => r'6cf215c37229cc360af5a37efd83c8a5cef50eaa';
 
 /// [Clients]
 ///

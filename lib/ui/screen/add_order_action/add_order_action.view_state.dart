@@ -5,19 +5,18 @@ import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 part 'add_order_action.view_state.g.dart';
     
 /// [AddOrderActionViewState]
-///
 @CopyWith()
 class AddOrderActionViewState extends ViewStateAbs {
-  /// Selected date
   final DateTime? selectedDate;
-
   final TextEditingController controller;
-
   final GlobalKey<FormState> formKey;
-
   final GlobalKey<FormFieldState<DateTime>> dateKey;
 
   /// Constructor
+  /// @param [selectedDate] selected date
+  /// @param [controller] controller
+  /// @param [formKey] form key
+  /// @param [dateKey] date key
   ///
   AddOrderActionViewState({
     this.selectedDate,
@@ -34,6 +33,8 @@ class AddOrderActionViewState extends ViewStateAbs {
         dateKey: GlobalKey<FormFieldState<DateTime>>(),
       );
 
+  /// Get props
+  ///
   @override
   List<Object?> get props => [
         selectedDate,

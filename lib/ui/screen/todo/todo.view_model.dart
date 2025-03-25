@@ -18,11 +18,7 @@ part 'todo.view_model.g.dart';
 )
 class TodoViewModel extends _$TodoViewModel {
   bool _isInitialized = false;
-
-  /// Navigator service
   late final NavigatorService _navigatorService;
-
-  /// Order service
   late final OrderService _orderService;
 
   /// Build

@@ -3,7 +3,6 @@ import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 
 /// A card that displays the status of an order
 class StatusCard extends StatelessWidget {
-  /// The status of the order
   final OrderStatus status;
 
   /// Constructor of the status card

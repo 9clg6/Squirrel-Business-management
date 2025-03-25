@@ -14,9 +14,7 @@ import 'package:squirrel/ui/widgets/help_text.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Order details screen
-///
 class OrderDetailsScreen extends ConsumerStatefulWidget {
-  /// Order
   final Order order;
 
   /// Constructor
@@ -55,9 +53,7 @@ class _OrderDetailsScreenState extends ConsumerState<OrderDetailsScreen> {
 }
 
 /// Body of the order details screen
-///
 class _OrderDetailBody extends StatelessWidget {
-  /// Order
   final Order order;
 
   /// Constructor
@@ -91,7 +87,6 @@ class _OrderDetailBody extends StatelessWidget {
 }
 
 /// Order quick details
-///
 class _OrderQuickDetails extends ConsumerWidget {
   final Order order;
 
@@ -229,7 +224,6 @@ class _OrderQuickDetails extends ConsumerWidget {
 }
 
 /// Order actions row
-///
 class _OrderActionsRow extends ConsumerWidget {
   final Order order;
 
@@ -320,8 +314,7 @@ class _OrderActionsRow extends ConsumerWidget {
   }
 }
 
-///
-///
+/// Order details content
 class _OrderDetailsContent extends StatelessWidget {
   final Order order;
 
@@ -333,6 +326,8 @@ class _OrderDetailsContent extends StatelessWidget {
   );
 
   /// Builds the order details content
+  /// @param [context] context
+  /// @return [Widget] widget
   ///
   @override
   Widget build(BuildContext context) {
@@ -369,6 +364,7 @@ class _OrderDetailsContent extends StatelessWidget {
   }
 }
 
+/// Actions history
 class _ActionsHistory extends ConsumerWidget {
   final Order order;
 
@@ -379,6 +375,10 @@ class _ActionsHistory extends ConsumerWidget {
     this.order,
   );
 
+  /// Builds the actions history
+  /// @param [context] context
+  /// @return [Widget] widget
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
@@ -557,6 +557,7 @@ class _ActionsHistory extends ConsumerWidget {
   }
 }
 
+/// Order informations
 class _OrderInformations extends ConsumerWidget {
   final Order order;
 
@@ -567,6 +568,10 @@ class _OrderInformations extends ConsumerWidget {
     this.order,
   );
 
+  /// Builds the order informations
+  /// @param [context] context
+  /// @return [Widget] widget
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -733,6 +738,7 @@ class _OrderInformations extends ConsumerWidget {
   }
 }
 
+/// Summary order
 class _SummaryOrder extends ConsumerWidget {
   final Order order;
 
@@ -743,6 +749,10 @@ class _SummaryOrder extends ConsumerWidget {
     this.order,
   );
 
+  /// Builds the summary order
+  /// @param [context] context
+  /// @return [Widget] widget
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -868,6 +878,7 @@ class _SummaryOrder extends ConsumerWidget {
   }
 }
 
+/// [StatusRow]
 class _StatusRow extends ConsumerWidget {
   final Order order;
 
@@ -946,12 +957,13 @@ class _StatusRow extends ConsumerWidget {
 }
 
 /// Stats card
-///
 class _StatsCard extends ConsumerWidget {
   final String subtitle;
   final String title;
 
   /// Constructor
+  /// @param [subtitle] subtitle
+  /// @param [title] title
   ///
   const _StatsCard({
     required this.subtitle,
@@ -959,6 +971,8 @@ class _StatsCard extends ConsumerWidget {
   });
 
   /// Builds the stats card
+  /// @param [context] context
+  /// @return [Widget] widget
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -999,6 +1013,8 @@ class _OrderDetailHeader extends ConsumerWidget {
   );
 
   /// Builds the order detail header
+  /// @param [context] context
+  /// @return [Widget] widget
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1037,7 +1053,8 @@ class _OrderDetailHeader extends ConsumerWidget {
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.sponsorship.tr(),
-                    title: orderState.client?.sponsorshipQuantity.toString() ?? "",
+                    title:
+                        orderState.client?.sponsorshipQuantity.toString() ?? "",
                   ),
                   const SizedBox(width: 10),
                   _StatsCard(
@@ -1047,7 +1064,8 @@ class _OrderDetailHeader extends ConsumerWidget {
                   const SizedBox(width: 10),
                   _StatsCard(
                     subtitle: LocaleKeys.firstOrder.tr(),
-                    title: orderState.client?.firstOrderDate?.toDDMMYYYY() ?? "",
+                    title:
+                        orderState.client?.firstOrderDate?.toDDMMYYYY() ?? "",
                   ),
                 ],
               )),
@@ -1059,6 +1077,7 @@ class _OrderDetailHeader extends ConsumerWidget {
 
 class _ClientInfoCard extends ConsumerWidget {
   final Order order;
+
   /// Constructor
   /// @param [order] order
   ///
@@ -1067,6 +1086,8 @@ class _ClientInfoCard extends ConsumerWidget {
   );
 
   /// Builds the client info card
+  /// @param [context] context
+  /// @return [Widget] widget
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -1113,8 +1134,14 @@ class _ClientInfoCard extends ConsumerWidget {
 
 class _OrderDetailAppBar extends StatelessWidget
     implements PreferredSizeWidget {
+  /// Constructor
+  ///
   const _OrderDetailAppBar();
 
+  /// Builds the order detail app bar
+  /// @param [context] context
+  /// @return [Widget] widget
+  ///
   @override
   Widget build(BuildContext context) {
     return AppBar(
@@ -1147,6 +1174,9 @@ class _OrderDetailAppBar extends StatelessWidget
     );
   }
 
+  /// Gets the preferred size
+  /// @return [Size] size
+  ///
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }

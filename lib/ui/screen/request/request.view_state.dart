@@ -11,11 +11,13 @@ class RequestViewState extends ViewStateAbs {
 
   /// Constructor
   /// @param loading: Whether screen is loading
-  /// 
-  RequestViewState({required this.loading});
+  ///
+  RequestViewState({
+    required this.loading,
+  });
 
   /// Initial state
-  /// 
+  ///
   factory RequestViewState.initial() => RequestViewState(loading: false);
 
   /// Copy with

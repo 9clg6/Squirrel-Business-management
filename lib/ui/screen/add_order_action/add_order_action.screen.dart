@@ -5,9 +5,18 @@ import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_model.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
+/// [AddOrderActionScreen]
 class AddOrderActionScreen extends ConsumerWidget {
+  /// Constructor
+  /// @param [key] key
+  ///
   const AddOrderActionScreen({super.key});
 
+  /// Build
+  /// @param [context] context
+  /// @param [ref] ref
+  /// @return [Widget] widget
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;

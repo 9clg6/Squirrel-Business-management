@@ -18,8 +18,6 @@ part 'stats.view_model.g.dart';
 )
 class StatsViewModel extends _$StatsViewModel {
   bool _isInitialized = false;
-
-  /// Dialog service
   late final DialogService _dialogService;
 
   /// Build

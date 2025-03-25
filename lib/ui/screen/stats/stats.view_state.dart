@@ -7,9 +7,7 @@ import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'stats.view_state.g.dart';
 
-///
 /// [StatsScreenState]
-///
 @CopyWith()
 class StatsScreenState extends ViewStateAbs {
   /// Loading state
@@ -139,7 +137,6 @@ class StatsScreenState extends ViewStateAbs {
         ),
         chartType = ChartType.orderAmount;
 
-  ///
   /// Get props
   ///
   @override

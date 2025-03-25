@@ -6,31 +6,24 @@ part 'auth.view_state.g.dart';
 /// [AuthScreenState]
 @CopyWith()
 class AuthScreenState extends ViewStateAbs {
-  /// Loading
   final bool loading;
-
-  final bool isRequestLoading;
 
   /// Constructor
   /// @param [loading] loading
-  /// @param [isRequestLoading] is request loading
   ///
   AuthScreenState({
     required this.loading,
-    required this.isRequestLoading,
   });
 
   /// Initial
   ///
   AuthScreenState.initial({bool l = true})
-      : loading = l,
-        isRequestLoading = false;
+      : loading = l;
 
   /// Props
   ///
   @override
   List<Object?> get props => <Object?>[
         loading,
-        isRequestLoading,
       ];
 }

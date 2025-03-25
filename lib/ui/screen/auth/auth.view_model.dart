@@ -11,7 +11,6 @@ import 'package:squirrel/ui/screen/auth/auth.view_state.dart';
 part 'auth.view_model.g.dart';
 
 /// [Auth]
-///
 @Riverpod(
   keepAlive: true,
   dependencies: [
@@ -25,6 +24,8 @@ class Auth extends _$Auth {
 
   bool _isInitialized = false;
 
+  /// Build
+  ///
   @override
   AuthScreenState build() {
     if (!_isInitialized) {
@@ -42,7 +43,7 @@ class Auth extends _$Auth {
   /// @param [licenseKey] license key
   ///
   Future<void> login(String licenseKey) async {
-    state = state.copyWith(isRequestLoading: true);
+    state = state.copyWith(loading: true);
     final bool result = await _authService.login(licenseKey);
 
     if (result) {
@@ -56,6 +57,6 @@ class Auth extends _$Auth {
     } else {
       _dialogService.showError(LocaleKeys.impossibleToConnect.tr());
     }
-    state = state.copyWith(isRequestLoading: false);
+    state = state.copyWith(loading: false);
   }
 }

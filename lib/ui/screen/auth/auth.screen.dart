@@ -6,17 +6,29 @@ import 'package:squirrel/ui/screen/auth/auth.view_model.dart';
 import 'package:squirrel/ui/widgets/help_text.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
+/// [AuthScreen]
 class AuthScreen extends ConsumerStatefulWidget {
+  /// Constructor
+  /// @param [key] key
+  ///
   const AuthScreen({super.key});
 
+  /// Create state
+  /// @return [ConsumerState<ConsumerStatefulWidget>] state
+  ///
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _AuthScreenState();
 }
 
+/// [AuthScreen] state
 class _AuthScreenState extends ConsumerState<AuthScreen> {
   final _licenseKeyController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
 
+  /// Build
+  /// @param [context] context
+  /// @return [Widget] widget
+  ///
   @override
   Widget build(BuildContext context) {
     final authState = ref.watch(authProvider);
@@ -58,7 +70,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ),
               ),
               const Gap(20),
-              authState.isRequestLoading
+              authState.loading
                   ? CircularProgressIndicator(
                       backgroundColor: Colors.grey[300],
                       strokeWidth: 4,

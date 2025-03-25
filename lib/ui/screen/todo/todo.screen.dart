@@ -60,16 +60,9 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
 
 /// Todo status column
 class TodoStatusColumn extends ConsumerWidget {
-  /// Parent size
   final double parentSize;
-
-  /// Order status length
   final int orderStatusLength;
-
-  /// Padding width
   final double paddingWidth;
-
-  /// Status
   final OrderStatus status;
 
   /// Constructor
@@ -169,10 +162,7 @@ class TodoStatusColumn extends ConsumerWidget {
 
 /// Todo item
 class TodoItem extends ConsumerWidget {
-  /// Status
   final OrderStatus status;
-
-  /// Order
   final Order order;
 
   /// Constructor

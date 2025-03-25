@@ -7,8 +7,6 @@ part of 'index.view_state.dart';
 // **************************************************************************
 
 abstract class _$IndexScreenStateCWProxy {
-  IndexScreenState loading(bool loading);
-
   IndexScreenState orders(List<Order> orders);
 
   IndexScreenState pinnedOrders(List<Order> pinnedOrders);
@@ -30,7 +28,6 @@ abstract class _$IndexScreenStateCWProxy {
   /// IndexScreenState(...).copyWith(id: 12, name: "My name")
   /// ````
   IndexScreenState call({
-    bool? loading,
     List<Order>? orders,
     List<Order>? pinnedOrders,
     bool? showComboBox,
@@ -46,9 +43,6 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
   const _$IndexScreenStateCWProxyImpl(this._value);
 
   final IndexScreenState _value;
-
-  @override
-  IndexScreenState loading(bool loading) => this(loading: loading);
 
   @override
   IndexScreenState orders(List<Order> orders) => this(orders: orders);
@@ -86,7 +80,6 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
   /// IndexScreenState(...).copyWith(id: 12, name: "My name")
   /// ````
   IndexScreenState call({
-    Object? loading = const $CopyWithPlaceholder(),
     Object? orders = const $CopyWithPlaceholder(),
     Object? pinnedOrders = const $CopyWithPlaceholder(),
     Object? showComboBox = const $CopyWithPlaceholder(),
@@ -96,10 +89,6 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
     Object? nextAction = const $CopyWithPlaceholder(),
   }) {
     return IndexScreenState(
-      loading == const $CopyWithPlaceholder() || loading == null
-          ? _value.loading
-          // ignore: cast_nullable_to_non_nullable
-          : loading as bool,
       orders == const $CopyWithPlaceholder() || orders == null
           ? _value.orders
           // ignore: cast_nullable_to_non_nullable

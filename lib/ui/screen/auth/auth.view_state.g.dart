@@ -9,8 +9,6 @@ part of 'auth.view_state.dart';
 abstract class _$AuthScreenStateCWProxy {
   AuthScreenState loading(bool loading);
 
-  AuthScreenState isRequestLoading(bool isRequestLoading);
-
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `AuthScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -19,7 +17,6 @@ abstract class _$AuthScreenStateCWProxy {
   /// ````
   AuthScreenState call({
     bool? loading,
-    bool? isRequestLoading,
   });
 }
 
@@ -33,10 +30,6 @@ class _$AuthScreenStateCWProxyImpl implements _$AuthScreenStateCWProxy {
   AuthScreenState loading(bool loading) => this(loading: loading);
 
   @override
-  AuthScreenState isRequestLoading(bool isRequestLoading) =>
-      this(isRequestLoading: isRequestLoading);
-
-  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `AuthScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -46,18 +39,12 @@ class _$AuthScreenStateCWProxyImpl implements _$AuthScreenStateCWProxy {
   /// ````
   AuthScreenState call({
     Object? loading = const $CopyWithPlaceholder(),
-    Object? isRequestLoading = const $CopyWithPlaceholder(),
   }) {
     return AuthScreenState(
       loading: loading == const $CopyWithPlaceholder() || loading == null
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
           : loading as bool,
-      isRequestLoading: isRequestLoading == const $CopyWithPlaceholder() ||
-              isRequestLoading == null
-          ? _value.isRequestLoading
-          // ignore: cast_nullable_to_non_nullable
-          : isRequestLoading as bool,
     );
   }
 }

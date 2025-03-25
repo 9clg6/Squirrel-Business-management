@@ -7,8 +7,6 @@ part of 'history.view_state.dart';
 // **************************************************************************
 
 abstract class _$HistoryStateCWProxy {
-  HistoryState loading(bool? loading);
-
   HistoryState orders(List<Order> orders);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `HistoryState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
@@ -18,7 +16,6 @@ abstract class _$HistoryStateCWProxy {
   /// HistoryState(...).copyWith(id: 12, name: "My name")
   /// ````
   HistoryState call({
-    bool? loading,
     List<Order>? orders,
   });
 }
@@ -28,9 +25,6 @@ class _$HistoryStateCWProxyImpl implements _$HistoryStateCWProxy {
   const _$HistoryStateCWProxyImpl(this._value);
 
   final HistoryState _value;
-
-  @override
-  HistoryState loading(bool? loading) => this(loading: loading);
 
   @override
   HistoryState orders(List<Order> orders) => this(orders: orders);
@@ -44,14 +38,9 @@ class _$HistoryStateCWProxyImpl implements _$HistoryStateCWProxy {
   /// HistoryState(...).copyWith(id: 12, name: "My name")
   /// ````
   HistoryState call({
-    Object? loading = const $CopyWithPlaceholder(),
     Object? orders = const $CopyWithPlaceholder(),
   }) {
     return HistoryState(
-      loading: loading == const $CopyWithPlaceholder()
-          ? _value.loading
-          // ignore: cast_nullable_to_non_nullable
-          : loading as bool?,
       orders: orders == const $CopyWithPlaceholder() || orders == null
           ? _value.orders
           // ignore: cast_nullable_to_non_nullable

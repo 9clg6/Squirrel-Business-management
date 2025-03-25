@@ -8,7 +8,9 @@ part of 'add_order_action.view_model.dart';
 
 String _$addOrderActionHash() => r'c71d8334865059400bd94e4b10b3958a650a4377';
 
-/// See also [AddOrderAction].
+/// [AddOrderAction]
+///
+/// Copied from [AddOrderAction].
 @ProviderFor(AddOrderAction)
 final addOrderActionProvider = AutoDisposeNotifierProvider<AddOrderAction,
     AddOrderActionViewState>.internal(

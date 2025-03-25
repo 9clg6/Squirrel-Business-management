@@ -42,7 +42,6 @@ class Clients extends _$Clients {
   ///
   void _onClientStateChanged(ClientState s) {
     state = state.copyWith(
-      loading: false,
       clients: s.clients,
     );
   }

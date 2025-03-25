@@ -20,10 +20,12 @@ import 'package:squirrel/ui/widgets/text_variant.dart';
 /// Main screen
 class MainScreen extends ConsumerStatefulWidget {
   /// Constructor
+  /// @param [key] key
   ///
   const MainScreen({super.key});
 
   /// Creates the state of the main screen
+  /// @return [ConsumerState<ConsumerStatefulWidget>] state
   ///
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _MainScreenState();
@@ -32,6 +34,8 @@ class MainScreen extends ConsumerStatefulWidget {
 /// State of the main screen
 class _MainScreenState extends ConsumerState<MainScreen> {
   /// Builds the main screen
+  /// @param [context] context
+  /// @return [Widget] widget
   ///
   @override
   Widget build(BuildContext context) {
@@ -229,14 +233,6 @@ class _Body extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final IndexScreenState state = ref.watch(indexProvider);
-
-    if (state.loading) {
-      return const SliverToBoxAdapter(
-        child: Center(child: CircularProgressIndicator()),
-      );
-    }
-
     return const SliverPadding(
       padding: EdgeInsets.all(10),
       sliver: SliverToBoxAdapter(

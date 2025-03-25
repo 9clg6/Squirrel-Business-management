@@ -7,11 +7,14 @@ import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_state.
 
 part 'add_order_action.view_model.g.dart';
 
+/// [AddOrderAction]
 @riverpod
 class AddOrderAction extends _$AddOrderAction {
   late final DialogService _dialogService;
   late final NavigatorService _navigatorService;
 
+  /// Build
+  ///
   @override
   AddOrderActionViewState build() {
     _dialogService = injector<DialogService>();
@@ -31,11 +34,14 @@ class AddOrderAction extends _$AddOrderAction {
   }
 
   /// Navigate back
+  /// @param [result] result
   ///
   void navigateBack({OrderAction? result}) {
     _navigatorService.navigateBack(result: result);
   }
 
+  /// Navigate back with result
+  ///
   void navigateBackWithResult() {
     if (state.formKey.currentState?.validate() == false) {
       return;

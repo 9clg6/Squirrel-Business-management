@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
+import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
@@ -30,7 +31,6 @@ class CustomSideBar extends StatefulWidget {
 
 /// State of the custom side bar
 class _CustomSideBarState extends State<CustomSideBar> {
-  /// Controller
   late SidebarXController controller;
 
   /// Init the state
@@ -51,8 +51,6 @@ class _CustomSideBarState extends State<CustomSideBar> {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
-    // Définition des constantes pour les paddings et border radius
     const double itemPadding = 10.0;
     const double borderRadiusInner = 10.0;
     const double borderRadiusOuter = borderRadiusInner + itemPadding;
@@ -140,7 +138,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     icon: Icons.home,
                     onTap: () {
                       if (widget.navigationShell.currentIndex == 0) {
-                        context.goNamed('main');
+                        context.goNamed(RouterEnum.main.name);
                       } else {
                         widget.navigationShell.goBranch(0);
                       }
@@ -151,7 +149,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     label: LocaleKeys.todoList.tr(),
                     onTap: () {
                       if (widget.navigationShell.currentIndex == 1) {
-                        context.goNamed('todo');
+                        context.goNamed(RouterEnum.todo.name);
                       } else {
                         widget.navigationShell.goBranch(1);
                       }
@@ -162,7 +160,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     label: LocaleKeys.stats.tr(),
                     onTap: () {
                       if (widget.navigationShell.currentIndex == 2) {
-                        context.goNamed('stats');
+                        context.goNamed(RouterEnum.stats.name);
                       } else {
                         widget.navigationShell.goBranch(2);
                       }
@@ -173,7 +171,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     label: LocaleKeys.planification.tr(),
                     onTap: () {
                       if (widget.navigationShell.currentIndex == 3) {
-                        context.goNamed('planner');
+                        context.goNamed(RouterEnum.planner.name);
                       } else {
                         widget.navigationShell.goBranch(3);
                       }
@@ -200,8 +198,10 @@ class _CustomSideBarState extends State<CustomSideBar> {
                   child: AnimatedContainer(
                     duration: const Duration(seconds: 1),
                     curve: Curves.easeInOut,
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: colorScheme.primary,
                       borderRadius: BorderRadius.circular(12),
@@ -213,8 +213,8 @@ class _CustomSideBarState extends State<CustomSideBar> {
                         ),
                         if (snapshot.data == true) ...[
                           const Gap(5),
-                          const TextVariant(
-                            "À venir",
+                          TextVariant(
+                            LocaleKeys.comingSoon.tr(),
                             variantType: TextVariantType.bodyMedium,
                           ),
                         ]

@@ -7,30 +7,24 @@ part 'history.view_state.g.dart';
 /// [HistoryState]
 @CopyWith()
 class HistoryState extends ViewStateAbs {
-  /// Loading state
-  final bool? loading;
-
-  /// Orders
   final List<Order> orders;
 
   /// Constructor
-  /// @param [loading] loading state
   /// @param [orders] orders
   /// 
   HistoryState({
-    required this.loading,
     required this.orders,
   });
 
   /// Initial state
-  ///
-  HistoryState.initial(this.orders) : loading = true;
+  /// @param [orders] orders
+  /// 
+  HistoryState.initial(this.orders);
 
   /// Get props
   ///
   @override
   List<Object?> get props => <Object?>[
-        loading,
         orders,
       ];
 }

@@ -6,7 +6,7 @@ part of 'planner.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$plannerViewModelHash() => r'9e9e35286411f9eff700c6068798d61005ec81c4';
+String _$plannerViewModelHash() => r'1ce22a0a409a133dd1d08b6832727df154991f3d';
 
 /// [PlannerViewModel]
 ///

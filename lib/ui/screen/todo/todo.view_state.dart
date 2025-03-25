@@ -7,10 +7,7 @@ part 'todo.view_state.g.dart';
 /// [TodoScreenState]
 @CopyWith()
 class TodoScreenState extends ViewStateAbs {
-  /// Loading state
   final bool? loading;
-
-  /// Order state
   final List<Order> orders;
 
   /// Constructor

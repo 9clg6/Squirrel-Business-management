@@ -13,9 +13,7 @@ import 'package:squirrel/ui/screen/main/index.view_state.dart';
 
 part 'index.view_model.g.dart';
 
-///
 /// [Index]
-///
 @Riverpod(
   keepAlive: true,
   dependencies: [
@@ -49,7 +47,6 @@ class Index extends _$Index {
     return IndexScreenState.initial(
       state.value!.runningOrder,
       state.value!.nextAction,
-      loading: false,
     );
   }
 
@@ -246,7 +243,6 @@ class Index extends _$Index {
     state = state.copyWith(
       orders: s.runningOrder,
       nextAction: s.nextAction,
-      loading: s.isLoading,
     );
   }
 }

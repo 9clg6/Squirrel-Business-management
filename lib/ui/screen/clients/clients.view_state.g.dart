@@ -7,8 +7,6 @@ part of 'clients.view_state.dart';
 // **************************************************************************
 
 abstract class _$ClientsScreenStateCWProxy {
-  ClientsScreenState loading(bool loading);
-
   ClientsScreenState selectedClient(Client? selectedClient);
 
   ClientsScreenState clients(List<Client> clients);
@@ -20,7 +18,6 @@ abstract class _$ClientsScreenStateCWProxy {
   /// ClientsScreenState(...).copyWith(id: 12, name: "My name")
   /// ````
   ClientsScreenState call({
-    bool? loading,
     Client? selectedClient,
     List<Client>? clients,
   });
@@ -31,9 +28,6 @@ class _$ClientsScreenStateCWProxyImpl implements _$ClientsScreenStateCWProxy {
   const _$ClientsScreenStateCWProxyImpl(this._value);
 
   final ClientsScreenState _value;
-
-  @override
-  ClientsScreenState loading(bool loading) => this(loading: loading);
 
   @override
   ClientsScreenState selectedClient(Client? selectedClient) =>
@@ -51,15 +45,10 @@ class _$ClientsScreenStateCWProxyImpl implements _$ClientsScreenStateCWProxy {
   /// ClientsScreenState(...).copyWith(id: 12, name: "My name")
   /// ````
   ClientsScreenState call({
-    Object? loading = const $CopyWithPlaceholder(),
     Object? selectedClient = const $CopyWithPlaceholder(),
     Object? clients = const $CopyWithPlaceholder(),
   }) {
     return ClientsScreenState(
-      loading: loading == const $CopyWithPlaceholder() || loading == null
-          ? _value.loading
-          // ignore: cast_nullable_to_non_nullable
-          : loading as bool,
       selectedClient: selectedClient == const $CopyWithPlaceholder()
           ? _value.selectedClient
           // ignore: cast_nullable_to_non_nullable
@@ -88,7 +77,6 @@ extension $ClientsScreenStateCopyWith on ClientsScreenState {
     bool selectedClient = false,
   }) {
     return ClientsScreenState(
-      loading: loading,
       selectedClient: selectedClient == true ? null : this.selectedClient,
       clients: clients,
     );

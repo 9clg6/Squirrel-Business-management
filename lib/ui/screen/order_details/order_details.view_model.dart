@@ -22,18 +22,14 @@ part 'order_details.view_model.g.dart';
   ],
 )
 class OrderDetailsViewModel extends _$OrderDetailsViewModel {
-  /// Order service
   late final OrderService _orderService;
-
-  /// Client service
   late final ClientService _clientService;
-
-  /// Dialog service
   late final DialogService _dialogService;
-
   bool _isInitialized = false;
 
   /// Build
+  /// @param [o] order
+  /// @return [OrderDetailsScreenState] order details screen state
   ///
   @override
   OrderDetailsScreenState build(Order o) {
@@ -91,8 +87,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   }
 
   /// Add order action
-  /// @param [order] order
-  ///
+  /// @return [Future<void>] future void
   Future<void> addOrderAction() async {
     final OrderAction? orderAction =
         await _dialogService.showAddOrderActionDialog();

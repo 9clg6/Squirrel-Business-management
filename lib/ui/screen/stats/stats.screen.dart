@@ -81,16 +81,29 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   }
 }
 
+/// Orders by day chart
 class OrdersByDayChart extends ConsumerStatefulWidget {
+  /// Constructor
+  /// @param [key] key
+  ///
   const OrdersByDayChart({super.key});
 
+  /// Creates the state of the orders by day chart
+  /// @return [ConsumerState<ConsumerStatefulWidget>] state of the orders by day chart
+  ///
   @override
   ConsumerState<OrdersByDayChart> createState() => _OrdersByDayChartState();
 }
 
+/// State of the orders by day chart
 class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
   bool isHoveringDate = false;
   bool isHoveringRevenue = false;
+
+  /// Builds the orders by day chart
+  /// @param [context] context
+  /// @return [Widget] widget of the orders by day chart
+  ///
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -286,9 +299,18 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
   }
 }
 
+/// Row quick stats
 class RowQuickStats extends ConsumerWidget {
+  /// Constructor
+  /// @param [key] key
+  ///
   const RowQuickStats({super.key});
 
+  /// Builds the row quick stats
+  /// @param [context] context
+  /// @param [ref] ref
+  /// @return [Widget] widget of the row quick stats
+  ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -499,14 +521,26 @@ class RowQuickStats extends ConsumerWidget {
   }
 }
 
+/// Stats chart
 class StatsChart extends ConsumerStatefulWidget {
+  /// Constructor
+  /// @param [key] key
+  ///
   const StatsChart({super.key});
 
+  /// Creates the state of the stats chart
+  /// @return [ConsumerState<ConsumerStatefulWidget>] state of the stats chart
+  ///
   @override
   ConsumerState<StatsChart> createState() => _StatsChartState();
 }
 
+/// State of the stats chart
 class _StatsChartState extends ConsumerState<StatsChart> {
+  /// Builds the stats chart
+  /// @param [context] context
+  /// @return [Widget] widget of the stats chart
+  ///
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
