@@ -212,7 +212,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                                 }
                               },
                               child: TextVariant(
-                                'Sélectionner un client',
+                                LocaleKeys.selectClient.tr(),
                                 color: colorScheme.primary,
                               ),
                             ),
@@ -287,8 +287,12 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                                 ),
                                 child: TextVariant(
                                   sponsor != null
-                                      ? 'Parrain: ${sponsor?.name}'
-                                      : 'Sélectionner le parrain',
+                                      ? LocaleKeys.sponsorWithName.tr(
+                                          args: <String>[
+                                            sponsor?.name ?? '',
+                                          ],
+                                        )
+                                      : LocaleKeys.selectSponsor.tr(),
                                   color: _isHoveringSponsor
                                       ? colorScheme.onPrimary
                                       : colorScheme.onSurface,
@@ -595,7 +599,10 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                               color: colorScheme.primary,
                               borderRadius: BorderRadius.circular(16),
                             ),
-                            child: Text(LocaleKeys.save.tr()),
+                            child: TextVariant(
+                              LocaleKeys.save.tr(),
+                              color: colorScheme.onPrimary,
+                            ),
                           ),
                         ),
                       ],

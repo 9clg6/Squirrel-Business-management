@@ -180,6 +180,7 @@ class AddOrderActionScreen extends ConsumerWidget {
                     ),
                     child: TextVariant(
                       LocaleKeys.add.tr(),
+                      color: colorScheme.onPrimary,
                     ),
                   ),
                 ),

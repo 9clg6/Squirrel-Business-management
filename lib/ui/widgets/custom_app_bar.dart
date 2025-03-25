@@ -84,8 +84,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     ref.read(businessTypeServiceProvider.notifier);
 
                 return switch (bState) {
-                  AsyncData<BusinessTypeState>(value: BusinessTypeState()) =>
-                    SizedBox(
+                  AsyncData<BusinessTypeState>() => SizedBox(
                       height: 32,
                       child: ToggleButtons(
                         borderRadius: BorderRadius.circular(10),
@@ -105,13 +104,16 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                                   BusinessType.service)
                                 Icon(
                                   Icons.check_circle_outline,
-                                  color: colorScheme.onSurface,
+                                  color: colorScheme.onPrimary,
                                   size: 16,
                                 ),
                               const Gap(10),
                               TextVariant(
-                                'Mode service',
-                                color: colorScheme.onSurface,
+                                LocaleKeys.serviceMode.tr(),
+                                color: bState.value.businessType ==
+                                        BusinessType.service
+                                    ? colorScheme.onPrimary
+                                    : colorScheme.onSurface,
                               ),
                             ],
                           ),
@@ -121,13 +123,16 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                                   BusinessType.shop)
                                 Icon(
                                   Icons.check_circle_outline,
-                                  color: colorScheme.onSurface,
+                                  color: colorScheme.onPrimary,
                                   size: 16,
                                 ),
                               const Gap(10),
                               TextVariant(
-                                'Mode boutique',
-                                color: colorScheme.onSurface,
+                                LocaleKeys.shopMode.tr(),
+                                color: bState.value.businessType ==
+                                        BusinessType.shop
+                                    ? colorScheme.onPrimary
+                                    : colorScheme.onSurface,
                               ),
                             ],
                           ),

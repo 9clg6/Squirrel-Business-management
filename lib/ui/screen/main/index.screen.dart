@@ -322,11 +322,11 @@ class _OrdersList extends ConsumerWidget {
                       icon: Icon(
                         Icons.add,
                         size: 20,
-                        color: colorScheme.onSurface,
+                        color: colorScheme.onPrimary,
                       ),
                       label: TextVariant(
                         LocaleKeys.add.tr(),
-                        color: colorScheme.onSurface,
+                        color: colorScheme.onPrimary,
                       ),
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(

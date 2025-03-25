@@ -79,7 +79,7 @@ class MaterialTheme {
       brightness: Brightness.light,
       primary: Color(0xff003d3d),
       surfaceTint: Color(0xff016a6a),
-      onPrimary: Color(0xffffffff),
+      onPrimary: Color(0xffCD3702),
       primaryContainer: Color(0xff0d6e6e),
       onPrimaryContainer: Color(0xffffffff),
       secondary: Color(0xff003d3d),

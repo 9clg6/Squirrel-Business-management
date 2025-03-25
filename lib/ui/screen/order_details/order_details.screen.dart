@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -242,11 +243,12 @@ class _OrderActionsRow extends ConsumerWidget {
           onPressed: viewModel.editOrder,
           label: TextVariant(
             LocaleKeys.editOrder.tr(),
+            color: colorScheme.onPrimary,
             fontSize: 12,
           ),
           icon: Icon(
             Icons.edit,
-            color: colorScheme.onSurface,
+            color: colorScheme.onPrimary,
           ),
           style: FilledButton.styleFrom(
             backgroundColor: colorScheme.primary,
@@ -262,10 +264,11 @@ class _OrderActionsRow extends ConsumerWidget {
           label: TextVariant(
             LocaleKeys.deleteOrder.tr(),
             fontSize: 12,
+            color: colorScheme.onPrimary,
           ),
           icon: Icon(
             Icons.delete_outline,
-            color: colorScheme.onSurface,
+            color: colorScheme.onPrimary,
           ),
           style: FilledButton.styleFrom(
             backgroundColor: colorScheme.primary,
@@ -278,8 +281,9 @@ class _OrderActionsRow extends ConsumerWidget {
         const SizedBox(width: 10),
         FilledButton.icon(
           onPressed: viewModel.markAsFailed,
-          label: const TextVariant(
-            'Marquer comme échouée',
+          label: TextVariant(
+            LocaleKeys.setAsFailed.tr(),
+            color: colorScheme.onSurface,
             fontSize: 12,
           ),
           icon: Icon(
@@ -291,7 +295,7 @@ class _OrderActionsRow extends ConsumerWidget {
               color: colorScheme.outline.withValues(alpha: .2),
             ),
             backgroundColor: colorScheme.surface,
-            foregroundColor: colorScheme.onSurface,
+            foregroundColor: colorScheme.onPrimary,
             overlayColor: colorScheme.secondary,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(10),
@@ -403,10 +407,11 @@ class _ActionsHistory extends ConsumerWidget {
                   label: TextVariant(
                     LocaleKeys.addOrderAction.tr(),
                     fontSize: 12,
+                    color: colorScheme.onPrimary,
                   ),
                   icon: Icon(
                     Icons.add,
-                    color: colorScheme.onSurface,
+                    color: colorScheme.onPrimary,
                   ),
                 ),
               ],
@@ -1083,26 +1088,21 @@ class _ClientInfoCard extends ConsumerWidget {
 
     return Expanded(
       child: ListTile(
-        subtitle: SizedBox(
-          width: 200,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              TextVariant(
-                orderState?.client?.name ?? '',
-              ),
-            ],
-          ),
-        ),
         title: Hero(
           tag: 'order-${orderState?.id}',
           child: TextVariant(
-            orderState?.client?.name ?? '',
+            (orderState?.client?.name ?? '').capitalize,
+            variantType: TextVariantType.titleMedium,
+            fontWeight: FontWeight.bold,
           ),
         ),
         leading: CircleAvatar(
+          backgroundColor: colorScheme.primary,
+          radius: 25,
           child: TextVariant(
-            orderState?.client?.name[0] ?? '',
+            (orderState?.client?.name[0] ?? '').capitalize,
+            variantType: TextVariantType.titleLarge,
+            color: colorScheme.onPrimary,
           ),
         ),
         tileColor: colorScheme.surface,

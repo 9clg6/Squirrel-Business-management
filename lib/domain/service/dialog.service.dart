@@ -199,10 +199,12 @@ class DialogService {
       return;
     }
 
+    final ColorScheme theme = Theme.of(context).colorScheme;
+
     return showDialog<void>(
       context: context,
-      builder: (_) => const AlertDialog(
-        title: TextVariant(
+      builder: (_) => AlertDialog(
+        title: const TextVariant(
           'Fonctionnalités à venir',
           variantType: TextVariantType.titleMedium,
           fontWeight: FontWeight.bold,
@@ -210,8 +212,9 @@ class DialogService {
         icon: Icon(
           Icons.rocket_launch_rounded,
           size: 42,
+          color: theme.primary,
         ),
-        content: Column(
+        content: const Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

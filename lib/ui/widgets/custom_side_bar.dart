@@ -15,7 +15,8 @@ class CustomSideBar extends StatefulWidget {
   /// @param [navigationShell] navigation shell
   ///
   const CustomSideBar({
-    required this.navigationShell, super.key,
+    required this.navigationShell,
+    super.key,
   });
 
   /// Navigation shell
@@ -78,13 +79,14 @@ class _CustomSideBarState extends State<CustomSideBar> {
                   ),
                   hoverColor: colorScheme.secondary,
                   hoverTextStyle: TextStyle(
-                    color: colorScheme.onSurface,
+                    color: colorScheme.onPrimary,
+                    fontSize: 12,
                   ),
                   textStyle: TextStyle(
                     color: colorScheme.onSurface.withValues(alpha: .5),
                   ),
                   selectedIconTheme: IconThemeData(
-                    color: colorScheme.onSurface,
+                    color: colorScheme.onPrimary,
                   ),
                   selectedTextStyle: TextStyle(
                     color: colorScheme.onPrimary,
@@ -122,8 +124,8 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     fontSize: 12,
                   ),
                   selectedTextStyle: TextStyle(
-                    color: colorScheme.onSurface,
-                    fontSize: 13,
+                    color: colorScheme.onPrimary,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -203,13 +205,15 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     ),
                     child: Row(
                       children: <Widget>[
-                        const Icon(
+                        Icon(
                           Icons.rocket_launch_rounded,
+                          color: colorScheme.onPrimary,
                         ),
                         if (snapshot.data ?? false) ...<Widget>[
                           const Gap(5),
                           TextVariant(
                             LocaleKeys.comingSoon.tr(),
+                            color: colorScheme.onPrimary,
                           ),
                         ],
                       ],

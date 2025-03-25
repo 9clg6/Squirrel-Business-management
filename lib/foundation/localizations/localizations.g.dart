@@ -33,6 +33,7 @@ class CodegenLoader extends AssetLoader{
   "commission": "Commission",
   "internalFees": "Frais internes",
   "sponsor": "Parrain",
+  "sponsorWithName": "Parrain: {}",
   "sponsorName": "Nom du parrain",
   "editOrderSponsor": "Editer la commande",
   "totalSponsors": "Total des parrainages",
@@ -131,7 +132,14 @@ class CodegenLoader extends AssetLoader{
   "noClients": "Aucun client trouvé",
   "percentageSymbol": "%",
   "clientSelection": "Si vous saisissez le nom d'un client sans le sélectionner via le bouton, il sera automatiquement ajouté à la liste des clients.\nPour sélectionner un client existant, cliquez sur le champs puis cliquez sur le bouton \"Sélectionner un client\".",
-  "sponsoredOrder": "Commande parrainée ?"
+  "sponsoredOrder": "Commande parrainée ?",
+  "service": "Service",
+  "businessType": "Type de business",
+  "serviceMode": "Mode service",
+  "shopMode": "Mode boutique",
+  "setAsFailed": "Marquer comme échouée",
+  "selectSponsor": "Sélectionner le parrain",
+  "selectClient": "Sélectionner un client"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"fr": _fr};
 }

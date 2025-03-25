@@ -21,6 +21,7 @@ abstract class  LocaleKeys {
   static const commission = 'commission';
   static const internalFees = 'internalFees';
   static const sponsor = 'sponsor';
+  static const sponsorWithName = 'sponsorWithName';
   static const sponsorName = 'sponsorName';
   static const editOrderSponsor = 'editOrderSponsor';
   static const totalSponsors = 'totalSponsors';
@@ -120,5 +121,12 @@ abstract class  LocaleKeys {
   static const percentageSymbol = 'percentageSymbol';
   static const clientSelection = 'clientSelection';
   static const sponsoredOrder = 'sponsoredOrder';
+  static const service = 'service';
+  static const businessType = 'businessType';
+  static const serviceMode = 'serviceMode';
+  static const shopMode = 'shopMode';
+  static const setAsFailed = 'setAsFailed';
+  static const selectSponsor = 'selectSponsor';
+  static const selectClient = 'selectClient';
 
 }
