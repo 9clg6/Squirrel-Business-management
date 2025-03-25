@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/auth/impl/authentication.repository.impl.dart';
+import 'package:squirrel/data/repository/auth/authentication.repository.impl.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/use_case/abstraction/use_case_abs.dart';
 

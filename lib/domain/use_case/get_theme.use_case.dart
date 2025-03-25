@@ -1,5 +1,5 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/preferences/impl/preferences_repository_impl.dart';
+import 'package:squirrel/data/repository/preferences/preferences_repository_impl.dart';
 import 'package:squirrel/domain/use_case/abstraction/use_case_abs.dart';
 import 'package:squirrel/foundation/enums/theme_appareance.enum.dart';
 
