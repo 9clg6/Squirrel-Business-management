@@ -1,8 +1,11 @@
+// ignore_for_file: lines_longer_than_80_chars cc
+
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/chart_type.enum.dart';
@@ -40,7 +43,7 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final StatsScreenState state = ref.watch(statsViewModelProvider);
 
     return Scaffold(
@@ -52,9 +55,8 @@ class _StatsScreenState extends ConsumerState<StatsScreen> {
               margin: const EdgeInsets.all(10),
               child: const SingleChildScrollView(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+                  children: <Widget>[
                     RowQuickStats(),
                     Gap(22),
                     OrdersByDayChart(),
@@ -89,7 +91,8 @@ class OrdersByDayChart extends ConsumerStatefulWidget {
   const OrdersByDayChart({super.key});
 
   /// Creates the state of the orders by day chart
-  /// @return [ConsumerState<ConsumerStatefulWidget>] state of the orders by day chart
+  /// @return [ConsumerState<ConsumerStatefulWidget>]
+  ///   state of the orders by day chart
   ///
   @override
   ConsumerState<OrdersByDayChart> createState() => _OrdersByDayChartState();
@@ -106,10 +109,13 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.watch(statsViewModelProvider);
-    final viewModel = ref.read(statsViewModelProvider.notifier);
-    final dateRange = state.dateRange;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final StatsScreenState state = ref.watch(statsViewModelProvider);
+    final StatsViewModel viewModel = ref.read(statsViewModelProvider.notifier);
+    final DateTimeRange dateRange = state.dateRange;
+
+    final String dateRangeString =
+        '${dateRange.start.toDDMMYYYY()} - ${dateRange.end.toDDMMYYYY()}';
 
     return Container(
       decoration: BoxDecoration(
@@ -117,12 +123,11 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outline.withValues(alpha: .2),
-          width: 1,
         ),
       ),
       padding: const EdgeInsets.all(20),
       child: Column(
-        children: [
+        children: <Widget>[
           TextVariant(
             LocaleKeys.ordersByDay.tr(),
             variantType: TextVariantType.titleMedium,
@@ -144,12 +149,10 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
                   borderRadius: BorderRadius.circular(20),
                   border: Border.all(
                     color: colorScheme.outline.withValues(alpha: .2),
-                    width: 1,
                   ),
                 ),
                 child: TextVariant(
-                  '${dateRange.start.toDDMMYYYY()} - ${dateRange.end.toDDMMYYYY()}',
-                  variantType: TextVariantType.bodyMedium,
+                  dateRangeString,
                   color: isHoveringDate
                       ? colorScheme.onPrimary
                       : colorScheme.onSurface,
@@ -162,7 +165,7 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
             height: 40,
             child: ListView(
               scrollDirection: Axis.horizontal,
-              children: [
+              children: <Widget>[
                 InkWell(
                   onTap: () {
                     viewModel.setRevenueType(ChartType.dailyRevenue);
@@ -181,12 +184,10 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
                           color: colorScheme.outline.withValues(alpha: .2),
-                          width: 1,
                         ),
                       ),
                       child: TextVariant(
                         LocaleKeys.dailyRevenue.tr(),
-                        variantType: TextVariantType.bodyMedium,
                         color: isHoveringRevenue ||
                                 state.chartType == ChartType.dailyRevenue
                             ? colorScheme.onPrimary
@@ -202,32 +203,25 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
           SizedBox(
             height: 500,
             child: Builder(
-              builder: (context) {
+              builder: (BuildContext context) {
                 return LineChart(
                   LineChartData(
                     minY: 0,
                     maxY: state.maxY,
-                    gridData: const FlGridData(show: true),
                     titlesData: FlTitlesData(
-                      rightTitles: const AxisTitles(
-                        sideTitles: SideTitles(showTitles: false),
-                      ),
-                      topTitles: const AxisTitles(
-                        sideTitles: SideTitles(
-                          showTitles: false,
-                        ),
-                      ),
+                      rightTitles: const AxisTitles(),
+                      topTitles: const AxisTitles(),
                       bottomTitles: AxisTitles(
                         sideTitles: SideTitles(
                           showTitles: true,
-                          getTitlesWidget: (value, meta) {
-                            final date = DateTime.fromMillisecondsSinceEpoch(
+                          getTitlesWidget: (double value, TitleMeta meta) {
+                            final DateTime date =
+                                DateTime.fromMillisecondsSinceEpoch(
                               value.toInt(),
                             ).getDateWithoutTime();
 
                             return TextVariant(
                               date.toDDMMYYYY(),
-                              variantType: TextVariantType.bodyMedium,
                             );
                           },
                           reservedSize: 42,
@@ -239,10 +233,9 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
                         sideTitles: SideTitles(
                           showTitles: true,
                           interval: state.yInterval,
-                          getTitlesWidget: (value, meta) {
+                          getTitlesWidget: (double value, TitleMeta meta) {
                             return TextVariant(
                               value.toInt().toString(),
-                              variantType: TextVariantType.bodyMedium,
                             );
                           },
                           reservedSize: 42,
@@ -250,12 +243,12 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
                       ),
                     ),
                     borderData: FlBorderData(show: false),
-                    lineBarsData: [
+                    lineBarsData: <LineChartBarData>[
                       LineChartBarData(
-                        spots: List.generate(
+                        spots: List<FlSpot>.generate(
                           dateRange.end.difference(dateRange.start).inDays + 1,
-                          (index) {
-                            final date = dateRange.start.add(
+                          (int index) {
+                            final DateTime date = dateRange.start.add(
                               Duration(days: index),
                             );
 
@@ -267,13 +260,16 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
                             );
                           },
                         ),
-                        isCurved: false,
                         color: colorScheme.primary,
                         barWidth: 3,
                         isStrokeCapRound: true,
                         dotData: FlDotData(
-                          show: true,
-                          getDotPainter: (spot, percent, barData, index) =>
+                          getDotPainter: (
+                            FlSpot spot,
+                            double percent,
+                            LineChartBarData barData,
+                            int index,
+                          ) =>
                               FlDotCirclePainter(
                             radius: 6,
                             color: colorScheme.primary,
@@ -313,14 +309,15 @@ class RowQuickStats extends ConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final state = ref.watch(statsViewModelProvider);
-    final businessTypeState = ref.watch(businessTypeServiceProvider);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final StatsScreenState state = ref.watch(statsViewModelProvider);
+    final AsyncValue<BusinessTypeState> businessTypeState =
+        ref.watch(businessTypeServiceProvider);
 
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Expanded(
             child: Container(
               height: double.infinity,
@@ -330,13 +327,11 @@ class RowQuickStats extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: colorScheme.outline.withValues(alpha: .2),
-                  width: 1,
                 ),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -344,7 +339,6 @@ class RowQuickStats extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: colorScheme.outline.withValues(alpha: .2),
-                        width: 1,
                       ),
                     ),
                     child: Icon(
@@ -354,7 +348,8 @@ class RowQuickStats extends ConsumerWidget {
                   ),
                   const Gap(10),
                   switch (businessTypeState) {
-                    AsyncData(value: BusinessTypeState()) => TextVariant(
+                    AsyncData<BusinessTypeState>(value: BusinessTypeState()) =>
+                      TextVariant(
                         businessTypeState.value.isService
                             ? LocaleKeys.bestShops.tr()
                             : LocaleKeys.bestProducts.tr(),
@@ -365,11 +360,11 @@ class RowQuickStats extends ConsumerWidget {
                   },
                   const Gap(10),
                   ...state.totalByShop.entries.map(
-                    (entry) => TextVariant(
+                    (MapEntry<String, double> entry) => TextVariant(
                       '${entry.key}: ${entry.value.toStringAsFixed(2)}€',
                       variantType: TextVariantType.titleMedium,
                     ),
-                  )
+                  ),
                 ],
               ),
             ),
@@ -384,13 +379,11 @@ class RowQuickStats extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: colorScheme.outline.withValues(alpha: .2),
-                  width: 1,
                 ),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -398,7 +391,6 @@ class RowQuickStats extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: colorScheme.outline.withValues(alpha: .2),
-                        width: 1,
                       ),
                     ),
                     child: Icon(
@@ -415,34 +407,44 @@ class RowQuickStats extends ConsumerWidget {
                   const Gap(10),
                   ...state.orders
                       .fold<Map<String, Map<String, dynamic>>>(
-                        {},
-                        (map, order) => map
-                          ..update(
-                            order.client?.name ?? "",
-                            (value) => {
-                              'count': value['count'] + 1,
-                              'total': value['total'] + order.price,
-                            },
-                            ifAbsent: () => {
-                              'count': 1,
-                              'total': order.price,
-                            },
-                          ),
+                        <String, Map<String, dynamic>>{},
+                        (Map<String, Map<String, dynamic>> map, Order order) =>
+                            map
+                              ..update(
+                                order.client?.name ?? '',
+                                (Map<String, dynamic> value) =>
+                                    <String, double>{
+                                  'count': (value['count'] as double) + 1,
+                                  'total':
+                                      (value['total'] as double) + order.price,
+                                },
+                                ifAbsent: () => <String, double>{
+                                  'count': 1.toDouble(),
+                                  'total': order.price,
+                                },
+                              ),
                       )
                       .entries
                       .toList()
-                      .sorted((a, b) => (b.value['total'] as double)
-                          .compareTo(a.value['total'] as double))
+                      .sorted(
+                        (
+                          MapEntry<String, Map<String, dynamic>> a,
+                          MapEntry<String, Map<String, dynamic>> b,
+                        ) =>
+                            (b.value['total'] as double)
+                                .compareTo(a.value['total'] as double),
+                      )
                       .take(5)
                       .map(
-                        (entry) => Padding(
+                        (MapEntry<String, Map<String, dynamic>> entry) =>
+                            Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: TextVariant(
-                            '${entry.key}: ${entry.value['total'].toStringAsFixed(2)}€',
+                            '${entry.key}: ${((entry.value['total'] as double) / (entry.value['count'] as double)).toStringAsFixed(2)}€',
                             variantType: TextVariantType.titleMedium,
                           ),
                         ),
-                      )
+                      ),
                 ],
               ),
             ),
@@ -457,13 +459,11 @@ class RowQuickStats extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: colorScheme.outline.withValues(alpha: .2),
-                  width: 1,
                 ),
               ),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   Container(
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
@@ -471,7 +471,6 @@ class RowQuickStats extends ConsumerWidget {
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
                         color: colorScheme.outline.withValues(alpha: .2),
-                        width: 1,
                       ),
                     ),
                     child: Icon(
@@ -488,27 +487,30 @@ class RowQuickStats extends ConsumerWidget {
                   const Gap(10),
                   ...state.orders
                       .fold<Map<String, int>>(
-                        {},
-                        (map, order) => map
+                        <String, int>{},
+                        (Map<String, int> map, Order order) => map
                           ..update(
-                            order.client?.name ?? "",
-                            (value) => value + 1,
+                            order.client?.name ?? '',
+                            (int value) => value + 1,
                             ifAbsent: () => 1,
                           ),
                       )
                       .entries
                       .toList()
-                      .sorted((a, b) => b.value.compareTo(a.value))
+                      .sorted(
+                        (MapEntry<String, int> a, MapEntry<String, int> b) =>
+                            b.value.compareTo(a.value),
+                      )
                       .take(5)
                       .map(
-                        (entry) => Padding(
+                        (MapEntry<String, int> entry) => Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: TextVariant(
                             '${entry.key}: ${entry.value} commandes',
                             variantType: TextVariantType.titleMedium,
                           ),
                         ),
-                      )
+                      ),
                 ],
               ),
             ),
@@ -543,9 +545,9 @@ class _StatsChartState extends ConsumerState<StatsChart> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final viewModel = ref.read(statsViewModelProvider.notifier);
-    final state = ref.watch(statsViewModelProvider);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final StatsViewModel viewModel = ref.read(statsViewModelProvider.notifier);
+    final StatsScreenState state = ref.watch(statsViewModelProvider);
 
     return Expanded(
       flex: 2,
@@ -555,27 +557,27 @@ class _StatsChartState extends ConsumerState<StatsChart> {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: colorScheme.outline.withValues(alpha: .2),
-            width: 1,
           ),
         ),
         padding: const EdgeInsets.only(top: 40),
         child: Column(
-          children: [
+          children: <Widget>[
             TextVariant(
               LocaleKeys.totalOrdersAmount.tr(),
               color: colorScheme.onSurface,
-              variantType: TextVariantType.bodyMedium,
             ),
             const Gap(12),
             TextVariant(
-              LocaleKeys.priceWithSymbol.tr(args: [state.total.toString()]),
+              LocaleKeys.priceWithSymbol
+                  .tr(args: <String>[state.total.toString()]),
               color: colorScheme.onSurface,
               variantType: TextVariantType.titleLarge,
             ),
             Builder(
-              builder: (context) {
-                final sections = state.totalByShop.entries.map(
-                  (entry) => PieChartSectionData(
+              builder: (BuildContext context) {
+                final Iterable<PieChartSectionData> sections =
+                    state.totalByShop.entries.map(
+                  (MapEntry<String, double> entry) => PieChartSectionData(
                     value: entry.value / state.total * 50,
                     color: Colors.primaries[
                         entry.key.hashCode % Colors.primaries.length],
@@ -593,7 +595,7 @@ class _StatsChartState extends ConsumerState<StatsChart> {
                       height: 420,
                       child: Stack(
                         alignment: Alignment.topCenter,
-                        children: [
+                        children: <Widget>[
                           if (state.hoveredShop != null)
                             Padding(
                               padding: const EdgeInsets.only(top: 130),
@@ -605,20 +607,18 @@ class _StatsChartState extends ConsumerState<StatsChart> {
                                   border: Border.all(
                                     color: colorScheme.outline
                                         .withValues(alpha: .2),
-                                    width: 1,
                                   ),
                                 ),
                                 child: Column(
                                   mainAxisSize: MainAxisSize.min,
-                                  children: [
+                                  children: <Widget>[
                                     TextVariant(
-                                      "${state.hoveredShop}",
+                                      '${state.hoveredShop}',
                                       color: colorScheme.onSurface,
-                                      variantType: TextVariantType.bodyMedium,
                                     ),
                                     TextVariant(
                                       LocaleKeys.priceWithSymbol.tr(
-                                        args: [
+                                        args: <String>[
                                           state.totalByShop[state.hoveredShop!]
                                               .toString(),
                                         ],
@@ -635,7 +635,7 @@ class _StatsChartState extends ConsumerState<StatsChart> {
                               startDegreeOffset: 180,
                               sectionsSpace: 12,
                               centerSpaceRadius: 120,
-                              sections: [
+                              sections: <PieChartSectionData>[
                                 ...sections,
                                 PieChartSectionData(
                                   value: 50,
@@ -645,14 +645,16 @@ class _StatsChartState extends ConsumerState<StatsChart> {
                                 ),
                               ],
                               pieTouchData: PieTouchData(
-                                touchCallback: (FlTouchEvent event,
-                                    PieTouchResponse? touchResponse) {
+                                touchCallback: (
+                                  FlTouchEvent event,
+                                  PieTouchResponse? touchResponse,
+                                ) {
                                   setState(
                                     () {
-                                      final touchedSection =
+                                      final PieTouchedSection? touchedSection =
                                           touchResponse?.touchedSection;
 
-                                      final index = touchResponse
+                                      final int? index = touchResponse
                                           ?.touchedSection?.touchedSectionIndex;
 
                                       if (touchedSection == null ||

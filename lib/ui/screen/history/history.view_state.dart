@@ -7,19 +7,20 @@ part 'history.view_state.g.dart';
 /// [HistoryState]
 @CopyWith()
 class HistoryState extends ViewStateAbs {
-  final List<Order> orders;
-
   /// Constructor
   /// @param [orders] orders
-  /// 
+  ///
   HistoryState({
     required this.orders,
   });
 
   /// Initial state
   /// @param [orders] orders
-  /// 
+  ///
   HistoryState.initial(this.orders);
+
+  /// Orders
+  final List<Order> orders;
 
   /// Get props
   ///

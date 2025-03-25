@@ -14,12 +14,19 @@ class ErrorOnlyFilter extends LogFilter {
 
 /// Output personnalisé qui n'écrit dans le fichier que les erreurs
 class SelectiveFileOutput extends LogOutput {
-  final File? _logFile;
-  static File? _cachedLogFile;
-  final ConsoleOutput _consoleOutput = ConsoleOutput();
-
+  /// Constructor
+  ///
   SelectiveFileOutput() : _logFile = _cachedLogFile;
 
+  /// Log file
+  final File? _logFile;
+
+  /// Cached log file
+  static File? _cachedLogFile;
+
+  final ConsoleOutput _consoleOutput = ConsoleOutput();
+
+  /// Init log file
   static Future<void> initLogFile() async {
     if (_cachedLogFile != null) return;
 
@@ -28,14 +35,15 @@ class SelectiveFileOutput extends LogOutput {
     _cachedLogFile = File(logFilePath);
 
     // Créer le fichier s'il n'existe pas
-    if (!await _cachedLogFile!.exists()) {
+    if (!_cachedLogFile!.existsSync()) {
       await _cachedLogFile!.create(recursive: true);
     }
 
     // Ajouter un en-tête avec la date de démarrage
     await _cachedLogFile!.writeAsString(
-        '=== Session de log démarrée le ${DateTime.now()} ===\n',
-        mode: FileMode.append);
+      '=== Session de log démarrée le ${DateTime.now()} ===\n',
+      mode: FileMode.append,
+    );
   }
 
   @override
@@ -45,8 +53,8 @@ class SelectiveFileOutput extends LogOutput {
 
     // Écrire dans le fichier de log uniquement si c'est une erreur
     if (_logFile != null && event.level.index >= Level.error.index) {
-      for (var line in event.lines) {
-        _logFile!.writeAsString(
+      for (final String line in event.lines) {
+        _logFile.writeAsString(
           '${DateTime.now()} [${event.level}] $line\n',
           mode: FileMode.append,
         );
@@ -55,13 +63,12 @@ class SelectiveFileOutput extends LogOutput {
   }
 }
 
-final logger = Logger(
+/// Logger
+final Logger logger = Logger(
   printer: PrettyPrinter(
     methodCount: 0,
     errorMethodCount: 5,
     lineLength: 80,
-    colors: true,
-    printEmojis: true,
   ),
   output: SelectiveFileOutput(),
 );
@@ -69,9 +76,13 @@ final logger = Logger(
 /// Méthodes utilitaires pour faciliter l'utilisation du logger
 
 /// Log une exception avec sa stack trace
-void logException(dynamic exception,
-    [StackTrace? stackTrace, String? context]) {
-  final message = context != null ? '$context: $exception' : '$exception';
+void logException(
+  dynamic exception, [
+  StackTrace? stackTrace,
+  String? context,
+]) {
+  final String message =
+      context != null ? '$context: $exception' : '$exception';
   logger.e(message, error: exception, stackTrace: stackTrace);
 }
 
@@ -103,7 +114,7 @@ Future<T?> withErrorLogging<T>(
 }) async {
   try {
     return await function();
-  } catch (e, stackTrace) {
+  } on Exception catch (e, stackTrace) {
     logException(e, stackTrace, context);
     return defaultValue;
   }

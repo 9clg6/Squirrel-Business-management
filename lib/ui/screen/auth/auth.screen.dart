@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/auth/auth.view_model.dart';
+import 'package:squirrel/ui/screen/auth/auth.view_state.dart';
 import 'package:squirrel/ui/widgets/help_text.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
@@ -22,8 +23,8 @@ class AuthScreen extends ConsumerStatefulWidget {
 
 /// [AuthScreen] state
 class _AuthScreenState extends ConsumerState<AuthScreen> {
-  final _licenseKeyController = TextEditingController();
-  final _formKey = GlobalKey<FormState>();
+  final TextEditingController _licenseKeyController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   /// Build
   /// @param [context] context
@@ -31,7 +32,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   ///
   @override
   Widget build(BuildContext context) {
-    final authState = ref.watch(authProvider);
+    final AuthScreenState authState = ref.watch(authProvider);
 
     if (authState.loading) {
       return const Center(child: CircularProgressIndicator());
@@ -48,7 +49,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               TextVariant(
                 LocaleKeys.login.tr(),
                 variantType: TextVariantType.displaySmall,
@@ -57,7 +58,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
               Form(
                 key: _formKey,
                 child: TextFormField(
-                  validator: (value) {
+                  validator: (String? value) {
                     if (value == null || value.isEmpty) {
                       return LocaleKeys.pleaseEnterYourAccountNumber.tr();
                     }
@@ -70,25 +71,24 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                 ),
               ),
               const Gap(20),
-              authState.loading
-                  ? CircularProgressIndicator(
-                      backgroundColor: Colors.grey[300],
-                      strokeWidth: 4,
-                      strokeAlign: -2,
-                    )
-                  : FilledButton(
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          await ref
-                              .watch(authProvider.notifier)
-                              .login(_licenseKeyController.text);
-                        }
-                      },
-                      child: TextVariant(
-                        LocaleKeys.login.tr(),
-                        variantType: TextVariantType.bodyMedium,
-                      ),
-                    ),
+              if (authState.loading)
+                CircularProgressIndicator(
+                  backgroundColor: Colors.grey[300],
+                  strokeAlign: -2,
+                )
+              else
+                FilledButton(
+                  onPressed: () async {
+                    if (_formKey.currentState!.validate()) {
+                      await ref
+                          .watch(authProvider.notifier)
+                          .login(_licenseKeyController.text);
+                    }
+                  },
+                  child: TextVariant(
+                    LocaleKeys.login.tr(),
+                  ),
+                ),
               const Gap(42),
               HelpText(
                 text: LocaleKeys.ifYouHaveLostYourKey.tr(),

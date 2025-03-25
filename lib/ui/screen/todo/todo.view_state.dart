@@ -7,17 +7,14 @@ part 'todo.view_state.g.dart';
 /// [TodoScreenState]
 @CopyWith()
 class TodoScreenState extends ViewStateAbs {
-  final bool? loading;
-  final List<Order> orders;
-
   /// Constructor
   /// @param [loading] loading
   /// @param [orders] orders
   ///
   TodoScreenState(
-    this.loading,
-    this.orders,
-  );
+    this.orders, {
+    this.loading = true,
+  });
 
   /// Initial state
   /// @param [orders] orders
@@ -26,6 +23,12 @@ class TodoScreenState extends ViewStateAbs {
     this.orders, {
     this.loading = true,
   });
+
+  /// Loading
+  final bool? loading;
+
+  /// Orders
+  final List<Order> orders;
 
   /// Get props
   ///

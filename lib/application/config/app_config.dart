@@ -22,33 +22,24 @@ enum Environment {
 /// Configuration/Parameters required by the application.
 ///
 class AppConfig {
-  /// App Name
-  final String appName;
-
-  ///-------------------------------------------
-
-  ///
-  /// Constructor
-  ///
-  const AppConfig.dev({
-    required this.appName,
-  });
-
-  ///
-  /// Staging constructor
-  ///
-  const AppConfig.staging({
-    required this.appName,
-  });
-
-  ///
   /// Production constructor
   ///
   const AppConfig.prod({
     required this.appName,
   });
 
+  /// Constructor
   ///
+  const AppConfig.dev({
+    required this.appName,
+  });
+
+  /// Staging constructor
+  ///
+  const AppConfig.staging({
+    required this.appName,
+  });
+
   /// Test constructor
   ///
   const AppConfig.test({
@@ -58,11 +49,12 @@ class AppConfig {
   // coverage:ignore-start
   /// Create [AppConfig] from environment variables
   factory AppConfig.fromEnvironment() {
-    ///-------------------------------------------
-
     return const AppConfig.prod(
       appName: 'Squirrel',
     );
   }
+
+  /// App Name
+  final String appName;
   // coverage:ignore-end
 }

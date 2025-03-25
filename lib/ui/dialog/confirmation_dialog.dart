@@ -6,6 +6,15 @@ import 'package:squirrel/ui/widgets/text_variant.dart';
 /// Confirmation dialog
 ///
 class ConfirmationDialog extends StatelessWidget {
+  /// Constructor
+  ///
+  const ConfirmationDialog({
+    required this.title,
+    required this.message,
+    required this.onConfirm,
+    super.key,
+  });
+
   /// Title
   final String title;
 
@@ -15,20 +24,11 @@ class ConfirmationDialog extends StatelessWidget {
   /// On confirm
   final Null Function() onConfirm;
 
-  /// Constructor
-  ///
-  const ConfirmationDialog({
-    super.key,
-    required this.title,
-    required this.message,
-    required this.onConfirm,
-  });
-
   /// Build
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Dialog(
       child: ClipRRect(
@@ -41,9 +41,8 @@ class ConfirmationDialog extends StatelessWidget {
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisSize: MainAxisSize.min,
-            children: [
+            children: <Widget>[
               Icon(
                 Icons.warning_amber_rounded,
                 color: colorScheme.error,
@@ -63,7 +62,7 @@ class ConfirmationDialog extends StatelessWidget {
               const SizedBox(height: 22),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
+                children: <Widget>[
                   InkWell(
                     onTap: context.pop,
                     child: Container(
@@ -72,15 +71,15 @@ class ConfirmationDialog extends StatelessWidget {
                       alignment: Alignment.center,
                       child: TextVariant(
                         LocaleKeys.cancel.tr(),
-                        variantType: TextVariantType.bodyMedium,
                       ),
                     ),
                   ),
                   const SizedBox(width: 16),
                   InkWell(
                     onTap: () {
-                      context.pop();
-                      context.pop();
+                      context
+                        ..pop()
+                        ..pop();
                       onConfirm();
                     },
                     child: Container(
@@ -93,7 +92,6 @@ class ConfirmationDialog extends StatelessWidget {
                       ),
                       child: TextVariant(
                         LocaleKeys.confirm.tr(),
-                        variantType: TextVariantType.bodyMedium,
                       ),
                     ),
                   ),

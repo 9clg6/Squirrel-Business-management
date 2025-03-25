@@ -14,13 +14,13 @@ part 'client.service.g.dart';
 /// [ClientService]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     HiveSecureStorageService,
   ],
 )
 class ClientService extends _$ClientService {
   /// Storage
-  late final StorageInterface _storage;
+  late final StorageInterface<dynamic> _storage;
 
   /// Storage key
   static const String _storageKey = 'clients';
@@ -37,18 +37,21 @@ class ClientService extends _$ClientService {
       _isInitialized = true;
     }
 
-    return await _loadClients();
+    return _loadClients();
   }
 
   /// Load clients
   ///
   Future<ClientState> _loadClients() async {
     log('Loading clients');
-    final String? o = await _storage.get(_storageKey);
+    final String? o = await _storage.get(_storageKey) as String?;
     if (o != null) {
-      final clients = jsonDecode(o) as List;
+      final List<dynamic> clients = jsonDecode(o) as List<dynamic>;
+
       return ClientState.initial(
-        clients: clients.map((e) => Client.fromJson(e)).toList(),
+        clients: clients
+            .map((dynamic e) => Client.fromJson(e as Map<String, dynamic>))
+            .toList(),
       );
     }
     return ClientState.initial();
@@ -62,7 +65,7 @@ class ClientService extends _$ClientService {
     if (os.clients.isEmpty) return;
     _storage.set(
       _storageKey,
-      jsonEncode(os.clients.map((e) => e.toJson()).toList()),
+      jsonEncode(os.clients.map((Client e) => e.toJson()).toList()),
     );
   }
 
@@ -71,7 +74,7 @@ class ClientService extends _$ClientService {
   /// @return [Client] client
   ///
   Client getClientById(String id) {
-    return state.value!.clients.firstWhere((client) => client.id == id);
+    return state.value!.clients.firstWhere((Client client) => client.id == id);
   }
 
   /// Get client by name or create client
@@ -80,19 +83,19 @@ class ClientService extends _$ClientService {
   ///
   Client? getClientByName(String clientContact) {
     return state.value!.clients.firstWhereOrNull(
-      (client) =>
+      (Client client) =>
           client.name.toLowerCase().trim() ==
           clientContact.toLowerCase().trim(),
     );
   }
 
   /// Create client with order
-  /// @param [client] client
+  /// @param [clientName] client
   /// @param [order] order
   /// @return [Client] client
   ///
   Client createClientWithOrder(String clientName, Order order) {
-    final client = Client(
+    final Client client = Client(
       name: clientName.trim(),
       orderQuantity: 1,
       orderTotalAmount: order.price,
@@ -100,9 +103,9 @@ class ClientService extends _$ClientService {
       firstOrderDate: order.startDate,
     );
 
-    state = AsyncData(
+    state = AsyncData<ClientState>(
       state.value!.copyWith(
-        clients: [
+        clients: <Client>[
           ...state.value!.clients,
           client,
         ],
@@ -110,18 +113,18 @@ class ClientService extends _$ClientService {
     );
 
     if (order.sponsor != null) {
-      final sponsor = getClientByName(order.sponsor!);
+      final Client? sponsor = getClientByName(order.sponsor!);
       if (sponsor != null) {
-        final updatedSponsor = sponsor.copyWith(
+        final Client updatedSponsor = sponsor.copyWith(
           sponsorshipQuantity: sponsor.sponsorshipQuantity + 1,
         );
 
         final int sponsorIndex =
-            state.value!.clients.indexWhere((c) => c.id == sponsor.id);
+            state.value!.clients.indexWhere((Client c) => c.id == sponsor.id);
 
-        state = AsyncData(
+        state = AsyncData<ClientState>(
           state.value!.copyWith(
-            clients: [
+            clients: <Client>[
               ...state.value!.clients.take(sponsorIndex),
               updatedSponsor,
               ...state.value!.clients.skip(sponsorIndex + 1),
@@ -146,16 +149,16 @@ class ClientService extends _$ClientService {
     required Client newVersion,
   }) {
     final int clientIndex = state.value!.clients.indexWhere(
-      (c) => c.id == client.id,
+      (Client c) => c.id == client.id,
     );
 
     if (clientIndex == -1) {
       throw StateError('Client with id ${client.id} not found');
     }
 
-    state = AsyncData(
+    state = AsyncData<ClientState>(
       state.value!.copyWith(
-        clients: [
+        clients: <Client>[
           ...state.value!.clients.take(clientIndex),
           newVersion,
           ...state.value!.clients.skip(clientIndex + 1),
@@ -177,20 +180,21 @@ class ClientService extends _$ClientService {
     required bool isNewOrder,
   }) {
     final int clientIndex = state.value!.clients.indexWhere(
-      (c) => c.id == client.id,
+      (Client c) => c.id == client.id,
     );
 
     if (clientIndex == -1) {
       throw StateError('Client with id ${client.id} not found');
     }
 
-    final clientTemp = state.value!.clients[clientIndex];
+    final Client clientTemp = state.value!.clients[clientIndex];
     final DateTime newLastOrderDate = order.startDate.isAfter(
-            clientTemp.lastOrderDate ?? DateTime.fromMillisecondsSinceEpoch(0))
+      clientTemp.lastOrderDate ?? DateTime.fromMillisecondsSinceEpoch(0),
+    )
         ? order.startDate
         : clientTemp.lastOrderDate ?? order.startDate;
 
-    final clientUpdated = clientTemp.copyWith(
+    final Client clientUpdated = clientTemp.copyWith(
       orderQuantity:
           isNewOrder ? clientTemp.orderQuantity + 1 : clientTemp.orderQuantity,
       orderTotalAmount: isNewOrder
@@ -202,9 +206,9 @@ class ClientService extends _$ClientService {
       lastOrderDate: newLastOrderDate,
     );
 
-    state = AsyncData(
+    state = AsyncData<ClientState>(
       state.value!.copyWith(
-        clients: [
+        clients: <Client>[
           ...state.value!.clients.take(clientIndex),
           clientUpdated,
           ...state.value!.clients.skip(clientIndex + 1),
@@ -213,17 +217,17 @@ class ClientService extends _$ClientService {
     );
 
     if (order.sponsor != null) {
-      final sponsor = getClientByName(order.sponsor!);
+      final Client? sponsor = getClientByName(order.sponsor!);
       if (sponsor != null) {
-        final updatedSponsor = sponsor.copyWith(
+        final Client updatedSponsor = sponsor.copyWith(
           sponsorshipQuantity: sponsor.sponsorshipQuantity + 1,
         );
 
         final int sponsorIndex =
-            state.value!.clients.indexWhere((c) => c.id == sponsor.id);
-        state = AsyncData(
+            state.value!.clients.indexWhere((Client c) => c.id == sponsor.id);
+        state = AsyncData<ClientState>(
           state.value!.copyWith(
-            clients: [
+            clients: <Client>[
               ...state.value!.clients.take(sponsorIndex),
               updatedSponsor,
               ...state.value!.clients.skip(sponsorIndex + 1),

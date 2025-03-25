@@ -8,20 +8,23 @@ part 'preferences_repository_impl.g.dart';
 
 /// [PreferencesRepositoryImpl]
 @Riverpod(
-  dependencies: [
+  dependencies: <Object>[
     PreferencesLocalDataSourcesImpl,
   ],
 )
 class PreferencesRepositoryImpl extends _$PreferencesRepositoryImpl
     implements PreferencesRepository {
-  /// Preferences local data source
-  late final PreferencesLocalDataSource _localDataSource;
+  /// Constructor
+  ///
+  PreferencesRepositoryImpl();
 
   /// Constructor
-  /// @param [localDataSource] preferences local data source
+  /// @param [_localDataSource] preferences local data source
   ///
   PreferencesRepositoryImpl._(this._localDataSource);
-  PreferencesRepositoryImpl();
+
+  /// Preferences local data source
+  late final PreferencesLocalDataSource _localDataSource;
 
   /// Build
   /// @return [PreferencesRepositoryImpl] preferences repository impl
@@ -29,7 +32,8 @@ class PreferencesRepositoryImpl extends _$PreferencesRepositoryImpl
   @override
   PreferencesRepositoryImpl build() {
     return PreferencesRepositoryImpl._(
-        ref.read(preferencesLocalDataSourcesImplProvider));
+      ref.read(preferencesLocalDataSourcesImplProvider),
+    );
   }
 
   /// Change theme

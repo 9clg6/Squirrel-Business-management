@@ -23,9 +23,9 @@ class EnvService {
   ///
   static Future<void> _init() async {
     try {
-      await dotenv.load(fileName: '.env');
+      await dotenv.load();
       logInfo('Fichier .env chargé avec succès');
-    } catch (e, stackTrace) {
+    } on Exception catch (e, stackTrace) {
       logException(e, stackTrace, 'Erreur lors du chargement du fichier .env');
       // Continuer sans le fichier .env
     }

@@ -6,10 +6,11 @@ part of 'hive_secure_storage.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$hiveSecureStorageHash() => r'd65e1905826256f286b70450afa0f3baba89d35b';
+String _$hiveSecureStorageHash() => r'e5915a32475bc6d7c262b872750dbbe98cb65130';
 
 /// [HiveSecureStorage]
-/// Use it when you want to save secured data that won't be backed up by the system.
+/// Use it when you want to save secured data that
+///  won't be backed up by the system.
 ///
 /// Copied from [HiveSecureStorage].
 @ProviderFor(HiveSecureStorage)

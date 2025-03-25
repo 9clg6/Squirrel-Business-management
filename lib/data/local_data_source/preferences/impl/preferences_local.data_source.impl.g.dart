@@ -7,7 +7,7 @@ part of 'preferences_local.data_source.impl.dart';
 // **************************************************************************
 
 String _$preferencesLocalDataSourcesImplHash() =>
-    r'da62b05153a3d7b72720b20b5ee13ee56ec35737';
+    r'a9ae8a908aad6d5ffdb63defbc669ff702778148';
 
 /// [PreferencesLocalDataSourcesImpl]
 ///

@@ -41,7 +41,7 @@ class _$PlannerScreenStateCWProxyImpl implements _$PlannerScreenStateCWProxy {
     Object? loading = const $CopyWithPlaceholder(),
   }) {
     return PlannerScreenState(
-      loading == const $CopyWithPlaceholder()
+      loading: loading == const $CopyWithPlaceholder()
           ? _value.loading
           // ignore: cast_nullable_to_non_nullable
           : loading as bool?,

@@ -129,7 +129,9 @@ class CodegenLoader extends AssetLoader{
   "clients": "Clients",
   "history": "Historique",
   "noClients": "Aucun client trouvé",
-  "percentageSymbol": "%"
+  "percentageSymbol": "%",
+  "clientSelection": "Si vous saisissez le nom d'un client sans le sélectionner via le bouton, il sera automatiquement ajouté à la liste des clients.\nPour sélectionner un client existant, cliquez sur le champs puis cliquez sur le bouton \"Sélectionner un client\".",
+  "sponsoredOrder": "Commande parrainée ?"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"fr": _fr};
 }

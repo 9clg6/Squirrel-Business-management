@@ -6,8 +6,6 @@ part 'auth.view_state.g.dart';
 /// [AuthScreenState]
 @CopyWith()
 class AuthScreenState extends ViewStateAbs {
-  final bool loading;
-
   /// Constructor
   /// @param [loading] loading
   ///
@@ -17,8 +15,10 @@ class AuthScreenState extends ViewStateAbs {
 
   /// Initial
   ///
-  AuthScreenState.initial({bool l = true})
-      : loading = l;
+  AuthScreenState.initial({bool l = true}) : loading = l;
+
+  /// Loading
+  final bool loading;
 
   /// Props
   ///

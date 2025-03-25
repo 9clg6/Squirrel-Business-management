@@ -1,4 +1,3 @@
-
 import 'package:json_annotation/json_annotation.dart';
 import 'package:squirrel/domain/mixin/serializable.mixin.dart';
 
@@ -7,12 +6,6 @@ part 'check_validity.remote_model.g.dart';
 /// [CheckValidityRemoteModel]
 @JsonSerializable()
 class CheckValidityRemoteModel with SerializableMixin {
-  /// Valid
-  final bool valid;
-
-  /// Expiration date
-  final DateTime expirationDate;
-
   /// Constructor
   /// @param [valid] valid
   /// @param [expirationDate] expiration date
@@ -22,6 +15,19 @@ class CheckValidityRemoteModel with SerializableMixin {
     required this.expirationDate,
   });
 
+  /// From json
+  /// @param [json] json
+  /// @return [CheckValidityRemoteModel] check validity remote model
+  ///
+  factory CheckValidityRemoteModel.fromJson(Map<String, dynamic> json) =>
+      _$CheckValidityRemoteModelFromJson(json);
+
+  /// Valid
+  final bool valid;
+
+  /// Expiration date
+  final DateTime expirationDate;
+
   /// To json
   /// @return [Map<String, dynamic>] json
   ///
@@ -29,11 +35,4 @@ class CheckValidityRemoteModel with SerializableMixin {
   Map<String, dynamic> toJson() {
     return _$CheckValidityRemoteModelToJson(this);
   }
-
-  /// From json
-  /// @param [json] json
-  /// @return [CheckValidityRemoteModel] check validity remote model
-  ///
-  factory CheckValidityRemoteModel.fromJson(Map<String, dynamic> json) =>
-      _$CheckValidityRemoteModelFromJson(json);
 }

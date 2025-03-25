@@ -1,3 +1,5 @@
+// ignore_for_file: one_member_abstracts needed for heritage
+
 /// [UseCaseWithParams]
 abstract interface class UseCaseWithParams<T, P> {
   /// Execute use case
@@ -11,5 +13,5 @@ abstract interface class UseCaseWithParams<T, P> {
 abstract interface class UseCase<T> {
   /// Execute use case
   /// @return [T] result
-  T execute();
+   T execute();
 }

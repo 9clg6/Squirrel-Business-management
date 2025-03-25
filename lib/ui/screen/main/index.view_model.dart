@@ -16,7 +16,7 @@ part 'index.view_model.g.dart';
 /// [Index]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     OrderService,
   ],
 )
@@ -38,9 +38,9 @@ class Index extends _$Index {
 
       _isInitialized = true;
     }
-    final state = ref.watch(orderServiceProvider);
+    final AsyncValue<OrderState> state = ref.watch(orderServiceProvider);
 
-    ref.listen(orderServiceProvider, (_, next) {
+    ref.listen(orderServiceProvider, (_, AsyncValue<OrderState> next) {
       _updateState(next.value!);
     });
 
@@ -59,12 +59,12 @@ class Index extends _$Index {
     } else {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         state = state.copyWith(
-          pinnedOrders: [
+          pinnedOrders: <Order>[
             ...state.pinnedOrders,
             order,
           ],
-          orders: [
-            ...state.orders.where((e) => e != order),
+          orders: <Order>[
+            ...state.orders.where((Order e) => e != order),
           ],
         );
       });
@@ -77,8 +77,9 @@ class Index extends _$Index {
   void unpinOrder(Order order) {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
-        pinnedOrders: state.pinnedOrders.where((e) => e != order).toList(),
-        orders: [
+        pinnedOrders:
+            state.pinnedOrders.where((Order e) => e != order).toList(),
+        orders: <Order>[
           ...state.orders,
           order,
         ],
@@ -99,15 +100,15 @@ class Index extends _$Index {
       }
       if (state.selectedOrders.contains(order)) {
         state = state.copyWith(
-          selectedOrders: [
+          selectedOrders: <Order>[
             ...state.selectedOrders.where(
-              (element) => element != order,
-            )
+              (Order element) => element != order,
+            ),
           ],
         );
       } else {
         state = state.copyWith(
-          selectedOrders: [...state.selectedOrders, order],
+          selectedOrders: <Order>[...state.selectedOrders, order],
         );
       }
     });
@@ -132,7 +133,7 @@ class Index extends _$Index {
   void unselectOrder() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
-        selectedOrders: [],
+        selectedOrders: <Order>[],
       );
     });
   }
@@ -142,12 +143,12 @@ class Index extends _$Index {
   void deleteSelectedOrders() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
-        orders: [
+        orders: <Order>[
           ...state.orders.where(
-            (e) => !state.selectedOrders.contains(e),
+            (Order e) => !state.selectedOrders.contains(e),
           ),
         ],
-        selectedOrders: [],
+        selectedOrders: <Order>[],
       );
     });
   }
@@ -159,7 +160,8 @@ class Index extends _$Index {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
         showComboBox: newComboBoxState,
-        selectedOrders: newComboBoxState == false ? [] : state.selectedOrders,
+        selectedOrders:
+            newComboBoxState == false ? <Order>[] : state.selectedOrders,
       );
     });
   }
@@ -168,43 +170,47 @@ class Index extends _$Index {
   /// @param [columnIndex] column index
   /// @param [ascending] ascending
   ///
-  void sortOrders(int columnIndex, bool ascending) {
+  void sortOrders(
+    int columnIndex, {
+    required bool ascending,
+  }) {
     final Headers selectedHeader = Headers.values[columnIndex];
-    final orders = state.orders;
-    orders.sort((a, b) {
-      switch (selectedHeader) {
-        case Headers.client:
-          return ascending
-              ? a.client!.id.compareTo(b.client!.id)
-              : b.client!.id.compareTo(a.client!.id);
-        case Headers.status:
-          return ascending
-              ? a.status.index.compareTo(b.status.index)
-              : b.status.index.compareTo(a.status.index);
-        case Headers.store:
-          return ascending
-              ? a.shopName.compareTo(b.shopName)
-              : b.shopName.compareTo(a.shopName);
-        case Headers.startDate:
-          return ascending
-              ? a.startDate.compareTo(b.startDate)
-              : b.startDate.compareTo(a.startDate);
-        case Headers.endDate:
-          return ascending
-              ? a.endDate!.compareTo(b.endDate!)
-              : b.endDate!.compareTo(a.endDate!);
-        case Headers.price:
-          return ascending
-              ? a.price.compareTo(b.price)
-              : b.price.compareTo(a.price);
-        case Headers.commission:
-          return ascending
-              ? a.commission.compareTo(b.commission)
-              : b.commission.compareTo(a.commission);
-        default:
-          return 0;
-      }
-    });
+    final List<Order> orders = state.orders
+      ..sort((Order a, Order b) {
+        switch (selectedHeader) {
+          case Headers.client:
+            return ascending
+                ? a.client!.id.compareTo(b.client!.id)
+                : b.client!.id.compareTo(a.client!.id);
+          case Headers.status:
+            return ascending
+                ? a.status.index.compareTo(b.status.index)
+                : b.status.index.compareTo(a.status.index);
+          case Headers.store:
+            return ascending
+                ? a.shopName.compareTo(b.shopName)
+                : b.shopName.compareTo(a.shopName);
+          case Headers.startDate:
+            return ascending
+                ? a.startDate.compareTo(b.startDate)
+                : b.startDate.compareTo(a.startDate);
+          case Headers.endDate:
+            return ascending
+                ? a.endDate!.compareTo(b.endDate!)
+                : b.endDate!.compareTo(a.endDate!);
+          case Headers.price:
+            return ascending
+                ? a.price.compareTo(b.price)
+                : b.price.compareTo(a.price);
+          case Headers.commission:
+            return ascending
+                ? a.commission.compareTo(b.commission)
+                : b.commission.compareTo(a.commission);
+          // ignore: no_default_cases dont order by these headers
+          default:
+            return 0;
+        }
+      });
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
         orders: orders,

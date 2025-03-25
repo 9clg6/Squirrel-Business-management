@@ -11,7 +11,7 @@ part 'authentication.repository.impl.g.dart';
 
 /// [AuthenticationRepositoryImpl]
 @Riverpod(
-  dependencies: [
+  dependencies: <Object>[
     AuthenticationDataSourceImpl,
   ],
 )

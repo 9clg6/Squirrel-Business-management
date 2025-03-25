@@ -11,8 +11,8 @@ part 'clients.view_model.g.dart';
 /// [Clients]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
-    ClientService
+  dependencies: <Object>[
+    ClientService,
   ],
 )
 class Clients extends _$Clients {
@@ -28,7 +28,7 @@ class Clients extends _$Clients {
       _isInitialized = true;
     }
 
-    ref.listen(clientServiceProvider, (_, next) {
+    ref.listen(clientServiceProvider, (_, AsyncValue<ClientState> next) {
       _onClientStateChanged(next.value!);
     });
 

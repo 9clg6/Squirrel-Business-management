@@ -6,13 +6,13 @@ import 'package:squirrel/foundation/enums/router.enum.dart';
 
 /// Navigator service
 class NavigatorService {
-  /// Navigator key
-  final GlobalKey<NavigatorState> navigatorKey;
-
   /// Constructor
   /// @param [navigatorKey] navigator key
   ///
   NavigatorService(this.navigatorKey);
+
+  /// Navigator key
+  final GlobalKey<NavigatorState> navigatorKey;
 
   /// Navigate to details
   /// @param [Order] order
@@ -20,7 +20,7 @@ class NavigatorService {
   void navigateToDetails(Order order) {
     navigatorKey.currentContext?.goNamed(
       RouterEnum.orderDetails.name,
-      pathParameters: {'orderId': order.id},
+      pathParameters: <String, String>{'orderId': order.id},
       extra: order,
     );
   }
@@ -31,11 +31,11 @@ class NavigatorService {
     final BuildContext? context = navigatorKey.currentContext;
     if (context != null) {
       final String currentRoute = GoRouterState.of(context).matchedLocation;
-      
+
       if (currentRoute == RouterEnum.main.name) {
         return;
       }
-      
+
       context.goNamed(RouterEnum.main.name);
     }
   }

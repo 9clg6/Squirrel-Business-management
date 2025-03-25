@@ -7,9 +7,9 @@ part of 'client.entity.dart';
 // **************************************************************************
 
 abstract class _$ClientCWProxy {
-  Client id(String? id);
-
   Client name(String name);
+
+  Client id(String? id);
 
   Client socialsName(String? socialsName);
 
@@ -32,8 +32,8 @@ abstract class _$ClientCWProxy {
   /// Client(...).copyWith(id: 12, name: "My name")
   /// ````
   Client call({
-    String? id,
     String? name,
+    String? id,
     String? socialsName,
     double? orderTotalAmount,
     double? commissionTotalAmount,
@@ -51,10 +51,10 @@ class _$ClientCWProxyImpl implements _$ClientCWProxy {
   final Client _value;
 
   @override
-  Client id(String? id) => this(id: id);
+  Client name(String name) => this(name: name);
 
   @override
-  Client name(String name) => this(name: name);
+  Client id(String? id) => this(id: id);
 
   @override
   Client socialsName(String? socialsName) => this(socialsName: socialsName);
@@ -91,8 +91,8 @@ class _$ClientCWProxyImpl implements _$ClientCWProxy {
   /// Client(...).copyWith(id: 12, name: "My name")
   /// ````
   Client call({
-    Object? id = const $CopyWithPlaceholder(),
     Object? name = const $CopyWithPlaceholder(),
+    Object? id = const $CopyWithPlaceholder(),
     Object? socialsName = const $CopyWithPlaceholder(),
     Object? orderTotalAmount = const $CopyWithPlaceholder(),
     Object? commissionTotalAmount = const $CopyWithPlaceholder(),
@@ -102,14 +102,14 @@ class _$ClientCWProxyImpl implements _$ClientCWProxy {
     Object? firstOrderDate = const $CopyWithPlaceholder(),
   }) {
     return Client(
-      id: id == const $CopyWithPlaceholder()
-          ? _value.id
-          // ignore: cast_nullable_to_non_nullable
-          : id as String?,
       name: name == const $CopyWithPlaceholder() || name == null
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
           : name as String,
+      id: id == const $CopyWithPlaceholder()
+          ? _value.id
+          // ignore: cast_nullable_to_non_nullable
+          : id as String?,
       socialsName: socialsName == const $CopyWithPlaceholder()
           ? _value.socialsName
           // ignore: cast_nullable_to_non_nullable
@@ -159,8 +159,8 @@ extension $ClientCopyWith on Client {
 // **************************************************************************
 
 Client _$ClientFromJson(Map<String, dynamic> json) => Client(
-      id: json['id'] as String?,
       name: json['name'] as String,
+      id: json['id'] as String?,
       socialsName: json['socialsName'] as String?,
       orderTotalAmount: (json['orderTotalAmount'] as num?)?.toDouble() ?? 0,
       commissionTotalAmount:

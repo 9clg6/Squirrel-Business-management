@@ -10,7 +10,7 @@ part 'authentication.data_source.impl.g.dart';
 
 /// [AuthenticationDataSourceImpl]
 @Riverpod(
-  dependencies: [],
+  dependencies: <Object>[],
 )
 class AuthenticationDataSourceImpl extends _$AuthenticationDataSourceImpl
     implements AuthenticationDataSource {
@@ -36,13 +36,15 @@ class AuthenticationDataSourceImpl extends _$AuthenticationDataSourceImpl
       final FunctionResponse result =
           await Supabase.instance.client.functions.invoke(
         'login',
-        body: {
+        body: <String, String>{
           'licenseKey': licenseKey.trim(),
         },
       );
 
-      return LoginResultRemoteModel.fromJson(result.data);
-    } catch (e) {
+      return LoginResultRemoteModel.fromJson(
+        result.data as Map<String, dynamic>,
+      );
+    } on Exception catch (e) {
       log('Erreur détaillée dans login: $e');
       return LoginResultRemoteModel(
         valid: false,
@@ -62,13 +64,15 @@ class AuthenticationDataSourceImpl extends _$AuthenticationDataSourceImpl
       final FunctionResponse result =
           await Supabase.instance.client.functions.invoke(
         'checkValidity',
-        body: {
+        body: <String, String>{
           'licenseKey': licenseKey.trim(),
         },
       );
 
-      return CheckValidityRemoteModel.fromJson(result.data);
-    } catch (e) {
+      return CheckValidityRemoteModel.fromJson(
+        result.data as Map<String, dynamic>,
+      );
+    } on Exception catch (e) {
       log('Erreur détaillée dans checkValidity: $e');
       return CheckValidityRemoteModel(
         valid: false,

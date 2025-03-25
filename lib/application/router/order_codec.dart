@@ -28,7 +28,7 @@ class _OrderDecoder extends Converter<String, Order> {
   /// 
   @override
   Order convert(String input) {
-    return Order.fromJson(jsonDecode(input));
+    return Order.fromJson(jsonDecode(input) as Map<String, dynamic>);
   }
 }
 

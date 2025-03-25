@@ -13,12 +13,13 @@ part 'hive_secure_storage.service.g.dart';
 /// [HiveSecureStorageService]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     SecureStorageService,
   ],
 )
 
-/// Use it when you want to save secured data that won't be backed up by the system.
+/// Use it when you want to save secured data that won't
+///  be backed up by the system.
 class HiveSecureStorageService extends _$HiveSecureStorageService
     implements StorageInterface<String?> {
   /// Box
@@ -48,16 +49,16 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
 
   Future<void> _initialize() async {
     if (_isInitialized) return;
-    
+
     log('🔌 Initializing HiveSecureStorageService');
-    
+
     try {
       _encryptionKey = await ref.read(secureStorageServiceProvider.future);
       await _openBox();
       _isInitialized = true;
       log('🔌 HiveSecureStorageService initialized successfully');
     } catch (e) {
-      log('Erreur lors de l\'initialisation de HiveSecureStorageService: $e');
+      log("Erreur lors de l'initialisation de HiveSecureStorageService: $e");
       rethrow;
     }
   }
@@ -83,12 +84,12 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
 
   Future<void> _handleCorruptedBox() async {
     log('Suppression de la boîte corrompue');
-    final directory = await getApplicationDocumentsDirectory();
-    final boxPath = Directory('${directory.path}/hive/$_boxName');
-    if (await boxPath.exists()) {
-      await boxPath.delete(recursive: true);
+    final Directory directory = await getApplicationDocumentsDirectory();
+    final Directory boxPath = Directory('${directory.path}/hive/$_boxName');
+    if (boxPath.existsSync()) {
+      boxPath.deleteSync(recursive: true);
     }
-    
+
     _box = await Hive.openBox<String>(
       _boxName,
       encryptionCipher: HiveAesCipher(
@@ -109,9 +110,9 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<String?> get(String key) async {
     try {
-      final box = await _ensureBox();
+      final Box<String> box = await _ensureBox();
       return box.get(key);
-    } catch (e) {
+    } on Exception catch (e) {
       log('Erreur lors de la récupération de la donnée: $e');
       return null;
     }
@@ -121,9 +122,9 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<void> deleteAll() async {
     try {
-      final box = await _ensureBox();
+      final Box<String> box = await _ensureBox();
       await box.deleteFromDisk();
-    } catch (e) {
+    } on Exception catch (e) {
       log('Erreur lors de la suppression des données: $e');
     }
   }
@@ -132,9 +133,9 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<void> clearAll() async {
     try {
-      final box = await _ensureBox();
+      final Box<String> box = await _ensureBox();
       await box.clear();
-    } catch (e) {
+    } on Exception catch (e) {
       log('Erreur lors du nettoyage des données: $e');
     }
   }
@@ -143,9 +144,9 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<bool> contains(String key) async {
     try {
-      final box = await _ensureBox();
+      final Box<String> box = await _ensureBox();
       return box.containsKey(key);
-    } catch (e) {
+    } on Exception catch (e) {
       log('Erreur lors de la vérification de la clé: $e');
       return false;
     }
@@ -155,11 +156,11 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<List<String?>> getAll() async {
     try {
-      final box = await _ensureBox();
+      final Box<String> box = await _ensureBox();
       return box.values.toList();
-    } catch (e) {
+    } on Exception catch (e) {
       log('Erreur lors de la récupération des données: $e');
-      return [];
+      return <String?>[];
     }
   }
 
@@ -167,9 +168,9 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<void> remove(String key) async {
     try {
-      final box = await _ensureBox();
+      final Box<String> box = await _ensureBox();
       await box.delete(key);
-    } catch (e) {
+    } on Exception catch (e) {
       log('Erreur lors de la suppression de la clé: $e');
     }
   }
@@ -178,10 +179,10 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<void> set(String key, String value) async {
     try {
-      final box = await _ensureBox();
+      final Box<String> box = await _ensureBox();
       await box.put(key, value);
-    } catch (e) {
-      log('Erreur lors de l\'enregistrement de la donnée: $e');
+    } on Exception catch (e) {
+      log("Erreur lors de l'enregistrement de la donnée: $e");
     }
   }
 }

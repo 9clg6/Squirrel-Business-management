@@ -12,7 +12,7 @@ part 'todo.view_model.g.dart';
 /// [TodoViewModel]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     OrderService,
   ],
 )
@@ -31,7 +31,7 @@ class TodoViewModel extends _$TodoViewModel {
       _isInitialized = true;
     }
 
-    ref.listen(orderServiceProvider, (_, next) {
+    ref.listen(orderServiceProvider, (_, AsyncValue<OrderState> next) {
       _updateState(next.value!);
     });
 

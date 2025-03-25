@@ -6,15 +6,6 @@ part 'login_result.remote_model.g.dart';
 /// [LoginResultRemoteModel]
 @JsonSerializable()
 class LoginResultRemoteModel with SerializableMixin {
-  /// Is valid
-  final bool valid;
-
-  /// License key
-  final String licenseKey;
-
-  /// License id
-  final DateTime? expirationDate;
-
   /// Constructor
   /// @param [valid] is valid
   /// @param [licenseKey] license key
@@ -26,6 +17,22 @@ class LoginResultRemoteModel with SerializableMixin {
     required this.expirationDate,
   });
 
+  /// From json
+  /// @param [json] json
+  /// @return [LoginResultRemoteModel] login result remote model
+  ///
+  factory LoginResultRemoteModel.fromJson(Map<String, dynamic> json) =>
+      _$LoginResultRemoteModelFromJson(json);
+
+  /// Is valid
+  final bool valid;
+
+  /// License key
+  final String licenseKey;
+
+  /// License id
+  final DateTime? expirationDate;
+
   /// To json
   /// @return [Map<String, dynamic>] json
   ///
@@ -33,11 +40,4 @@ class LoginResultRemoteModel with SerializableMixin {
   Map<String, dynamic> toJson() {
     return _$LoginResultRemoteModelToJson(this);
   }
-
-  /// From json
-  /// @param [json] json
-  /// @return [LoginResultRemoteModel] login result remote model
-  ///
-  factory LoginResultRemoteModel.fromJson(Map<String, dynamic> json) =>
-      _$LoginResultRemoteModelFromJson(json);
 }

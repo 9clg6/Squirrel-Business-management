@@ -2,12 +2,6 @@ import 'package:squirrel/data/model/remote/check_validity.remote_model.dart';
 
 /// [CheckValidityEntity]
 class CheckValidityEntity {
-  /// Valid
-  final bool valid;
-
-  /// Expiration date
-  final DateTime expirationDate;
-
   /// Constructor
   /// @param [valid] valid
   /// @param [expirationDate] expiration date
@@ -29,4 +23,10 @@ class CheckValidityEntity {
       expirationDate: remoteModel.expirationDate,
     );
   }
+
+  /// Valid
+  final bool valid;
+
+  /// Expiration date
+  final DateTime expirationDate;
 }

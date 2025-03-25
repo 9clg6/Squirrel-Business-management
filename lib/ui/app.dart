@@ -7,6 +7,7 @@ import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
+import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/theming/theme.dart';
@@ -48,7 +49,7 @@ class _AppState extends State<App> {
     super.initState();
     SystemChrome.setEnabledSystemUIMode(
       SystemUiMode.manual,
-      overlays: [],
+      overlays: <SystemUiOverlay>[],
     );
   }
 
@@ -62,7 +63,7 @@ class _AppState extends State<App> {
     final MaterialTheme theme = MaterialTheme(textTheme);
 
     return Builder(
-      builder: (context) {
+      builder: (BuildContext context) {
         return MediaQuery(
           data: MediaQuery.of(context).copyWith(
             textScaler: TextScaler.noScaling,
@@ -75,7 +76,7 @@ class _AppState extends State<App> {
               supportedLocales: context.supportedLocales,
               theme: theme.light(),
               locale: context.locale,
-              builder: (_, child) => child!,
+              builder: (_, Widget? child) => child!,
             ),
           ),
         );
@@ -92,18 +93,21 @@ class _AppState extends State<App> {
       navigatorKey: injector.get<GlobalKey<NavigatorState>>(),
       initialLocation: RouterEnum.main.path,
       redirect: _authRedirect,
-      routes: [
+      routes: <RouteBase>[
         GoRoute(
           path: RouterEnum.auth.path,
           name: RouterEnum.auth.name,
-          builder: (context, state) => const AuthScreen(),
+          builder: (BuildContext context, GoRouterState state) =>
+              const AuthScreen(),
         ),
         StatefulShellRoute.indexedStack(
-          builder: (context, state, navigationShell) {
-            final bool isAuthRoute = state.uri.toString() == RouterEnum.auth.path;
+          builder: (BuildContext context, GoRouterState state,
+              StatefulNavigationShell navigationShell,) {
+            final bool isAuthRoute =
+                state.uri.toString() == RouterEnum.auth.path;
 
             return Consumer(
-              builder: (context, ref, child) {
+              builder: (BuildContext context, WidgetRef ref, Widget? child) {
                 final RequestState requestState =
                     ref.watch(requestServiceProvider);
 
@@ -111,7 +115,7 @@ class _AppState extends State<App> {
                   appBar: !isAuthRoute ? const CustomAppBar() : null,
                   backgroundColor: Theme.of(context).colorScheme.surfaceDim,
                   body: Row(
-                    children: [
+                    children: <Widget>[
                       if (!isAuthRoute)
                         CustomSideBar(
                           navigationShell: navigationShell,
@@ -122,7 +126,6 @@ class _AppState extends State<App> {
                       ),
                       if (requestState.isRequestShow)
                         const Expanded(
-                          flex: 1,
                           child: RequestScreen(),
                         ),
                     ],
@@ -131,19 +134,21 @@ class _AppState extends State<App> {
               },
             );
           },
-          branches: [
+          branches: <StatefulShellBranch>[
             // Branche 0 - Accueil
             StatefulShellBranch(
-              routes: [
+              routes: <RouteBase>[
                 GoRoute(
                   path: RouterEnum.main.path,
                   name: RouterEnum.main.name,
-                  builder: (context, state) => const MainScreen(),
-                  routes: [
+                  builder: (BuildContext context, GoRouterState state) =>
+                      const MainScreen(),
+                  routes: <RouteBase>[
                     GoRoute(
                       path: '${RouterEnum.orderDetails.path}/:orderId',
                       name: RouterEnum.orderDetails.name,
-                      builder: (context, state) => OrderDetailsScreen(
+                      builder: (BuildContext context, GoRouterState state) =>
+                          OrderDetailsScreen(
                         order: state.extra! as Order,
                       ),
                     ),
@@ -153,51 +158,56 @@ class _AppState extends State<App> {
             ),
             // Branche 1 - Todo
             StatefulShellBranch(
-              routes: [
+              routes: <RouteBase>[
                 GoRoute(
                   path: RouterEnum.todo.path,
                   name: RouterEnum.todo.name,
-                  builder: (context, state) => const TodoScreen(),
+                  builder: (BuildContext context, GoRouterState state) =>
+                      const TodoScreen(),
                 ),
               ],
             ),
             // Branche 2 - Stats
             StatefulShellBranch(
-              routes: [
+              routes: <RouteBase>[
                 GoRoute(
                   path: RouterEnum.stats.path,
                   name: RouterEnum.stats.name,
-                  builder: (context, state) => const StatsScreen(),
+                  builder: (BuildContext context, GoRouterState state) =>
+                      const StatsScreen(),
                 ),
               ],
             ),
             // Branche 3 - Planner
             StatefulShellBranch(
-              routes: [
+              routes: <RouteBase>[
                 GoRoute(
                   path: RouterEnum.planner.path,
                   name: RouterEnum.planner.name,
-                  builder: (context, state) => const PlannerScreen(),
+                  builder: (BuildContext context, GoRouterState state) =>
+                      const PlannerScreen(),
                 ),
               ],
             ),
             // Branche 4 - Clients
             StatefulShellBranch(
-              routes: [
+              routes: <RouteBase>[
                 GoRoute(
                   path: RouterEnum.clients.path,
                   name: RouterEnum.clients.name,
-                  builder: (context, state) => const ClientsScreen(),
+                  builder: (BuildContext context, GoRouterState state) =>
+                      const ClientsScreen(),
                 ),
               ],
             ),
             // Branche 5 - History
             StatefulShellBranch(
-              routes: [
+              routes: <RouteBase>[
                 GoRoute(
                   path: RouterEnum.history.path,
                   name: RouterEnum.history.name,
-                  builder: (context, state) => const HistoryScreen(),
+                  builder: (BuildContext context, GoRouterState state) =>
+                      const HistoryScreen(),
                 ),
               ],
             ),
@@ -207,15 +217,19 @@ class _AppState extends State<App> {
     );
   }
 
-  /// Redirects the user to the correct route based on their authentication status.
+  /// Redirects the user to the correct route based 
+  ///   on their authentication status.
   /// @param [context] context
   /// @param [state] state
   /// @return [String?] redirect route
   ///
-  Future<String?> _authRedirect(BuildContext context, GoRouterState state) async {
-    // Capture du conteneur et du service d'authentification avant toute opération asynchrone
-    final container = ProviderScope.containerOf(context);
-    final authService = container.read(authServiceProvider);
+  Future<String?> _authRedirect(
+      BuildContext context, GoRouterState state,) async {
+    // Capture du conteneur et du service d'authentification 
+    //  avant toute opération asynchrone
+    final ProviderContainer container = ProviderScope.containerOf(context);
+    final AsyncValue<AuthState> authService =
+        container.read(authServiceProvider);
 
     // Vérifier si l'état d'authentification est en cours de chargement
     if (authService.isLoading) {
@@ -229,39 +243,41 @@ class _AppState extends State<App> {
       // Si le service n'est pas initialisé, charger l'utilisateur
       if (authService.value?.isInitialized == false) {
         // Capturer l'état d'authentification après le chargement asynchrone
-        final authState = await container.read(authServiceProvider.notifier).loadUser();
+        final AuthState? authState =
+            await container.read(authServiceProvider.notifier).loadUser();
         isAuthenticated = authState?.isUserAuthenticated ?? false;
       } else {
         isAuthenticated = authService.value?.isUserAuthenticated ?? false;
       }
-    } catch (e) {
+    } on Exception catch (e) {
       logException(
         e,
         StackTrace.current,
-        'Erreur lors de la vérification de l\'authentification',
+        "Erreur lors de la vérification de l'authentification",
       );
       isAuthenticated = false;
     }
 
-    // Le traitement du résultat est synchrone, donc pas besoin de vérifier mounted
+    // Le traitement du résultat est synchrone, donc pas besoin de 
+    //  vérifier mounted
     final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;
-    
+
     // Empêcher la boucle de redirection
     // Si on est déjà sur /auth et pas authentifié, rester sur /auth
     if (!isAuthenticated && isAuthRoute) {
       return null;
     }
-    
+
     // Si on n'est pas authentifié et pas sur /auth, rediriger vers /auth
     if (!isAuthenticated) {
       return RouterEnum.auth.path;
     }
-    
+
     // Si on est authentifié et sur /auth, rediriger vers /main
     if (isAuthenticated && isAuthRoute) {
       return RouterEnum.main.path;
     }
-    
+
     // Si on est authentifié et pas sur /auth, ne pas rediriger
     return null;
   }

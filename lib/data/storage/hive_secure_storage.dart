@@ -8,29 +8,32 @@ import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 part 'hive_secure_storage.g.dart';
 
 /// [HiveSecureStorage]
-/// Use it when you want to save secured data that won't be backed up by the system.
+/// Use it when you want to save secured data that
+///  won't be backed up by the system.
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     SecureStorageService,
   ],
 )
 class HiveSecureStorage extends _$HiveSecureStorage
     implements StorageInterface<String?> {
+  /// Constructor
+  ///
+  HiveSecureStorage();
+
+  /// Constructor
+  /// @param [_box] box
+  ///
+  HiveSecureStorage._(this._box);
+
   /// Hive box
   late final Box<String> _box;
 
   /// Box name
-  static String get _boxName => r'hive_local_storage';
-
-  /// Constructor
-  /// @param [box] box
-  ///
-  HiveSecureStorage._(this._box);
-  HiveSecureStorage();
+  static String get _boxName => 'hive_local_storage';
 
   /// Build
-  /// @param [secureStorageService] secure storage service
   /// @return [Future<HiveSecureStorage>] hive secure storage
   ///
   @override

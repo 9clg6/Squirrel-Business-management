@@ -118,5 +118,7 @@ abstract class  LocaleKeys {
   static const history = 'history';
   static const noClients = 'noClients';
   static const percentageSymbol = 'percentageSymbol';
+  static const clientSelection = 'clientSelection';
+  static const sponsoredOrder = 'sponsoredOrder';
 
 }

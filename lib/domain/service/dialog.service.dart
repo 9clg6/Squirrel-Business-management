@@ -14,19 +14,19 @@ import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// The dialog service
 class DialogService {
-  /// The navigator key
-  final GlobalKey<NavigatorState> navigatorKey;
-
   /// Constructor
   /// @param navigatorKey: The navigator key
   ///
   DialogService(this.navigatorKey);
 
+  /// The navigator key
+  final GlobalKey<NavigatorState> navigatorKey;
+
   /// Show add order action dialog
   /// @return The added order action
   ///
   Future<OrderAction?> showAddOrderActionDialog() async {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showAddOrderActionDialog()');
@@ -43,7 +43,7 @@ class DialogService {
   /// @return The selected date
   ///
   Future<List<DateTime?>?> showDatePickerDialog() async {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showDatePickerDialog()');
@@ -60,7 +60,7 @@ class DialogService {
         dayBorderRadius: BorderRadius.circular(16),
         firstDayOfWeek: 1,
       ),
-      value: [DateTime.now()],
+      value: <DateTime?>[DateTime.now()],
       dialogSize: const Size(325, 400),
     );
   }
@@ -95,7 +95,7 @@ class DialogService {
     bool isCreation = false,
     Order? order,
   }) async {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showEditOrderDialog()');
@@ -115,14 +115,14 @@ class DialogService {
   /// @return The selected range date
   ///
   Future<List<DateTime?>?> selectRangeDate() async {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.selectRangeDate()');
       return null;
     }
 
-    return await showCalendarDatePicker2Dialog(
+    return showCalendarDatePicker2Dialog(
       context: context,
       config: CalendarDatePicker2WithActionButtonsConfig(
         firstDate: DateTime.now().subtract(const Duration(days: 15)),
@@ -146,14 +146,14 @@ class DialogService {
   /// @param message: The message to display in the dialog
   ///
   void showError(String message) {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showEditOrderDialog()');
       return;
     }
 
-    final theme = Theme.of(context).colorScheme;
+    final ColorScheme theme = Theme.of(context).colorScheme;
 
     showDialog<void>(
       context: context,
@@ -166,7 +166,6 @@ class DialogService {
         title: const Text('Erreur'),
         content: TextVariant(
           message,
-          variantType: TextVariantType.bodyMedium,
           textAlign: TextAlign.center,
         ),
       ),
@@ -176,7 +175,7 @@ class DialogService {
   /// Show use conditions dialog
   ///
   Future<bool?> showUseConditions() async {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showUseConditions()');
@@ -193,7 +192,7 @@ class DialogService {
   /// Show in coming dialog
   ///
   Future<void> showInComingDialog() async {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showInComingDialog()');
@@ -204,7 +203,7 @@ class DialogService {
       context: context,
       builder: (_) => const AlertDialog(
         title: TextVariant(
-          "Fonctionnalités à venir",
+          'Fonctionnalités à venir',
           variantType: TextVariantType.titleMedium,
           fontWeight: FontWeight.bold,
         ),
@@ -215,41 +214,37 @@ class DialogService {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
+          children: <Widget>[
             TextVariant(
-              "Nous travaillons actuellement sur les prochaines versions, qui inclueront :",
-              variantType: TextVariantType.bodyMedium,
+              'Nous travaillons actuellement sur les prochaines versions, '
+              'qui inclueront :',
               fontWeight: FontWeight.bold,
             ),
             Gap(28),
             TextVariant(
-              "- Le lien entre le Bot de commande Telegram et le logiciel, pour visualiser les commandes reçus en temps réel",
-              variantType: TextVariantType.bodyMedium,
+              '- Le lien entre le Bot de commande Telegram et le logiciel, '
+              'pour visualiser les commandes reçus en temps réel',
             ),
             Gap(10),
             TextVariant(
               "- L'interface de gestion des clients",
-              variantType: TextVariantType.bodyMedium,
             ),
             Gap(10),
             TextVariant(
               "- L'interface \"Planification\" si l'idée est soutenue par vous",
-              variantType: TextVariantType.bodyMedium,
             ),
             Gap(10),
             TextVariant(
               "- L'ajout de nouvelles statistiques en fonction des demandes",
-              variantType: TextVariantType.bodyMedium,
             ),
             Gap(10),
             TextVariant(
-              "- Un système de remontée de bug et de suggestions",
-              variantType: TextVariantType.bodyMedium,
+              '- Un système de remontée de bug et de suggestions',
             ),
             Gap(28),
             TextVariant(
-              "N'hésitez pas à remonter les bugs, faire des suggestions, demandes etc. Cela sera recompensé. 🎁",
-              variantType: TextVariantType.bodyMedium,
+              "N'hésitez pas à remonter les bugs, faire des suggestions, "
+              'demandes etc. Cela sera recompensé. 🎁',
             ),
           ],
         ),
@@ -263,7 +258,7 @@ class DialogService {
   Future<Client?> showSelectClientDialog({
     bool isSponsor = false,
   }) async {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showSelectClientDialog()');
@@ -281,7 +276,7 @@ class DialogService {
   /// @param client: The client to show
   ///
   Future<void> showClientDetailsDialog(Client client) async {
-    final context = navigatorKey.currentContext;
+    final BuildContext? context = navigatorKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showClientDetailsDialog()');
@@ -290,8 +285,6 @@ class DialogService {
 
     return showDialog<void>(
       context: context,
-      barrierDismissible: true,
-      useSafeArea: true,
       builder: (_) => ClientDetailDialog(client: client),
     );
   }

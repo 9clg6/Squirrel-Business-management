@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:squirrel/domain/entities/request.entity.dart';
 import 'package:squirrel/domain/service/request_service.dart';
+import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -27,8 +29,8 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final requestServiceState = ref.watch(requestServiceProvider);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final RequestState requestServiceState = ref.watch(requestServiceProvider);
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceDim,
@@ -40,16 +42,15 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
           color: colorScheme.surface,
           border: Border.all(
             color: colorScheme.outline,
-            width: 1,
           ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: Column(
-          children: [
+          children: <Widget>[
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+              children: <Widget>[
                 TextVariant(
                   LocaleKeys.date.tr(),
                   variantType: TextVariantType.titleMedium,
@@ -77,46 +78,41 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
               padding: EdgeInsets.zero,
               shrinkWrap: true,
               itemCount: requestServiceState.requests.length,
-              itemBuilder: (context, index) {
-                final request = requestServiceState.requests[index];
+              itemBuilder: (BuildContext context, int index) {
+                final Request request = requestServiceState.requests[index];
                 return Column(
-                  children: [
+                  children: <Widget>[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         Flexible(
                           child: TextVariant(
                             request.date?.toDDMMYYYY() ?? '',
-                            variantType: TextVariantType.bodyMedium,
                           ),
                         ),
                         const Gap(5),
                         Flexible(
                           child: TextVariant(
                             request.name ?? '',
-                            variantType: TextVariantType.bodyMedium,
                           ),
                         ),
                         const Gap(5),
                         Flexible(
                           child: TextVariant(
                             request.destination ?? '',
-                            variantType: TextVariantType.bodyMedium,
                           ),
                         ),
                         const Gap(5),
                         Flexible(
                           child: TextVariant(
                             request.description ?? '',
-                            variantType: TextVariantType.bodyMedium,
                           ),
                         ),
                         const Gap(5),
                         Flexible(
                           child: TextVariant(
                             request.parameters?.toString() ?? '',
-                            variantType: TextVariantType.bodyMedium,
                           ),
                         ),
                       ],

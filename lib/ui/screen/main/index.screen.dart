@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
@@ -44,15 +45,20 @@ class _MainScreenState extends ConsumerState<MainScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       body: switch (state) {
-        AsyncLoading() => const Center(child: CircularProgressIndicator()),
-        AsyncData() => const CustomScrollView(
+        AsyncLoading<OrderState>() =>
+          const Center(child: CircularProgressIndicator()),
+        AsyncData<OrderState>(value: OrderState()) => const CustomScrollView(
             physics: ClampingScrollPhysics(),
-            slivers: [
+            slivers: <Widget>[
               _ResumeHeader(),
               _Body(),
             ],
           ),
-        AsyncError(:final error) => Center(child: Text(error.toString())),
+        AsyncError<OrderState>(:final Object error) => Center(
+            child: Text(
+              error.toString(),
+            ),
+          ),
         AsyncValue<OrderState>() => throw UnimplementedError(),
       },
     );
@@ -77,15 +83,12 @@ class _PinnedOrders extends ConsumerWidget {
         border: Border(
           top: BorderSide(
             color: colorScheme.outline.withValues(alpha: .3),
-            width: 1,
           ),
           left: BorderSide(
             color: colorScheme.outline.withValues(alpha: .3),
-            width: 1,
           ),
           right: BorderSide(
             color: colorScheme.outline.withValues(alpha: .3),
-            width: 1,
           ),
         ),
       ),
@@ -93,7 +96,7 @@ class _PinnedOrders extends ConsumerWidget {
       margin: const EdgeInsets.only(bottom: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Padding(
             padding: const EdgeInsets.only(
               left: 22,
@@ -120,29 +123,32 @@ class _PinnedOrders extends ConsumerWidget {
                 horizontalMargin: 12,
                 dividerThickness: 1,
                 columns: Headers.values
-                    .map((e) => DataColumn(
-                          label: TextVariant(
-                            e.label,
-                            variantType: TextVariantType.bodyMedium,
-                          ),
-                          numeric: e.isNumeric,
-                          headingRowAlignment: MainAxisAlignment.center,
-                          onSort: viewModel.sortOrders,
-                        ))
+                    .map(
+                      (Headers e) => DataColumn(
+                        label: TextVariant(
+                          e.label,
+                        ),
+                        numeric: e.isNumeric,
+                        headingRowAlignment: MainAxisAlignment.center,
+                        onSort: (_, __) => viewModel.sortOrders(
+                          e.index,
+                          ascending: state.sortAscending,
+                        ),
+                      ),
+                    )
                     .toList(),
-                rows: state.pinnedOrders.map((order) {
+                rows: state.pinnedOrders.map((Order order) {
                   return DataRow(
                     onSelectChanged: (_) {
                       viewModel.navigateToDetails(order);
                     },
-                    cells: [
+                    cells: <DataCell>[
                       DataCell(
                         Center(
                           child: Hero(
                             tag: 'order-${order.id}',
                             child: TextVariant(
-                              order.client?.name ?? "",
-                              variantType: TextVariantType.bodyMedium,
+                              order.client?.name ?? '',
                             ),
                           ),
                         ),
@@ -156,7 +162,6 @@ class _PinnedOrders extends ConsumerWidget {
                         Center(
                           child: TextVariant(
                             order.shopName,
-                            variantType: TextVariantType.bodyMedium,
                           ),
                         ),
                       ),
@@ -164,31 +169,27 @@ class _PinnedOrders extends ConsumerWidget {
                         Center(
                           child: TextVariant(
                             order.startDate.toDDMMYYYY(),
-                            variantType: TextVariantType.bodyMedium,
                           ),
                         ),
                       ),
                       DataCell(
                         Center(
                           child: TextVariant(
-                            order.endDate?.toDDMMYYYY() ?? "",
-                            variantType: TextVariantType.bodyMedium,
+                            order.endDate?.toDDMMYYYY() ?? '',
                           ),
                         ),
                       ),
                       DataCell(
                         Center(
                           child: TextVariant(
-                            "${order.price}€",
-                            variantType: TextVariantType.bodyMedium,
+                            '${order.price}€',
                           ),
                         ),
                       ),
                       DataCell(
                         Center(
                           child: TextVariant(
-                            "${order.commission}€",
-                            variantType: TextVariantType.bodyMedium,
+                            '${order.commission}€',
                           ),
                         ),
                       ),
@@ -237,9 +238,8 @@ class _Body extends ConsumerWidget {
       padding: EdgeInsets.all(10),
       sliver: SliverToBoxAdapter(
         child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
           child: Column(
-            children: [
+            children: <Widget>[
               _PinnedOrders(),
               _OrdersList(),
             ],
@@ -259,8 +259,10 @@ class _OrdersList extends ConsumerWidget {
     final Index viewModel = ref.read(indexProvider.notifier);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final businessTypeState = ref.watch(businessTypeServiceProvider);
-    final businessTypeNotifier = ref.read(businessTypeServiceProvider.notifier);
+    final AsyncValue<BusinessTypeState> businessTypeState =
+        ref.watch(businessTypeServiceProvider);
+    final BusinessTypeService businessTypeNotifier =
+        ref.read(businessTypeServiceProvider.notifier);
 
     return Container(
       decoration: BoxDecoration(
@@ -269,27 +271,24 @@ class _OrdersList extends ConsumerWidget {
         border: Border(
           top: BorderSide(
             color: colorScheme.outline.withValues(alpha: .3),
-            width: 1,
           ),
           left: BorderSide(
             color: colorScheme.outline.withValues(alpha: .3),
-            width: 1,
           ),
           right: BorderSide(
             color: colorScheme.outline.withValues(alpha: .3),
-            width: 1,
           ),
         ),
       ),
       width: double.infinity,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 22),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
+              children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(
                     top: 22,
@@ -302,7 +301,7 @@ class _OrdersList extends ConsumerWidget {
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
+                  children: <Widget>[
                     TextButton(
                       onPressed: viewModel.showComboBox,
                       style: TextButton.styleFrom(
@@ -314,7 +313,6 @@ class _OrdersList extends ConsumerWidget {
                         state.showComboBox
                             ? LocaleKeys.hide.tr()
                             : LocaleKeys.select.tr(),
-                        variantType: TextVariantType.bodyMedium,
                         color: colorScheme.primary,
                       ),
                     ),
@@ -328,7 +326,6 @@ class _OrdersList extends ConsumerWidget {
                       ),
                       label: TextVariant(
                         LocaleKeys.add.tr(),
-                        variantType: TextVariantType.bodyMedium,
                         color: colorScheme.onSurface,
                       ),
                       style: TextButton.styleFrom(
@@ -348,7 +345,6 @@ class _OrdersList extends ConsumerWidget {
                         icon: const Icon(Icons.delete),
                         label: TextVariant(
                           LocaleKeys.delete.tr(),
-                          variantType: TextVariantType.bodyMedium,
                         ),
                       ),
                   ],
@@ -366,7 +362,6 @@ class _OrdersList extends ConsumerWidget {
                       child: Center(
                         child: TextVariant(
                           LocaleKeys.noOrdersFound.tr(),
-                          variantType: TextVariantType.bodyMedium,
                         ),
                       ),
                     )
@@ -387,22 +382,26 @@ class _OrdersList extends ConsumerWidget {
                       sortAscending: state.sortAscending,
                       columns: Headers.values
                           .map(
-                            (e) => switch (businessTypeState) {
-                              AsyncData(value: BusinessTypeState()) =>
+                            (Headers e) => switch (businessTypeState) {
+                              AsyncData<BusinessTypeState>(
+                                value: BusinessTypeState()
+                              ) =>
                                 DataColumn(
                                   label: TextVariant(
                                     e == Headers.store
                                         ? businessTypeNotifier
                                             .getServiceTypeWording(
-                                            "x",
+                                            'x',
                                             type: businessTypeState.value,
                                           )
                                         : e.label,
-                                    variantType: TextVariantType.bodyMedium,
                                   ),
                                   numeric: e.isNumeric,
                                   headingRowAlignment: MainAxisAlignment.center,
-                                  onSort: viewModel.sortOrders,
+                                  onSort: (_, __) => viewModel.sortOrders(
+                                    e.index,
+                                    ascending: state.sortAscending,
+                                  ),
                                 ),
                               _ => const DataColumn(
                                   label: Center(
@@ -412,7 +411,7 @@ class _OrdersList extends ConsumerWidget {
                             },
                           )
                           .toList(),
-                      rows: state.orders.map((order) {
+                      rows: state.orders.map((Order order) {
                         return DataRow(
                           selected: state.selectedOrders.contains(order),
                           onLongPress: () => viewModel.selectOrder(order),
@@ -423,13 +422,15 @@ class _OrdersList extends ConsumerWidget {
                               if (context.mounted) {
                                 context.pushNamed(
                                   RouterEnum.orderDetails.name,
-                                  pathParameters: {'orderId': order.id},
+                                  pathParameters: <String, String>{
+                                    'orderId': order.id,
+                                  },
                                   extra: order,
                                 );
                               }
                             }
                           },
-                          cells: [
+                          cells: <DataCell>[
                             DataCell(
                               Hero(
                                 tag: 'order-${order.id}',
@@ -438,8 +439,7 @@ class _OrdersList extends ConsumerWidget {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 8),
                                     child: TextVariant(
-                                      order.client?.name ?? "",
-                                      variantType: TextVariantType.bodyMedium,
+                                      order.client?.name ?? '',
                                     ),
                                   ),
                                 ),
@@ -456,7 +456,6 @@ class _OrdersList extends ConsumerWidget {
                               Center(
                                 child: TextVariant(
                                   order.shopName,
-                                  variantType: TextVariantType.bodyMedium,
                                 ),
                               ),
                             ),
@@ -464,31 +463,27 @@ class _OrdersList extends ConsumerWidget {
                               Center(
                                 child: TextVariant(
                                   order.startDate.toDDMMYYYY(),
-                                  variantType: TextVariantType.bodyMedium,
                                 ),
                               ),
                             ),
                             DataCell(
                               Center(
                                 child: TextVariant(
-                                  order.endDate?.toDDMMYYYY() ?? "",
-                                  variantType: TextVariantType.bodyMedium,
+                                  order.endDate?.toDDMMYYYY() ?? '',
                                 ),
                               ),
                             ),
                             DataCell(
                               Center(
                                 child: TextVariant(
-                                  "${order.price}€",
-                                  variantType: TextVariantType.bodyMedium,
+                                  '${order.price}€',
                                 ),
                               ),
                             ),
                             DataCell(
                               Center(
                                 child: TextVariant(
-                                  "${order.commission}€",
-                                  variantType: TextVariantType.bodyMedium,
+                                  '${order.commission}€',
                                 ),
                               ),
                             ),
@@ -499,7 +494,9 @@ class _OrdersList extends ConsumerWidget {
                                     if (context.mounted) {
                                       context.pushNamed(
                                         'order-details',
-                                        pathParameters: {'orderId': order.id},
+                                        pathParameters: <String, String>{
+                                          'orderId': order.id,
+                                        },
                                         extra: order,
                                       );
                                     }
@@ -548,7 +545,7 @@ class _ResumeHeader extends ConsumerWidget {
           child: SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             child: Row(
-              children: [
+              children: <Widget>[
                 _NextActionContainer(),
                 Gap(10),
                 _TotalContainer(),
@@ -568,9 +565,9 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(indexProvider);
-    final currentMonth = DateTime.now().month;
-    final colorScheme = Theme.of(context).colorScheme;
+    final IndexScreenState state = ref.watch(indexProvider);
+    final int currentMonth = DateTime.now().month;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       width: 250,
@@ -580,15 +577,14 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outline.withValues(alpha: .2),
-          width: 1,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           TextVariant(
             LocaleKeys.totalWithDate.tr(
-              args: [
+              args: <String>[
                 DateFormat('MMMM').format(DateTime.now()),
               ],
             ),
@@ -597,15 +593,17 @@ class _CurrentMonthTotalContainer extends ConsumerWidget {
           const SizedBox(height: 10),
           TextVariant(
             LocaleKeys.priceWithSymbol.tr(
-              args: [
+              args: <String>[
                 state.orders
-                    .where((order) => order.startDate.month == currentMonth)
+                    .where(
+                      (Order order) => order.startDate.month == currentMonth,
+                    )
                     .fold(
                       0,
-                      (sum, order) =>
+                      (int sum, Order order) =>
                           (sum.toDouble() + order.commission).toInt(),
                     )
-                    .toStringAsFixed(2)
+                    .toStringAsFixed(2),
               ],
             ),
             variantType: TextVariantType.titleLarge,
@@ -621,8 +619,8 @@ class _TotalContainer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(indexProvider);
-    final colorScheme = Theme.of(context).colorScheme;
+    final IndexScreenState state = ref.watch(indexProvider);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       width: 250,
@@ -632,12 +630,11 @@ class _TotalContainer extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outline.withValues(alpha: .2),
-          width: 1,
         ),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
+        children: <Widget>[
           TextVariant(
             LocaleKeys.total.tr(),
             variantType: TextVariantType.bodySmall,
@@ -645,11 +642,11 @@ class _TotalContainer extends ConsumerWidget {
           const SizedBox(height: 10),
           TextVariant(
             LocaleKeys.priceWithSymbol.tr(
-              args: [
+              args: <String>[
                 state.orders
                     .fold(
                       0,
-                      (sum, order) =>
+                      (int sum, Order order) =>
                           (sum.toDouble() + order.commission).toInt(),
                     )
                     .toStringAsFixed(2),
@@ -676,22 +673,21 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final viewModel = ref.read(indexProvider.notifier);
-    final state = ref.watch(indexProvider);
-    final colorScheme = Theme.of(context).colorScheme;
+    final Index viewModel = ref.read(indexProvider.notifier);
+    final IndexScreenState state = ref.watch(indexProvider);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return switch (state) {
-      AsyncError(:final error) => TextVariant(
+      AsyncError<OrderState>(:final Object error) => TextVariant(
           error.toString(),
-          variantType: TextVariantType.bodyMedium,
         ),
-      AsyncLoading() => const CircularProgressIndicator(),
-      AsyncData(:final OrderState value) => MouseRegion(
+      AsyncLoading<OrderState>() => const CircularProgressIndicator(),
+      AsyncData<OrderState>(value: OrderState()) => MouseRegion(
           cursor: state.nextAction != null
               ? SystemMouseCursors.click
               : SystemMouseCursors.basic,
           onExit: (_) {
-            if (value.nextAction != null) {
+            if (state.nextAction != null) {
               setState(() => isHover = false);
             }
           },
@@ -716,12 +712,11 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: colorScheme.outline.withValues(alpha: .2),
-                  width: 1,
                 ),
               ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   TextVariant(
                     LocaleKeys.nextAction.tr(),
                     variantType: TextVariantType.bodySmall,
@@ -734,7 +729,7 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
                       state.nextAction!.keys.firstOrNull?.actions.firstOrNull
                               ?.date
                               .toDDMMYYYY() ??
-                          "",
+                          '',
                       variantType: TextVariantType.titleLarge,
                       color: isHover
                           ? colorScheme.onPrimary
@@ -743,7 +738,6 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
                   else
                     TextVariant(
                       LocaleKeys.noNextAction.tr(),
-                      variantType: TextVariantType.bodyMedium,
                       color: colorScheme.onSurface,
                     ),
                   const SizedBox(height: 10),

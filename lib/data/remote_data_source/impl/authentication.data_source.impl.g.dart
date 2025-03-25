@@ -7,7 +7,7 @@ part of 'authentication.data_source.impl.dart';
 // **************************************************************************
 
 String _$authenticationDataSourceImplHash() =>
-    r'a3dc6a3681623ad038735f82d3bf7725bad25df8';
+    r'59ac0c169b62b456fb3350ab88551b5fb4ef8839';
 
 /// [AuthenticationDataSourceImpl]
 ///

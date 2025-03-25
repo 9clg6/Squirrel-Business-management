@@ -6,7 +6,7 @@ part of 'history.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$historyHash() => r'a89cb306e4d8fc652030e46eda76eaa17e75a81f';
+String _$historyHash() => r'773474d9ca6abe386778eff989dcb3341e28749e';
 
 /// [History]
 ///

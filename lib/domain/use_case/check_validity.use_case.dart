@@ -7,7 +7,7 @@ part 'check_validity.use_case.g.dart';
 
 /// [CheckValidityUseCase]
 @Riverpod(
-  dependencies: [
+  dependencies: <Object>[
     AuthenticationRepositoryImpl,
   ],
 )
@@ -20,14 +20,14 @@ class CheckValidityUseCase extends _$CheckValidityUseCase
   CheckValidityUseCase build() {
     return CheckValidityUseCase();
   }
-  
+
   /// Execute use case
   /// @param [params] params
   /// @return [CheckValidityEntity] check validity entity
   ///
   @override
   Future<CheckValidityEntity> execute(String params) async {
-    return await ref
+    return ref
         .read(authenticationRepositoryImplProvider.notifier)
         .checkValidity(params);
   }

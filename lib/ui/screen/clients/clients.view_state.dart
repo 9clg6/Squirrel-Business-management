@@ -7,12 +7,9 @@ part 'clients.view_state.g.dart';
 /// [ClientsScreenState]
 @CopyWith(copyWithNull: true)
 class ClientsScreenState extends ViewStateAbs {
-  final Client? selectedClient;
-  final List<Client> clients;
-
   /// Constructor
-  /// @param selectedClient : [String?]
-  /// @param clients : [List<Client>]
+  /// @param [selectedClient] selected client
+  /// @param [clients] clients
   ///
   ClientsScreenState({
     required this.selectedClient,
@@ -20,9 +17,15 @@ class ClientsScreenState extends ViewStateAbs {
   });
 
   /// Initial state
+  /// @param [clients] clients
   ///
-  ClientsScreenState.initial(this.clients)
-      : selectedClient = null;
+  ClientsScreenState.initial(this.clients) : selectedClient = null;
+
+  /// Selected client
+  final Client? selectedClient;
+
+  /// Clients
+  final List<Client> clients;
 
   /// Get props
   ///

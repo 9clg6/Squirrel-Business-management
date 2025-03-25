@@ -7,13 +7,9 @@ part of 'order.entity.dart';
 // **************************************************************************
 
 abstract class _$OrderCWProxy {
-  Order id(String? id);
-
   Order client(Client? client);
 
   Order clientName(String clientName);
-
-  Order sponsor(String? sponsor);
 
   Order intermediaryContact(String intermediaryContact);
 
@@ -29,13 +25,17 @@ abstract class _$OrderCWProxy {
 
   Order price(double price);
 
-  Order commissionRatio(double? commissionRatio);
-
   Order commission(double commission);
 
   Order status(OrderStatus status);
 
   Order method(String method);
+
+  Order id(String? id);
+
+  Order sponsor(String? sponsor);
+
+  Order commissionRatio(double? commissionRatio);
 
   Order note(String? note);
 
@@ -50,10 +50,8 @@ abstract class _$OrderCWProxy {
   /// Order(...).copyWith(id: 12, name: "My name")
   /// ````
   Order call({
-    String? id,
     Client? client,
     String? clientName,
-    String? sponsor,
     String? intermediaryContact,
     double? internalProcessingFee,
     String? trackId,
@@ -61,10 +59,12 @@ abstract class _$OrderCWProxy {
     Duration? estimatedDuration,
     String? shopName,
     double? price,
-    double? commissionRatio,
     double? commission,
     OrderStatus? status,
     String? method,
+    String? id,
+    String? sponsor,
+    double? commissionRatio,
     String? note,
     List<OrderAction>? actions,
     Priority? priority,
@@ -78,16 +78,10 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
   final Order _value;
 
   @override
-  Order id(String? id) => this(id: id);
-
-  @override
   Order client(Client? client) => this(client: client);
 
   @override
   Order clientName(String clientName) => this(clientName: clientName);
-
-  @override
-  Order sponsor(String? sponsor) => this(sponsor: sponsor);
 
   @override
   Order intermediaryContact(String intermediaryContact) =>
@@ -114,10 +108,6 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
   Order price(double price) => this(price: price);
 
   @override
-  Order commissionRatio(double? commissionRatio) =>
-      this(commissionRatio: commissionRatio);
-
-  @override
   Order commission(double commission) => this(commission: commission);
 
   @override
@@ -125,6 +115,16 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
 
   @override
   Order method(String method) => this(method: method);
+
+  @override
+  Order id(String? id) => this(id: id);
+
+  @override
+  Order sponsor(String? sponsor) => this(sponsor: sponsor);
+
+  @override
+  Order commissionRatio(double? commissionRatio) =>
+      this(commissionRatio: commissionRatio);
 
   @override
   Order note(String? note) => this(note: note);
@@ -144,10 +144,8 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
   /// Order(...).copyWith(id: 12, name: "My name")
   /// ````
   Order call({
-    Object? id = const $CopyWithPlaceholder(),
     Object? client = const $CopyWithPlaceholder(),
     Object? clientName = const $CopyWithPlaceholder(),
-    Object? sponsor = const $CopyWithPlaceholder(),
     Object? intermediaryContact = const $CopyWithPlaceholder(),
     Object? internalProcessingFee = const $CopyWithPlaceholder(),
     Object? trackId = const $CopyWithPlaceholder(),
@@ -155,19 +153,17 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
     Object? estimatedDuration = const $CopyWithPlaceholder(),
     Object? shopName = const $CopyWithPlaceholder(),
     Object? price = const $CopyWithPlaceholder(),
-    Object? commissionRatio = const $CopyWithPlaceholder(),
     Object? commission = const $CopyWithPlaceholder(),
     Object? status = const $CopyWithPlaceholder(),
     Object? method = const $CopyWithPlaceholder(),
+    Object? id = const $CopyWithPlaceholder(),
+    Object? sponsor = const $CopyWithPlaceholder(),
+    Object? commissionRatio = const $CopyWithPlaceholder(),
     Object? note = const $CopyWithPlaceholder(),
     Object? actions = const $CopyWithPlaceholder(),
     Object? priority = const $CopyWithPlaceholder(),
   }) {
     return Order(
-      id: id == const $CopyWithPlaceholder()
-          ? _value.id
-          // ignore: cast_nullable_to_non_nullable
-          : id as String?,
       client: client == const $CopyWithPlaceholder()
           ? _value.client
           // ignore: cast_nullable_to_non_nullable
@@ -177,10 +173,6 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
               ? _value.clientName
               // ignore: cast_nullable_to_non_nullable
               : clientName as String,
-      sponsor: sponsor == const $CopyWithPlaceholder()
-          ? _value.sponsor
-          // ignore: cast_nullable_to_non_nullable
-          : sponsor as String?,
       intermediaryContact:
           intermediaryContact == const $CopyWithPlaceholder() ||
                   intermediaryContact == null
@@ -214,10 +206,6 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
           ? _value.price
           // ignore: cast_nullable_to_non_nullable
           : price as double,
-      commissionRatio: commissionRatio == const $CopyWithPlaceholder()
-          ? _value.commissionRatio
-          // ignore: cast_nullable_to_non_nullable
-          : commissionRatio as double?,
       commission:
           commission == const $CopyWithPlaceholder() || commission == null
               ? _value.commission
@@ -231,6 +219,18 @@ class _$OrderCWProxyImpl implements _$OrderCWProxy {
           ? _value.method
           // ignore: cast_nullable_to_non_nullable
           : method as String,
+      id: id == const $CopyWithPlaceholder()
+          ? _value.id
+          // ignore: cast_nullable_to_non_nullable
+          : id as String?,
+      sponsor: sponsor == const $CopyWithPlaceholder()
+          ? _value.sponsor
+          // ignore: cast_nullable_to_non_nullable
+          : sponsor as String?,
+      commissionRatio: commissionRatio == const $CopyWithPlaceholder()
+          ? _value.commissionRatio
+          // ignore: cast_nullable_to_non_nullable
+          : commissionRatio as double?,
       note: note == const $CopyWithPlaceholder()
           ? _value.note
           // ignore: cast_nullable_to_non_nullable
@@ -258,12 +258,10 @@ extension $OrderCopyWith on Order {
 // **************************************************************************
 
 Order _$OrderFromJson(Map<String, dynamic> json) => Order(
-      id: json['id'] as String?,
       client: json['client'] == null
           ? null
           : Client.fromJson(json['client'] as Map<String, dynamic>),
       clientName: json['clientName'] as String,
-      sponsor: json['sponsor'] as String?,
       intermediaryContact: json['intermediaryContact'] as String,
       internalProcessingFee: (json['internalProcessingFee'] as num).toDouble(),
       trackId: json['trackId'] as String,
@@ -272,10 +270,12 @@ Order _$OrderFromJson(Map<String, dynamic> json) => Order(
           Duration(microseconds: (json['estimatedDuration'] as num).toInt()),
       shopName: json['shopName'] as String,
       price: (json['price'] as num).toDouble(),
-      commissionRatio: (json['commissionRatio'] as num?)?.toDouble(),
       commission: (json['commission'] as num).toDouble(),
       status: OrderStatus.fromJson(json['status'] as String),
       method: json['method'] as String,
+      id: json['id'] as String?,
+      sponsor: json['sponsor'] as String?,
+      commissionRatio: (json['commissionRatio'] as num?)?.toDouble(),
       note: json['note'] as String?,
       actions: (json['actions'] as List<dynamic>?)
           ?.map((e) => OrderAction.fromJson(e as Map<String, dynamic>))

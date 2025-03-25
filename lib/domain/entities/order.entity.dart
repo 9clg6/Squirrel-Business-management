@@ -12,54 +12,9 @@ import 'package:uuid/uuid.dart';
 part 'order.entity.g.dart';
 
 /// [Order] entity
-///
 @CopyWith()
 @JsonSerializable()
 class Order with EquatableMixin, SerializableMixin {
-  final String id;
-  final Client? client;
-  final String clientName;
-  final String? sponsor;
-  final String intermediaryContact;
-  final double internalProcessingFee;
-  final String trackId;
-  final DateTime startDate;
-  final Duration estimatedDuration;
-  final String shopName;
-  final double price;
-  final double? commissionRatio;
-  final double commission;
-  final OrderStatus status;
-  final String method;
-  final String? note;
-  final Priority priority;
-  final List<OrderAction>? _actions;
-
-  /// Actions
-  ///
-  List<OrderAction> get actions =>
-      (_actions ?? [])..sort((a, b) => b.date.compareTo(a.date));
-
-  /// Margin
-  ///
-  double get margin => commission - internalProcessingFee;
-
-  /// End date
-  DateTime? get endDate => startDate.add(estimatedDuration);
-
-  /// Next action
-  ///
-  OrderAction? get nextAction =>
-      actions.firstWhereOrNull((a) => a.date.isAfter(DateTime.now()));
-
-  /// Next action date
-  ///
-  DateTime? get nextActionDate => actions.isNotEmpty
-      ? nextAction != null
-          ? nextAction!.date
-          : endDate
-      : endDate;
-
   /// Constructor
   /// @param id: Id of the order
   /// @param client: Client of the order
@@ -81,10 +36,8 @@ class Order with EquatableMixin, SerializableMixin {
   /// @param priority: Priority of the order
   ///
   Order({
-    String? id,
     required this.client,
     required this.clientName,
-    this.sponsor,
     required this.intermediaryContact,
     required this.internalProcessingFee,
     required this.trackId,
@@ -92,10 +45,12 @@ class Order with EquatableMixin, SerializableMixin {
     required this.estimatedDuration,
     required this.shopName,
     required this.price,
-    this.commissionRatio,
     required this.commission,
     required this.status,
     required this.method,
+    String? id,
+    this.sponsor,
+    this.commissionRatio,
     this.note,
     List<OrderAction>? actions,
     this.priority = Priority.normal,
@@ -106,20 +61,19 @@ class Order with EquatableMixin, SerializableMixin {
   ///
   factory Order.empty() => Order(
         client: null,
-        clientName: "",
+        clientName: '',
         intermediaryContact: '',
         internalProcessingFee: 0,
         trackId: '',
         startDate: DateTime.now(),
-        estimatedDuration: const Duration(days: 0),
+        estimatedDuration: Duration.zero,
         shopName: '',
         price: 0,
         commissionRatio: 0,
         commission: 0,
         status: OrderStatus.pending,
         method: '',
-        priority: Priority.normal,
-        actions: [],
+        actions: <OrderAction>[],
         note: '',
       );
 
@@ -130,6 +84,84 @@ class Order with EquatableMixin, SerializableMixin {
   @override
   factory Order.fromJson(Map<String, dynamic> json) => _$OrderFromJson(json);
 
+  /// Id
+  final String id;
+
+  /// Client
+  final Client? client;
+
+  /// Client name
+  final String clientName;
+
+  /// Sponsor
+  final String? sponsor;
+
+  /// Intermediary contact
+  final String intermediaryContact;
+
+  /// Internal processing fee
+  final double internalProcessingFee;
+
+  /// Track id
+  final String trackId;
+
+  /// Start date
+  final DateTime startDate;
+
+  /// Estimated duration
+  final Duration estimatedDuration;
+
+  /// Shop name
+  final String shopName;
+
+  /// Price
+  final double price;
+
+  /// Commission ratio
+  final double? commissionRatio;
+
+  /// Commission
+  final double commission;
+
+  /// Status
+  final OrderStatus status;
+
+  /// Method
+  final String method;
+
+  /// Note
+  final String? note;
+
+  /// Priority
+  final Priority priority;
+
+  /// Actions
+  final List<OrderAction>? _actions;
+
+  /// Actions
+  List<OrderAction> get actions => (_actions ?? <OrderAction>[])
+    ..sort((OrderAction a, OrderAction b) => b.date.compareTo(a.date));
+
+  /// Margin
+  ///
+  double get margin => commission - internalProcessingFee;
+
+  /// End date
+  DateTime? get endDate => startDate.add(estimatedDuration);
+
+  /// Next action
+  ///
+  OrderAction? get nextAction => actions
+      .firstWhereOrNull((OrderAction a) => a.date.isAfter(DateTime.now()));
+
+  /// Next action date
+  ///
+  DateTime? get nextActionDate => actions.isNotEmpty
+      ? nextAction != null
+          ? nextAction!.date
+          : endDate
+      : endDate;
+
   /// To json
   /// @return [Map<String, dynamic>] json
   ///
@@ -138,9 +170,9 @@ class Order with EquatableMixin, SerializableMixin {
 
   /// Get props
   /// @return [List<Object?>] props
-  /// 
+  ///
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
         id,
         client,
         clientName,

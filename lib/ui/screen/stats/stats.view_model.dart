@@ -12,7 +12,7 @@ part 'stats.view_model.g.dart';
 /// [StatsViewModel]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     OrderService,
   ],
 )
@@ -30,7 +30,7 @@ class StatsViewModel extends _$StatsViewModel {
       _isInitialized = true;
     }
 
-    ref.listen(orderServiceProvider, (_, next) {
+    ref.listen(orderServiceProvider, (_, AsyncValue<OrderState> next) {
       updateOrdersListener(next.value!);
     });
 

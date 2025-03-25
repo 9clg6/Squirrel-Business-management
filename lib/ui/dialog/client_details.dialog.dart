@@ -6,16 +6,15 @@ import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Client details dialog
 class ClientDetailDialog extends StatefulWidget {
-  /// The client to show
-  final Client client;
 
   /// Public constructor
   /// @param client: The client to show
   ///
   const ClientDetailDialog({
-    super.key,
-    required this.client,
+    required this.client, super.key,
   });
+  /// The client to show
+  final Client client;
 
   /// Build
   ///
@@ -31,7 +30,7 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Dialog(
       insetPadding: const EdgeInsets.all(100),
@@ -47,10 +46,9 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
                 variantType: TextVariantType.titleMedium,
               ),
             ),
-            leading: null,
             centerTitle: true,
             automaticallyImplyLeading: false,
-            actions: [
+            actions: <Widget>[
               IconButton(
                 onPressed: context.pop,
                 icon: const Icon(Icons.close),
@@ -73,9 +71,9 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
               ),
             ),
             child: Column(
-              children: [
+              children: <Widget>[
                 Row(
-                  children: [
+                  children: <Widget>[
                     Container(
                       padding: const EdgeInsets.all(20),
                       decoration: BoxDecoration(
@@ -86,7 +84,7 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
                         ),
                       ),
                       child: Column(
-                        children: [
+                        children: <Widget>[
                           CircleAvatar(
                             radius: 40,
                             child: TextVariant(
@@ -103,15 +101,13 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
                       ),
                     ),
                     Expanded(
-                      flex: 1,
                       child: Container(),
                     ),
                     Expanded(
-                      flex: 1,
                       child: Container(),
                     ),
                   ],
-                )
+                ),
               ],
             ),
           ),

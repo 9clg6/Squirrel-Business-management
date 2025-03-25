@@ -9,15 +9,6 @@ part 'index.view_state.g.dart';
 /// [IndexScreenState]
 @CopyWith()
 class IndexScreenState extends ViewStateAbs {
-  final List<Order> orders;
-  final List<Order> pinnedOrders;
-  final bool showComboBox;
-  final ScrollController scrollController;
-  final List<Order> selectedOrders;
-  final int sortColumnIndex;
-  final bool sortAscending;
-  final Map<Order, OrderAction?>? nextAction;
-
   /// Constructor
   /// @param [orders] orders
   /// @param [pinnedOrders] pinned orders
@@ -27,12 +18,12 @@ class IndexScreenState extends ViewStateAbs {
   IndexScreenState(
     this.orders,
     this.pinnedOrders,
-    this.showComboBox,
     this.selectedOrders,
     this.sortColumnIndex,
-    this.sortAscending,
-    this.nextAction,
-  ) : scrollController = ScrollController();
+    this.nextAction, {
+    this.showComboBox = false,
+    this.sortAscending = true,
+  }) : scrollController = ScrollController();
 
   /// Initial state
   ///
@@ -45,6 +36,30 @@ class IndexScreenState extends ViewStateAbs {
     this.sortAscending = true,
     this.selectedOrders = const <Order>[],
   }) : scrollController = ScrollController();
+
+  /// Orders
+  final List<Order> orders;
+
+  /// Pinned orders
+  final List<Order> pinnedOrders;
+
+  /// Show combo box
+  final bool showComboBox;
+
+  /// Scroll controller
+  final ScrollController scrollController;
+
+  /// Selected orders
+  final List<Order> selectedOrders;
+
+  /// Sort column index
+  final int sortColumnIndex;
+
+  /// Sort ascending
+  final bool sortAscending;
+
+  /// Next action
+  final Map<Order, OrderAction?>? nextAction;
 
   /// Get props
   ///

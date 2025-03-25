@@ -13,7 +13,8 @@ class PlannerScreen extends ConsumerStatefulWidget {
   const PlannerScreen({super.key});
 
   /// Creates the state of the planner screen
-  /// @return [ConsumerState<ConsumerStatefulWidget>] state of the planner screen
+  /// @return [ConsumerState<ConsumerStatefulWidget>] 
+  ///   state of the planner screen
   ///
   @override
   ConsumerState<ConsumerStatefulWidget> createState() => _PlannerScreenState();
@@ -27,15 +28,14 @@ class _PlannerScreenState extends ConsumerState<PlannerScreen> {
   /// 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
+          children: <Widget>[
             TextVariant(
               LocaleKeys.comingSoon.tr(),
               variantType: TextVariantType.titleLarge,
@@ -50,7 +50,6 @@ class _PlannerScreenState extends ConsumerState<PlannerScreen> {
                 colorScheme.onSurface.withValues(alpha: .9),
                 BlendMode.srcIn,
               ),
-              alignment: Alignment.center,
             ),
           ],
         ),

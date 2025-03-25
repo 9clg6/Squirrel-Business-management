@@ -6,18 +6,6 @@ part 'auth.state.g.dart';
 /// [AuthState]
 @CopyWith()
 class AuthState with EquatableMixin {
-  /// Is user authenticated
-  final bool isUserAuthenticated;
-
-  /// License id
-  final String? licenseId;
-
-  /// Is initialized
-  final bool isInitialized;
-
-  /// Expiration date
-  final DateTime? expirationDate;
-
   /// Constructor
   /// @param [isUserAuthenticated] is user authenticated
   /// @param [licenseId] license id
@@ -25,9 +13,9 @@ class AuthState with EquatableMixin {
   ///
   AuthState({
     required this.isUserAuthenticated,
+    required this.isInitialized,
     this.licenseId,
     this.expirationDate,
-    required this.isInitialized,
   });
 
   /// Initial
@@ -43,11 +31,23 @@ class AuthState with EquatableMixin {
     this.expirationDate,
   }) : isInitialized = isInitialized ?? false;
 
+  /// Is user authenticated
+  final bool isUserAuthenticated;
+
+  /// License id
+  final String? licenseId;
+
+  /// Is initialized
+  final bool isInitialized;
+
+  /// Expiration date
+  final DateTime? expirationDate;
+
   /// Get props
   /// @return [List<Object?>] props
   ///
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
         isUserAuthenticated,
         licenseId,
         expirationDate,

@@ -7,9 +7,9 @@ part of 'todo.view_state.dart';
 // **************************************************************************
 
 abstract class _$TodoScreenStateCWProxy {
-  TodoScreenState loading(bool? loading);
-
   TodoScreenState orders(List<Order> orders);
+
+  TodoScreenState loading(bool? loading);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `TodoScreenState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -18,8 +18,8 @@ abstract class _$TodoScreenStateCWProxy {
   /// TodoScreenState(...).copyWith(id: 12, name: "My name")
   /// ````
   TodoScreenState call({
-    bool? loading,
     List<Order>? orders,
+    bool? loading,
   });
 }
 
@@ -30,10 +30,10 @@ class _$TodoScreenStateCWProxyImpl implements _$TodoScreenStateCWProxy {
   final TodoScreenState _value;
 
   @override
-  TodoScreenState loading(bool? loading) => this(loading: loading);
+  TodoScreenState orders(List<Order> orders) => this(orders: orders);
 
   @override
-  TodoScreenState orders(List<Order> orders) => this(orders: orders);
+  TodoScreenState loading(bool? loading) => this(loading: loading);
 
   @override
 
@@ -44,18 +44,18 @@ class _$TodoScreenStateCWProxyImpl implements _$TodoScreenStateCWProxy {
   /// TodoScreenState(...).copyWith(id: 12, name: "My name")
   /// ````
   TodoScreenState call({
-    Object? loading = const $CopyWithPlaceholder(),
     Object? orders = const $CopyWithPlaceholder(),
+    Object? loading = const $CopyWithPlaceholder(),
   }) {
     return TodoScreenState(
-      loading == const $CopyWithPlaceholder()
-          ? _value.loading
-          // ignore: cast_nullable_to_non_nullable
-          : loading as bool?,
       orders == const $CopyWithPlaceholder() || orders == null
           ? _value.orders
           // ignore: cast_nullable_to_non_nullable
           : orders as List<Order>,
+      loading: loading == const $CopyWithPlaceholder()
+          ? _value.loading
+          // ignore: cast_nullable_to_non_nullable
+          : loading as bool?,
     );
   }
 }

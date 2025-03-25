@@ -15,8 +15,7 @@ class CustomSideBar extends StatefulWidget {
   /// @param [navigationShell] navigation shell
   ///
   const CustomSideBar({
-    super.key,
-    required this.navigationShell,
+    required this.navigationShell, super.key,
   });
 
   /// Navigation shell
@@ -50,20 +49,19 @@ class _CustomSideBarState extends State<CustomSideBar> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    const double itemPadding = 10.0;
-    const double borderRadiusInner = 10.0;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    const double itemPadding = 10;
+    const double borderRadiusInner = 10;
     const double borderRadiusOuter = borderRadiusInner + itemPadding;
 
     return SafeArea(
       child: Align(
         alignment: Alignment.topCenter,
         child: Column(
-          children: [
+          children: <Widget>[
             Expanded(
               child: SidebarX(
                 controller: controller,
-                showToggleButton: true,
                 theme: SidebarXTheme(
                   margin: const EdgeInsets.only(
                     bottom: 10,
@@ -76,7 +74,6 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     borderRadius: BorderRadius.circular(20),
                     border: Border.all(
                       color: colorScheme.outline.withValues(alpha: .2),
-                      width: 1,
                     ),
                   ),
                   hoverColor: colorScheme.secondary,
@@ -99,7 +96,6 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     color: colorScheme.primary,
                     border: Border.all(
                       color: colorScheme.outline.withValues(alpha: .2),
-                      width: 1,
                     ),
                   ),
                   itemTextPadding: const EdgeInsets.only(left: 8),
@@ -119,7 +115,6 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     borderRadius: BorderRadius.circular(borderRadiusOuter),
                     border: Border.all(
                       color: colorScheme.outline.withValues(alpha: .2),
-                      width: 1,
                     ),
                   ),
                   textStyle: TextStyle(
@@ -132,7 +127,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
                     fontWeight: FontWeight.w600,
                   ),
                 ),
-                items: [
+                items: <SidebarXItem>[
                   SidebarXItem(
                     label: LocaleKeys.home.tr(),
                     icon: Icons.home,
@@ -192,7 +187,7 @@ class _CustomSideBarState extends State<CustomSideBar> {
             ),
             StreamBuilder<bool>(
               stream: controller.extendStream,
-              builder: (context, snapshot) {
+              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 return InkWell(
                   onTap: () => injector<DialogService>().showInComingDialog(),
                   child: AnimatedContainer(
@@ -207,17 +202,16 @@ class _CustomSideBarState extends State<CustomSideBar> {
                       borderRadius: BorderRadius.circular(12),
                     ),
                     child: Row(
-                      children: [
+                      children: <Widget>[
                         const Icon(
                           Icons.rocket_launch_rounded,
                         ),
-                        if (snapshot.data == true) ...[
+                        if (snapshot.data ?? false) ...<Widget>[
                           const Gap(5),
                           TextVariant(
                             LocaleKeys.comingSoon.tr(),
-                            variantType: TextVariantType.bodyMedium,
                           ),
-                        ]
+                        ],
                       ],
                     ),
                   ),

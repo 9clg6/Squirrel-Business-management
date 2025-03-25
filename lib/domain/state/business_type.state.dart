@@ -7,9 +7,6 @@ part 'business_type.state.g.dart';
 /// [BusinessTypeState]
 @CopyWith()
 class BusinessTypeState with EquatableMixin {
-  /// Type of app use
-  final BusinessType businessType;
-
   /// Constructor
   /// @param [businessType] type of service
   ///
@@ -24,11 +21,14 @@ class BusinessTypeState with EquatableMixin {
     required this.businessType,
   });
 
+  /// Type of app use
+  final BusinessType businessType;
+
   /// Props
   /// @return [List<Object?>] props
   ///
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
         businessType,
       ];
 }

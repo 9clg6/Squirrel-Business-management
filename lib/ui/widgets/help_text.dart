@@ -2,29 +2,29 @@ import 'package:flutter/material.dart';
 
 /// Help text
 class HelpText extends StatelessWidget {
-  /// Text
-  final String text;
-
   /// Constructor
   /// @param [key] key
   /// @param [text] text
-  /// 
+  ///
   const HelpText({
-    super.key,
     required this.text,
+    super.key,
   });
+
+  /// Text
+  final String text;
 
   /// Build
   /// @param [context] context
   /// @return [Widget] widget of the help text
-  /// 
+  ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
 
     return Row(
-      children: [
+      children: <Widget>[
         Icon(
           Icons.info_outline,
           color: colorScheme.onSurface.withValues(alpha: .6),

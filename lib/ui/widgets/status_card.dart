@@ -3,16 +3,17 @@ import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 
 /// A card that displays the status of an order
 class StatusCard extends StatelessWidget {
-  final OrderStatus status;
 
   /// Constructor of the status card
   /// @param [key] key
   /// @param [status] status
   ///
   const StatusCard({
-    super.key,
-    required this.status,
+    required this.status, super.key,
   });
+  
+  /// Status
+  final OrderStatus status;
 
   /// Builds the status card
   /// @param [context] context

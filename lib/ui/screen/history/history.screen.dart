@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/headers.enum.dart';
@@ -36,7 +37,7 @@ class _HistoryScreenState extends State<HistoryScreen> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: colorScheme.surfaceDim,
@@ -61,8 +62,10 @@ class _OrdersList extends ConsumerWidget {
     final HistoryState state = ref.watch(historyProvider);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final businessTypeState = ref.watch(businessTypeServiceProvider);
-    final businessTypeNotifier = ref.read(businessTypeServiceProvider.notifier);
+    final AsyncValue<BusinessTypeState> businessTypeState =
+        ref.watch(businessTypeServiceProvider);
+    final BusinessTypeService businessTypeNotifier =
+        ref.read(businessTypeServiceProvider.notifier);
 
     return Container(
       margin: const EdgeInsets.all(10),
@@ -71,23 +74,21 @@ class _OrdersList extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outline.withValues(alpha: .2),
-          width: 1,
         ),
       ),
       width: double.infinity,
       child: switch (state) {
-        AsyncLoading() => const Center(
+        AsyncLoading<HistoryState>() => const Center(
             child: CircularProgressIndicator(),
           ),
-        AsyncError(:final error) => Center(
+        AsyncError<HistoryState>(:final Object error) => Center(
             child: TextVariant(
               error.toString(),
-              variantType: TextVariantType.bodyMedium,
             ),
           ),
         HistoryState() => Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+            children: <Widget>[
               SizedBox(
                 width: double.infinity,
                 child: state.orders.isEmpty
@@ -96,7 +97,6 @@ class _OrdersList extends ConsumerWidget {
                         child: Center(
                           child: TextVariant(
                             LocaleKeys.noOrdersFound.tr(),
-                            variantType: TextVariantType.bodyMedium,
                           ),
                         ),
                       )
@@ -110,7 +110,6 @@ class _OrdersList extends ConsumerWidget {
                           border: Border(
                             bottom: BorderSide(
                               color: colorScheme.outline.withValues(alpha: .2),
-                              width: 1,
                             ),
                           ),
                         ),
@@ -119,53 +118,58 @@ class _OrdersList extends ConsumerWidget {
                         dividerThickness: .5,
                         showCheckboxColumn: false,
                         columns: Headers.values
-                            .where((h) => h != Headers.actions)
-                            .map((e) => switch (businessTypeState) {
-                                  AsyncData(value: BusinessTypeState()) =>
-                                    DataColumn(
-                                      label: TextVariant(
-                                        e == Headers.store
-                                            ? businessTypeNotifier
-                                                .getServiceTypeWording(
-                                                "x",
-                                                type: businessTypeState.value,
-                                              )
-                                            : e.label,
-                                        variantType: TextVariantType.bodyMedium,
-                                      ),
-                                      numeric: e.isNumeric,
-                                      headingRowAlignment:
-                                          MainAxisAlignment.center,
+                            .where((Headers h) => h != Headers.actions)
+                            .map(
+                              (Headers e) => switch (businessTypeState) {
+                                AsyncData<BusinessTypeState>(
+                                  :final BusinessTypeState value
+                                ) =>
+                                  DataColumn(
+                                    label: TextVariant(
+                                      e == Headers.store
+                                          ? businessTypeNotifier
+                                              .getServiceTypeWording(
+                                              'x',
+                                              type: value,
+                                            )
+                                          : e.label,
                                     ),
-                                  _ => const DataColumn(
-                                      label: Center(
-                                        child: CircularProgressIndicator(),
-                                      ),
+                                    numeric: e.isNumeric,
+                                    headingRowAlignment:
+                                        MainAxisAlignment.center,
+                                  ),
+                                _ => const DataColumn(
+                                    label: Center(
+                                      child: CircularProgressIndicator(),
                                     ),
-                                })
+                                  ),
+                              },
+                            )
                             .toList(),
-                        rows: state.orders.map((order) {
+                        rows: state.orders.map((Order order) {
                           return DataRow(
                             onSelectChanged: (bool? value) {
                               if (context.mounted) {
                                 context.pushNamed(
                                   RouterEnum.orderDetails.name,
-                                  pathParameters: {'orderId': order.id},
+                                  pathParameters: <String, String>{
+                                    'orderId': order.id,
+                                  },
                                   extra: order,
                                 );
                               }
                             },
-                            cells: [
+                            cells: <DataCell>[
                               DataCell(
                                 Hero(
                                   tag: 'order-${order.id}',
                                   child: Center(
                                     child: Container(
                                       padding: const EdgeInsets.symmetric(
-                                          vertical: 8),
+                                        vertical: 8,
+                                      ),
                                       child: TextVariant(
-                                        order.client?.name ?? "",
-                                        variantType: TextVariantType.bodyMedium,
+                                        order.client?.name ?? '',
                                       ),
                                     ),
                                   ),
@@ -182,7 +186,6 @@ class _OrdersList extends ConsumerWidget {
                                 Center(
                                   child: TextVariant(
                                     order.shopName,
-                                    variantType: TextVariantType.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -190,23 +193,20 @@ class _OrdersList extends ConsumerWidget {
                                 Center(
                                   child: TextVariant(
                                     order.startDate.toDDMMYYYY(),
-                                    variantType: TextVariantType.bodyMedium,
                                   ),
                                 ),
                               ),
                               DataCell(
                                 Center(
                                   child: TextVariant(
-                                    order.endDate?.toDDMMYYYY() ?? "",
-                                    variantType: TextVariantType.bodyMedium,
+                                    order.endDate?.toDDMMYYYY() ?? '',
                                   ),
                                 ),
                               ),
                               DataCell(
                                 Center(
                                   child: TextVariant(
-                                    "${order.price}€",
-                                    variantType: TextVariantType.bodyMedium,
+                                    '${order.price}€',
                                   ),
                                 ),
                               ),
@@ -214,11 +214,10 @@ class _OrdersList extends ConsumerWidget {
                                 Center(
                                   child: TextVariant(
                                     LocaleKeys.priceWithSymbol.tr(
-                                      args: [
+                                      args: <String>[
                                         order.commission.toString(),
                                       ],
                                     ),
-                                    variantType: TextVariantType.bodyMedium,
                                   ),
                                 ),
                               ),
@@ -229,7 +228,9 @@ class _OrdersList extends ConsumerWidget {
                                       if (context.mounted) {
                                         context.pushNamed(
                                           RouterEnum.orderDetails.name,
-                                          pathParameters: {'orderId': order.id},
+                                          pathParameters: <String, String>{
+                                            'orderId': order.id,
+                                          },
                                           extra: order,
                                         );
                                       }

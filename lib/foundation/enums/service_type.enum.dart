@@ -1,4 +1,9 @@
+
+/// [BusinessType]
 enum BusinessType {
+  /// Service
   service,
-  shop;
+
+  /// Shop
+  shop,
 }

@@ -7,21 +7,23 @@ part 'get_theme.use_case.g.dart';
 
 /// [GetThemeUseCase]
 @Riverpod(
-  dependencies: [
+  dependencies: <Object>[
     PreferencesRepositoryImpl,
   ],
 )
 class GetThemeUseCase extends _$GetThemeUseCase
     implements UseCase<Future<ThemeAppearance>> {
+  /// Constructor
+  ///
+  GetThemeUseCase();
+
+  /// Build
+  /// @return [GetThemeUseCase]
+  ///
   @override
   GetThemeUseCase build() {
     return GetThemeUseCase();
   }
-
-  /// Constructor
-  /// @param [_preferencesRepository] preferences repository
-  ///
-  GetThemeUseCase();
 
   /// Get current theme
   /// @return [ThemeAppearance] current theme

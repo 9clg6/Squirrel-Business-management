@@ -7,9 +7,6 @@ part 'order_details.view_state.g.dart';
 /// [OrderDetailsScreenState]
 @CopyWith()
 class OrderDetailsScreenState extends ViewStateAbs {
-  /// Order
-  final Order? order;
-
   /// Constructor
   /// @param [order] order
   ///
@@ -23,6 +20,9 @@ class OrderDetailsScreenState extends ViewStateAbs {
   OrderDetailsScreenState.initial({
     required this.order,
   });
+
+  /// Order
+  final Order? order;
 
   /// Get props
   ///

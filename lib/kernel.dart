@@ -1,4 +1,3 @@
-// ignore_for_file: missing_provider_scope
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -14,9 +13,6 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// The kernel of the application.
 class Kernel {
-  /// App config
-  final AppConfig appConfig;
-
   /// Constructor
   /// @param [appConfig] app config
   ///
@@ -28,6 +24,9 @@ class Kernel {
   ///
   Kernel.test() : appConfig = const AppConfig.test();
 
+  /// App config
+  final AppConfig appConfig;
+
   /// Run the application
   ///
   void run() {
@@ -37,7 +36,7 @@ class Kernel {
   /// Run the application
   ///
   void _run() {
-    initializeDateFormatting('fr_FR', null).then(
+    initializeDateFormatting('fr_FR').then(
       (_) => runApp(
         build(const App()),
       ),
@@ -53,15 +52,15 @@ class Kernel {
   /// Ensure all initialization is done
   ///
   Future<void> _ensureInitialized() async {
-    logInfo('Début de l\'initialisation');
-    
+    logInfo("Début de l'initialisation");
+
     // Initialisation de base de Flutter
     WidgetsFlutterBinding.ensureInitialized();
     await EasyLocalization.ensureInitialized();
-    
+
     // Initialisation de Hive
     await Hive.initFlutter();
-    
+
     // Injection des dépendances
     injector.registerSingleton<AppConfig>(appConfig);
     final GetIt getIt = await initializeInjections();

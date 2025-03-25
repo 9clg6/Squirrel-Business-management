@@ -9,13 +9,12 @@ part 'login.use_case.g.dart';
 
 /// [LoginUseCase]
 @Riverpod(
-  dependencies: [
+  dependencies: <Object>[
     AuthenticationRepositoryImpl,
   ],
 )
 class LoginUseCase extends _$LoginUseCase
     implements UseCaseWithParams<Future<LoginResultEntity>, String> {
-
   @override
   LoginUseCase build() {
     log('🔌 Initializing LoginUseCase');
@@ -28,6 +27,8 @@ class LoginUseCase extends _$LoginUseCase
   ///
   @override
   Future<LoginResultEntity> execute(String licenseKey) async {
-    return await ref.read(authenticationRepositoryImplProvider.notifier).login(licenseKey);
+    return ref
+        .read(authenticationRepositoryImplProvider.notifier)
+        .login(licenseKey);
   }
 }

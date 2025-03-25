@@ -158,61 +158,43 @@ class TextVariant extends StatelessWidget {
     switch (variantType) {
       case TextVariantType.displayLarge:
         textStyle = textTheme.displayLarge!;
-        break;
       case TextVariantType.displayMedium:
         textStyle = textTheme.displayMedium!;
-        break;
       case TextVariantType.displaySmall:
         textStyle = textTheme.displaySmall!;
-        break;
       case TextVariantType.labelLarge:
         textStyle = textTheme.labelLarge!;
-        break;
       case TextVariantType.labelMedium:
         textStyle = textTheme.labelMedium!;
-        break;
       case TextVariantType.labelSmall:
         textStyle = textTheme.labelSmall!;
-        break;
       case TextVariantType.titleLarge:
         textStyle = textTheme.titleLarge!;
-        break;
       case TextVariantType.titleMedium:
         textStyle = textTheme.titleMedium!;
-        break;
       case TextVariantType.titleSmall:
         textStyle = textTheme.titleSmall!;
-        break;
       case TextVariantType.headlineLarge:
         textStyle = textTheme.headlineLarge!;
-        break;
       case TextVariantType.headlineMedium:
         textStyle = textTheme.headlineMedium!;
-        break;
       case TextVariantType.headlineSmall:
         textStyle = textTheme.headlineSmall!;
-        break;
       case TextVariantType.bodyLarge:
         textStyle = textTheme.bodyLarge!;
-        break;
       case TextVariantType.bodyMedium:
         textStyle = textTheme.bodyMedium!;
-        break;
       case TextVariantType.bodySmall:
         textStyle = textTheme.bodySmall!;
-        break;
       case TextVariantType.button:
         textStyle = textTheme.titleMedium!;
-        break;
       case TextVariantType.appBarTitle:
         textStyle = appBarTheme.titleTextStyle ??
             appBarTheme.toolbarTextStyle ??
             textTheme.displaySmall!;
-        break;
       case TextVariantType.custom:
         textStyle = style ?? textTheme.bodyMedium!;
-        break;
-      }
+    }
 
     if (color != null) {
       textStyle = textStyle.copyWith(color: color);

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -13,7 +14,7 @@ part 'auth.view_model.g.dart';
 /// [Auth]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     AuthService,
   ],
 )
@@ -47,11 +48,14 @@ class Auth extends _$Auth {
     final bool result = await _authService.login(licenseKey);
 
     if (result) {
-      final useConditionsResult = await _dialogService.showUseConditions();
-      if (useConditionsResult == true) {
-        _navigatorService.navigateToHome();
+      final bool? useConditionsResult =
+          await _dialogService.showUseConditions();
+      if (useConditionsResult ?? false) {
+        unawaited(_navigatorService.navigateToHome());
       } else if (useConditionsResult == null) {
-        log('Impossible d\'afficher les conditions d\'utilisation: contexte null');
+        log(
+          "Impossible d'afficher les conditions d'utilisation: contexte null",
+        );
         _dialogService.showError(LocaleKeys.impossibleToConnect.tr());
       }
     } else {

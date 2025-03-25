@@ -4,9 +4,10 @@ import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/enums/priority.enum.dart';
 import 'package:squirrel/ui/screen/todo/todo.view_model.dart';
+import 'package:squirrel/ui/screen/todo/todo.view_state.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
-/// Todo screen
+/// TodoScreen
 class TodoScreen extends ConsumerStatefulWidget {
   /// Constructor
   /// @param [key] key
@@ -25,7 +26,7 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
   ///
   @override
   Widget build(BuildContext context) {
-    final orderStatusLength = OrderStatus.values.length;
+    final int orderStatusLength = OrderStatus.values.length;
     const double paddingWidth = 8;
 
     return Scaffold(
@@ -33,7 +34,7 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
       body: Container(
         padding: const EdgeInsets.all(10),
         child: LayoutBuilder(
-          builder: (context, constraints) {
+          builder: (BuildContext context, BoxConstraints constraints) {
             final double parentSize = constraints.maxWidth;
 
             return ListView.separated(
@@ -41,7 +42,7 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
               itemCount: orderStatusLength,
               separatorBuilder: (_, __) => const SizedBox(width: paddingWidth),
               itemBuilder: (_, int index) {
-                final status = OrderStatus.values[index];
+                final OrderStatus status = OrderStatus.values[index];
 
                 return TodoStatusColumn(
                   parentSize: parentSize,
@@ -58,27 +59,33 @@ class _TodoScreenState extends ConsumerState<TodoScreen> {
   }
 }
 
-/// Todo status column
+/// TodoStatus column
 class TodoStatusColumn extends ConsumerWidget {
-  final double parentSize;
-  final int orderStatusLength;
-  final double paddingWidth;
-  final OrderStatus status;
-
   /// Constructor
   /// @param [parentSize] parent size
   /// @param [orderStatusLength] order status length
   /// @param [paddingWidth] padding width
-  /// @param [colorScheme] color scheme
   /// @param [status] status
   ///
   const TodoStatusColumn({
-    super.key,
     required this.parentSize,
     required this.orderStatusLength,
     required this.paddingWidth,
     required this.status,
+    super.key,
   });
+
+  /// Parent size
+  final double parentSize;
+
+  /// Order status length
+  final int orderStatusLength;
+
+  /// Padding width
+  final double paddingWidth;
+
+  /// Status
+  final OrderStatus status;
 
   /// Builds the todo status column
   /// @param [context] context
@@ -87,9 +94,9 @@ class TodoStatusColumn extends ConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(todoViewModelProvider);
-    final viewModel = ref.read(todoViewModelProvider.notifier);
-    final colorScheme = Theme.of(context).colorScheme;
+    final TodoScreenState state = ref.watch(todoViewModelProvider);
+    final TodoViewModel viewModel = ref.read(todoViewModelProvider.notifier);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Container(
       width: (parentSize / orderStatusLength) - paddingWidth,
@@ -98,11 +105,10 @@ class TodoStatusColumn extends ConsumerWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
           color: colorScheme.outline.withValues(alpha: .2),
-          width: 1,
         ),
       ),
       child: DragTarget<Order>(
-        onAcceptWithDetails: (data) {
+        onAcceptWithDetails: (DragTargetDetails<Order> data) {
           if (data.data.status != status) {
             viewModel.updateOrderStatus(
               data.data,
@@ -110,12 +116,12 @@ class TodoStatusColumn extends ConsumerWidget {
             );
           }
         },
-        builder: (_, candidateData, __) {
+        builder: (_, List<Order?> candidateData, __) {
           return Container(
             decoration: BoxDecoration(
-              color: candidateData.isNotEmpty 
-                ? colorScheme.surface.withValues(alpha: .8) 
-                : colorScheme.surface,
+              color: candidateData.isNotEmpty
+                  ? colorScheme.surface.withValues(alpha: .8)
+                  : colorScheme.surface,
               borderRadius: BorderRadius.circular(20),
             ),
             child: Padding(
@@ -124,9 +130,8 @@ class TodoStatusColumn extends ConsumerWidget {
                 horizontal: 12,
               ),
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: <Widget>[
                   SizedBox(
                     height: 40,
                     child: Center(
@@ -142,14 +147,12 @@ class TodoStatusColumn extends ConsumerWidget {
                     height: 24,
                     thickness: 0.5,
                   ),
-                  ...state.orders
-                      .where((o) => o.status == status)
-                      .map(
-                        (e) => TodoItem(
+                  ...state.orders.where((Order o) => o.status == status).map(
+                        (Order e) => TodoItem(
                           status: status,
                           order: e,
                         ),
-                      )
+                      ),
                 ],
               ),
             ),
@@ -160,20 +163,23 @@ class TodoStatusColumn extends ConsumerWidget {
   }
 }
 
-/// Todo item
+/// TodoItem
 class TodoItem extends ConsumerWidget {
-  final OrderStatus status;
-  final Order order;
-
   /// Constructor
   /// @param [status] status
   /// @param [order] order
   ///
   const TodoItem({
-    super.key,
     required this.status,
     required this.order,
+    super.key,
   });
+
+  /// Status
+  final OrderStatus status;
+
+  /// Order
+  final Order order;
 
   /// Builds the todo item
   /// @param [context] context
@@ -182,8 +188,8 @@ class TodoItem extends ConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final viewModel = ref.read(todoViewModelProvider.notifier);
-    final colorScheme = Theme.of(context).colorScheme;
+    final TodoViewModel viewModel = ref.read(todoViewModelProvider.notifier);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return MouseRegion(
       cursor: SystemMouseCursors.click,
@@ -215,9 +221,7 @@ class TodoItem extends ConsumerWidget {
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   if (order.priority == Priority.high)
                     const Padding(
                       padding: EdgeInsets.only(right: 8),
@@ -229,15 +233,14 @@ class TodoItem extends ConsumerWidget {
                     ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
+                    children: <Widget>[
                       TextVariant(
                         order.shopName,
-                        variantType: TextVariantType.bodyMedium,
                         fontWeight: FontWeight.w500,
                         color: colorScheme.onSurface,
                       ),
                       TextVariant(
-                        order.client?.name ?? "",
+                        order.client?.name ?? '',
                         variantType: TextVariantType.labelSmall,
                         fontWeight: FontWeight.w400,
                         color: colorScheme.onSurface,

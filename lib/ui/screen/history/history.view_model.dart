@@ -8,7 +8,7 @@ part 'history.view_model.g.dart';
 /// [History]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     OrderService,
   ],
 )
@@ -17,9 +17,9 @@ class History extends _$History {
   ///
   @override
   HistoryState build() {
-    final state = ref.watch(orderServiceProvider);
+    final AsyncValue<OrderState> state = ref.watch(orderServiceProvider);
 
-    ref.listen(orderServiceProvider, (_, next) {
+    ref.listen(orderServiceProvider, (_, AsyncValue<OrderState> next) {
       _onOrderChange(next.value!);
     });
 

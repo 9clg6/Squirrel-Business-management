@@ -3,15 +3,6 @@ import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
 
 /// [LoginResultEntity]
 class LoginResultEntity {
-  /// Is valid
-  final bool valid;
-
-  /// Expiration date
-  final DateTime? expirationDate;
-
-  /// License key
-  final String licenseKey;
-
   /// Constructor
   /// @param [valid] is valid
   /// @param [expirationDate] expiration date
@@ -28,13 +19,23 @@ class LoginResultEntity {
   /// @return [LoginResultEntity] login result entity
   ///
   factory LoginResultEntity.fromRemoteModel(
-      LoginResultRemoteModel remoteModel) {
+    LoginResultRemoteModel remoteModel,
+  ) {
     return LoginResultEntity(
       valid: remoteModel.valid,
       expirationDate: remoteModel.expirationDate,
       licenseKey: remoteModel.licenseKey,
     );
   }
+
+  /// Is valid
+  final bool valid;
+
+  /// Expiration date
+  final DateTime? expirationDate;
+
+  /// License key
+  final String licenseKey;
 
   /// To local model
   /// @return [LoginResultLocalModel] login result local model

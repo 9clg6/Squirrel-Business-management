@@ -6,26 +6,30 @@ part 'preferences_local.data_source.impl.g.dart';
 
 /// [PreferencesLocalDataSourcesImpl]
 @Riverpod(
-  dependencies: [
+  dependencies: <Object>[
     HiveSecureStorage,
   ],
 )
 class PreferencesLocalDataSourcesImpl extends _$PreferencesLocalDataSourcesImpl
     implements PreferencesLocalDataSource {
+  /// Constructor
+  ///
+  PreferencesLocalDataSourcesImpl();
+
+  /// Constructor
+  /// @param [_storage] hive secure storage
+  ///
+  PreferencesLocalDataSourcesImpl._(this._storage);
+
   /// Hive secure storage
   late final HiveSecureStorage _storage;
 
   /// Theme key
   static const String _themeKey = 'theme_appearance_key';
 
-  /// Constructor
-  /// @param [storage] hive secure storage
-  ///
-  PreferencesLocalDataSourcesImpl._(this._storage);
-  PreferencesLocalDataSourcesImpl();
-
   /// Build
-  /// @return [PreferencesLocalDataSourcesImpl] preferences local data source impl
+  /// @return [PreferencesLocalDataSourcesImpl] preferences
+  /// local data source impl
   ///
   @override
   PreferencesLocalDataSourcesImpl build() {

@@ -7,6 +7,7 @@ import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
+import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
@@ -21,7 +22,7 @@ part 'auth.service.g.dart';
 /// [AuthService]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     RequestService,
     LoginUseCase,
     CheckValidityUseCase,
@@ -32,7 +33,7 @@ class AuthService extends _$AuthService {
   static const String _license = 'licenseKey';
   late final GlobalKey<NavigatorState> _navigatorKey;
   late final CheckValidityUseCase _checkValidityUseCase;
-  late final StorageInterface _secureStorageService;
+  late final StorageInterface<dynamic> _secureStorageService;
   late final RequestService _requestService;
   Timer? _timer;
   bool _isInitialized = false;
@@ -65,7 +66,7 @@ class AuthService extends _$AuthService {
     _requestService = ref.read(requestServiceProvider.notifier);
     _navigatorKey = injector.get<GlobalKey<NavigatorState>>();
     _checkValidityUseCase = ref.read(checkValidityUseCaseProvider.notifier);
-    
+
     // Attendre l'initialisation du storage service qui est critique
     await ref.read(hiveSecureStorageServiceProvider.future);
   }
@@ -75,17 +76,18 @@ class AuthService extends _$AuthService {
   ///
   Future<AuthState?> loadUser() async {
     try {
-      final licenseResult = await _loadLicenseFromStorage();
-      
+      final LoginResultLocalModel? licenseResult =
+          await _loadLicenseFromStorage();
+
       if (licenseResult != null) {
         await _handleLicenseResult(licenseResult);
       } else {
         _setUserAuthenticated(false);
       }
-      
+
       return state.value;
-    } catch (e) {
-      log('Erreur lors du chargement de l\'utilisateur: $e');
+    } on Exception catch (e) {
+      log("Erreur lors du chargement de l'utilisateur: $e");
       _setUserAuthenticated(false);
       return state.value;
     }
@@ -96,13 +98,15 @@ class AuthService extends _$AuthService {
       return _cachedLicense;
     }
 
-    final String? license = await _secureStorageService.get(_license);
+    final String? license =
+        await _secureStorageService.get(_license) as String?;
     if (license == null) return null;
 
     try {
-      _cachedLicense = LoginResultLocalModel.fromJson(jsonDecode(license));
-      return _cachedLicense;
-    } catch (e) {
+      return LoginResultLocalModel.fromJson(
+        jsonDecode(license) as Map<String, dynamic>,
+      );
+    } on Exception catch (e) {
       log('Erreur lors du décodage de la licence: $e');
       return null;
     }
@@ -110,9 +114,10 @@ class AuthService extends _$AuthService {
 
   Future<void> _handleLicenseResult(LoginResultLocalModel license) async {
     log('Chargement de la licence: ${license.licenseKey}');
-    
-    final shouldCheckValidity = _lastValidityCheck == null || 
-        DateTime.now().difference(_lastValidityCheck!) > const Duration(hours: 1);
+
+    final bool shouldCheckValidity = _lastValidityCheck == null ||
+        DateTime.now().difference(_lastValidityCheck!) >
+            const Duration(hours: 1);
 
     if (shouldCheckValidity) {
       await _checkValidity(license.licenseKey);
@@ -131,8 +136,9 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _checkValidity(String licenseKey) async {
     try {
-      final result = await _checkValidityUseCase.execute(licenseKey);
-      
+      final CheckValidityEntity result =
+          await _checkValidityUseCase.execute(licenseKey);
+
       if (result.valid) {
         _setUserAuthenticated(
           true,
@@ -144,7 +150,7 @@ class AuthService extends _$AuthService {
         _setUserAuthenticated(false);
         _navigateToAuth();
       }
-    } catch (e) {
+    } on Exception catch (e) {
       log('Erreur lors de la vérification de validité: $e');
       // Conserver l'état actuel en cas d'erreur de connexion
     }
@@ -152,9 +158,10 @@ class AuthService extends _$AuthService {
 
   void _startPeriodicCheck() {
     if (_timer?.isActive ?? false) return;
-    
-    _timer = Timer.periodic(const Duration(hours: 5), (timer) async {
-      final currentLicense = await _loadLicenseFromStorage();
+
+    _timer = Timer.periodic(const Duration(hours: 5), (Timer timer) async {
+      final LoginResultLocalModel? currentLicense =
+          await _loadLicenseFromStorage();
       if (currentLicense != null) {
         await _checkValidity(currentLicense.licenseKey);
       }
@@ -163,8 +170,9 @@ class AuthService extends _$AuthService {
 
   void _navigateToAuth() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final context = _navigatorKey.currentContext;
-      if (context != null && GoRouterState.of(context).matchedLocation != '/auth') {
+      final BuildContext? context = _navigatorKey.currentContext;
+      if (context != null &&
+          GoRouterState.of(context).matchedLocation != '/auth') {
         context.goNamed('auth');
       }
     });
@@ -194,7 +202,7 @@ class AuthService extends _$AuthService {
 
     // Ajout de logs pour le débogage
     log('Date actuelle (UTC): $now');
-    log('Date d\'expiration (UTC): $endOfExpirationDay');
+    log("Date d'expiration (UTC): $endOfExpirationDay");
 
     return now.isAfter(endOfExpirationDay);
   }
@@ -209,16 +217,17 @@ class AuthService extends _$AuthService {
     String? licenseId,
     DateTime? expirationDate,
   }) {
-    log('Set user $licenseId authenticate state to $isAuthenticated and expiration date to $expirationDate');
+    log('Set user $licenseId authenticate state to $isAuthenticated and '
+        'expiration date to $expirationDate');
 
     // S'assurer que la date d'expiration est en UTC avant de la stocker
     final DateTime? localExpirationDate = expirationDate?.toUtc();
 
     if (localExpirationDate != null) {
-      log('Date d\'expiration convertie en UTC: $localExpirationDate');
+      log("Date d'expiration convertie en UTC: $localExpirationDate");
     }
 
-    state = AsyncData(
+    state = AsyncData<AuthState>(
       state.hasValue
           ? state.value!.copyWith(
               isUserAuthenticated: isAuthenticated,
@@ -250,9 +259,9 @@ class AuthService extends _$AuthService {
       _requestService.addRequest(
         Request(
           name: 'Login',
-          description: 'Connexion à l\'application',
+          description: "Connexion à l'application",
           destination: 'Serveur de connexion',
-          parameters: {
+          parameters: <String, String>{
             'licenseKey': licenseKey,
           },
           date: DateTime.now(),
@@ -281,7 +290,7 @@ class AuthService extends _$AuthService {
       }
 
       return loginResult.valid;
-    } catch (e) {
+    } on Exception catch (e) {
       log('Erreur lors de la connexion: $e');
       return false;
     }

@@ -3,15 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 
 part 'add_order_action.view_state.g.dart';
-    
+
 /// [AddOrderActionViewState]
 @CopyWith()
 class AddOrderActionViewState extends ViewStateAbs {
-  final DateTime? selectedDate;
-  final TextEditingController controller;
-  final GlobalKey<FormState> formKey;
-  final GlobalKey<FormFieldState<DateTime>> dateKey;
-
   /// Constructor
   /// @param [selectedDate] selected date
   /// @param [controller] controller
@@ -19,10 +14,10 @@ class AddOrderActionViewState extends ViewStateAbs {
   /// @param [dateKey] date key
   ///
   AddOrderActionViewState({
-    this.selectedDate,
     required this.controller,
     required this.formKey,
     required this.dateKey,
+    this.selectedDate,
   });
 
   /// Initial state
@@ -33,10 +28,22 @@ class AddOrderActionViewState extends ViewStateAbs {
         dateKey: GlobalKey<FormFieldState<DateTime>>(),
       );
 
+  /// Selected date
+  final DateTime? selectedDate;
+
+  /// Controller
+  final TextEditingController controller;
+
+  /// Form key
+  final GlobalKey<FormState> formKey;
+
+  /// Date key
+  final GlobalKey<FormFieldState<DateTime>> dateKey;
+
   /// Get props
   ///
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
         selectedDate,
       ];
 }

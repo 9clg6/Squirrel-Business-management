@@ -10,13 +10,13 @@ part 'business_type.service.g.dart';
 
 /// [BusinessTypeService]
 @Riverpod(
-  dependencies: [
+  dependencies: <Object>[
     HiveSecureStorageService,
   ],
 )
 class BusinessTypeService extends _$BusinessTypeService {
   /// Key for secure storage
-  static const String _businessTypeKey = "business_type";
+  static const String _businessTypeKey = 'business_type';
 
   /// Secure storage service
   late final HiveSecureStorageService _storageService;
@@ -37,7 +37,7 @@ class BusinessTypeService extends _$BusinessTypeService {
 
     return BusinessTypeState.initial(
       businessType: BusinessType.values.firstWhere(
-        (bT) => bT.name == businessType,
+        (BusinessType bT) => bT.name == businessType,
         orElse: () => BusinessType.service,
       ),
     );
@@ -51,16 +51,16 @@ class BusinessTypeService extends _$BusinessTypeService {
     switch (state.value?.businessType) {
       case BusinessType.service:
         type = BusinessType.shop;
-        state = AsyncData(
-          state.value!.copyWith(businessType: type),
+        state = AsyncData<BusinessTypeState>(
+          state.value!.copyWith(businessType: BusinessType.shop),
         );
-        break;
-      default:
+      case BusinessType.shop:
         type = BusinessType.service;
-        state = AsyncData(
-          state.value!.copyWith(businessType: type),
+        state = AsyncData<BusinessTypeState>(
+          state.value!.copyWith(businessType: BusinessType.service),
         );
-        break;
+      case null:
+        throw UnimplementedError();
     }
     _saveBusinessType(type);
   }
@@ -79,7 +79,8 @@ class BusinessTypeService extends _$BusinessTypeService {
   /// Get service type wording
   /// @param [key] key of the translation
   /// @param [type] business type
-  /// @return Associated and corresponding translation for associated service type
+  /// @return Associated and corresponding translation 
+  ///   for associated service type
   ///
   String getServiceTypeWording(
     String key, {
@@ -99,14 +100,14 @@ class BusinessTypeService extends _$BusinessTypeService {
   ///
   String _getServiceTypeWordingForService(String key) {
     switch (key) {
-      case "xName":
+      case 'xName':
         return LocaleKeys.shopName.tr();
-      case "bestX":
+      case 'bestX':
         return LocaleKeys.bestShops.tr();
-      case "x":
+      case 'x':
         return LocaleKeys.shop.tr();
       default:
-        return "";
+        return '';
     }
   }
 
@@ -116,14 +117,14 @@ class BusinessTypeService extends _$BusinessTypeService {
   ///
   String _getServiceTypeWordingForShop(String key) {
     switch (key) {
-      case "xName":
+      case 'xName':
         return LocaleKeys.productName.tr();
-      case "bestX":
+      case 'bestX':
         return LocaleKeys.bestProducts.tr();
-      case "x":
+      case 'x':
         return LocaleKeys.product.tr();
       default:
-        return "";
+        return '';
     }
   }
 }

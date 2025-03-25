@@ -9,11 +9,11 @@ part of 'auth.state.dart';
 abstract class _$AuthStateCWProxy {
   AuthState isUserAuthenticated(bool isUserAuthenticated);
 
+  AuthState isInitialized(bool isInitialized);
+
   AuthState licenseId(String? licenseId);
 
   AuthState expirationDate(DateTime? expirationDate);
-
-  AuthState isInitialized(bool isInitialized);
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `AuthState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -23,9 +23,9 @@ abstract class _$AuthStateCWProxy {
   /// ````
   AuthState call({
     bool? isUserAuthenticated,
+    bool? isInitialized,
     String? licenseId,
     DateTime? expirationDate,
-    bool? isInitialized,
   });
 }
 
@@ -40,15 +40,15 @@ class _$AuthStateCWProxyImpl implements _$AuthStateCWProxy {
       this(isUserAuthenticated: isUserAuthenticated);
 
   @override
+  AuthState isInitialized(bool isInitialized) =>
+      this(isInitialized: isInitialized);
+
+  @override
   AuthState licenseId(String? licenseId) => this(licenseId: licenseId);
 
   @override
   AuthState expirationDate(DateTime? expirationDate) =>
       this(expirationDate: expirationDate);
-
-  @override
-  AuthState isInitialized(bool isInitialized) =>
-      this(isInitialized: isInitialized);
 
   @override
 
@@ -60,9 +60,9 @@ class _$AuthStateCWProxyImpl implements _$AuthStateCWProxy {
   /// ````
   AuthState call({
     Object? isUserAuthenticated = const $CopyWithPlaceholder(),
+    Object? isInitialized = const $CopyWithPlaceholder(),
     Object? licenseId = const $CopyWithPlaceholder(),
     Object? expirationDate = const $CopyWithPlaceholder(),
-    Object? isInitialized = const $CopyWithPlaceholder(),
   }) {
     return AuthState(
       isUserAuthenticated:
@@ -71,6 +71,11 @@ class _$AuthStateCWProxyImpl implements _$AuthStateCWProxy {
               ? _value.isUserAuthenticated
               // ignore: cast_nullable_to_non_nullable
               : isUserAuthenticated as bool,
+      isInitialized:
+          isInitialized == const $CopyWithPlaceholder() || isInitialized == null
+              ? _value.isInitialized
+              // ignore: cast_nullable_to_non_nullable
+              : isInitialized as bool,
       licenseId: licenseId == const $CopyWithPlaceholder()
           ? _value.licenseId
           // ignore: cast_nullable_to_non_nullable
@@ -79,11 +84,6 @@ class _$AuthStateCWProxyImpl implements _$AuthStateCWProxy {
           ? _value.expirationDate
           // ignore: cast_nullable_to_non_nullable
           : expirationDate as DateTime?,
-      isInitialized:
-          isInitialized == const $CopyWithPlaceholder() || isInitialized == null
-              ? _value.isInitialized
-              // ignore: cast_nullable_to_non_nullable
-              : isInitialized as bool,
     );
   }
 }

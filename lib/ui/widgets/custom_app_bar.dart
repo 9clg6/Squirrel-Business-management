@@ -6,6 +6,7 @@ import 'package:squirrel/domain/service/business_type.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
+import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -23,18 +24,18 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final authState = ref.watch(authServiceProvider);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final AsyncValue<AuthState> authState = ref.watch(authServiceProvider);
 
     final Duration timeRemain =
         authState.value?.expirationDate?.difference(DateTime.now()) ??
-            const Duration(days: 0);
+            Duration.zero;
     final int daysRemain = timeRemain.inDays;
     final int hoursRemain = timeRemain.inHours % 24;
     final int minutesRemain = timeRemain.inMinutes % 60;
 
     switch (authState) {
-      case AsyncData(value: AuthState()):
+      case AsyncData<AuthState>(value: AuthState()):
         return AppBar(
           elevation: 0,
           leadingWidth: 200,
@@ -52,21 +53,20 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
           backgroundColor: colorScheme.surfaceDim,
           surfaceTintColor: Colors.transparent,
           foregroundColor: colorScheme.onSurface,
-          actions: [
+          actions: <Widget>[
             TextVariant(
               LocaleKeys.yourLicenseWillExpireIn.tr(
-                args: [
+                args: <String>[
                   daysRemain.toString(),
                   hoursRemain.toString(),
                   minutesRemain.toString(),
                 ],
               ),
-              variantType: TextVariantType.bodyMedium,
               color: colorScheme.onSurface,
               fontWeight: FontWeight.bold,
             ),
             const Gap(22),
-            if (daysRemain <= 0) ...[
+            if (daysRemain <= 0) ...<Widget>[
               TextVariant(
                 LocaleKeys.contactYourProviderToRenew.tr(),
                 variantType: TextVariantType.bodySmall,
@@ -77,12 +77,15 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ],
             const Gap(22),
             Consumer(
-              builder: (context, ref, child) {
-                final bState = ref.watch(businessTypeServiceProvider);
-                final bVm = ref.read(businessTypeServiceProvider.notifier);
+              builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                final AsyncValue<BusinessTypeState> bState =
+                    ref.watch(businessTypeServiceProvider);
+                final BusinessTypeService bVm =
+                    ref.read(businessTypeServiceProvider.notifier);
 
                 return switch (bState) {
-                  AsyncData(value: BusinessTypeState()) => SizedBox(
+                  AsyncData<BusinessTypeState>(value: BusinessTypeState()) =>
+                    SizedBox(
                       height: 32,
                       child: ToggleButtons(
                         borderRadius: BorderRadius.circular(10),
@@ -90,14 +93,14 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                         borderWidth: 1,
                         fillColor: colorScheme.primary,
                         selectedColor: colorScheme.onPrimary,
-                        isSelected: [
+                        isSelected: <bool>[
                           bState.value.businessType == BusinessType.service,
                           bState.value.businessType != BusinessType.service,
                         ],
                         onPressed: (_) => bVm.invertServiceType(),
-                        children: [
+                        children: <Row>[
                           Row(
-                            children: [
+                            children: <Widget>[
                               if (bState.value.businessType ==
                                   BusinessType.service)
                                 Icon(
@@ -107,14 +110,13 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                                 ),
                               const Gap(10),
                               TextVariant(
-                                "Mode service",
-                                variantType: TextVariantType.bodyMedium,
+                                'Mode service',
                                 color: colorScheme.onSurface,
-                              )
+                              ),
                             ],
                           ),
                           Row(
-                            children: [
+                            children: <Widget>[
                               if (bState.value.businessType ==
                                   BusinessType.shop)
                                 Icon(
@@ -124,18 +126,20 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                                 ),
                               const Gap(10),
                               TextVariant(
-                                "Mode boutique",
-                                variantType: TextVariantType.bodyMedium,
+                                'Mode boutique',
                                 color: colorScheme.onSurface,
-                              )
+                              ),
                             ],
                           ),
                         ]
-                            .map((e) => Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12),
-                                  child: e,
-                                ))
+                            .map(
+                              (Row e) => Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                ),
+                                child: e,
+                              ),
+                            )
                             .toList(),
                       ),
                     ),
@@ -145,16 +149,16 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
             ),
             const Gap(22),
             Consumer(
-              builder: (context, ref, child) {
-                final requestServiceNotifier =
+              builder: (BuildContext context, WidgetRef ref, Widget? child) {
+                final RequestService requestServiceNotifier =
                     ref.read(requestServiceProvider.notifier);
-                final requestService = ref.watch(requestServiceProvider);
+                final RequestState requestService =
+                    ref.watch(requestServiceProvider);
 
                 return FilledButton.icon(
                   onPressed: requestServiceNotifier.toggleRequest,
                   label: TextVariant(
                     LocaleKeys.requestWeb.tr(),
-                    variantType: TextVariantType.bodyMedium,
                   ),
                   icon: Icon(
                     Icons.language,
@@ -169,13 +173,12 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
                     overlayColor: colorScheme.secondary,
                     side: BorderSide(
                       color: colorScheme.outline.withValues(alpha: .5),
-                      width: 1,
                     ),
                   ),
                 );
               },
             ),
-            const Gap(10)
+            const Gap(10),
           ],
         );
       default:

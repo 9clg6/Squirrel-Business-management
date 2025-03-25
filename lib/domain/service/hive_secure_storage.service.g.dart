@@ -7,9 +7,10 @@ part of 'hive_secure_storage.service.dart';
 // **************************************************************************
 
 String _$hiveSecureStorageServiceHash() =>
-    r'd73fc656d29371fc1a6403f61dc2a811a0d73ed2';
+    r'a43345e506b5fce2ca830d15237ab1740b15ebf0';
 
-/// Use it when you want to save secured data that won't be backed up by the system.
+/// Use it when you want to save secured data that won't
+///  be backed up by the system.
 ///
 /// Copied from [HiveSecureStorageService].
 @ProviderFor(HiveSecureStorageService)

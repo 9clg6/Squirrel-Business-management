@@ -10,16 +10,6 @@ part 'client.entity.g.dart';
 @CopyWith()
 @JsonSerializable()
 class Client with EquatableMixin, SerializableMixin {
-  final String id;
-  final String name;
-  final String? socialsName;
-  final double orderTotalAmount;
-  final double commissionTotalAmount;
-  final int orderQuantity;
-  final int sponsorshipQuantity;
-  final DateTime? lastOrderDate;
-  final DateTime? firstOrderDate;
-
   /// Constructor
   /// @param id: String
   /// @param name: String
@@ -32,8 +22,8 @@ class Client with EquatableMixin, SerializableMixin {
   /// @param firstOrderDate: DateTime?
   ///
   Client({
-    String? id,
     required this.name,
+    String? id,
     this.socialsName,
     this.orderTotalAmount = 0,
     this.commissionTotalAmount = 0,
@@ -43,10 +33,44 @@ class Client with EquatableMixin, SerializableMixin {
     this.firstOrderDate,
   }) : id = id ?? const Uuid().v4();
 
+  /// From json
+  /// @param [json] json
+  /// @return [Client] client
+  ///
+  @override
+  factory Client.fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
+
+  /// Id
+  final String id;
+
+  /// Name
+  final String name;
+
+  /// Socials name
+  final String? socialsName;
+
+  /// Order total amount
+  final double orderTotalAmount;
+
+  /// Commission total amount
+  final double commissionTotalAmount;
+
+  /// Order quantity
+  final int orderQuantity;
+
+  /// Sponsorship quantity
+  final int sponsorshipQuantity;
+
+  /// Last order date
+  final DateTime? lastOrderDate;
+
+  /// First order date
+  final DateTime? firstOrderDate;
+
   /// Props
   ///
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
         id,
         name,
         socialsName,
@@ -63,11 +87,4 @@ class Client with EquatableMixin, SerializableMixin {
   ///
   @override
   Map<String, dynamic> toJson() => _$ClientToJson(this);
-
-  /// From json
-  /// @param [json] json
-  /// @return [Client] client
-  ///
-  @override
-  factory Client.fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
 }

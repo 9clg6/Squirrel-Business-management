@@ -9,12 +9,6 @@ part 'action.entity.g.dart';
 @JsonSerializable()
 @CopyWith()
 class OrderAction with SerializableMixin, EquatableMixin {
-  /// Action date
-  final DateTime date;
-
-  /// Action description
-  final String description;
-
   /// Action
   /// @param [date] date
   /// @param [description] description
@@ -24,12 +18,6 @@ class OrderAction with SerializableMixin, EquatableMixin {
     required this.description,
   });
 
-  /// To json
-  /// @return [Map<String, dynamic>] json
-  ///
-  @override
-  Map<String, dynamic> toJson() => _$OrderActionToJson(this);
-
   /// From json
   /// @param [json] json
   /// @return [OrderAction] order action
@@ -38,11 +26,23 @@ class OrderAction with SerializableMixin, EquatableMixin {
   factory OrderAction.fromJson(Map<String, dynamic> json) =>
       _$OrderActionFromJson(json);
 
+  /// Action date
+  final DateTime date;
+
+  /// Action description
+  final String description;
+
+  /// To json
+  /// @return [Map<String, dynamic>] json
+  ///
+  @override
+  Map<String, dynamic> toJson() => _$OrderActionToJson(this);
+
   /// Get props
   /// @return [List<Object?>] props
   ///
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
         date,
         description,
       ];

@@ -6,7 +6,7 @@ part of 'request_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$requestServiceHash() => r'cbb0481d8c54120ccb6bd2587049abc290dea57f';
+String _$requestServiceHash() => r'15eaeb427100c2b075b5c9c1e958b26442dae20e';
 
 /// [RequestService]
 ///

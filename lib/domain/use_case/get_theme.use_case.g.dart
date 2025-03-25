@@ -6,7 +6,7 @@ part of 'get_theme.use_case.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getThemeUseCaseHash() => r'b84f8a4d9d29ceaa5486e9144b4902c183912d4c';
+String _$getThemeUseCaseHash() => r'3207b201fb195fca6c163b4ca69b62fc0957bd5f';
 
 /// [GetThemeUseCase]
 ///

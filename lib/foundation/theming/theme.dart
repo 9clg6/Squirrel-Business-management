@@ -1,10 +1,18 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
 
+/// Material theme
 class MaterialTheme {
-  final TextTheme textTheme;
-
+  /// Constructor
+  /// @param [textTheme] text theme
+  ///
   const MaterialTheme(this.textTheme);
 
+  /// Text theme
+  final TextTheme textTheme;
+
+  /// Light scheme
+  /// @return [ColorScheme] light scheme
+  ///
   static ColorScheme lightScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
@@ -56,10 +64,16 @@ class MaterialTheme {
     );
   }
 
+  /// Light theme
+  /// @return [ThemeData] light theme
+  ///
   ThemeData light() {
     return theme(lightScheme());
   }
 
+  /// Light medium contrast scheme
+  /// @return [ColorScheme] light medium contrast scheme
+  ///
   static ColorScheme lightMediumContrastScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
@@ -111,10 +125,16 @@ class MaterialTheme {
     );
   }
 
+  /// Light medium contrast theme
+  /// @return [ThemeData] light medium contrast theme
+  ///
   ThemeData lightMediumContrast() {
     return theme(lightMediumContrastScheme());
   }
 
+  /// Light high contrast scheme
+  /// @return [ColorScheme] light high contrast scheme
+  ///
   static ColorScheme lightHighContrastScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
@@ -166,10 +186,16 @@ class MaterialTheme {
     );
   }
 
+  /// Light high contrast theme
+  /// @return [ThemeData] light high contrast theme
+  ///
   ThemeData lightHighContrast() {
     return theme(lightHighContrastScheme());
   }
 
+  /// Dark scheme
+  /// @return [ColorScheme] dark scheme
+  ///
   static ColorScheme darkScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
@@ -209,10 +235,16 @@ class MaterialTheme {
     );
   }
 
+  /// Dark theme
+  /// @return [ThemeData] dark theme
+  ///
   ThemeData dark() {
     return theme(darkScheme());
   }
 
+  /// Dark medium contrast scheme
+  /// @return [ColorScheme] dark medium contrast scheme
+  ///
   static ColorScheme darkMediumContrastScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
@@ -264,10 +296,16 @@ class MaterialTheme {
     );
   }
 
+  /// Dark medium contrast theme
+  /// @return [ThemeData] dark medium contrast theme
+  ///
   ThemeData darkMediumContrast() {
     return theme(darkMediumContrastScheme());
   }
 
+  /// Dark high contrast scheme
+  /// @return [ColorScheme] dark high contrast scheme
+  ///
   static ColorScheme darkHighContrastScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
@@ -319,10 +357,17 @@ class MaterialTheme {
     );
   }
 
+  /// Dark high contrast theme
+  /// @return [ThemeData] dark high contrast theme
+  ///
   ThemeData darkHighContrast() {
     return theme(darkHighContrastScheme());
   }
 
+  /// Theme
+  /// @param [colorScheme] color scheme
+  /// @return [ThemeData] theme
+  ///
   ThemeData theme(ColorScheme colorScheme) => ThemeData(
         useMaterial3: true,
         brightness: colorScheme.brightness,
@@ -392,18 +437,24 @@ class MaterialTheme {
         ),
       );
 
-  List<ExtendedColor> get extendedColors => [];
+  /// Extended colors
+  /// @return [List<ExtendedColor>] extended colors
+  ///
+  List<ExtendedColor> get extendedColors => <ExtendedColor>[];
 }
 
+/// Extended color
 class ExtendedColor {
-  final Color seed, value;
-  final ColorFamily light;
-  final ColorFamily lightHighContrast;
-  final ColorFamily lightMediumContrast;
-  final ColorFamily dark;
-  final ColorFamily darkHighContrast;
-  final ColorFamily darkMediumContrast;
-
+  /// Constructor
+  /// @param [seed] seed
+  /// @param [value] value
+  /// @param [light] light
+  /// @param [lightHighContrast] light high contrast
+  /// @param [lightMediumContrast] light medium contrast
+  /// @param [dark] dark
+  /// @param [darkHighContrast] dark high contrast
+  /// @param [darkMediumContrast] dark medium contrast
+  ///
   const ExtendedColor({
     required this.seed,
     required this.value,
@@ -414,9 +465,40 @@ class ExtendedColor {
     required this.darkHighContrast,
     required this.darkMediumContrast,
   });
+
+  /// Seed
+  final Color seed;
+
+  /// Value
+  final Color value;
+
+  /// Light
+  final ColorFamily light;
+
+  /// Light high contrast
+  final ColorFamily lightHighContrast;
+
+  /// Light medium contrast
+  final ColorFamily lightMediumContrast;
+
+  /// Dark
+  final ColorFamily dark;
+
+  /// Dark high contrast
+  final ColorFamily darkHighContrast;
+
+  /// Dark medium contrast
+  final ColorFamily darkMediumContrast;
 }
 
+/// Color family
 class ColorFamily {
+  /// Constructor
+  /// @param [color] color
+  /// @param [onColor] on color
+  /// @param [colorContainer] color container
+  /// @param [onColorContainer] on color container
+  ///
   const ColorFamily({
     required this.color,
     required this.onColor,
@@ -424,8 +506,15 @@ class ColorFamily {
     required this.onColorContainer,
   });
 
+  /// Color
   final Color color;
+
+  /// On color
   final Color onColor;
+
+  /// Color container
   final Color colorContainer;
+
+  /// On color container
   final Color onColorContainer;
 }

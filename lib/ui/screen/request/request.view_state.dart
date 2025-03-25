@@ -6,9 +6,6 @@ part 'request.view_state.g.dart';
 /// [RequestViewState]
 @CopyWith()
 class RequestViewState extends ViewStateAbs {
-  /// Loading state
-  final bool loading;
-
   /// Constructor
   /// @param loading: Whether screen is loading
   ///
@@ -20,7 +17,12 @@ class RequestViewState extends ViewStateAbs {
   ///
   factory RequestViewState.initial() => RequestViewState(loading: false);
 
+  /// Loading state
+  final bool loading;
+
   /// Copy with
   @override
-  List<Object?> get props => [loading];
+  List<Object?> get props => <Object?>[
+        loading,
+      ];
 }

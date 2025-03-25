@@ -35,9 +35,9 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final clients = ref.watch(clientServiceProvider);
-    
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final AsyncValue<ClientState> clients = ref.watch(clientServiceProvider);
+
     return Dialog(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -45,13 +45,12 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
           width: 400,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: switch (clients) {
-              AsyncData(:final ClientState value) => [
+              AsyncData<ClientState>(:final ClientState value) => <Widget>[
                   TextVariant(
                     widget.isSponsor
-                        ? "Sélectionner un parrain"
-                        : "Sélectionner un client",
+                        ? 'Sélectionner un parrain'
+                        : 'Sélectionner un client',
                     variantType: TextVariantType.titleMedium,
                   ),
                   const Gap(6),
@@ -66,10 +65,12 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
                     color: colorScheme.outline.withValues(alpha: 0.5),
                   ),
                   const Gap(12),
-                  ...value.clients.map((client) => _ClientItem(
-                        client: client,
-                        isLast: value.clients.last == client,
-                      )),
+                  ...value.clients.map(
+                    (Client client) => _ClientItem(
+                      client: client,
+                      isLast: value.clients.last == client,
+                    ),
+                  ),
                   const Gap(12),
                   InkWell(
                     onTap: () {
@@ -86,20 +87,21 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
                         vertical: 12,
                       ),
                       child: TextVariant(
-                        "Aucun",
-                        variantType: TextVariantType.bodyMedium,
+                        'Aucun',
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                   ),
                 ],
-              AsyncError(:final error) => [
-                  Text(error.toString()),
+              AsyncError<ClientState>(:final Object error) => <Widget>[
+                  TextVariant(
+                    error.toString(),
+                  ),
                 ],
-              AsyncLoading() => [
+              AsyncLoading<ClientState>() => <Widget>[
                   const CircularProgressIndicator(),
                 ],
-              AsyncValue() => [
+              AsyncValue<ClientState>() => <Widget>[
                   const Text('Aucun client trouvé'),
                 ],
             },
@@ -145,7 +147,7 @@ class _ClientItemState extends State<_ClientItem> {
   ///
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: () {
         context.pop(widget.client);
@@ -154,7 +156,7 @@ class _ClientItemState extends State<_ClientItem> {
         width: double.infinity,
         child: Row(
           mainAxisSize: MainAxisSize.min,
-          children: [
+          children: <Widget>[
             Container(
               constraints: const BoxConstraints(minWidth: 200, maxWidth: 400),
               padding: const EdgeInsets.all(16),

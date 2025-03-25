@@ -9,7 +9,7 @@ part 'request_service.g.dart';
 /// [RequestService]
 @Riverpod(
   keepAlive: true,
-  dependencies: [],
+  dependencies: <Object>[],
 )
 class RequestService extends _$RequestService {
   /// Build
@@ -25,7 +25,7 @@ class RequestService extends _$RequestService {
   ///
   void addRequest(Request request) {
     state = state.copyWith(
-      requests: [
+      requests: <Request>[
         ...state.requests,
         request,
       ],

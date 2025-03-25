@@ -7,6 +7,7 @@ import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
+import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/order_details/order_details.view_state.dart';
@@ -16,7 +17,7 @@ part 'order_details.view_model.g.dart';
 /// [OrderDetailsViewModel]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     OrderService,
     ClientService,
   ],
@@ -40,10 +41,10 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
       _isInitialized = true;
     }
 
-    ref.listen(orderServiceProvider, (_, next) {
+    ref.listen(orderServiceProvider, (_, AsyncValue<OrderState> next) {
       if (!_isInitialized) return;
-      final order = next.value!.orders.firstWhereOrNull(
-        (e) => e.id == o.id,
+      final Order? order = next.value!.orders.firstWhereOrNull(
+        (Order e) => e.id == o.id,
       );
       if (order == null) return;
 
@@ -60,13 +61,10 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   Client getClientById(String id) {
     try {
       return _clientService.getClientById(id);
-    } catch (e) {
+    } on Exception catch (_) {
       // Si aucun client n'est trouvé, retourner un client par défaut
       return Client(
-        name: "Client inconnu",
-        orderQuantity: 0,
-        orderTotalAmount: 0,
-        commissionTotalAmount: 0,
+        name: 'Client inconnu',
       );
     }
   }
@@ -125,7 +123,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   ///
   Future<void> editOrder() async {
     final Order? order = await _dialogService.showEditOrderDialog(
-      order: state.order!,
+      order: state.order,
     );
 
     if (order != null) {

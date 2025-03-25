@@ -7,26 +7,26 @@ part 'client.state.g.dart';
 /// [ClientState]
 @CopyWith()
 class ClientState with EquatableMixin {
-  /// Clients
-  final List<Client> clients;
-
   /// Constructor
   /// @param clients: List<Client>
   ///
   ClientState({
-    this.clients = const [],
+    this.clients = const <Client>[],
   });
 
   /// Initial
   /// @param clients: List<Client>
   ///
   ClientState.initial({
-    this.clients = const [],
+    this.clients = const <Client>[],
   });
+
+  /// Clients
+  final List<Client> clients;
 
   /// Props
   @override
-  List<Object?> get props => [
+  List<Object?> get props => <Object?>[
         clients,
       ];
 }

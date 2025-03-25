@@ -17,20 +17,20 @@ part 'order.service.g.dart';
 /// [OrderService]
 @Riverpod(
   keepAlive: true,
-  dependencies: [
+  dependencies: <Object>[
     HiveSecureStorageService,
     ClientService,
   ],
 )
 class OrderService extends _$OrderService {
   /// Hive service
-  late final StorageInterface _hiveService;
+  late final StorageInterface<dynamic> _hiveService;
 
   /// Client service
   late final ClientService _clientService;
 
   /// Orders key
-  static const ordersKey = 'orders';
+  static const String ordersKey = 'orders';
 
   /// Is initialized
   bool _isInitialized = false;
@@ -46,7 +46,7 @@ class OrderService extends _$OrderService {
       _clientService = ref.watch(clientServiceProvider.notifier);
       _isInitialized = true;
     }
-    return await _loadOrders();
+    return _loadOrders();
   }
 
   /// Load orders
@@ -56,10 +56,13 @@ class OrderService extends _$OrderService {
     log('[OrderService] Loading orders');
 
     try {
-      final String? o = await _hiveService.get(ordersKey);
+      final String? o = await _hiveService.get(ordersKey) as String?;
       if (o != null) {
-        final orders = jsonDecode(o) as List;
-        final ordersList = orders.map((e) => Order.fromJson(e)).toList();
+        final List<dynamic> orders = jsonDecode(o) as List<dynamic>;
+
+        final List<Order> ordersList = orders
+            .map((dynamic e) => Order.fromJson(e as Map<String, dynamic>))
+            .toList();
 
         return OrderState.initial(
           orders: ordersList,
@@ -68,15 +71,15 @@ class OrderService extends _$OrderService {
       } else {
         // Mettre à jour l'état même si aucune donnée n'est chargée
         return OrderState.initial(
-          orders: [],
+          orders: <Order>[],
           isLoading: false,
         );
       }
-    } catch (e) {
+    } on Exception catch (e) {
       // En cas d'erreur, marquer comme non chargement et journaliser l'erreur
       log('[OrderService] Error loading orders: $e');
       return OrderState.initial(
-        orders: [],
+        orders: <Order>[],
         isLoading: false,
       );
     }
@@ -91,7 +94,7 @@ class OrderService extends _$OrderService {
     if (os.orders.isEmpty) return;
     _hiveService.set(
       ordersKey,
-      jsonEncode(os.orders.map((e) => e.toJson()).toList()),
+      jsonEncode(os.orders.map((Order e) => e.toJson()).toList()),
     );
   }
 
@@ -101,7 +104,7 @@ class OrderService extends _$OrderService {
   ///
   int _findOrder(Order order) {
     log('findOrder');
-    return state.value!.orders.indexWhere((o) => o.id == order.id);
+    return state.value!.orders.indexWhere((Order o) => o.id == order.id);
   }
 
   /// Method to update an order
@@ -114,16 +117,16 @@ class OrderService extends _$OrderService {
   ) {
     if (indexOrder == -1) return;
 
-    final updatedOrders = List<Order>.from(state.value!.orders)
+    final List<Order> updatedOrders = List<Order>.from(state.value!.orders)
       ..replaceRange(
         indexOrder,
         indexOrder + 1,
-        [updatedOrder],
+        <Order>[updatedOrder],
       );
 
     log('[OrderService] Updated orders');
 
-    state = AsyncData(
+    state = AsyncData<OrderState>(
       state.value!.copyWith(
         orders: updatedOrders,
       ),
@@ -137,7 +140,7 @@ class OrderService extends _$OrderService {
   /// @status status
   ///
   void updateOrderStatus(Order order, OrderStatus status) {
-    final indexOrder = _findOrder(order);
+    final int indexOrder = _findOrder(order);
     if (indexOrder == -1) {
       log('[OrderService] Order not found: ${order.id}');
       return;
@@ -148,8 +151,9 @@ class OrderService extends _$OrderService {
       return; // Éviter les mises à jour inutiles
     }
 
-    log('[OrderService] Updating status: ${order.status.name} -> ${status.name} for order ${order.shopName}');
-    final updatedOrder = order.copyWith(status: status);
+    log('[OrderService] Updating status: ${order.status.name}'
+        ' -> ${status.name} for order ${order.shopName}');
+    final Order updatedOrder = order.copyWith(status: status);
 
     _updateOrder(updatedOrder, indexOrder);
   }
@@ -159,10 +163,10 @@ class OrderService extends _$OrderService {
   /// @param [order] order
   ///
   void updateOrderPriority(Order order) {
-    final nextPriority =
+    final Priority nextPriority =
         Priority.values[(order.priority.index + 1) % Priority.values.length];
 
-    final updatedOrder = order.copyWith(
+    final Order updatedOrder = order.copyWith(
       priority: nextPriority,
     );
     log('[OrderService] Updated priority: ${nextPriority.name}');
@@ -178,11 +182,11 @@ class OrderService extends _$OrderService {
   /// @param [orderAction] order action
   ///
   void addOrderAction(Order order, OrderAction orderAction) {
-    final indexOrder = _findOrder(order);
+    final int indexOrder = _findOrder(order);
     if (indexOrder == -1) return;
 
-    final updatedOrder = order.copyWith(
-      actions: [...order.actions, orderAction],
+    final Order updatedOrder = order.copyWith(
+      actions: <OrderAction>[...order.actions, orderAction],
     );
 
     log('[OrderService] Added action: ${orderAction.date}');
@@ -195,14 +199,14 @@ class OrderService extends _$OrderService {
   /// @param [order] order
   ///
   void deleteOrderAction(OrderAction action, Order order) {
-    final indexOrder = _findOrder(order);
+    final int indexOrder = _findOrder(order);
     if (indexOrder == -1) {
       log('[OrderService] Order not found: ${order.id}');
       return;
     }
 
-    final updatedOrder = order.copyWith(
-      actions: order.actions.where((e) => e != action).toList(),
+    final Order updatedOrder = order.copyWith(
+      actions: order.actions.where((OrderAction e) => e != action).toList(),
     );
 
     log('[OrderService] Deleted action: ${action.date}');
@@ -214,7 +218,7 @@ class OrderService extends _$OrderService {
   /// @param [order] order
   ///
   void deleteOrder(Order order) {
-    final indexOrder = _findOrder(order);
+    final int indexOrder = _findOrder(order);
     if (indexOrder == -1) {
       log('[OrderService] Order not found: ${order.id}');
       return;
@@ -222,10 +226,10 @@ class OrderService extends _$OrderService {
 
     log('[OrderService] Deleted order: ${order.shopName}');
 
-    state = AsyncData(
+    state = AsyncData<OrderState>(
       state.value!.copyWith(
-        orders: [
-          ...state.value!.orders.where((e) => e != order),
+        orders: <Order>[
+          ...state.value!.orders.where((Order e) => e != order),
         ],
       ),
     );
@@ -235,13 +239,14 @@ class OrderService extends _$OrderService {
   /// @param [order] order
   ///
   void updateOrder(Order order) {
-    final indexOrder = _findOrderById(order.id);
+    final int indexOrder = _findOrderById(order.id);
     if (indexOrder == -1) {
       log('[OrderService] Order not found: ${order.id}');
       return;
     }
 
-    // Récupérer le client correspondant au clientName, ou utiliser celui déjà présent
+    // Récupérer le client correspondant au clientName, ou utiliser
+    // celui déjà présent
     Client? clientToUse;
 
     // Si le nom du client a changé, chercher le nouveau client par son nom
@@ -259,12 +264,13 @@ class OrderService extends _$OrderService {
         log('[OrderService] Found existing client: ${clientToUse.name}');
       }
     } else {
-      // Utiliser le client actuel, mais s'assurer d'avoir sa version la plus récente
+      // Utiliser le client actuel, mais s'assurer d'avoir sa
+      // version la plus récente
       clientToUse = _clientService.getClientById(order.client!.id);
     }
 
     // Mettre à jour la commande avec le client associé
-    final orderWithUpdatedClient = order.copyWith(
+    final Order orderWithUpdatedClient = order.copyWith(
       client: clientToUse,
     );
 
@@ -273,7 +279,8 @@ class OrderService extends _$OrderService {
       indexOrder,
     );
 
-    log('[OrderService] Updated order for client: ${orderWithUpdatedClient.clientName}');
+    log('[OrderService] Updated order for'
+        ' client: ${orderWithUpdatedClient.clientName}');
 
     // Mettre à jour les statistiques du client
     _clientService.updateClientWithOrder(
@@ -289,7 +296,7 @@ class OrderService extends _$OrderService {
   /// @return [bool] if the order is pinned
   ///
   int _findOrderById(String id) {
-    final index = state.value!.orders.indexWhere((o) => o.id == id);
+    final int index = state.value!.orders.indexWhere((Order o) => o.id == id);
     if (index == -1) {
       log('[OrderService] Order not found: $id');
     }
@@ -317,9 +324,9 @@ class OrderService extends _$OrderService {
     log('[OrderService] Updated client: ${client.name}');
     log('[OrderService] Added order: ${order.shopName}');
 
-    state = AsyncData(
+    state = AsyncData<OrderState>(
       state.value!.copyWith(
-        orders: [
+        orders: <Order>[
           ...state.value!.orders,
           order.copyWith(client: client),
         ],

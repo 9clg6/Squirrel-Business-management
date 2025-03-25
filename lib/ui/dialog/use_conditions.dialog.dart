@@ -5,7 +5,11 @@ import 'package:go_router/go_router.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
+/// Use conditions dialog
 class UseConditionsDialog extends StatelessWidget {
+  /// Constructor
+  /// @param [key] key
+  ///
   const UseConditionsDialog({super.key});
 
   @override
@@ -21,28 +25,25 @@ class UseConditionsDialog extends StatelessWidget {
           vertical: 40,
         ),
         child: Row(
-          children: [
+          children: <Widget>[
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: <Widget>[
                   TextVariant(
                     LocaleKeys.useConditions1.tr(),
-                    variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
                   const Gap(20),
                   TextVariant(
                     LocaleKeys.useConditions2.tr(),
-                    variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
                   const Gap(20),
                   TextVariant(
                     LocaleKeys.useConditions3.tr(),
-                    variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
                 ],
@@ -53,37 +54,33 @@ class UseConditionsDialog extends StatelessWidget {
               child: Column(
                 mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
+                children: <Widget>[
                   TextVariant(
                     LocaleKeys.useConditions4.tr(),
-                    variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
                   const Gap(20),
                   TextVariant(
                     LocaleKeys.useConditions5.tr(),
-                    variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
                   const Gap(20),
                   TextVariant(
                     LocaleKeys.useConditions6.tr(),
-                    variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
                   const Gap(20),
                   TextVariant(
                     LocaleKeys.useConditions7.tr(),
-                    variantType: TextVariantType.bodyMedium,
                     textAlign: TextAlign.start,
                   ),
                 ],
               ),
-            )
+            ),
           ],
         ),
       ),
-      actions: [
+      actions: <Widget>[
         Center(
           child: _CountdownTimer(
             onCountdownComplete: () {},
@@ -95,11 +92,11 @@ class UseConditionsDialog extends StatelessWidget {
 }
 
 class _CountdownTimer extends StatefulWidget {
-  final VoidCallback onCountdownComplete;
 
   const _CountdownTimer({
     required this.onCountdownComplete,
   });
+  final VoidCallback onCountdownComplete;
 
   @override
   State<_CountdownTimer> createState() => _CountdownTimerState();
@@ -118,7 +115,7 @@ class _CountdownTimerState extends State<_CountdownTimer> {
 
   void _startCountdown() {
     Future.doWhile(() async {
-      await Future.delayed(const Duration(seconds: 1));
+      await Future<void>.delayed(const Duration(seconds: 1));
       if (_countdown.value > 0) {
         _countdown.value--;
         return true;
@@ -139,24 +136,20 @@ class _CountdownTimerState extends State<_CountdownTimer> {
   Widget build(BuildContext context) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
+      children: <Widget>[
         ValueListenableBuilder<int>(
           valueListenable: _countdown,
-          builder: (context, value, child) {
+          builder: (BuildContext context, int value, Widget? child) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                if (!_isCountdownComplete) ...[
+              children: <Widget>[
+                if (!_isCountdownComplete) ...<Widget>[
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
+                    children: <Widget>[
                       CircularProgressIndicator(
                         value: value / 30,
                         backgroundColor: Colors.grey[300],
-                        strokeWidth: 4,
                         strokeAlign: -2,
                       ),
                       const Gap(16),
@@ -169,7 +162,6 @@ class _CountdownTimerState extends State<_CountdownTimer> {
                       const Gap(16),
                       const TextVariant(
                         'Veuillez patienter avant de pouvoir accepter',
-                        variantType: TextVariantType.bodyMedium,
                       ),
                     ],
                   ),
@@ -185,8 +177,7 @@ class _CountdownTimerState extends State<_CountdownTimer> {
             ),
             onPressed: () => context.pop(true),
             child: const TextVariant(
-              'J\'accepte',
-              variantType: TextVariantType.bodyMedium,
+              "J'accepte",
             ),
           ),
       ],

@@ -10,7 +10,7 @@ part 'secure_storage.service.g.dart';
 /// [SecureStorageService]
 @Riverpod(
   keepAlive: true,
-  dependencies: [],
+  dependencies: <Object>[],
 )
 class SecureStorageService extends _$SecureStorageService {
   /// Encrypted key
@@ -19,10 +19,8 @@ class SecureStorageService extends _$SecureStorageService {
   bool _isInitialized = false;
 
   final FlutterSecureStorage _storage = const FlutterSecureStorage(
-    wOptions: WindowsOptions(),
     mOptions: MacOsOptions(
       synchronizable: true,
-      accessibility: KeychainAccessibility.unlocked,
       accountName: 'squirrel_app_keychain',
     ),
   );
@@ -41,9 +39,9 @@ class SecureStorageService extends _$SecureStorageService {
 
   Future<void> _initialize() async {
     if (_isInitialized) return;
-    
+
     log('🔌 Initializing SecureStorageService');
-    
+
     try {
       _cachedKey = await _storage.read(key: _encryptionKey);
 
@@ -58,7 +56,7 @@ class SecureStorageService extends _$SecureStorageService {
       _isInitialized = true;
       log('🔌 SecureStorageService initialized');
     } catch (e) {
-      log('Erreur lors de l\'initialisation de SecureStorageService: $e');
+      log("Erreur lors de l'initialisation de SecureStorageService: $e");
       rethrow;
     }
   }

@@ -4,6 +4,7 @@ import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
 
+/// Domain module
 @module
 abstract class DomainModule {
   /// Provide the shellNavigatorKey

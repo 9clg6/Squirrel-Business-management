@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_model.dart';
+import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_state.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// [AddOrderActionScreen]
@@ -19,10 +20,10 @@ class AddOrderActionScreen extends ConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final viewModel = ref.read(addOrderActionProvider.notifier);
-    final state = ref.watch(addOrderActionProvider);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final TextTheme textTheme = Theme.of(context).textTheme;
+    final AddOrderAction viewModel = ref.read(addOrderActionProvider.notifier);
+    final AddOrderActionViewState state = ref.watch(addOrderActionProvider);
 
     return Dialog(
       backgroundColor: colorScheme.surface,
@@ -36,18 +37,17 @@ class AddOrderActionScreen extends ConsumerWidget {
           maxWidth: 600,
           minWidth: 400,
         ),
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
+          children: <Widget>[
             Form(
               key: state.formKey,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.start,
                 mainAxisSize: MainAxisSize.min,
-                children: [
+                children: <Widget>[
                   Text(
                     LocaleKeys.addOrderAction.tr(),
                     style: textTheme.labelSmall?.copyWith(
@@ -61,7 +61,7 @@ class AddOrderActionScreen extends ConsumerWidget {
                   ),
                   TextFormField(
                     controller: state.controller,
-                    validator: (value) {
+                    validator: (String? value) {
                       if (value == null || value.isEmpty) {
                         return LocaleKeys.orderActionNameRequired.tr();
                       }
@@ -89,9 +89,9 @@ class AddOrderActionScreen extends ConsumerWidget {
                       }
                       return null;
                     },
-                    builder: (field) => Column(
+                    builder: (FormFieldState<DateTime> field) => Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
+                      children: <Widget>[
                         MouseRegion(
                           cursor: SystemMouseCursors.click,
                           child: InkWell(
@@ -110,7 +110,6 @@ class AddOrderActionScreen extends ConsumerWidget {
                               child: TextVariant(
                                 state.selectedDate?.toDDMMYYYY() ??
                                     LocaleKeys.selectOrderActionDate.tr(),
-                                variantType: TextVariantType.bodyMedium,
                                 style: TextStyle(
                                   color: field.hasError
                                       ? colorScheme.error
@@ -134,7 +133,9 @@ class AddOrderActionScreen extends ConsumerWidget {
                             child: Text(
                               field.errorText!,
                               style: textTheme.labelSmall?.copyWith(
-                                  color: colorScheme.error, fontSize: 12),
+                                color: colorScheme.error,
+                                fontSize: 12,
+                              ),
                             ),
                           ),
                       ],
@@ -146,7 +147,7 @@ class AddOrderActionScreen extends ConsumerWidget {
             const SizedBox(height: 16),
             Row(
               mainAxisAlignment: MainAxisAlignment.end,
-              children: [
+              children: <Widget>[
                 InkWell(
                   onTap: viewModel.navigateBack,
                   child: Container(
@@ -162,7 +163,6 @@ class AddOrderActionScreen extends ConsumerWidget {
                     ),
                     child: TextVariant(
                       LocaleKeys.cancel.tr(),
-                      variantType: TextVariantType.bodyMedium,
                     ),
                   ),
                 ),
@@ -180,7 +180,6 @@ class AddOrderActionScreen extends ConsumerWidget {
                     ),
                     child: TextVariant(
                       LocaleKeys.add.tr(),
-                      variantType: TextVariantType.bodyMedium,
                     ),
                   ),
                 ),
