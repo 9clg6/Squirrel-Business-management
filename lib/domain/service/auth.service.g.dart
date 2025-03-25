@@ -6,7 +6,7 @@ part of 'auth.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authServiceHash() => r'4bdc92328b76015959de6e1430ccdb562bad82e0';
+String _$authServiceHash() => r'fd87ef38f12a76a3c1d0c1be804ecb60ef911c5d';
 
 /// [AuthService]
 ///
@@ -22,7 +22,9 @@ final authServiceProvider =
     requestServiceProvider,
     loginUseCaseProvider,
     checkValidityUseCaseProvider,
-    hiveSecureStorageServiceProvider
+    hiveSecureStorageServiceProvider,
+    dialogServiceProvider,
+    navigatorServiceProvider
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     requestServiceProvider,
@@ -32,7 +34,11 @@ final authServiceProvider =
     checkValidityUseCaseProvider,
     ...?checkValidityUseCaseProvider.allTransitiveDependencies,
     hiveSecureStorageServiceProvider,
-    ...?hiveSecureStorageServiceProvider.allTransitiveDependencies
+    ...?hiveSecureStorageServiceProvider.allTransitiveDependencies,
+    dialogServiceProvider,
+    ...?dialogServiceProvider.allTransitiveDependencies,
+    navigatorServiceProvider,
+    ...?navigatorServiceProvider.allTransitiveDependencies
   },
 );
 

@@ -1,5 +1,4 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
@@ -26,7 +25,7 @@ class TodoViewModel extends _$TodoViewModel {
   @override
   TodoScreenState build() {
     if (!_isInitialized) {
-      _navigatorService = injector<NavigatorService>();
+      _navigatorService = ref.read(navigatorServiceProvider.notifier);
       _orderService = ref.watch(orderServiceProvider.notifier);
       _isInitialized = true;
     }

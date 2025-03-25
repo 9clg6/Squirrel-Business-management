@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Custom side bar
-class CustomSideBar extends StatefulWidget {
+class CustomSideBar extends ConsumerStatefulWidget {
   /// Constructor
   /// @param [key] key
   /// @param [navigationShell] navigation shell
@@ -26,11 +26,11 @@ class CustomSideBar extends StatefulWidget {
   /// @return [State<CustomSideBar>] state of the custom side bar
   ///
   @override
-  State<CustomSideBar> createState() => _CustomSideBarState();
+  ConsumerState<CustomSideBar> createState() => _CustomSideBarState();
 }
 
 /// State of the custom side bar
-class _CustomSideBarState extends State<CustomSideBar> {
+class _CustomSideBarState extends ConsumerState<CustomSideBar> {
   late SidebarXController controller;
 
   /// Init the state
@@ -191,7 +191,9 @@ class _CustomSideBarState extends State<CustomSideBar> {
               stream: controller.extendStream,
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 return InkWell(
-                  onTap: () => injector<DialogService>().showInComingDialog(),
+                  onTap: () => ref
+                      .read(dialogServiceProvider.notifier)
+                      .showInComingDialog(),
                   child: AnimatedContainer(
                     duration: const Duration(seconds: 1),
                     curve: Curves.easeInOut,

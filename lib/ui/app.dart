@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/enums/router.enum.dart';
+import 'package:squirrel/foundation/routing/routing_key.dart';
 import 'package:squirrel/foundation/theming/theme.dart';
 import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/foundation/utils/util.dart';
@@ -22,8 +22,8 @@ import 'package:squirrel/ui/screen/planner/planner.screen.dart';
 import 'package:squirrel/ui/screen/request/request.screen.dart';
 import 'package:squirrel/ui/screen/stats/stats.screen.dart';
 import 'package:squirrel/ui/screen/todo/todo.screen.dart';
-import 'package:squirrel/ui/widgets/custom_app_bar.dart';
-import 'package:squirrel/ui/widgets/custom_side_bar.dart';
+import 'package:squirrel/ui/widgets/custom_app_bar/custom_app_bar.dart';
+import 'package:squirrel/ui/widgets/custom_side_bar/custom_side_bar.dart';
 
 /// The main app widget.
 class App extends StatefulWidget {
@@ -90,7 +90,7 @@ class _AppState extends State<App> {
   GoRouter _appRouter() {
     return GoRouter(
       debugLogDiagnostics: true,
-      navigatorKey: injector.get<GlobalKey<NavigatorState>>(),
+      navigatorKey: routingKey,
       initialLocation: RouterEnum.main.path,
       redirect: _authRedirect,
       routes: <RouteBase>[
@@ -101,8 +101,11 @@ class _AppState extends State<App> {
               const AuthScreen(),
         ),
         StatefulShellRoute.indexedStack(
-          builder: (BuildContext context, GoRouterState state,
-              StatefulNavigationShell navigationShell,) {
+          builder: (
+            BuildContext context,
+            GoRouterState state,
+            StatefulNavigationShell navigationShell,
+          ) {
             final bool isAuthRoute =
                 state.uri.toString() == RouterEnum.auth.path;
 
@@ -217,17 +220,22 @@ class _AppState extends State<App> {
     );
   }
 
-  /// Redirects the user to the correct route based 
+  /// Redirects the user to the correct route based
   ///   on their authentication status.
   /// @param [context] context
   /// @param [state] state
   /// @return [String?] redirect route
   ///
   Future<String?> _authRedirect(
-      BuildContext context, GoRouterState state,) async {
-    // Capture du conteneur et du service d'authentification 
+    BuildContext context,
+    GoRouterState state,
+  ) async {
+    // Capture du conteneur et du service d'authentification
     //  avant toute opération asynchrone
     final ProviderContainer container = ProviderScope.containerOf(context);
+    if (!container.exists(authServiceProvider)) {
+      return RouterEnum.auth.path;
+    }
     final AsyncValue<AuthState> authService =
         container.read(authServiceProvider);
 
@@ -258,7 +266,7 @@ class _AppState extends State<App> {
       isAuthenticated = false;
     }
 
-    // Le traitement du résultat est synchrone, donc pas besoin de 
+    // Le traitement du résultat est synchrone, donc pas besoin de
     //  vérifier mounted
     final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;
 

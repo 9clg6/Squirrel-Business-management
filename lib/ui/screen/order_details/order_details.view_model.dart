@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
@@ -37,7 +36,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
     if (!_isInitialized) {
       _orderService = ref.watch(orderServiceProvider.notifier);
       _clientService = ref.watch(clientServiceProvider.notifier);
-      _dialogService = injector<DialogService>();
+      _dialogService = ref.read(dialogServiceProvider.notifier);
       _isInitialized = true;
     }
 

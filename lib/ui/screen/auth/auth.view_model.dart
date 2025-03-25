@@ -2,7 +2,6 @@ import 'dart:async';
 import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
@@ -31,8 +30,8 @@ class Auth extends _$Auth {
   AuthScreenState build() {
     if (!_isInitialized) {
       log('🔌 Initializing AuthViewModel');
-      _dialogService = injector<DialogService>();
-      _navigatorService = injector<NavigatorService>();
+      _dialogService = ref.watch(dialogServiceProvider.notifier);
+      _navigatorService = ref.read(navigatorServiceProvider.notifier);
       _authService = ref.watch(authServiceProvider.notifier);
       _isInitialized = true;
     }

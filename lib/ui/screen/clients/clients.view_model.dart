@@ -1,5 +1,4 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
@@ -24,7 +23,7 @@ class Clients extends _$Clients {
   @override
   ClientsScreenState build() {
     if (!_isInitialized) {
-      _dialogService = injector<DialogService>();
+      _dialogService = ref.read(dialogServiceProvider.notifier);
       _isInitialized = true;
     }
 

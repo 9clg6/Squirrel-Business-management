@@ -1,9 +1,11 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/foundation/routing/routing_key.dart';
 import 'package:squirrel/ui/dialog/client_details.dialog.dart';
 import 'package:squirrel/ui/dialog/confirmation_dialog.dart';
 import 'package:squirrel/ui/dialog/edit_or_create_order_dialog.dart';
@@ -12,21 +14,23 @@ import 'package:squirrel/ui/dialog/use_conditions.dialog.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.screen.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
-/// The dialog service
-class DialogService {
-  /// Constructor
-  /// @param navigatorKey: The navigator key
-  ///
-  DialogService(this.navigatorKey);
+part 'dialog.service.g.dart';
 
-  /// The navigator key
-  final GlobalKey<NavigatorState> navigatorKey;
+/// The dialog service
+@riverpod
+class DialogService extends _$DialogService {
+  /// Build
+  ///
+  @override
+  DialogService build() {
+    return DialogService();
+  }
 
   /// Show add order action dialog
   /// @return The added order action
   ///
   Future<OrderAction?> showAddOrderActionDialog() async {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showAddOrderActionDialog()');
@@ -43,7 +47,7 @@ class DialogService {
   /// @return The selected date
   ///
   Future<List<DateTime?>?> showDatePickerDialog() async {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showDatePickerDialog()');
@@ -77,7 +81,7 @@ class DialogService {
     Null Function() onConfirm,
   ) {
     return showDialog<void>(
-      context: navigatorKey.currentContext!,
+      context: routingKey.currentContext!,
       builder: (_) => ConfirmationDialog(
         title: title,
         message: message,
@@ -95,7 +99,7 @@ class DialogService {
     bool isCreation = false,
     Order? order,
   }) async {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showEditOrderDialog()');
@@ -115,7 +119,7 @@ class DialogService {
   /// @return The selected range date
   ///
   Future<List<DateTime?>?> selectRangeDate() async {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.selectRangeDate()');
@@ -146,7 +150,7 @@ class DialogService {
   /// @param message: The message to display in the dialog
   ///
   void showError(String message) {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showEditOrderDialog()');
@@ -175,7 +179,7 @@ class DialogService {
   /// Show use conditions dialog
   ///
   Future<bool?> showUseConditions() async {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showUseConditions()');
@@ -192,7 +196,7 @@ class DialogService {
   /// Show in coming dialog
   ///
   Future<void> showInComingDialog() async {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showInComingDialog()');
@@ -261,7 +265,7 @@ class DialogService {
   Future<Client?> showSelectClientDialog({
     bool isSponsor = false,
   }) async {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showSelectClientDialog()');
@@ -279,7 +283,7 @@ class DialogService {
   /// @param client: The client to show
   ///
   Future<void> showClientDetailsDialog(Client client) async {
-    final BuildContext? context = navigatorKey.currentContext;
+    final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
       debugPrint('Context is null in DialogService.showClientDetailsDialog()');

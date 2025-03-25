@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
@@ -26,7 +25,7 @@ class StatsViewModel extends _$StatsViewModel {
   @override
   StatsScreenState build() {
     if (!_isInitialized) {
-      _dialogService = injector<DialogService>();
+      _dialogService = ref.read(dialogServiceProvider.notifier);
       _isInitialized = true;
     }
 

@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
@@ -201,9 +200,9 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             labelText: LocaleKeys.clientName.tr(),
                             suffix: InkWell(
                               onTap: () async {
-                                final Client? client =
-                                    await injector<DialogService>()
-                                        .showSelectClientDialog();
+                                final Client? client = await ref
+                                    .read(dialogServiceProvider.notifier)
+                                    .showSelectClientDialog();
 
                                 if (client != null) {
                                   setState(() {
@@ -259,11 +258,11 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             },
                             child: InkWell(
                               onTap: () async {
-                                final Client? client =
-                                    await injector<DialogService>()
-                                        .showSelectClientDialog(
-                                  isSponsor: true,
-                                );
+                                final Client? client = await ref
+                                    .read(dialogServiceProvider.notifier)
+                                    .showSelectClientDialog(
+                                      isSponsor: true,
+                                    );
 
                                 setState(() {
                                   sponsor = client;

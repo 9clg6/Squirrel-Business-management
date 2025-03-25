@@ -1,5 +1,4 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
@@ -17,8 +16,8 @@ class AddOrderAction extends _$AddOrderAction {
   ///
   @override
   AddOrderActionViewState build() {
-    _dialogService = injector<DialogService>();
-    _navigatorService = injector<NavigatorService>();
+    _dialogService = ref.read(dialogServiceProvider.notifier);
+    _navigatorService = ref.read(navigatorServiceProvider.notifier);
     return AddOrderActionViewState.initial();
   }
 

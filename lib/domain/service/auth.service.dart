@@ -2,20 +2,25 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
+import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
+import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
+import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
+import 'package:squirrel/foundation/routing/routing_key.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 part 'auth.service.g.dart';
 
@@ -27,11 +32,12 @@ part 'auth.service.g.dart';
     LoginUseCase,
     CheckValidityUseCase,
     HiveSecureStorageService,
+    DialogService,
+    NavigatorService,
   ],
 )
 class AuthService extends _$AuthService {
   static const String _license = 'licenseKey';
-  late final GlobalKey<NavigatorState> _navigatorKey;
   late final CheckValidityUseCase _checkValidityUseCase;
   late final StorageInterface<dynamic> _secureStorageService;
   late final RequestService _requestService;
@@ -52,9 +58,19 @@ class AuthService extends _$AuthService {
 
   Future<void> _initializeServices() async {
     log('🔌 Initializing AuthService');
+    await _initSupabase();
     await _initDependencies();
     _isInitialized = true;
     await loadUser();
+  }
+
+  Future<void> _initSupabase() async {
+    final EnvService envService = ref.watch(envServiceProvider.notifier);
+    await Supabase.initialize(
+      url: envService.supabaseUrl,
+      anonKey: envService.supabaseAnonKey,
+      debug: kDebugMode,
+    );
   }
 
   /// Initialize dependencies
@@ -64,7 +80,6 @@ class AuthService extends _$AuthService {
     // Initialiser les services
     _secureStorageService = ref.read(hiveSecureStorageServiceProvider.notifier);
     _requestService = ref.read(requestServiceProvider.notifier);
-    _navigatorKey = injector.get<GlobalKey<NavigatorState>>();
     _checkValidityUseCase = ref.read(checkValidityUseCaseProvider.notifier);
 
     // Attendre l'initialisation du storage service qui est critique
@@ -170,7 +185,7 @@ class AuthService extends _$AuthService {
 
   void _navigateToAuth() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      final BuildContext? context = _navigatorKey.currentContext;
+      final BuildContext? context = routingKey.currentContext;
       if (context != null &&
           GoRouterState.of(context).matchedLocation != '/auth') {
         context.goNamed('auth');

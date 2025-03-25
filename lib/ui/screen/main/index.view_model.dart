@@ -2,7 +2,6 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/providers/initializer.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
@@ -31,8 +30,8 @@ class Index extends _$Index {
   @override
   IndexScreenState build() {
     if (!_isInitialized) {
-      _navigatorService = injector<NavigatorService>();
-      _dialogService = injector<DialogService>();
+      _navigatorService = ref.read(navigatorServiceProvider.notifier);
+      _dialogService = ref.read(dialogServiceProvider.notifier);
 
       _orderService = ref.watch(orderServiceProvider.notifier);
 

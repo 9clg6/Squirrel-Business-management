@@ -1,60 +1,56 @@
-///
-/// Environment of the runtime execution
-///
-enum Environment {
-  /// Mock
-  mock,
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-  /// Dev
-  dev,
+part 'app_config.g.dart';
 
-  /// Staging
-  staging,
-
-  /// Production
-  prod,
-
-  /// Test
-  test,
-}
-
-///
 /// Configuration/Parameters required by the application.
-///
-class AppConfig {
+@Riverpod(keepAlive: true)
+class AppConfig extends _$AppConfig {
+  /// Constructor
+  ///
+  AppConfig();
+
   /// Production constructor
   ///
-  const AppConfig.prod({
+  AppConfig.prod({
     required this.appName,
   });
 
   /// Constructor
   ///
-  const AppConfig.dev({
+  AppConfig.dev({
     required this.appName,
   });
 
   /// Staging constructor
   ///
-  const AppConfig.staging({
+  AppConfig.staging({
     required this.appName,
   });
 
   /// Test constructor
   ///
-  const AppConfig.test({
+  AppConfig.test({
     this.appName = 'APP NAME',
   });
 
   // coverage:ignore-start
   /// Create [AppConfig] from environment variables
   factory AppConfig.fromEnvironment() {
-    return const AppConfig.prod(
+    return AppConfig.prod(
+      appName: 'Squirrel',
+    );
+  }
+
+  /// Build
+  ///
+  @override
+  AppConfig build() {
+    return AppConfig.prod(
       appName: 'Squirrel',
     );
   }
 
   /// App Name
-  final String appName;
+  late final String appName;
   // coverage:ignore-end
 }
