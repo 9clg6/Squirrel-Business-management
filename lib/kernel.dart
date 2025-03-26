@@ -1,10 +1,13 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:squirrel/application/config/app_config.dart';
+import 'package:squirrel/foundation/enums/env_field.enum.dart';
 import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/ui/app.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// The kernel of the application.
 class Kernel {
@@ -52,6 +55,15 @@ class Kernel {
     // Initialisation de base de Flutter
     WidgetsFlutterBinding.ensureInitialized();
     await EasyLocalization.ensureInitialized();
+
+    // Chargement des variables d'environnement
+    await dotenv.load();
+
+    // Initialisation de Supabase
+    await Supabase.initialize(
+      url: dotenv.env[EnvField.supabaseUrl.path]!,
+      anonKey: dotenv.env[EnvField.supabaseAnonKey.path]!,
+    );
 
     // Initialisation de Hive
     await Hive.initFlutter();

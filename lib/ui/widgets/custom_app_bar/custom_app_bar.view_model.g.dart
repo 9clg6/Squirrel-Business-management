@@ -7,7 +7,7 @@ part of 'custom_app_bar.view_model.dart';
 // **************************************************************************
 
 String _$customAppBarViewModelHash() =>
-    r'4f9a4a19b96eafe0472ab204c6d0d1c1532c4643';
+    r'bd3acc63398f41201f35010e59544c5b5676c4df';
 
 /// [CustomAppBarViewModel]
 ///

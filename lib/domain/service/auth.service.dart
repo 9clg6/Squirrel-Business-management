@@ -2,11 +2,9 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/application/env/env.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
@@ -20,7 +18,6 @@ import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 import 'package:squirrel/foundation/routing/routing_key.dart';
-import 'package:supabase_flutter/supabase_flutter.dart' hide AuthState;
 
 part 'auth.service.g.dart';
 
@@ -38,11 +35,10 @@ part 'auth.service.g.dart';
 )
 class AuthService extends _$AuthService {
   static const String _license = 'licenseKey';
-  late final CheckValidityUseCase _checkValidityUseCase;
-  late final StorageInterface<dynamic> _secureStorageService;
-  late final RequestService _requestService;
+  CheckValidityUseCase? _checkValidityUseCase;
+  StorageInterface<dynamic>? _secureStorageService;
+  RequestService? _requestService;
   Timer? _timer;
-  bool _isInitialized = false;
   LoginResultLocalModel? _cachedLicense;
   DateTime? _lastValidityCheck;
 
@@ -50,27 +46,15 @@ class AuthService extends _$AuthService {
   ///
   @override
   Future<AuthState> build() async {
-    if (!_isInitialized) {
-      await _initializeServices();
-    }
+    await _initializeServices();
+
     return state.value ?? AuthState.initial(isInitialized: true);
   }
 
   Future<void> _initializeServices() async {
     log('🔌 Initializing AuthService');
-    await _initSupabase();
     await _initDependencies();
-    _isInitialized = true;
     await loadUser();
-  }
-
-  Future<void> _initSupabase() async {
-    final EnvService envService = ref.watch(envServiceProvider.notifier);
-    await Supabase.initialize(
-      url: envService.supabaseUrl,
-      anonKey: envService.supabaseAnonKey,
-      debug: kDebugMode,
-    );
   }
 
   /// Initialize dependencies
@@ -78,9 +62,10 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _initDependencies() async {
     // Initialiser les services
-    _secureStorageService = ref.read(hiveSecureStorageServiceProvider.notifier);
-    _requestService = ref.read(requestServiceProvider.notifier);
-    _checkValidityUseCase = ref.read(checkValidityUseCaseProvider.notifier);
+    _secureStorageService ??=
+        ref.read(hiveSecureStorageServiceProvider.notifier);
+    _requestService ??= ref.read(requestServiceProvider.notifier);
+    _checkValidityUseCase ??= ref.read(checkValidityUseCaseProvider.notifier);
 
     // Attendre l'initialisation du storage service qui est critique
     await ref.read(hiveSecureStorageServiceProvider.future);
@@ -114,7 +99,7 @@ class AuthService extends _$AuthService {
     }
 
     final String? license =
-        await _secureStorageService.get(_license) as String?;
+        await _secureStorageService?.get(_license) as String?;
     if (license == null) return null;
 
     try {
@@ -152,7 +137,7 @@ class AuthService extends _$AuthService {
   Future<void> _checkValidity(String licenseKey) async {
     try {
       final CheckValidityEntity result =
-          await _checkValidityUseCase.execute(licenseKey);
+          await _checkValidityUseCase!.execute(licenseKey);
 
       if (result.valid) {
         _setUserAuthenticated(
@@ -266,12 +251,12 @@ class AuthService extends _$AuthService {
   Future<bool> login(String licenseKey) async {
     log('Start login');
 
-    if (!_isInitialized) {
+    if ((state.value?.isInitialized ?? false) == false) {
       await _initializeServices();
     }
 
     try {
-      _requestService.addRequest(
+      _requestService?.addRequest(
         Request(
           name: 'Login',
           description: "Connexion à l'application",
@@ -291,7 +276,7 @@ class AuthService extends _$AuthService {
         if (_timer != null && !_timer!.isActive) {
           _startPeriodicCheck();
         }
-        await _secureStorageService.set(
+        await _secureStorageService?.set(
           _license,
           jsonEncode(loginResult.toLocalModel().toJson()),
         );

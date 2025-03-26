@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
+import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/auth/auth.view_model.dart';
 import 'package:squirrel/ui/screen/auth/auth.view_state.dart';
@@ -32,11 +33,9 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   ///
   @override
   Widget build(BuildContext context) {
+    ref.watch(authServiceProvider);
     final AuthScreenState authState = ref.watch(authProvider);
 
-    if (authState.loading) {
-      return const Center(child: CircularProgressIndicator());
-    }
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
       body: Center(

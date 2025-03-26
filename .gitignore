@@ -44,3 +44,6 @@ ui-debug.log
 
 # Local Emulator Suite
 **/firebase-export-*
+
+# FVM Version Cache
+.fvm/

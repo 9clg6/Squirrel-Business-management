@@ -52,5 +52,6 @@ class AuthState with EquatableMixin {
         licenseId,
         expirationDate,
         isInitialized,
+        isUserAuthenticated,
       ];
 }

@@ -64,20 +64,15 @@ class _AppState extends State<App> {
 
     return Builder(
       builder: (BuildContext context) {
-        return MediaQuery(
-          data: MediaQuery.of(context).copyWith(
-            textScaler: TextScaler.noScaling,
-          ),
-          child: ProviderScope(
-            child: MaterialApp.router(
-              routerConfig: _appRouter(),
-              debugShowCheckedModeBanner: false,
-              localizationsDelegates: context.localizationDelegates,
-              supportedLocales: context.supportedLocales,
-              theme: theme.light(),
-              locale: context.locale,
-              builder: (_, Widget? child) => child!,
-            ),
+        return ProviderScope(
+          child: MaterialApp.router(
+            routerConfig: _appRouter(),
+            debugShowCheckedModeBanner: false,
+            localizationsDelegates: context.localizationDelegates,
+            supportedLocales: context.supportedLocales,
+            theme: theme.light(),
+            locale: context.locale,
+            builder: (_, Widget? child) => child!,
           ),
         );
       },
@@ -233,45 +228,31 @@ class _AppState extends State<App> {
     // Capture du conteneur et du service d'authentification
     //  avant toute opération asynchrone
     final ProviderContainer container = ProviderScope.containerOf(context);
+
+    // Si le service n'existe pas encore, ne pas rediriger
     if (!container.exists(authServiceProvider)) {
-      return RouterEnum.auth.path;
+      return null;
     }
+
     final AsyncValue<AuthState> authService =
         container.read(authServiceProvider);
 
     // Vérifier si l'état d'authentification est en cours de chargement
-    if (authService.isLoading) {
-      // Si en cours de chargement, ne pas rediriger
+    if (authService.isLoading || !authService.hasValue) {
       return null;
     }
 
-    bool isAuthenticated = false;
-
-    try {
-      // Si le service n'est pas initialisé, charger l'utilisateur
-      if (authService.value?.isInitialized == false) {
-        // Capturer l'état d'authentification après le chargement asynchrone
-        final AuthState? authState =
-            await container.read(authServiceProvider.notifier).loadUser();
-        isAuthenticated = authState?.isUserAuthenticated ?? false;
-      } else {
-        isAuthenticated = authService.value?.isUserAuthenticated ?? false;
-      }
-    } on Exception catch (e) {
-      logException(
-        e,
-        StackTrace.current,
-        "Erreur lors de la vérification de l'authentification",
-      );
-      isAuthenticated = false;
+    // Si le service n'est pas initialisé, attendre son initialisation
+    if (!authService.value!.isInitialized) {
+      await container.read(authServiceProvider.notifier).build();
+      return null;
     }
 
-    // Le traitement du résultat est synchrone, donc pas besoin de
-    //  vérifier mounted
+    final bool isAuthenticated =
+        authService.value?.isUserAuthenticated ?? false;
     final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;
 
-    // Empêcher la boucle de redirection
-    // Si on est déjà sur /auth et pas authentifié, rester sur /auth
+    // Si on est sur /auth et pas authentifié, rester sur /auth
     if (!isAuthenticated && isAuthRoute) {
       return null;
     }

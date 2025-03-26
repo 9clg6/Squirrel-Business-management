@@ -10,7 +10,7 @@ class CustomAppBarState with EquatableMixin {
   /// @param [expirationDate] expiration date
   ///
   CustomAppBarState({
-    this.expirationDate,
+    required this.expirationDate,
   });
 
   /// Expiration date

@@ -5,7 +5,7 @@ version: 1.0.0
 
 environment:
   sdk: ">=3.6.0 <4.0.0"
-  flutter: ">=3.19.0 <4.0.0"
+  flutter: ">=3.27.0 <4.0.0"
 
 dependencies:
   flutter:
@@ -52,6 +52,7 @@ dev_dependencies:
   json_serializable: ^6.7.1
   riverpod_generator: ^2.6.2
   riverpod_lint: ^2.6.2
+  msix: ^3.16.8
 
 flutter_launcher_icons:
   image_path: "assets/images/logo.png"
@@ -63,6 +64,14 @@ flutter_launcher_icons:
   macos:
     generate: true
     image_path: "assets/images/logo.png"
+
+msix_config:
+  display_name: Squirrel
+  publisher_display_name: Company Name
+  identity_name: fr.squirrel.app
+  msix_version: 1.0.0.0
+  logo_path: assets/images/logo.png
+  capabilities: internetClient
 
 flutter:
   # The following line ensures that the Material Icons font is

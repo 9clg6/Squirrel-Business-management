@@ -15,7 +15,7 @@ class AuthScreenState extends ViewStateAbs {
 
   /// Initial
   ///
-  AuthScreenState.initial({bool l = true}) : loading = l;
+  AuthScreenState.initial() : loading = false;
 
   /// Loading
   final bool loading;

@@ -92,7 +92,6 @@ class UseConditionsDialog extends StatelessWidget {
 }
 
 class _CountdownTimer extends StatefulWidget {
-
   const _CountdownTimer({
     required this.onCountdownComplete,
   });
@@ -176,8 +175,9 @@ class _CountdownTimerState extends State<_CountdownTimer> {
               backgroundColor: Theme.of(context).colorScheme.primary,
             ),
             onPressed: () => context.pop(true),
-            child: const TextVariant(
+            child: TextVariant(
               "J'accepte",
+              color: Theme.of(context).colorScheme.onPrimary,
             ),
           ),
       ],

@@ -15,10 +15,11 @@ part 'custom_app_bar.view_model.g.dart';
 class CustomAppBarViewModel extends _$CustomAppBarViewModel {
   @override
   CustomAppBarState build() {
+    final AsyncValue<AuthState> authState = ref.watch(authServiceProvider);
     ref.listen(authServiceProvider, (_, AsyncValue<AuthState> next) {
       state = state.copyWith(expirationDate: next.value?.expirationDate);
     });
 
-    return CustomAppBarState();
+    return CustomAppBarState(expirationDate: authState.value?.expirationDate);
   }
 }
