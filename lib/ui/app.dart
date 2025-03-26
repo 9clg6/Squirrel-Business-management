@@ -11,7 +11,6 @@ import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/routing/routing_key.dart';
 import 'package:squirrel/foundation/theming/theme.dart';
-import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/foundation/utils/util.dart';
 import 'package:squirrel/ui/screen/auth/auth.screen.dart';
 import 'package:squirrel/ui/screen/clients/clients.screen.dart';
