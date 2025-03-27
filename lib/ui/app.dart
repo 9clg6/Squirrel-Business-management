@@ -13,6 +13,7 @@ import 'package:squirrel/foundation/routing/routing_key.dart';
 import 'package:squirrel/foundation/theming/theme.dart';
 import 'package:squirrel/foundation/utils/util.dart';
 import 'package:squirrel/ui/screen/auth/auth.screen.dart';
+import 'package:squirrel/ui/screen/blocking_screen/block_overlay.screen.dart';
 import 'package:squirrel/ui/screen/clients/clients.screen.dart';
 import 'package:squirrel/ui/screen/history/history.screen.dart';
 import 'package:squirrel/ui/screen/main/index.screen.dart';
@@ -71,7 +72,7 @@ class _AppState extends State<App> {
             supportedLocales: context.supportedLocales,
             theme: theme.light(),
             locale: context.locale,
-            builder: (_, Widget? child) => child!,
+            builder: (_, Widget? child) => BlockOverlayScreen(child: child!),
           ),
         );
       },

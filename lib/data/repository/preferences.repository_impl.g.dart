@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'preferences_repository_impl.dart';
+part of 'preferences.repository_impl.dart';
 
 // **************************************************************************
 // RiverpodGenerator

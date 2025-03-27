@@ -123,5 +123,11 @@
   "shopMode": "Mode boutique",
   "setAsFailed": "Marquer comme échouée",
   "selectSponsor": "Sélectionner le parrain",
-  "selectClient": "Sélectionner un client"
+  "selectClient": "Sélectionner un client",
+  "appLocked": "Application verrouillée. Veuillez vous connecter à internet pour réactiver votre licence.",
+  "systemDateModified": "Modification de la date système détectée. Veuillez restaurer la date correcte pour utiliser l'application.",
+  "failedChecks": "Nombre de tentatives de connexion échouées",
+  "failedChecksMax": "Nombre de tentatives de connexion maximum atteint. L'application sera verrouillée.",
+  "licenseValidationFailedTooManyTimes": "Validation de licence échouée trop de fois. Veuillez vous connecter à internet pour réactiver votre licence.",
+  "appLockedMessage": "Votre application est bloqué, car la vérification de la licence a été empêchée"
 }

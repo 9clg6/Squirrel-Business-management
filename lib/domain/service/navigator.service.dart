@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -43,5 +45,12 @@ class NavigatorService extends _$NavigatorService {
   ///
   void navigateBack({OrderAction? result}) {
     routingKey.currentContext?.pop<OrderAction?>(result);
+  }
+
+  /// Navigate to auth
+  ///
+  void navigateToAuth() {
+    log('🔐 Navigating to auth');
+    routingKey.currentContext?.goNamed(RouterEnum.auth.name);
   }
 }

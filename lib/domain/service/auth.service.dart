@@ -1,11 +1,7 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:developer';
 
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/model/local/login_result.local_model.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
@@ -15,9 +11,17 @@ import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
+import 'package:squirrel/domain/use_case/get_app_lock_state.use_case.dart';
+import 'package:squirrel/domain/use_case/get_fail_count.use_case.dart';
+import 'package:squirrel/domain/use_case/get_last_known_time.use_case.dart';
+import 'package:squirrel/domain/use_case/get_license.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
-import 'package:squirrel/foundation/interfaces/storage.interface.dart';
-import 'package:squirrel/foundation/routing/routing_key.dart';
+import 'package:squirrel/domain/use_case/save_license.use_case.dart';
+import 'package:squirrel/domain/use_case/set_app_lock_state.use_case.dart';
+import 'package:squirrel/domain/use_case/set_fail_count.use_case.dart';
+import 'package:squirrel/domain/use_case/set_last_check_success.use_case.dart';
+import 'package:squirrel/domain/use_case/set_last_known_time.use_case.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 
 part 'auth.service.g.dart';
 
@@ -28,19 +32,30 @@ part 'auth.service.g.dart';
     RequestService,
     LoginUseCase,
     CheckValidityUseCase,
-    HiveSecureStorageService,
     DialogService,
     NavigatorService,
+    GetFailCountUseCase,
+    GetLastKnownTimeUseCase,
+    GetLicenseUseCase,
+    LoginUseCase,
+    GetAppLockStateUseCase,
+    SetFailCountUseCase,
+    SetLastCheckSuccessUseCase,
+    SetLastKnownTimeUseCase,
+    SetAppLockStateUseCase,
+    HiveSecureStorageService,
+    SaveLicenseUseCase,
   ],
 )
 class AuthService extends _$AuthService {
-  static const String _license = 'licenseKey';
+  static const int _maxFailedChecks = 3;
+
   CheckValidityUseCase? _checkValidityUseCase;
-  StorageInterface<dynamic>? _secureStorageService;
   RequestService? _requestService;
   Timer? _timer;
-  LoginResultLocalModel? _cachedLicense;
-  DateTime? _lastValidityCheck;
+  int _failedChecksCount = 0;
+  DateTime? _lastKnownTime;
+  bool _isAppLocked = false;
 
   /// Build
   ///
@@ -51,131 +66,209 @@ class AuthService extends _$AuthService {
     return state.value ?? AuthState.initial(isInitialized: true);
   }
 
+  /// Initialize services
+  /// @return [Future<void>]
+  ///
   Future<void> _initializeServices() async {
     log('🔌 Initializing AuthService');
     await _initDependencies();
+    await _loadFailedChecksCount();
+    await _loadAppLockedState();
     await loadUser();
+    _startPeriodicCheck();
   }
 
   /// Initialize dependencies
   /// @return [Future<void>]
   ///
   Future<void> _initDependencies() async {
-    // Initialiser les services
-    _secureStorageService ??=
-        ref.read(hiveSecureStorageServiceProvider.notifier);
-    _requestService ??= ref.read(requestServiceProvider.notifier);
-    _checkValidityUseCase ??= ref.read(checkValidityUseCaseProvider.notifier);
-
-    // Attendre l'initialisation du storage service qui est critique
-    await ref.read(hiveSecureStorageServiceProvider.future);
+    _requestService ??= ref.watch(requestServiceProvider.notifier);
+    _checkValidityUseCase ??= ref.watch(checkValidityUseCaseProvider.notifier);
   }
 
-  /// Load user
+  /// Load user from local storage
   /// @return [Future<AuthState?>] auth state
   ///
-  Future<AuthState?> loadUser() async {
+  Future<void> loadUser() async {
     try {
-      final LoginResultLocalModel? licenseResult =
-          await _loadLicenseFromStorage();
+      if (_isAppLocked) {
+        state = AsyncData<AuthState>(
+          state.value!.copyWith(isAppLocked: true),
+        );
 
-      if (licenseResult != null) {
-        await _handleLicenseResult(licenseResult);
-      } else {
-        _setUserAuthenticated(false);
+        ref.read(dialogServiceProvider.notifier).showError(
+              LocaleKeys.appLocked.tr(),
+            );
+        return;
       }
 
-      return state.value;
+      final LoginResultEntity? licenseResult =
+          await ref.watch(getLicenseUseCaseProvider.future);
+
+      log('🔐 License found: ${licenseResult?.licenseKey}');
+
+      if (licenseResult != null) {
+        if (_failedChecksCount >= _maxFailedChecks) {
+          await _lockApp();
+          return;
+        }
+
+        if (await _detectTimeTampering()) {
+          await _lockApp(LocaleKeys.systemDateModified.tr());
+          return;
+        }
+        _setUserAuthenticated(
+          true,
+          licenseId: licenseResult.licenseKey,
+          expirationDate: licenseResult.expirationDate,
+        );
+      } else {
+        _setUserAuthenticated(false);
+        ref.read(navigatorServiceProvider.notifier).navigateToAuth();
+      }
     } on Exception catch (e) {
-      log("Erreur lors du chargement de l'utilisateur: $e");
+      log('🔐❌ Error when loading user: $e');
       _setUserAuthenticated(false);
-      return state.value;
-    }
-  }
-
-  Future<LoginResultLocalModel?> _loadLicenseFromStorage() async {
-    if (_cachedLicense != null) {
-      return _cachedLicense;
-    }
-
-    final String? license =
-        await _secureStorageService?.get(_license) as String?;
-    if (license == null) return null;
-
-    try {
-      return LoginResultLocalModel.fromJson(
-        jsonDecode(license) as Map<String, dynamic>,
-      );
-    } on Exception catch (e) {
-      log('Erreur lors du décodage de la licence: $e');
-      return null;
-    }
-  }
-
-  Future<void> _handleLicenseResult(LoginResultLocalModel license) async {
-    log('Chargement de la licence: ${license.licenseKey}');
-
-    final bool shouldCheckValidity = _lastValidityCheck == null ||
-        DateTime.now().difference(_lastValidityCheck!) >
-            const Duration(hours: 1);
-
-    if (shouldCheckValidity) {
-      await _checkValidity(license.licenseKey);
-      _lastValidityCheck = DateTime.now();
-    } else {
-      _setUserAuthenticated(
-        true,
-        licenseId: license.licenseKey,
-        expirationDate: license.expirationDate,
-      );
     }
   }
 
   /// Check validity
   /// @return [void]
   ///
-  Future<void> _checkValidity(String licenseKey) async {
+  Future<void> _checkValidity() async {
     try {
+      final LoginResultEntity? licenseResult =
+          await ref.watch(getLicenseUseCaseProvider.future);
+
+      if (licenseResult == null) return;
+
+      final bool hasReachedMaxFailedChecks =
+          _failedChecksCount >= _maxFailedChecks;
+
+      if (hasReachedMaxFailedChecks) {
+        await _lockApp();
+        return;
+      }
+
       final CheckValidityEntity result =
-          await _checkValidityUseCase!.execute(licenseKey);
+          await _checkValidityUseCase!.execute(licenseResult.licenseKey);
 
       if (result.valid) {
+        _failedChecksCount = 0;
+        await ref.watch(setFailCountUseCaseProvider(0).future);
+        await ref.watch(
+          setLastCheckSuccessUseCaseProvider(
+            DateTime.now().toIso8601String(),
+          ).future,
+        );
+
+        _lastKnownTime = DateTime.now();
+        await ref.watch(
+          setLastKnownTimeUseCaseProvider(_lastKnownTime!).future,
+        );
+
+        _isAppLocked = false;
+        await ref.watch(setAppLockStateUseCaseProvider(false).future);
+
         _setUserAuthenticated(
           true,
-          licenseId: licenseKey,
+          licenseId: licenseResult.licenseKey,
           expirationDate: result.expirationDate,
         );
-        _startPeriodicCheck();
       } else {
-        _setUserAuthenticated(false);
-        _navigateToAuth();
+        await _handleFailedCheck();
       }
     } on Exception catch (e) {
-      log('Erreur lors de la vérification de validité: $e');
-      // Conserver l'état actuel en cas d'erreur de connexion
+      log('🔐❌ Error when checking validity: $e');
+
+      await _handleFailedCheck();
     }
   }
 
+  /// Handle failed check
+  /// @return [Future<void>]
+  ///
+  Future<void> _handleFailedCheck() async {
+    _failedChecksCount++;
+
+    await ref.watch(setFailCountUseCaseProvider(_failedChecksCount).future);
+
+    if (_failedChecksCount >= _maxFailedChecks) {
+      await _lockApp();
+    }
+  }
+
+  /// Lock app
+  /// @param [message] message
+  /// @return [Future<void>]
+  ///
+  Future<void> _lockApp([
+    String message = LocaleKeys.licenseValidationFailedTooManyTimes,
+  ]) async {
+    _isAppLocked = true;
+    await ref.watch(setAppLockStateUseCaseProvider(true).future);
+
+    state = AsyncData<AuthState>(
+      state.value!.copyWith(
+        isAppLocked: true,
+      ),
+    );
+
+    ref.read(dialogServiceProvider.notifier).showError(message.tr());
+  }
+
+  /// Load failed checks count
+  /// @return [Future<void>]
+  ///
+  Future<void> _loadFailedChecksCount() async {
+    final int? count = await ref.read(getFailCountUseCaseProvider.future);
+
+    _failedChecksCount = count ?? 0;
+  }
+
+  /// Load app locked state
+  /// @return [Future<void>]
+  ///
+  Future<void> _loadAppLockedState() async {
+    final bool? locked = await ref.watch(getAppLockStateUseCaseProvider.future);
+
+    _isAppLocked = locked ?? false;
+  }
+
+  /// Detect time tampering
+  /// @return [bool] true if time tampering is detected
+  ///
+  Future<bool> _detectTimeTampering() async {
+    if (_lastKnownTime == null) {
+      _lastKnownTime = DateTime.now();
+      await ref.watch(setLastKnownTimeUseCaseProvider(_lastKnownTime!).future);
+      return false;
+    }
+
+    final DateTime now = DateTime.now();
+
+    if (now.isBefore(_lastKnownTime!)) {
+      return true;
+    }
+
+    _lastKnownTime = now;
+    await ref.watch(setLastKnownTimeUseCaseProvider(_lastKnownTime!).future);
+
+    return false;
+  }
+
+  /// Start periodic check
+  /// @return [void]
+  ///
   void _startPeriodicCheck() {
     if (_timer?.isActive ?? false) return;
 
-    _timer = Timer.periodic(const Duration(hours: 5), (Timer timer) async {
-      final LoginResultLocalModel? currentLicense =
-          await _loadLicenseFromStorage();
-      if (currentLicense != null) {
-        await _checkValidity(currentLicense.licenseKey);
-      }
-    });
-  }
-
-  void _navigateToAuth() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final BuildContext? context = routingKey.currentContext;
-      if (context != null &&
-          GoRouterState.of(context).matchedLocation != '/auth') {
-        context.goNamed('auth');
-      }
-    });
+    _timer = Timer.periodic(
+      const Duration(hours: 1),
+      (Timer timer) async {
+        await _checkValidity();
+      },
+    );
   }
 
   /// Check if license is expired locally
@@ -186,11 +279,9 @@ class AuthService extends _$AuthService {
       return true;
     }
 
-    // Conversion en UTC pour éviter les problèmes de fuseau horaire
     final DateTime now = DateTime.now().toUtc();
     final DateTime expirationDate = state.value!.expirationDate!.toUtc();
 
-    // On crée une date d'expiration qui inclut toute la journée (23:59:59)
     final DateTime endOfExpirationDay = DateTime.utc(
       expirationDate.year,
       expirationDate.month,
@@ -200,10 +291,6 @@ class AuthService extends _$AuthService {
       59,
     );
 
-    // Ajout de logs pour le débogage
-    log('Date actuelle (UTC): $now');
-    log("Date d'expiration (UTC): $endOfExpirationDay");
-
     return now.isAfter(endOfExpirationDay);
   }
 
@@ -211,21 +298,17 @@ class AuthService extends _$AuthService {
   /// @param [isAuthenticated] is user authenticated
   /// @param [licenseId] license id
   /// @param [expirationDate] expiration date
+  /// @param [isAppLocked] override app locked state
   ///
   void _setUserAuthenticated(
     bool isAuthenticated, {
     String? licenseId,
     DateTime? expirationDate,
+    bool? isAppLocked,
   }) {
-    log('Set user $licenseId authenticate state to $isAuthenticated and '
-        'expiration date to $expirationDate');
+    final bool appLocked = isAppLocked ?? _isAppLocked;
 
-    // S'assurer que la date d'expiration est en UTC avant de la stocker
     final DateTime? localExpirationDate = expirationDate?.toUtc();
-
-    if (localExpirationDate != null) {
-      log("Date d'expiration convertie en UTC: $localExpirationDate");
-    }
 
     state = AsyncData<AuthState>(
       state.hasValue
@@ -234,14 +317,64 @@ class AuthService extends _$AuthService {
               licenseId: licenseId,
               expirationDate: localExpirationDate,
               isInitialized: true,
+              isAppLocked: appLocked,
             )
           : AuthState.initial(
               isUserAuthenticated: isAuthenticated,
               licenseId: licenseId,
               expirationDate: localExpirationDate,
               isInitialized: true,
+              isAppLocked: appLocked,
             ),
     );
+  }
+
+  /// Check validity and save security data
+  /// This method is useful to reactivate the app after a lock
+  /// @return [Future<bool>] the verification result
+  ///
+  Future<bool> _checkValidityAndSaveSecurityData() async {
+    final LoginResultEntity? licenseResult =
+        await ref.watch(getLicenseUseCaseProvider.future);
+
+    if (licenseResult == null) return false;
+
+    try {
+      final CheckValidityEntity result = await _checkValidityUseCase!.execute(
+        licenseResult.licenseKey,
+      );
+
+      if (result.valid) {
+        _failedChecksCount = 0;
+
+        await ref.watch(setFailCountUseCaseProvider(0).future);
+        _isAppLocked = false;
+        await ref.watch(setAppLockStateUseCaseProvider(false).future);
+        _lastKnownTime = DateTime.now();
+
+        await ref.watch(
+          setLastKnownTimeUseCaseProvider(_lastKnownTime!).future,
+        );
+
+        await ref.watch(
+          setLastCheckSuccessUseCaseProvider(
+            DateTime.now().toIso8601String(),
+          ).future,
+        );
+
+        _setUserAuthenticated(
+          true,
+          licenseId: licenseResult.licenseKey,
+          expirationDate: result.expirationDate,
+        );
+
+        return true;
+      }
+      return false;
+    } on Exception catch (e) {
+      log('Error when getting license and saving security data: $e');
+      return false;
+    }
   }
 
   /// Login
@@ -249,10 +382,14 @@ class AuthService extends _$AuthService {
   /// @return [Future<bool>] login result
   ///
   Future<bool> login(String licenseKey) async {
-    log('Start login');
+    log('🔐 Start login');
 
     if ((state.value?.isInitialized ?? false) == false) {
       await _initializeServices();
+    }
+
+    if (_isAppLocked) {
+      return _checkValidityAndSaveSecurityData();
     }
 
     try {
@@ -269,30 +406,37 @@ class AuthService extends _$AuthService {
       );
 
       final LoginResultEntity loginResult =
-          await ref.read(loginUseCaseProvider.notifier).execute(licenseKey);
+          await ref.watch(loginUseCaseProvider.notifier).execute(licenseKey);
 
       if (loginResult.valid) {
-        log('Login successful');
-        if (_timer != null && !_timer!.isActive) {
-          _startPeriodicCheck();
-        }
-        await _secureStorageService?.set(
-          _license,
-          jsonEncode(loginResult.toLocalModel().toJson()),
-        );
+        log('🔐✅ Login successful');
+
+        await ref.watch(saveLicenseUseCaseProvider(loginResult).future);
+
         _setUserAuthenticated(
           true,
           licenseId: licenseKey,
           expirationDate: loginResult.expirationDate,
         );
+
+        if (_timer == null || !_timer!.isActive) {
+          _startPeriodicCheck();
+        }
       } else {
         log('Login failed');
       }
 
       return loginResult.valid;
     } on Exception catch (e) {
-      log('Erreur lors de la connexion: $e');
+      log('Error when logging in: $e');
       return false;
     }
+  }
+
+  /// Check if the app is currently locked
+  /// @return [bool] true if the app is locked
+  ///
+  bool isAppLocked() {
+    return _isAppLocked || (state.value?.isAppLocked ?? false);
   }
 }

@@ -9,7 +9,7 @@ class LoginResultLocalModel with SerializableMixin {
   /// Constructor
   /// @param [valid] is valid
   /// @param [expirationDate] expiration date
-  ///
+  /// 
   LoginResultLocalModel({
     required this.valid,
     required this.licenseKey,

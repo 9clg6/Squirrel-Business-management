@@ -128,5 +128,11 @@ abstract class  LocaleKeys {
   static const setAsFailed = 'setAsFailed';
   static const selectSponsor = 'selectSponsor';
   static const selectClient = 'selectClient';
+  static const appLocked = 'appLocked';
+  static const systemDateModified = 'systemDateModified';
+  static const failedChecks = 'failedChecks';
+  static const failedChecksMax = 'failedChecksMax';
+  static const licenseValidationFailedTooManyTimes = 'licenseValidationFailedTooManyTimes';
+  static const appLockedMessage = 'appLockedMessage';
 
 }

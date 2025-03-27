@@ -14,6 +14,20 @@ class LoginResultEntity {
     required this.licenseKey,
   });
 
+  /// From local model
+  /// @param [localLicense] local license
+  /// @return [LoginResultEntity] login result entity
+  ///
+  factory LoginResultEntity.fromLocalModel(
+    LoginResultLocalModel localLicense,
+  ) {
+    return LoginResultEntity(
+      valid: localLicense.valid,
+      licenseKey: localLicense.licenseKey,
+      expirationDate: localLicense.expirationDate,
+    );
+  }
+
   /// From remote model
   /// @param [remoteModel] remote model
   /// @return [LoginResultEntity] login result entity

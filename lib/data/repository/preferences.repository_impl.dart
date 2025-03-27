@@ -4,7 +4,7 @@ import 'package:squirrel/data/local_data_source/preferences/preferences_local.da
 import 'package:squirrel/domain/repositories/preferences.repository.dart';
 import 'package:squirrel/foundation/enums/theme_appareance.enum.dart';
 
-part 'preferences_repository_impl.g.dart';
+part 'preferences.repository_impl.g.dart';
 
 /// [PreferencesRepositoryImpl]
 @Riverpod(

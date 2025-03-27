@@ -10,12 +10,15 @@ class AuthState with EquatableMixin {
   /// @param [isUserAuthenticated] is user authenticated
   /// @param [licenseId] license id
   /// @param [expirationDate] expiration date
+  /// @param [isInitialized] is initialized
+  /// @param [isAppLocked] is app locked due to security checks
   ///
   AuthState({
     required this.isUserAuthenticated,
     required this.isInitialized,
     this.licenseId,
     this.expirationDate,
+    this.isAppLocked = false,
   });
 
   /// Initial
@@ -23,12 +26,14 @@ class AuthState with EquatableMixin {
   /// @param [isUserAuthenticated] is user authenticated
   /// @param [licenseId] license id
   /// @param [expirationDate] expiration date
+  /// @param [isAppLocked] is app locked due to security checks
   ///
   AuthState.initial({
     bool? isInitialized,
     this.isUserAuthenticated = false,
     this.licenseId,
     this.expirationDate,
+    this.isAppLocked = false,
   }) : isInitialized = isInitialized ?? false;
 
   /// Is user authenticated
@@ -42,6 +47,9 @@ class AuthState with EquatableMixin {
 
   /// Expiration date
   final DateTime? expirationDate;
+  
+  /// Is app locked due to security checks
+  final bool isAppLocked;
 
   /// Get props
   /// @return [List<Object?>] props
@@ -52,6 +60,6 @@ class AuthState with EquatableMixin {
         licenseId,
         expirationDate,
         isInitialized,
-        isUserAuthenticated,
+        isAppLocked,
       ];
 }

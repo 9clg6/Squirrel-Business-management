@@ -20,6 +20,7 @@ part 'auth.view_model.g.dart';
 class Auth extends _$Auth {
   late final DialogService _dialogService;
   late final NavigatorService _navigatorService;
+  late final AuthService _authService;
 
   bool _isInitialized = false;
 
@@ -31,6 +32,7 @@ class Auth extends _$Auth {
       log('🔌 Initializing AuthViewModel');
       _dialogService = ref.watch(dialogServiceProvider.notifier);
       _navigatorService = ref.read(navigatorServiceProvider.notifier);
+      _authService = ref.watch(authServiceProvider.notifier);
       _isInitialized = true;
     }
 
@@ -42,8 +44,7 @@ class Auth extends _$Auth {
   ///
   Future<void> login(String licenseKey) async {
     state = state.copyWith(loading: true);
-    final bool result =
-        await ref.watch(authServiceProvider.notifier).login(licenseKey);
+    final bool result = await _authService.login(licenseKey);
 
     if (result) {
       final bool? useConditionsResult =

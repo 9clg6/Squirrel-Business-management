@@ -1,28 +1,29 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'navigator.service.dart';
+part of 'connectivity.service.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$navigatorServiceHash() => r'08c5f7aea1102f83cfd7df8629a47c33b5560a45';
+String _$connectivityServiceHash() =>
+    r'03ab27879f8187a78f8df0a8ff656ba213d13e61';
 
-/// Navigator service
+/// Service pour gérer la connectivité réseau
 ///
-/// Copied from [NavigatorService].
-@ProviderFor(NavigatorService)
-final navigatorServiceProvider =
-    AutoDisposeNotifierProvider<NavigatorService, NavigatorService>.internal(
-  NavigatorService.new,
-  name: r'navigatorServiceProvider',
+/// Copied from [ConnectivityService].
+@ProviderFor(ConnectivityService)
+final connectivityServiceProvider = AutoDisposeAsyncNotifierProvider<
+    ConnectivityService, ConnectivityService>.internal(
+  ConnectivityService.new,
+  name: r'connectivityServiceProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$navigatorServiceHash,
+      : _$connectivityServiceHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$NavigatorService = AutoDisposeNotifier<NavigatorService>;
+typedef _$ConnectivityService = AutoDisposeAsyncNotifier<ConnectivityService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

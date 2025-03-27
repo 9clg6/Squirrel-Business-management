@@ -15,6 +15,8 @@ abstract class _$AuthStateCWProxy {
 
   AuthState expirationDate(DateTime? expirationDate);
 
+  AuthState isAppLocked(bool isAppLocked);
+
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `AuthState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
@@ -26,6 +28,7 @@ abstract class _$AuthStateCWProxy {
     bool? isInitialized,
     String? licenseId,
     DateTime? expirationDate,
+    bool? isAppLocked,
   });
 }
 
@@ -51,6 +54,9 @@ class _$AuthStateCWProxyImpl implements _$AuthStateCWProxy {
       this(expirationDate: expirationDate);
 
   @override
+  AuthState isAppLocked(bool isAppLocked) => this(isAppLocked: isAppLocked);
+
+  @override
 
   /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `AuthState(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
@@ -63,6 +69,7 @@ class _$AuthStateCWProxyImpl implements _$AuthStateCWProxy {
     Object? isInitialized = const $CopyWithPlaceholder(),
     Object? licenseId = const $CopyWithPlaceholder(),
     Object? expirationDate = const $CopyWithPlaceholder(),
+    Object? isAppLocked = const $CopyWithPlaceholder(),
   }) {
     return AuthState(
       isUserAuthenticated:
@@ -84,6 +91,11 @@ class _$AuthStateCWProxyImpl implements _$AuthStateCWProxy {
           ? _value.expirationDate
           // ignore: cast_nullable_to_non_nullable
           : expirationDate as DateTime?,
+      isAppLocked:
+          isAppLocked == const $CopyWithPlaceholder() || isAppLocked == null
+              ? _value.isAppLocked
+              // ignore: cast_nullable_to_non_nullable
+              : isAppLocked as bool,
     );
   }
 }
