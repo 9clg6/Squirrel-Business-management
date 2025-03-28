@@ -84,12 +84,14 @@ class AuthService extends _$AuthService {
   Future<void> _initDependencies() async {
     _requestService ??= ref.watch(requestServiceProvider.notifier);
     _checkValidityUseCase ??= ref.watch(checkValidityUseCaseProvider.notifier);
+    log('🔌✅ AuthService initialized');
   }
 
   /// Load user from local storage
   /// @return [Future<AuthState?>] auth state
   ///
   Future<void> loadUser() async {
+    log('🔐 Loading user');
     try {
       if (_isAppLocked) {
         state = AsyncData<AuthState>(
@@ -109,12 +111,14 @@ class AuthService extends _$AuthService {
 
       if (licenseResult != null) {
         if (_failedChecksCount >= _maxFailedChecks) {
+          log('🔐❌ License found but failed checks count is too high, locking');
           await _lockApp();
           return;
         }
 
         if (await _detectTimeTampering()) {
           await _lockApp(LocaleKeys.systemDateModified.tr());
+          log('🔐❌ System date modified, locking');
           return;
         }
         _setUserAuthenticated(
@@ -137,6 +141,7 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _checkValidity() async {
     try {
+      log('🔐 Checking validity');
       final LoginResultEntity? licenseResult =
           await ref.watch(getLicenseUseCaseProvider.future);
 
@@ -146,6 +151,7 @@ class AuthService extends _$AuthService {
           _failedChecksCount >= _maxFailedChecks;
 
       if (hasReachedMaxFailedChecks) {
+        log('🔐❌ Failed checks count reached max, locking');
         await _lockApp();
         return;
       }
@@ -154,6 +160,7 @@ class AuthService extends _$AuthService {
           await _checkValidityUseCase!.execute(licenseResult.licenseKey);
 
       if (result.valid) {
+        log('🔐✅ License valid, reset security');
         _failedChecksCount = 0;
         await ref.watch(setFailCountUseCaseProvider(0).future);
         await ref.watch(
@@ -176,19 +183,22 @@ class AuthService extends _$AuthService {
           expirationDate: result.expirationDate,
         );
       } else {
-        await _handleFailedCheck();
+        log('🔐❌ License invalid, handle failed check');
+        _setUserAuthenticated(
+          false,
+          isAppLocked: false,
+        );
       }
     } on Exception catch (e) {
-      log('🔐❌ Error when checking validity: $e');
-
-      await _handleFailedCheck();
+      await _handleFailedCheck(e);
     }
   }
 
   /// Handle failed check
   /// @return [Future<void>]
   ///
-  Future<void> _handleFailedCheck() async {
+  Future<void> _handleFailedCheck(Exception e) async {
+    log('🔐❌ Error when checking validity: $e');
     _failedChecksCount++;
 
     await ref.watch(setFailCountUseCaseProvider(_failedChecksCount).future);
@@ -205,6 +215,7 @@ class AuthService extends _$AuthService {
   Future<void> _lockApp([
     String message = LocaleKeys.licenseValidationFailedTooManyTimes,
   ]) async {
+    log('🔐 Locking app');
     _isAppLocked = true;
     await ref.watch(setAppLockStateUseCaseProvider(true).future);
 
@@ -214,6 +225,8 @@ class AuthService extends _$AuthService {
       ),
     );
 
+    log('🔐✅ App locked');
+
     ref.read(dialogServiceProvider.notifier).showError(message.tr());
   }
 
@@ -221,8 +234,9 @@ class AuthService extends _$AuthService {
   /// @return [Future<void>]
   ///
   Future<void> _loadFailedChecksCount() async {
+    log('🔌 Loading failed checks count');
     final int? count = await ref.read(getFailCountUseCaseProvider.future);
-
+    log('🔌✅ Failed checks count loaded: $count');
     _failedChecksCount = count ?? 0;
   }
 
@@ -230,8 +244,9 @@ class AuthService extends _$AuthService {
   /// @return [Future<void>]
   ///
   Future<void> _loadAppLockedState() async {
+    log('🔌 Loading app locked state');
     final bool? locked = await ref.watch(getAppLockStateUseCaseProvider.future);
-
+    log('🔌✅ App locked state loaded: $locked');
     _isAppLocked = locked ?? false;
   }
 
@@ -262,6 +277,7 @@ class AuthService extends _$AuthService {
   ///
   void _startPeriodicCheck() {
     if (_timer?.isActive ?? false) return;
+    log('♻️ Starting periodic check');
 
     _timer = Timer.periodic(
       const Duration(hours: 1),
@@ -276,6 +292,7 @@ class AuthService extends _$AuthService {
   ///
   bool isLicenseExpiredLocally() {
     if (state.value?.expirationDate == null) {
+      log('🔐❌ License expired locally: no expiration date');
       return true;
     }
 
@@ -291,7 +308,10 @@ class AuthService extends _$AuthService {
       59,
     );
 
-    return now.isAfter(endOfExpirationDay);
+    final bool test = now.isAfter(endOfExpirationDay);
+
+    log('🔐 Is license expired locally: $test');
+    return test;
   }
 
   /// Set user authenticated
@@ -309,6 +329,9 @@ class AuthService extends _$AuthService {
     final bool appLocked = isAppLocked ?? _isAppLocked;
 
     final DateTime? localExpirationDate = expirationDate?.toUtc();
+
+    log('🔐✅ Setting $licenseId authenticated: $isAuthenticated with'
+        ' expiration date: $localExpirationDate');
 
     state = AsyncData<AuthState>(
       state.hasValue
@@ -334,6 +357,7 @@ class AuthService extends _$AuthService {
   /// @return [Future<bool>] the verification result
   ///
   Future<bool> _checkValidityAndSaveSecurityData() async {
+    log('🔐 Checking validity and saving security data');
     final LoginResultEntity? licenseResult =
         await ref.watch(getLicenseUseCaseProvider.future);
 
@@ -374,6 +398,8 @@ class AuthService extends _$AuthService {
     } on Exception catch (e) {
       log('Error when getting license and saving security data: $e');
       return false;
+    } finally {
+      log('🔐✅ Checking validity and saving security data finished');
     }
   }
 
@@ -423,12 +449,12 @@ class AuthService extends _$AuthService {
           _startPeriodicCheck();
         }
       } else {
-        log('Login failed');
+        log('🔐❌ Login failed');
       }
 
       return loginResult.valid;
     } on Exception catch (e) {
-      log('Error when logging in: $e');
+      log('🔐❌ Error when logging in: $e');
       return false;
     }
   }

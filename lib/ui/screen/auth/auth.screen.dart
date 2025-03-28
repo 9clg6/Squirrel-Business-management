@@ -35,6 +35,7 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
   Widget build(BuildContext context) {
     ref.watch(authServiceProvider);
     final AuthScreenState authState = ref.watch(authProvider);
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
@@ -84,8 +85,17 @@ class _AuthScreenState extends ConsumerState<AuthScreen> {
                           .login(_licenseKeyController.text);
                     }
                   },
+                  style: ButtonStyle(
+                    backgroundColor: WidgetStateProperty.all(
+                      colorScheme.primary,
+                    ),
+                    foregroundColor: WidgetStateProperty.all(
+                      colorScheme.onPrimary,
+                    ),
+                  ),
                   child: TextVariant(
                     LocaleKeys.login.tr(),
+                    color: colorScheme.onPrimary,
                   ),
                 ),
               const Gap(42),

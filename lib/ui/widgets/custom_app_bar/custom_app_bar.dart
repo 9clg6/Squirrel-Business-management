@@ -8,6 +8,7 @@ import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
+import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
@@ -47,19 +48,10 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
       actions: <Widget>[
         authState.when(
           data: (AuthState authValue) {
-            final Duration timeRemain =
-                authValue.expirationDate?.difference(DateTime.now()) ??
-                    Duration.zero;
-            final int daysRemain = timeRemain.inDays;
-            final int hoursRemain = timeRemain.inHours % 24;
-            final int minutesRemain = timeRemain.inMinutes % 60;
-
             return TextVariant(
               LocaleKeys.yourLicenseWillExpireIn.tr(
                 args: <String>[
-                  daysRemain.toString(),
-                  hoursRemain.toString(),
-                  minutesRemain.toString(),
+                  authValue.expirationDate?.toDDMMYYYY() ?? '',
                 ],
               ),
             );

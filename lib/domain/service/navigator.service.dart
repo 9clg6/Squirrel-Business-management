@@ -50,7 +50,7 @@ class NavigatorService extends _$NavigatorService {
   /// Navigate to auth
   ///
   void navigateToAuth() {
-    log('🔐 Navigating to auth');
-    routingKey.currentContext?.goNamed(RouterEnum.auth.name);
+    log('🌍 Navigating to auth');
+    routingKey.currentContext?.replaceNamed(RouterEnum.auth.name);
   }
 }

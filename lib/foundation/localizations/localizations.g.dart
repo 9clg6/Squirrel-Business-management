@@ -119,7 +119,7 @@ class CodegenLoader extends AssetLoader{
   "bestClient": "Client le plus fidèle",
   "mostFrequentClient": "Client le plus fréquent",
   "totalOrdersAmount": "Montant total des commandes",
-  "yourLicenseWillExpireIn": "Votre licence expire dans {} jours et {} heures et {} minutes",
+  "yourLicenseWillExpireIn": "Votre licence expire le {} à {} heures",
   "hours": "heures",
   "contactYourProviderToRenew": "Contactez votre fournisseur pour la renouveler",
   "requestWeb": "Requête web",
