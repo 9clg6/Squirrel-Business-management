@@ -88,17 +88,27 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
                 ],
               ),
               const SizedBox(height: 20),
-              if (widget.client.lastOrderDate != null)
+              if (widget.client.lastOrderDate != null) ...<Widget>[
                 TextVariant(
-                  'Date de la dernière commande\n${dateFormat.format(widget.client.lastOrderDate!)}',
+                  LocaleKeys.lastDateOrder.tr(),
                   color: colorScheme.onSurface,
                 ),
+                TextVariant(
+                  dateFormat.format(widget.client.lastOrderDate!),
+                  color: colorScheme.onSurface,
+                ),
+              ],
               const SizedBox(height: 12),
-              if (widget.client.firstOrderDate != null)
+              if (widget.client.firstOrderDate != null) ...<Widget>[
                 TextVariant(
-                  'Date de la première commande:\n${dateFormat.format(widget.client.firstOrderDate!)}',
+                  LocaleKeys.firstDateOrder.tr(),
                   color: colorScheme.onSurface,
                 ),
+                TextVariant(
+                  dateFormat.format(widget.client.firstOrderDate!),
+                  color: colorScheme.onSurface,
+                ),
+              ],
               const SizedBox(height: 24),
               Align(
                 alignment: Alignment.centerRight,

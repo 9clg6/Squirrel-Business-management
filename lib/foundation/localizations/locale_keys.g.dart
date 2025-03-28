@@ -135,5 +135,7 @@ abstract class  LocaleKeys {
   static const licenseValidationFailedTooManyTimes = 'licenseValidationFailedTooManyTimes';
   static const appLockedMessage = 'appLockedMessage';
   static const close = 'close';
+  static const lastDateOrder = 'lastDateOrder';
+  static const firstDateOrder = 'firstDateOrder';
 
 }

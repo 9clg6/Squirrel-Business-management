@@ -146,7 +146,9 @@ class CodegenLoader extends AssetLoader{
   "failedChecksMax": "Nombre de tentatives de connexion maximum atteint. L'application sera verrouillée.",
   "licenseValidationFailedTooManyTimes": "Validation de licence échouée trop de fois. Veuillez vous connecter à internet pour réactiver votre licence.",
   "appLockedMessage": "Votre application est bloqué, car la vérification de la licence a été empêchée",
-  "close": "Fermer"
+  "close": "Fermer",
+  "lastDateOrder": "Date de la dernière commande",
+  "firstDateOrder": "Date de la première commande"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"fr": _fr};
 }
