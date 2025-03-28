@@ -9,10 +9,14 @@ class HelpText extends StatelessWidget {
   const HelpText({
     required this.text,
     super.key,
+    this.color,
   });
 
   /// Text
   final String text;
+
+  /// Color
+  final Color? color;
 
   /// Build
   /// @param [context] context
@@ -27,7 +31,7 @@ class HelpText extends StatelessWidget {
       children: <Widget>[
         Icon(
           Icons.info_outline,
-          color: colorScheme.onSurface.withValues(alpha: .6),
+          color: color ?? colorScheme.onSurface.withValues(alpha: .6),
           size: 16,
         ),
         const SizedBox(width: 8),
@@ -37,7 +41,7 @@ class HelpText extends StatelessWidget {
             style: textTheme.bodyMedium?.copyWith(
               fontWeight: FontWeight.w400,
               fontSize: 12,
-              color: colorScheme.onSurface.withValues(alpha: .6),
+              color: color ?? colorScheme.onSurface.withValues(alpha: .6),
             ),
           ),
         ),

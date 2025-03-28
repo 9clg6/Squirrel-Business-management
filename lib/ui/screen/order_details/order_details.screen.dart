@@ -366,6 +366,8 @@ class _ActionsHistory extends ConsumerWidget {
   const _ActionsHistory(
     this.order,
   );
+
+  /// The order
   final Order order;
 
   /// Builds the actions history
@@ -485,9 +487,14 @@ class _ActionsHistory extends ConsumerWidget {
                                   decoration: BoxDecoration(
                                     shape: BoxShape.circle,
                                     color: isFirst
-                                        ? colorScheme.tertiary
-                                        : colorScheme.primary
-                                            .withValues(alpha: .6),
+                                        ? colorScheme.primary
+                                        : colorScheme.onPrimary,
+                                    border: Border.all(
+                                      color: isFirst
+                                          ? Colors.transparent
+                                          : colorScheme.primary,
+                                      width: 2,
+                                    ),
                                   ),
                                 ),
                               ),

@@ -19,8 +19,7 @@ class IndexScreenState extends ViewStateAbs {
     this.orders,
     this.pinnedOrders,
     this.selectedOrders,
-    this.sortColumnIndex,
-    this.nextAction, {
+    this.sortColumnIndex, {
     this.showComboBox = false,
     this.sortAscending = true,
   }) : scrollController = ScrollController();
@@ -28,8 +27,7 @@ class IndexScreenState extends ViewStateAbs {
   /// Initial state
   ///
   IndexScreenState.initial(
-    this.orders,
-    this.nextAction, {
+    this.orders, {
     this.pinnedOrders = const <Order>[],
     this.showComboBox = false,
     this.sortColumnIndex = 0,
@@ -58,9 +56,6 @@ class IndexScreenState extends ViewStateAbs {
   /// Sort ascending
   final bool sortAscending;
 
-  /// Next action
-  final Map<Order, OrderAction?>? nextAction;
-
   /// Get props
   ///
   @override
@@ -71,7 +66,6 @@ class IndexScreenState extends ViewStateAbs {
         selectedOrders,
         sortColumnIndex,
         sortAscending,
-        nextAction,
         scrollController,
       ];
 }

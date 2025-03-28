@@ -674,81 +674,82 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
   @override
   Widget build(BuildContext context) {
     final Index viewModel = ref.read(indexProvider.notifier);
-    final IndexScreenState state = ref.watch(indexProvider);
+    final AsyncValue<OrderState> state = ref.watch(orderServiceProvider);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    return switch (state) {
-      AsyncError<OrderState>(:final Object error) => TextVariant(
-          error.toString(),
-        ),
-      AsyncLoading<OrderState>() => const CircularProgressIndicator(),
-      AsyncData<OrderState>(value: OrderState()) => MouseRegion(
-          cursor: state.nextAction != null
-              ? SystemMouseCursors.click
-              : SystemMouseCursors.basic,
-          onExit: (_) {
-            if (state.nextAction != null) {
-              setState(() => isHover = false);
-            }
+    return state.when(
+      data: (OrderState data) => MouseRegion(
+        cursor: data.nextAction != null
+            ? SystemMouseCursors.click
+            : SystemMouseCursors.basic,
+        onExit: (_) {
+          if (data.nextAction != null) {
+            setState(() => isHover = false);
+          }
+        },
+        onHover: (_) {
+          if (data.nextAction != null) {
+            setState(() => isHover = true);
+          }
+        },
+        child: GestureDetector(
+          onTap: () {
+            viewModel.navigateToDetails(
+              data.nextAction!.keys.first,
+            );
           },
-          onHover: (_) {
-            if (state.nextAction != null) {
-              setState(() => isHover = true);
-            }
-          },
-          child: GestureDetector(
-            onTap: () {
-              viewModel.navigateToDetails(
-                state.nextAction!.keys.first,
-              );
-            },
-            child: Container(
-              width: 250,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: isHover
-                    ? colorScheme.primaryContainer
-                    : colorScheme.surface,
-                borderRadius: BorderRadius.circular(20),
-                border: Border.all(
-                  color: colorScheme.outline.withValues(alpha: .2),
-                ),
+          child: Container(
+            width: 250,
+            padding: const EdgeInsets.all(20),
+            decoration: BoxDecoration(
+              color:
+                  isHover ? colorScheme.primaryContainer : colorScheme.surface,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: colorScheme.outline.withValues(alpha: .2),
               ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                TextVariant(
+                  LocaleKeys.nextAction.tr(),
+                  variantType: TextVariantType.bodySmall,
+                  color:
+                      isHover ? colorScheme.onPrimary : colorScheme.onSurface,
+                ),
+                const SizedBox(height: 10),
+                if (data.nextAction != null)
                   TextVariant(
-                    LocaleKeys.nextAction.tr(),
-                    variantType: TextVariantType.bodySmall,
+                    data.nextAction!.keys.firstOrNull?.actions.firstOrNull?.date
+                            .toDDMMYYYY() ??
+                        '',
+                    variantType: TextVariantType.titleLarge,
+                    color:
+                        isHover ? colorScheme.onPrimary : colorScheme.onSurface,
+                  )
+                else
+                  TextVariant(
+                    LocaleKeys.noNextAction.tr(),
                     color:
                         isHover ? colorScheme.onPrimary : colorScheme.onSurface,
                   ),
-                  const SizedBox(height: 10),
-                  if (state.nextAction != null)
-                    TextVariant(
-                      state.nextAction!.keys.firstOrNull?.actions.firstOrNull
-                              ?.date
-                              .toDDMMYYYY() ??
-                          '',
-                      variantType: TextVariantType.titleLarge,
-                      color: isHover
-                          ? colorScheme.onPrimary
-                          : colorScheme.onSurface,
-                    )
-                  else
-                    TextVariant(
-                      LocaleKeys.noNextAction.tr(),
-                      color: colorScheme.onSurface,
-                    ),
-                  const SizedBox(height: 10),
-                  if (state.nextAction != null)
-                    HelpText(text: LocaleKeys.clickToSeeDetails.tr()),
-                ],
-              ),
+                const SizedBox(height: 10),
+                if (data.nextAction != null)
+                  HelpText(
+                    text: LocaleKeys.clickToSeeDetails.tr(),
+                    color:
+                        isHover ? colorScheme.onPrimary : colorScheme.onSurface,
+                  ),
+              ],
             ),
           ),
         ),
-      IndexScreenState() => const SizedBox.shrink(),
-    };
+      ),
+      loading: () => const CircularProgressIndicator(),
+      error: (Object error, StackTrace stackTrace) => TextVariant(
+        error.toString(),
+      ),
+    );
   }
 }

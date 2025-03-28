@@ -32,7 +32,6 @@ class Index extends _$Index {
     if (!_isInitialized) {
       _navigatorService = ref.read(navigatorServiceProvider.notifier);
       _dialogService = ref.read(dialogServiceProvider.notifier);
-
       _orderService = ref.watch(orderServiceProvider.notifier);
 
       _isInitialized = true;
@@ -45,7 +44,6 @@ class Index extends _$Index {
 
     return IndexScreenState.initial(
       state.value!.runningOrder,
-      state.value!.nextAction,
     );
   }
 
@@ -210,6 +208,7 @@ class Index extends _$Index {
             return 0;
         }
       });
+
     WidgetsBinding.instance.addPostFrameCallback((_) {
       state = state.copyWith(
         orders: orders,
