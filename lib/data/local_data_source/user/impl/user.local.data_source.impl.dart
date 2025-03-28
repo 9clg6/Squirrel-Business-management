@@ -35,16 +35,29 @@ class UserLocalDataSourceImpl extends _$UserLocalDataSourceImpl
   ///
   @override
   Future<LoginResultLocalModel?> getLicence() async {
-    final String? license =
-        await _secureStorageService?.get(_license) as String?;
-    if (license == null) return null;
-
     try {
+      // S'assurer que le service de stockage est initialisé
+      if (_secureStorageService == null) {
+        log('⚠️ Secure storage service not initialized when getting license');
+        _secureStorageService = await ref.watch(
+          hiveSecureStorageServiceProvider.future,
+        );
+      }
+
+      final String? license =
+          await _secureStorageService?.get(_license) as String?;
+
+      if (license == null) {
+        log('⚠️ No license found in secure storage');
+        return null;
+      }
+
+      log('✅ License found in secure storage, deserializing');
       return LoginResultLocalModel.fromJson(
         jsonDecode(license) as Map<String, dynamic>,
       );
     } on Exception catch (e) {
-      log('Erreur lors du décodage de la licence: $e');
+      log('❌ Error while retrieving license: $e');
       return null;
     }
   }

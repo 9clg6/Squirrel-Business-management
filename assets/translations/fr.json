@@ -129,5 +129,6 @@
   "failedChecks": "Nombre de tentatives de connexion échouées",
   "failedChecksMax": "Nombre de tentatives de connexion maximum atteint. L'application sera verrouillée.",
   "licenseValidationFailedTooManyTimes": "Validation de licence échouée trop de fois. Veuillez vous connecter à internet pour réactiver votre licence.",
-  "appLockedMessage": "Votre application est bloqué, car la vérification de la licence a été empêchée"
+  "appLockedMessage": "Votre application est bloqué, car la vérification de la licence a été empêchée",
+  "close": "Fermer"
 }

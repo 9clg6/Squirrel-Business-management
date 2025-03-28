@@ -315,7 +315,10 @@ class OrderService extends _$OrderService {
         order,
       );
       log('[OrderService] Created client: ${client.name}');
+    } else {
+      log('[OrderService] Using existing client: ${client.name}');
     }
+
     _clientService.updateClientWithOrder(
       client,
       order: order,
@@ -332,5 +335,8 @@ class OrderService extends _$OrderService {
         ],
       ),
     );
+
+    // Assurez-vous de sauvegarder les ordres après l'ajout
+    _save(state.value!);
   }
 }

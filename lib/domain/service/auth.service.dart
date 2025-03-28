@@ -61,6 +61,11 @@ class AuthService extends _$AuthService {
   ///
   @override
   Future<AuthState> build() async {
+    // S'assurer que l'état est toujours initialisé avec une valeur par défaut
+    if (!state.hasValue || state.value == null) {
+      state = AsyncData<AuthState>(AuthState.initial(isInitialized: false));
+    }
+
     await _initializeServices();
 
     return state.value ?? AuthState.initial(isInitialized: true);
@@ -71,11 +76,26 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _initializeServices() async {
     log('🔌 Initializing AuthService');
+
+    if (!state.hasValue || state.value == null) {
+      state = AsyncData<AuthState>(
+        AuthState.initial(isInitialized: false),
+      );
+    }
+
     await _initDependencies();
     await _loadFailedChecksCount();
     await _loadAppLockedState();
+
     await loadUser();
+
+    state = AsyncData<AuthState>(
+      state.value!.copyWith(isInitialized: true),
+    );
+
     _startPeriodicCheck();
+
+    log('🔌✅ AuthService fully initialized with auth state');
   }
 
   /// Initialize dependencies
@@ -94,9 +114,13 @@ class AuthService extends _$AuthService {
     log('🔐 Loading user');
     try {
       if (_isAppLocked) {
-        state = AsyncData<AuthState>(
-          state.value!.copyWith(isAppLocked: true),
-        );
+        if (state.value == null) {
+          state = AsyncData<AuthState>(AuthState.initial(isAppLocked: true));
+        } else {
+          state = AsyncData<AuthState>(
+            state.value!.copyWith(isAppLocked: true),
+          );
+        }
 
         ref.read(dialogServiceProvider.notifier).showError(
               LocaleKeys.appLocked.tr(),
@@ -219,11 +243,17 @@ class AuthService extends _$AuthService {
     _isAppLocked = true;
     await ref.watch(setAppLockStateUseCaseProvider(true).future);
 
-    state = AsyncData<AuthState>(
-      state.value!.copyWith(
-        isAppLocked: true,
-      ),
-    );
+    if (state.value == null) {
+      state = AsyncData<AuthState>(
+        AuthState.initial(isAppLocked: true),
+      );
+    } else {
+      state = AsyncData<AuthState>(
+        state.value!.copyWith(
+          isAppLocked: true,
+        ),
+      );
+    }
 
     log('🔐✅ App locked');
 

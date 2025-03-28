@@ -1,18 +1,19 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:gap/gap.dart';
-import 'package:go_router/go_router.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Client details dialog
 class ClientDetailDialog extends StatefulWidget {
-
   /// Public constructor
   /// @param client: The client to show
   ///
   const ClientDetailDialog({
-    required this.client, super.key,
+    required this.client,
+    super.key,
   });
+
   /// The client to show
   final Client client;
 
@@ -31,87 +32,151 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
+    final DateFormat dateFormat = DateFormat.yMMMMd('fr_FR');
 
     return Dialog(
-      insetPadding: const EdgeInsets.all(100),
-      child: ClipRRect(
+      shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
-        child: Scaffold(
-          backgroundColor: colorScheme.surface,
-          appBar: AppBar(
-            title: Hero(
-              tag: widget.client.id,
-              child: TextVariant(
-                widget.client.name,
-                variantType: TextVariantType.titleMedium,
+      ),
+      backgroundColor: Colors.white,
+      insetPadding: const EdgeInsets.symmetric(
+        horizontal: 40,
+        vertical: 24,
+      ),
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxWidth: 500),
+        child: Padding(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              TextVariant(
+                widget.client.name.capitalize,
+                variantType: TextVariantType.headlineSmall,
+                color: colorScheme.onSurface,
               ),
-            ),
-            centerTitle: true,
-            automaticallyImplyLeading: false,
-            actions: <Widget>[
-              IconButton(
-                onPressed: context.pop,
-                icon: const Icon(Icons.close),
+              const SizedBox(height: 20),
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: <Widget>[
+                  _StatCard(
+                    label: 'Total des commandes',
+                    value: LocaleKeys.priceWithSymbol.tr(
+                      args: <String>[
+                        widget.client.orderTotalAmount.toStringAsFixed(2),
+                      ],
+                    ),
+                  ),
+                  _StatCard(
+                    label: 'Commission totale',
+                    value: LocaleKeys.priceWithSymbol.tr(
+                      args: <String>[
+                        widget.client.commissionTotalAmount.toStringAsFixed(2),
+                      ],
+                    ),
+                  ),
+                  _StatCard(
+                    label: 'Quantité de commandes',
+                    value: '${widget.client.orderQuantity}',
+                  ),
+                  _StatCard(
+                    label: 'Quantité de parrainages',
+                    value: '${widget.client.sponsorshipQuantity}',
+                  ),
+                ],
               ),
-              const Gap(20),
+              const SizedBox(height: 20),
+              if (widget.client.lastOrderDate != null)
+                TextVariant(
+                  'Date de la dernière commande\n${dateFormat.format(widget.client.lastOrderDate!)}',
+                  color: colorScheme.onSurface,
+                ),
+              const SizedBox(height: 12),
+              if (widget.client.firstOrderDate != null)
+                TextVariant(
+                  'Date de la première commande:\n${dateFormat.format(widget.client.firstOrderDate!)}',
+                  color: colorScheme.onSurface,
+                ),
+              const SizedBox(height: 24),
+              Align(
+                alignment: Alignment.centerRight,
+                child: TextButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: TextButton.styleFrom(
+                    foregroundColor: colorScheme.onPrimary,
+                    backgroundColor: colorScheme.primary,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16,
+                      vertical: 8,
+                    ),
+                    child: TextVariant(
+                      LocaleKeys.close.tr(),
+                      color: colorScheme.onPrimary,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
-          body: Container(
-            width: double.infinity,
-            height: double.infinity,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 60,
-              vertical: 40,
-            ),
-            decoration: BoxDecoration(
-              color: colorScheme.surfaceDim,
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: colorScheme.outline.withValues(alpha: .2),
-              ),
-            ),
-            child: Column(
-              children: <Widget>[
-                Row(
-                  children: <Widget>[
-                    Container(
-                      padding: const EdgeInsets.all(20),
-                      decoration: BoxDecoration(
-                        color: colorScheme.surface,
-                        borderRadius: BorderRadius.circular(40),
-                        border: Border.all(
-                          color: colorScheme.outline.withValues(alpha: .2),
-                        ),
-                      ),
-                      child: Column(
-                        children: <Widget>[
-                          CircleAvatar(
-                            radius: 40,
-                            child: TextVariant(
-                              widget.client.name.substring(0, 1),
-                              variantType: TextVariantType.titleLarge,
-                            ),
-                          ),
-                          const Gap(20),
-                          TextVariant(
-                            widget.client.name,
-                            variantType: TextVariantType.titleLarge,
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                    Expanded(
-                      child: Container(),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
         ),
+      ),
+    );
+  }
+}
+
+class _StatCard extends StatelessWidget {
+  /// Public constructor
+  /// @param label: The label
+  /// @param value: The value
+  ///
+  const _StatCard({
+    required this.label,
+    required this.value,
+  });
+
+  /// The label
+  final String label;
+
+  /// The value
+  final dynamic value;
+
+  /// Build
+  /// @param context: The build context
+  /// @return The widget
+  ///
+  @override
+  Widget build(BuildContext context) {
+    final ColorScheme colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: 160,
+      padding: const EdgeInsets.all(12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        color: colorScheme.surfaceContainerLow,
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          TextVariant(
+            label,
+            color: colorScheme.onSurface,
+          ),
+          const SizedBox(height: 4),
+          TextVariant(
+            value.toString(),
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: colorScheme.onSurface,
+          ),
+        ],
       ),
     );
   }

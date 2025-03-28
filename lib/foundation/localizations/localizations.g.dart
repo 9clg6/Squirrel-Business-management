@@ -119,7 +119,7 @@ class CodegenLoader extends AssetLoader{
   "bestClient": "Client le plus fidèle",
   "mostFrequentClient": "Client le plus fréquent",
   "totalOrdersAmount": "Montant total des commandes",
-  "yourLicenseWillExpireIn": "Votre licence expire le {} à {} heures",
+  "yourLicenseWillExpireIn": "Votre licence expire le {}",
   "hours": "heures",
   "contactYourProviderToRenew": "Contactez votre fournisseur pour la renouveler",
   "requestWeb": "Requête web",
@@ -145,7 +145,8 @@ class CodegenLoader extends AssetLoader{
   "failedChecks": "Nombre de tentatives de connexion échouées",
   "failedChecksMax": "Nombre de tentatives de connexion maximum atteint. L'application sera verrouillée.",
   "licenseValidationFailedTooManyTimes": "Validation de licence échouée trop de fois. Veuillez vous connecter à internet pour réactiver votre licence.",
-  "appLockedMessage": "Votre application est bloqué, car la vérification de la licence a été empêchée"
+  "appLockedMessage": "Votre application est bloqué, car la vérification de la licence a été empêchée",
+  "close": "Fermer"
 };
 static const Map<String, Map<String,dynamic>> mapLocales = {"fr": _fr};
 }

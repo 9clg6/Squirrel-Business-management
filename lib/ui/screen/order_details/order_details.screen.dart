@@ -1073,6 +1073,8 @@ class _ClientInfoCard extends ConsumerWidget {
   const _ClientInfoCard(
     this.order,
   );
+
+  /// Order
   final Order order;
 
   /// Builds the client info card
@@ -1105,7 +1107,7 @@ class _ClientInfoCard extends ConsumerWidget {
             color: colorScheme.onPrimary,
           ),
         ),
-        tileColor: colorScheme.surface,
+        tileColor: colorScheme.surfaceContainerLow,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 16,
           vertical: 8,

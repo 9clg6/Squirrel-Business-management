@@ -7,6 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
+import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/routing/routing_key.dart';
@@ -36,7 +37,7 @@ GoRouter router(Ref ref) {
   return GoRouter(
     debugLogDiagnostics: true,
     navigatorKey: routingKey,
-    initialLocation: RouterEnum.auth.path,
+    initialLocation: RouterEnum.main.path,
     redirect: (_, GoRouterState state) => _authRedirect(ref, state),
     routes: <RouteBase>[
       GoRoute(
@@ -161,8 +162,21 @@ Future<String?> _authRedirect(
   Ref ref,
   GoRouterState state,
 ) async {
-  final bool isAuthenticated =
-      ref.watch(authServiceProvider).value?.isUserAuthenticated ?? false;
+  final AsyncValue<AuthState> authState = ref.watch(authServiceProvider);
+
+  if (authState.isLoading) {
+    log('🔐 AuthService still loading - deferring navigation decision');
+    return null;
+  }
+
+  if (authState.hasError ||
+      authState.value == null ||
+      !authState.value!.isInitialized) {
+    log('🔐❌ AuthService not properly initialized or has error');
+    return RouterEnum.auth.path;
+  }
+
+  final bool isAuthenticated = authState.value?.isUserAuthenticated ?? false;
   final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;
 
   if (!isAuthenticated && isAuthRoute) {
