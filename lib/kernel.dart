@@ -9,6 +9,7 @@ import 'package:squirrel/foundation/enums/env_field.enum.dart';
 import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/ui/app.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:window_manager/window_manager.dart';
 
 /// The kernel of the application.
 class Kernel {
@@ -61,7 +62,19 @@ class Kernel {
     WidgetsFlutterBinding.ensureInitialized();
     await EasyLocalization.ensureInitialized();
 
-    // Chargement des variables d'environnement
+    await windowManager.ensureInitialized();
+    
+    const WindowOptions windowOptions = WindowOptions(
+      center: true,
+      skipTaskbar: false,
+    );
+
+    await windowManager.waitUntilReadyToShow(windowOptions, () async {
+      await windowManager.show();
+      await windowManager.focus();
+      await windowManager.maximize();
+    });
+
     await dotenv.load();
 
     // Initialisation de Supabase

@@ -7,7 +7,7 @@ part of 'user.local.data_source.impl.dart';
 // **************************************************************************
 
 String _$userLocalDataSourceImplHash() =>
-    r'9b7cfe91b7cdb71418c6699c43004bf81cb26ddd';
+    r'b0f35e5b1c02b0cb0298ac74ae7dc013d403eb43';
 
 /// [UserLocalDataSourceImpl]
 ///

@@ -1,6 +1,5 @@
 import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:flutter/material.dart';
-import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/ui/abstraction/view_state.abs.dart';
 

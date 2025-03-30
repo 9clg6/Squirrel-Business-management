@@ -26,25 +26,27 @@ class BlockOverlayScreen extends ConsumerWidget {
     final AsyncValue<AuthState> state = ref.watch(authServiceProvider);
 
     return Scaffold(
-      body: Stack(
-        children: <Widget>[
-          child,
-          switch (state) {
-            AsyncData<AuthState>(:final AuthState value) => value.isAppLocked
-                ? Positioned.fill(
-                    child: ColoredBox(
-                      color: colorScheme.primary,
-                      child: Center(
-                        child: TextVariant(
-                          LocaleKeys.appLockedMessage.tr(),
+      body: SafeArea(
+        child: Stack(
+          children: <Widget>[
+            child,
+            switch (state) {
+              AsyncData<AuthState>(:final AuthState value) => value.isAppLocked
+                  ? Positioned.fill(
+                      child: ColoredBox(
+                        color: colorScheme.primary,
+                        child: Center(
+                          child: TextVariant(
+                            LocaleKeys.appLockedMessage.tr(),
+                          ),
                         ),
                       ),
-                    ),
-                  )
-                : const SizedBox.shrink(),
-            _ => const SizedBox.shrink(),
-          },
-        ],
+                    )
+                  : const SizedBox.shrink(),
+              _ => const SizedBox.shrink(),
+            },
+          ],
+        ),
       ),
     );
   }

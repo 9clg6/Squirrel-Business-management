@@ -244,9 +244,6 @@ class Index extends _$Index {
   void _updateState(OrderState s) {
     log('[Index] Updating state');
 
-    state = state.copyWith(
-      orders: s.runningOrder,
-      nextAction: s.nextAction,
-    );
+    state = state.copyWith(orders: s.runningOrder);
   }
 }

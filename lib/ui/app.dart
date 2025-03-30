@@ -29,7 +29,9 @@ class App extends ConsumerWidget {
       supportedLocales: context.supportedLocales,
       theme: theme.light(),
       locale: context.locale,
-      builder: (_, Widget? child) => BlockOverlayScreen(child: child!),
+      builder: (_, Widget? child) => BlockOverlayScreen(
+        child: child!,
+      ),
     );
   }
 }

@@ -15,8 +15,6 @@ abstract class _$IndexScreenStateCWProxy {
 
   IndexScreenState sortColumnIndex(int sortColumnIndex);
 
-  IndexScreenState nextAction(Map<Order, OrderAction?>? nextAction);
-
   IndexScreenState showComboBox(bool showComboBox);
 
   IndexScreenState sortAscending(bool sortAscending);
@@ -32,7 +30,6 @@ abstract class _$IndexScreenStateCWProxy {
     List<Order>? pinnedOrders,
     List<Order>? selectedOrders,
     int? sortColumnIndex,
-    Map<Order, OrderAction?>? nextAction,
     bool? showComboBox,
     bool? sortAscending,
   });
@@ -60,10 +57,6 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
       this(sortColumnIndex: sortColumnIndex);
 
   @override
-  IndexScreenState nextAction(Map<Order, OrderAction?>? nextAction) =>
-      this(nextAction: nextAction);
-
-  @override
   IndexScreenState showComboBox(bool showComboBox) =>
       this(showComboBox: showComboBox);
 
@@ -84,7 +77,6 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
     Object? pinnedOrders = const $CopyWithPlaceholder(),
     Object? selectedOrders = const $CopyWithPlaceholder(),
     Object? sortColumnIndex = const $CopyWithPlaceholder(),
-    Object? nextAction = const $CopyWithPlaceholder(),
     Object? showComboBox = const $CopyWithPlaceholder(),
     Object? sortAscending = const $CopyWithPlaceholder(),
   }) {
@@ -105,10 +97,6 @@ class _$IndexScreenStateCWProxyImpl implements _$IndexScreenStateCWProxy {
           ? _value.sortColumnIndex
           // ignore: cast_nullable_to_non_nullable
           : sortColumnIndex as int,
-      nextAction == const $CopyWithPlaceholder()
-          ? _value.nextAction
-          // ignore: cast_nullable_to_non_nullable
-          : nextAction as Map<Order, OrderAction?>?,
       showComboBox:
           showComboBox == const $CopyWithPlaceholder() || showComboBox == null
               ? _value.showComboBox
