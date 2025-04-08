@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -169,7 +170,7 @@ class _OrdersList extends ConsumerWidget {
                                         vertical: 8,
                                       ),
                                       child: TextVariant(
-                                        order.client?.name ?? '',
+                                        order.client?.name.capitalize ?? '',
                                       ),
                                     ),
                                   ),
@@ -185,7 +186,7 @@ class _OrdersList extends ConsumerWidget {
                               DataCell(
                                 Center(
                                   child: TextVariant(
-                                    order.shopName,
+                                    order.shopName.capitalize,
                                   ),
                                 ),
                               ),

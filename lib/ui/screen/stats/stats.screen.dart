@@ -2,6 +2,7 @@
 
 import 'package:collection/collection.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -361,7 +362,7 @@ class RowQuickStats extends ConsumerWidget {
                   const Gap(10),
                   ...state.totalByShop.entries.map(
                     (MapEntry<String, double> entry) => TextVariant(
-                      '${entry.key}: ${entry.value.toStringAsFixed(2)}€',
+                      '${entry.key.capitalize}: ${entry.value.toStringAsFixed(2)}€',
                       variantType: TextVariantType.titleMedium,
                     ),
                   ),
@@ -411,7 +412,7 @@ class RowQuickStats extends ConsumerWidget {
                         (Map<String, Map<String, dynamic>> map, Order order) =>
                             map
                               ..update(
-                                order.client?.name ?? '',
+                                order.client?.name.capitalize ?? '',
                                 (Map<String, dynamic> value) =>
                                     <String, double>{
                                   'count': (value['count'] as double) + 1,
@@ -440,7 +441,7 @@ class RowQuickStats extends ConsumerWidget {
                             Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: TextVariant(
-                            '${entry.key}: ${((entry.value['total'] as double) / (entry.value['count'] as double)).toStringAsFixed(2)}€',
+                            '${entry.key.capitalize}: ${((entry.value['total'] as double) / (entry.value['count'] as double)).toStringAsFixed(2)}€',
                             variantType: TextVariantType.titleMedium,
                           ),
                         ),
@@ -490,7 +491,7 @@ class RowQuickStats extends ConsumerWidget {
                         <String, int>{},
                         (Map<String, int> map, Order order) => map
                           ..update(
-                            order.client?.name ?? '',
+                            order.client?.name.capitalize ?? '',
                             (int value) => value + 1,
                             ifAbsent: () => 1,
                           ),
@@ -506,7 +507,7 @@ class RowQuickStats extends ConsumerWidget {
                         (MapEntry<String, int> entry) => Padding(
                           padding: const EdgeInsets.only(bottom: 5),
                           child: TextVariant(
-                            '${entry.key}: ${entry.value} commandes',
+                            '${entry.key.capitalize}: ${entry.value} commandes',
                             variantType: TextVariantType.titleMedium,
                           ),
                         ),

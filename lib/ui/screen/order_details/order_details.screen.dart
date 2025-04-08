@@ -135,7 +135,7 @@ class _OrderQuickDetails extends ConsumerWidget {
                     fontSize: 12,
                   ),
                   TextVariant(
-                    stateOrder!.shopName,
+                    stateOrder!.shopName.capitalize,
                     variantType: TextVariantType.titleLarge,
                     fontSize: 16,
                   ),

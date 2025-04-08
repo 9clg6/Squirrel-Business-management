@@ -91,7 +91,7 @@ class AuthService extends _$AuthService {
   /// @return [Future<void>]
   ///
   Future<void> _initDependencies() async {
-    _requestService ??= ref.read(requestServiceProvider.notifier);
+    _requestService ??= ref.watch(requestServiceProvider.notifier);
     log('🔌✅ AuthService initialized');
   }
 
@@ -110,14 +110,14 @@ class AuthService extends _$AuthService {
           );
         }
 
-        ref.read(dialogServiceProvider.notifier).showError(
+        ref.watch(dialogServiceProvider.notifier).showError(
               LocaleKeys.appLocked.tr(),
             );
         return;
       }
 
       final LoginResult? licenseResult =
-          await ref.read(getLicenseUseCaseProvider.future);
+          await ref.watch(getLicenseUseCaseProvider.future);
 
       log('🔐 License found: ${licenseResult?.licenseKey}');
 
@@ -140,7 +140,7 @@ class AuthService extends _$AuthService {
         );
       } else {
         _setUserAuthenticated(false);
-        ref.read(navigatorServiceProvider.notifier).navigateToAuth();
+        ref.watch(navigatorServiceProvider.notifier).navigateToAuth();
       }
     } on Exception catch (e) {
       log('🔐❌ Error when loading user: $e');
@@ -154,7 +154,7 @@ class AuthService extends _$AuthService {
   Future<bool> _checkValidity() async {
     log('🔐 Checking validity');
     final LoginResult? licenseResult =
-        await ref.read(getLicenseUseCaseProvider.future);
+        await ref.watch(getLicenseUseCaseProvider.future);
 
     if (licenseResult == null) return false;
 
@@ -168,7 +168,7 @@ class AuthService extends _$AuthService {
     }
 
     final ResultState<Future<CheckValidityEntity>> checkValidityResult =
-        await ref.read(
+        await ref.watch(
       checkValidityUseCaseProvider(
         CheckValidityUseCaseParams(licenseKey: licenseResult.licenseKey),
       ).future,
@@ -180,28 +180,28 @@ class AuthService extends _$AuthService {
 
         log('🔐✅ License valid, reset security');
         _failedChecksCount = 0;
-        await ref.read(
+        await ref.watch(
           setFailCountUseCaseProvider(
             count: 0,
           ).future,
         );
         _isAppLocked = false;
 
-        await ref.read(
+        await ref.watch(
           setLastCheckSuccessUseCaseProvider(
             date: DateTime.now().toIso8601String(),
           ).future,
         );
 
         _lastKnownTime = DateTime.now();
-        await ref.read(
+        await ref.watch(
           setLastKnownTimeUseCaseProvider(
             date: _lastKnownTime!,
           ).future,
         );
 
         _isAppLocked = false;
-        await ref.read(
+        await ref.watch(
           setAppLockStateUseCaseProvider(
             isLocked: false,
           ).future,
@@ -235,7 +235,7 @@ class AuthService extends _$AuthService {
     );
     _failedChecksCount++;
 
-    await ref.read(
+    await ref.watch(
       setFailCountUseCaseProvider(
         count: _failedChecksCount,
       ).future,
@@ -257,7 +257,7 @@ class AuthService extends _$AuthService {
   ]) async {
     log('🔐 Locking app');
     _isAppLocked = true;
-    await ref.read(
+    await ref.watch(
       setAppLockStateUseCaseProvider(
         isLocked: true,
       ).future,
@@ -277,7 +277,7 @@ class AuthService extends _$AuthService {
 
     log('🔐✅ App locked');
 
-    ref.read(dialogServiceProvider.notifier).showError(message.tr());
+    ref.watch(dialogServiceProvider.notifier).showError(message.tr());
   }
 
   /// Load failed checks count
@@ -285,7 +285,7 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _loadFailedChecksCount() async {
     log('🔌 Loading "failed checks" count');
-    final int? count = await ref.read(getFailCountUseCaseProvider.future);
+    final int? count = await ref.watch(getFailCountUseCaseProvider.future);
     log('🔌✅ Failed checks count loaded: $count');
     _failedChecksCount = count ?? 0;
   }
@@ -295,7 +295,7 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _loadAppLockedState() async {
     log('🔌 Loading app locked state');
-    final bool? locked = await ref.read(getAppLockStateUseCaseProvider.future);
+    final bool? locked = await ref.watch(getAppLockStateUseCaseProvider.future);
     log('🔌✅ App locked state loaded: $locked');
     _isAppLocked = locked ?? false;
   }
@@ -306,7 +306,7 @@ class AuthService extends _$AuthService {
   Future<bool> _detectTimeTampering() async {
     if (_lastKnownTime == null) {
       _lastKnownTime = DateTime.now();
-      await ref.read(
+      await ref.watch(
         setLastKnownTimeUseCaseProvider(
           date: _lastKnownTime!,
         ).future,
@@ -321,7 +321,7 @@ class AuthService extends _$AuthService {
     }
 
     _lastKnownTime = now;
-    await ref.read(
+    await ref.watch(
       setLastKnownTimeUseCaseProvider(
         date: _lastKnownTime!,
       ).future,
@@ -437,7 +437,7 @@ class AuthService extends _$AuthService {
       ),
     );
 
-    final ResultState<Future<LoginResult>> loginResult = await ref.read(
+    final ResultState<Future<LoginResult>> loginResult = await ref.watch(
       loginUseCaseProvider(
         LoginUseCaseParams(licenseKey: licenseKey),
       ).future,
@@ -466,7 +466,7 @@ class AuthService extends _$AuthService {
     log('🔐✅ Login successful');
     final LoginResult loginResult = await data;
 
-    await ref.read(saveLicenseUseCaseProvider(license: loginResult).future);
+    await ref.watch(saveLicenseUseCaseProvider(license: loginResult).future);
 
     _setUserAuthenticated(
       true,

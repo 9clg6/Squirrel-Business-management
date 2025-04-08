@@ -162,7 +162,7 @@ class _PinnedOrders extends ConsumerWidget {
                       DataCell(
                         Center(
                           child: TextVariant(
-                            order.shopName,
+                            order.shopName.capitalize,
                           ),
                         ),
                       ),
@@ -440,7 +440,7 @@ class _OrdersList extends ConsumerWidget {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 8),
                                     child: TextVariant(
-                                      order.client?.name ?? '',
+                                      order.client?.name.capitalize ?? '',
                                     ),
                                   ),
                                 ),
@@ -456,7 +456,7 @@ class _OrdersList extends ConsumerWidget {
                             DataCell(
                               Center(
                                 child: TextVariant(
-                                  order.shopName,
+                                  order.shopName.capitalize,
                                 ),
                               ),
                             ),
