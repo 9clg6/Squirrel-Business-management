@@ -1,6 +1,7 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:gap/gap.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/enums/priority.enum.dart';
@@ -21,40 +22,75 @@ class TodoScreen extends ConsumerStatefulWidget {
 
 /// State of the todo screen
 class _TodoScreenState extends ConsumerState<TodoScreen> {
+  bool hideCompletedOrders = false;
+
   /// Builds the todo screen
   /// @param [context] context
   /// @return [Widget] widget of the todo screen
   ///
   @override
   Widget build(BuildContext context) {
-    final int orderStatusLength = OrderStatus.values.length;
+    final int orderStatusLength = hideCompletedOrders
+        ? OrderStatus.values.length - 3
+        : OrderStatus.values.length;
     const double paddingWidth = 8;
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surfaceDim,
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        child: LayoutBuilder(
-          builder: (BuildContext context, BoxConstraints constraints) {
-            final double parentSize = constraints.maxWidth;
+      body: Column(
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.only(
+              left: 10,
+              right: 10,
+              top: 10,
+            ),
+            child: Row(
+              children: <Widget>[
+                Switch(
+                  value: hideCompletedOrders,
+                  onChanged: (bool value) {
+                    setState(() => hideCompletedOrders = value);
+                  },
+                ),
+                const Gap(10),
+                const TextVariant(
+                  'Cacher les commandes terminées',
+                  variantType: TextVariantType.labelMedium,
+                  fontWeight: FontWeight.w600,
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Container(
+              padding: const EdgeInsets.all(10),
+              child: LayoutBuilder(
+                builder: (BuildContext context, BoxConstraints constraints) {
+                  final double parentSize = constraints.maxWidth;
 
-            return ListView.separated(
-              scrollDirection: Axis.horizontal,
-              itemCount: orderStatusLength,
-              separatorBuilder: (_, __) => const SizedBox(width: paddingWidth),
-              itemBuilder: (_, int index) {
-                final OrderStatus status = OrderStatus.values[index];
+                  return ListView.separated(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: orderStatusLength,
+                    separatorBuilder: (_, __) => const SizedBox(
+                      width: paddingWidth,
+                    ),
+                    itemBuilder: (_, int index) {
+                      final OrderStatus status = OrderStatus.values[index];
 
-                return TodoStatusColumn(
-                  parentSize: parentSize,
-                  orderStatusLength: orderStatusLength,
-                  paddingWidth: paddingWidth,
-                  status: status,
-                );
-              },
-            );
-          },
-        ),
+                      return TodoStatusColumn(
+                        parentSize: parentSize,
+                        orderStatusLength: orderStatusLength,
+                        paddingWidth: paddingWidth,
+                        status: status,
+                      );
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
