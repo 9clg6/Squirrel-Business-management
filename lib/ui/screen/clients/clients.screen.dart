@@ -31,7 +31,7 @@ class _ClientsScreenState extends ConsumerState<ClientsScreen> {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final Clients viewModel = ref.read(clientsProvider.notifier);
+    final Clients viewModel = ref.watch(clientsProvider.notifier);
     final ClientsScreenState state = ref.watch(clientsProvider);
 
     return Scaffold(

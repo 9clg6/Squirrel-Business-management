@@ -7,15 +7,17 @@ part of 'get_fail_count.use_case.dart';
 // **************************************************************************
 
 String _$getFailCountUseCaseHash() =>
-    r'e5e8b5e968c4cb1b74cfa6433c0c91565bc662f1';
+    r'2f467136efe19cebf94554a97086442a71f69f3d';
 
-/// Use case to get the fail count
+/// Provider for GetFailCountUseCase
+/// @param [ref] ref
+/// @return [Future<int>] the fail count
 ///
-/// Copied from [GetFailCountUseCase].
-@ProviderFor(GetFailCountUseCase)
-final getFailCountUseCaseProvider =
-    AutoDisposeAsyncNotifierProvider<GetFailCountUseCase, int>.internal(
-  GetFailCountUseCase.new,
+///
+/// Copied from [getFailCountUseCase].
+@ProviderFor(getFailCountUseCase)
+final getFailCountUseCaseProvider = AutoDisposeFutureProvider<int>.internal(
+  getFailCountUseCase,
   name: r'getFailCountUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
@@ -27,6 +29,8 @@ final getFailCountUseCaseProvider =
   },
 );
 
-typedef _$GetFailCountUseCase = AutoDisposeAsyncNotifier<int>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GetFailCountUseCaseRef = AutoDisposeFutureProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

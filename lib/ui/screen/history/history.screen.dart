@@ -65,7 +65,7 @@ class _OrdersList extends ConsumerWidget {
     final AsyncValue<BusinessTypeState> businessTypeState =
         ref.watch(businessTypeServiceProvider);
     final BusinessTypeService businessTypeNotifier =
-        ref.read(businessTypeServiceProvider.notifier);
+        ref.watch(businessTypeServiceProvider.notifier);
 
     return Container(
       margin: const EdgeInsets.all(10),

@@ -32,7 +32,7 @@ class PreferencesRepositoryImpl extends _$PreferencesRepositoryImpl
   @override
   PreferencesRepositoryImpl build() {
     return PreferencesRepositoryImpl._(
-      ref.read(preferencesLocalDataSourcesImplProvider),
+      ref.watch(preferencesLocalDataSourcesImplProvider),
     );
   }
 

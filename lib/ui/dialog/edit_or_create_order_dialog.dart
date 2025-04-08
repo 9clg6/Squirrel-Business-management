@@ -201,7 +201,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             suffix: InkWell(
                               onTap: () async {
                                 final Client? client = await ref
-                                    .read(dialogServiceProvider.notifier)
+                                    .watch(dialogServiceProvider.notifier)
                                     .showSelectClientDialog();
 
                                 if (client != null) {
@@ -259,7 +259,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             child: InkWell(
                               onTap: () async {
                                 final Client? client = await ref
-                                    .read(dialogServiceProvider.notifier)
+                                   .watch(dialogServiceProvider.notifier)
                                     .showSelectClientDialog(
                                       isSponsor: true,
                                     );

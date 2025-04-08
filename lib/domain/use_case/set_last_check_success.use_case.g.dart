@@ -7,7 +7,7 @@ part of 'set_last_check_success.use_case.dart';
 // **************************************************************************
 
 String _$setLastCheckSuccessUseCaseHash() =>
-    r'5db3f0e293b5a7381e1774c39667b0a1f4b63db1';
+    r'f58862478585abf4e61493ac73be689b4bd6e9b7';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,38 +30,45 @@ class _SystemHash {
   }
 }
 
-abstract class _$SetLastCheckSuccessUseCase
-    extends BuildlessAutoDisposeAsyncNotifier<void> {
-  late final String date;
-
-  FutureOr<void> build(
-    String date,
-  );
-}
-
-/// Use case to set the last check success
+/// Provider for SetLastCheckSuccessUseCase
+/// @param [ref] ref
+/// @param [date] the date (as String)
+/// @return [Future<void>]
 ///
-/// Copied from [SetLastCheckSuccessUseCase].
-@ProviderFor(SetLastCheckSuccessUseCase)
+///
+/// Copied from [setLastCheckSuccessUseCase].
+@ProviderFor(setLastCheckSuccessUseCase)
 const setLastCheckSuccessUseCaseProvider = SetLastCheckSuccessUseCaseFamily();
 
-/// Use case to set the last check success
+/// Provider for SetLastCheckSuccessUseCase
+/// @param [ref] ref
+/// @param [date] the date (as String)
+/// @return [Future<void>]
 ///
-/// Copied from [SetLastCheckSuccessUseCase].
+///
+/// Copied from [setLastCheckSuccessUseCase].
 class SetLastCheckSuccessUseCaseFamily extends Family<AsyncValue<void>> {
-  /// Use case to set the last check success
+  /// Provider for SetLastCheckSuccessUseCase
+  /// @param [ref] ref
+  /// @param [date] the date (as String)
+  /// @return [Future<void>]
   ///
-  /// Copied from [SetLastCheckSuccessUseCase].
+  ///
+  /// Copied from [setLastCheckSuccessUseCase].
   const SetLastCheckSuccessUseCaseFamily();
 
-  /// Use case to set the last check success
+  /// Provider for SetLastCheckSuccessUseCase
+  /// @param [ref] ref
+  /// @param [date] the date (as String)
+  /// @return [Future<void>]
   ///
-  /// Copied from [SetLastCheckSuccessUseCase].
-  SetLastCheckSuccessUseCaseProvider call(
-    String date,
-  ) {
+  ///
+  /// Copied from [setLastCheckSuccessUseCase].
+  SetLastCheckSuccessUseCaseProvider call({
+    required String date,
+  }) {
     return SetLastCheckSuccessUseCaseProvider(
-      date,
+      date: date,
     );
   }
 
@@ -70,7 +77,7 @@ class SetLastCheckSuccessUseCaseFamily extends Family<AsyncValue<void>> {
     covariant SetLastCheckSuccessUseCaseProvider provider,
   ) {
     return call(
-      provider.date,
+      date: provider.date,
     );
   }
 
@@ -95,19 +102,29 @@ class SetLastCheckSuccessUseCaseFamily extends Family<AsyncValue<void>> {
   String? get name => r'setLastCheckSuccessUseCaseProvider';
 }
 
-/// Use case to set the last check success
+/// Provider for SetLastCheckSuccessUseCase
+/// @param [ref] ref
+/// @param [date] the date (as String)
+/// @return [Future<void>]
 ///
-/// Copied from [SetLastCheckSuccessUseCase].
+///
+/// Copied from [setLastCheckSuccessUseCase].
 class SetLastCheckSuccessUseCaseProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<SetLastCheckSuccessUseCase,
-        void> {
-  /// Use case to set the last check success
+    extends AutoDisposeFutureProvider<void> {
+  /// Provider for SetLastCheckSuccessUseCase
+  /// @param [ref] ref
+  /// @param [date] the date (as String)
+  /// @return [Future<void>]
   ///
-  /// Copied from [SetLastCheckSuccessUseCase].
-  SetLastCheckSuccessUseCaseProvider(
-    String date,
-  ) : this._internal(
-          () => SetLastCheckSuccessUseCase()..date = date,
+  ///
+  /// Copied from [setLastCheckSuccessUseCase].
+  SetLastCheckSuccessUseCaseProvider({
+    required String date,
+  }) : this._internal(
+          (ref) => setLastCheckSuccessUseCase(
+            ref as SetLastCheckSuccessUseCaseRef,
+            date: date,
+          ),
           from: setLastCheckSuccessUseCaseProvider,
           name: r'setLastCheckSuccessUseCaseProvider',
           debugGetCreateSourceHash:
@@ -133,20 +150,13 @@ class SetLastCheckSuccessUseCaseProvider
   final String date;
 
   @override
-  FutureOr<void> runNotifierBuild(
-    covariant SetLastCheckSuccessUseCase notifier,
+  Override overrideWith(
+    FutureOr<void> Function(SetLastCheckSuccessUseCaseRef provider) create,
   ) {
-    return notifier.build(
-      date,
-    );
-  }
-
-  @override
-  Override overrideWith(SetLastCheckSuccessUseCase Function() create) {
     return ProviderOverride(
       origin: this,
       override: SetLastCheckSuccessUseCaseProvider._internal(
-        () => create()..date = date,
+        (ref) => create(ref as SetLastCheckSuccessUseCaseRef),
         from: from,
         name: null,
         dependencies: null,
@@ -158,8 +168,7 @@ class SetLastCheckSuccessUseCaseProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<SetLastCheckSuccessUseCase, void>
-      createElement() {
+  AutoDisposeFutureProviderElement<void> createElement() {
     return _SetLastCheckSuccessUseCaseProviderElement(this);
   }
 
@@ -179,15 +188,14 @@ class SetLastCheckSuccessUseCaseProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SetLastCheckSuccessUseCaseRef
-    on AutoDisposeAsyncNotifierProviderRef<void> {
+mixin SetLastCheckSuccessUseCaseRef on AutoDisposeFutureProviderRef<void> {
   /// The parameter `date` of this provider.
   String get date;
 }
 
 class _SetLastCheckSuccessUseCaseProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<SetLastCheckSuccessUseCase,
-        void> with SetLastCheckSuccessUseCaseRef {
+    extends AutoDisposeFutureProviderElement<void>
+    with SetLastCheckSuccessUseCaseRef {
   _SetLastCheckSuccessUseCaseProviderElement(super.provider);
 
   @override

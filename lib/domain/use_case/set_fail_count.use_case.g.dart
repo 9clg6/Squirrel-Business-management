@@ -7,7 +7,7 @@ part of 'set_fail_count.use_case.dart';
 // **************************************************************************
 
 String _$setFailCountUseCaseHash() =>
-    r'b64f082f5e134d8917e13ca87a1f44c05ec4c5a6';
+    r'18ed6a9e0dd5e61f701ee98cbfe41ae4bfa9f5ab';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,38 +30,45 @@ class _SystemHash {
   }
 }
 
-abstract class _$SetFailCountUseCase
-    extends BuildlessAutoDisposeAsyncNotifier<void> {
-  late final int count;
-
-  FutureOr<void> build(
-    int count,
-  );
-}
-
-/// Use case to set the fail count
+/// Provider for SetFailCountUseCase
+/// @param [ref] ref
+/// @param [count] the count
+/// @return [Future<void>]
 ///
-/// Copied from [SetFailCountUseCase].
-@ProviderFor(SetFailCountUseCase)
+///
+/// Copied from [setFailCountUseCase].
+@ProviderFor(setFailCountUseCase)
 const setFailCountUseCaseProvider = SetFailCountUseCaseFamily();
 
-/// Use case to set the fail count
+/// Provider for SetFailCountUseCase
+/// @param [ref] ref
+/// @param [count] the count
+/// @return [Future<void>]
 ///
-/// Copied from [SetFailCountUseCase].
+///
+/// Copied from [setFailCountUseCase].
 class SetFailCountUseCaseFamily extends Family<AsyncValue<void>> {
-  /// Use case to set the fail count
+  /// Provider for SetFailCountUseCase
+  /// @param [ref] ref
+  /// @param [count] the count
+  /// @return [Future<void>]
   ///
-  /// Copied from [SetFailCountUseCase].
+  ///
+  /// Copied from [setFailCountUseCase].
   const SetFailCountUseCaseFamily();
 
-  /// Use case to set the fail count
+  /// Provider for SetFailCountUseCase
+  /// @param [ref] ref
+  /// @param [count] the count
+  /// @return [Future<void>]
   ///
-  /// Copied from [SetFailCountUseCase].
-  SetFailCountUseCaseProvider call(
-    int count,
-  ) {
+  ///
+  /// Copied from [setFailCountUseCase].
+  SetFailCountUseCaseProvider call({
+    required int count,
+  }) {
     return SetFailCountUseCaseProvider(
-      count,
+      count: count,
     );
   }
 
@@ -70,7 +77,7 @@ class SetFailCountUseCaseFamily extends Family<AsyncValue<void>> {
     covariant SetFailCountUseCaseProvider provider,
   ) {
     return call(
-      provider.count,
+      count: provider.count,
     );
   }
 
@@ -95,18 +102,28 @@ class SetFailCountUseCaseFamily extends Family<AsyncValue<void>> {
   String? get name => r'setFailCountUseCaseProvider';
 }
 
-/// Use case to set the fail count
+/// Provider for SetFailCountUseCase
+/// @param [ref] ref
+/// @param [count] the count
+/// @return [Future<void>]
 ///
-/// Copied from [SetFailCountUseCase].
-class SetFailCountUseCaseProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<SetFailCountUseCase, void> {
-  /// Use case to set the fail count
+///
+/// Copied from [setFailCountUseCase].
+class SetFailCountUseCaseProvider extends AutoDisposeFutureProvider<void> {
+  /// Provider for SetFailCountUseCase
+  /// @param [ref] ref
+  /// @param [count] the count
+  /// @return [Future<void>]
   ///
-  /// Copied from [SetFailCountUseCase].
-  SetFailCountUseCaseProvider(
-    int count,
-  ) : this._internal(
-          () => SetFailCountUseCase()..count = count,
+  ///
+  /// Copied from [setFailCountUseCase].
+  SetFailCountUseCaseProvider({
+    required int count,
+  }) : this._internal(
+          (ref) => setFailCountUseCase(
+            ref as SetFailCountUseCaseRef,
+            count: count,
+          ),
           from: setFailCountUseCaseProvider,
           name: r'setFailCountUseCaseProvider',
           debugGetCreateSourceHash:
@@ -132,20 +149,13 @@ class SetFailCountUseCaseProvider
   final int count;
 
   @override
-  FutureOr<void> runNotifierBuild(
-    covariant SetFailCountUseCase notifier,
+  Override overrideWith(
+    FutureOr<void> Function(SetFailCountUseCaseRef provider) create,
   ) {
-    return notifier.build(
-      count,
-    );
-  }
-
-  @override
-  Override overrideWith(SetFailCountUseCase Function() create) {
     return ProviderOverride(
       origin: this,
       override: SetFailCountUseCaseProvider._internal(
-        () => create()..count = count,
+        (ref) => create(ref as SetFailCountUseCaseRef),
         from: from,
         name: null,
         dependencies: null,
@@ -157,8 +167,7 @@ class SetFailCountUseCaseProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<SetFailCountUseCase, void>
-      createElement() {
+  AutoDisposeFutureProviderElement<void> createElement() {
     return _SetFailCountUseCaseProviderElement(this);
   }
 
@@ -178,14 +187,13 @@ class SetFailCountUseCaseProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SetFailCountUseCaseRef on AutoDisposeAsyncNotifierProviderRef<void> {
+mixin SetFailCountUseCaseRef on AutoDisposeFutureProviderRef<void> {
   /// The parameter `count` of this provider.
   int get count;
 }
 
 class _SetFailCountUseCaseProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<SetFailCountUseCase, void>
-    with SetFailCountUseCaseRef {
+    extends AutoDisposeFutureProviderElement<void> with SetFailCountUseCaseRef {
   _SetFailCountUseCaseProviderElement(super.provider);
 
   @override

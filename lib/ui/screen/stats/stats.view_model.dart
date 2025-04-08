@@ -25,7 +25,7 @@ class StatsViewModel extends _$StatsViewModel {
   @override
   StatsScreenState build() {
     if (!_isInitialized) {
-      _dialogService = ref.read(dialogServiceProvider.notifier);
+      _dialogService = ref.watch(dialogServiceProvider.notifier);
       _isInitialized = true;
     }
 

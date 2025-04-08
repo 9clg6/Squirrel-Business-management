@@ -192,7 +192,7 @@ class _CustomSideBarState extends ConsumerState<CustomSideBar> {
               builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
                 return InkWell(
                   onTap: () => ref
-                      .read(dialogServiceProvider.notifier)
+                      .watch(dialogServiceProvider.notifier)
                       .showInComingDialog(),
                   child: AnimatedContainer(
                     duration: const Duration(seconds: 1),

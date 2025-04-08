@@ -6,7 +6,7 @@ part of 'auth.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authServiceHash() => r'b72708e1ac5a3dd1083e85b5c5c42c289be2d397';
+String _$authServiceHash() => r'0c2133a7bbc1c4a2ed27b189d7a93be13f89b772';
 
 /// [AuthService]
 ///
@@ -20,52 +20,22 @@ final authServiceProvider =
       const bool.fromEnvironment('dart.vm.product') ? null : _$authServiceHash,
   dependencies: <ProviderOrFamily>{
     requestServiceProvider,
-    loginUseCaseProvider,
-    checkValidityUseCaseProvider,
     dialogServiceProvider,
     navigatorServiceProvider,
-    getFailCountUseCaseProvider,
-    getLastKnownTimeUseCaseProvider,
-    getLicenseUseCaseProvider,
-    getAppLockStateUseCaseProvider,
-    setFailCountUseCaseProvider,
-    setLastCheckSuccessUseCaseProvider,
-    setLastKnownTimeUseCaseProvider,
-    setAppLockStateUseCaseProvider,
     hiveSecureStorageServiceProvider,
-    saveLicenseUseCaseProvider
+    getFailCountUseCaseProvider
   },
   allTransitiveDependencies: <ProviderOrFamily>{
     requestServiceProvider,
     ...?requestServiceProvider.allTransitiveDependencies,
-    loginUseCaseProvider,
-    ...?loginUseCaseProvider.allTransitiveDependencies,
-    checkValidityUseCaseProvider,
-    ...?checkValidityUseCaseProvider.allTransitiveDependencies,
     dialogServiceProvider,
     ...?dialogServiceProvider.allTransitiveDependencies,
     navigatorServiceProvider,
     ...?navigatorServiceProvider.allTransitiveDependencies,
-    getFailCountUseCaseProvider,
-    ...?getFailCountUseCaseProvider.allTransitiveDependencies,
-    getLastKnownTimeUseCaseProvider,
-    ...?getLastKnownTimeUseCaseProvider.allTransitiveDependencies,
-    getLicenseUseCaseProvider,
-    ...?getLicenseUseCaseProvider.allTransitiveDependencies,
-    getAppLockStateUseCaseProvider,
-    ...?getAppLockStateUseCaseProvider.allTransitiveDependencies,
-    setFailCountUseCaseProvider,
-    ...?setFailCountUseCaseProvider.allTransitiveDependencies,
-    setLastCheckSuccessUseCaseProvider,
-    ...?setLastCheckSuccessUseCaseProvider.allTransitiveDependencies,
-    setLastKnownTimeUseCaseProvider,
-    ...?setLastKnownTimeUseCaseProvider.allTransitiveDependencies,
-    setAppLockStateUseCaseProvider,
-    ...?setAppLockStateUseCaseProvider.allTransitiveDependencies,
     hiveSecureStorageServiceProvider,
     ...?hiveSecureStorageServiceProvider.allTransitiveDependencies,
-    saveLicenseUseCaseProvider,
-    ...?saveLicenseUseCaseProvider.allTransitiveDependencies
+    getFailCountUseCaseProvider,
+    ...?getFailCountUseCaseProvider.allTransitiveDependencies
   },
 );
 

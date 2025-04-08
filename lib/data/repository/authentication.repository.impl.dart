@@ -22,20 +22,20 @@ class AuthenticationRepositoryImpl extends _$AuthenticationRepositoryImpl
 
   @override
   AuthenticationRepositoryImpl build() {
-    _authenticationDataSource = ref.read(authenticationDataSourceImplProvider);
+    _authenticationDataSource = ref.watch(authenticationDataSourceImplProvider);
     return AuthenticationRepositoryImpl();
   }
 
   /// Login
   /// @param [licenseKey] license key
-  /// @return [LoginResultEntity] login result entity
+  /// @return [LoginResult] login result entity
   ///
   @override
-  Future<LoginResultEntity> login(String licenseKey) async {
+  Future<LoginResult> login(String licenseKey) async {
     final LoginResultRemoteModel remoteModel =
         await _authenticationDataSource.login(licenseKey);
 
-    return LoginResultEntity.fromRemoteModel(remoteModel);
+    return LoginResult.fromRemoteModel(remoteModel);
   }
 
   /// Check validity of license

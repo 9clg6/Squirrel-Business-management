@@ -53,7 +53,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
     log('🔌 Initializing HiveSecureStorageService');
 
     try {
-      _encryptionKey = await ref.read(secureStorageServiceProvider.future);
+      _encryptionKey = await ref.watch(secureStorageServiceProvider.future);
       await _openBox();
       _isInitialized = true;
       log('🔌 HiveSecureStorageService initialized successfully');

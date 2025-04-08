@@ -12,18 +12,31 @@ part 'security.local.data_source.impl.g.dart';
 )
 class SecurityLocalDataSourceImpl extends _$SecurityLocalDataSourceImpl
     implements SecurityLocalDataSource {
+  /// Default constructor
+  SecurityLocalDataSourceImpl();
+
+  /// Constructor
+  /// @param [_secureStorageService] secure storage service
+  ///
+  SecurityLocalDataSourceImpl._(this._secureStorageService);
+
   static const String _appLockStateKey = 'appLockKey';
   static const String _failCountKey = 'failCountKey';
   static const String _lastCheckSuccessKey = 'lastCheckSuccessKey';
   static const String _lastKnownTimeKey = 'lastKnownTimeKey';
+
+  late final HiveSecureStorageService? _secureStorageService;
 
   /// Build
   /// @return [Future<SecurityLocalDataSourceImpl>] security local data source
   /// impl
   ///
   @override
-  SecurityLocalDataSourceImpl build() {
-    return SecurityLocalDataSourceImpl();
+  Future<SecurityLocalDataSourceImpl> build() async {
+    final HiveSecureStorageService? secureStorageService =
+        await ref.watch(hiveSecureStorageServiceProvider.future);
+
+    return SecurityLocalDataSourceImpl._(secureStorageService);
   }
 
   /// Set the app lock state
@@ -32,10 +45,10 @@ class SecurityLocalDataSourceImpl extends _$SecurityLocalDataSourceImpl
   ///
   @override
   Future<void> setAppLockState({required bool isLocked}) async {
-    await ref.watch(hiveSecureStorageServiceProvider.notifier).set(
-          _appLockStateKey,
-          isLocked ? 'true' : 'false',
-        );
+    return _secureStorageService!.set(
+      _appLockStateKey,
+      isLocked ? 'true' : 'false',
+    );
   }
 
   /// Get the app lock state
@@ -43,9 +56,7 @@ class SecurityLocalDataSourceImpl extends _$SecurityLocalDataSourceImpl
   ///
   @override
   Future<bool> getAppLockState() async {
-    final String? isLocked = await ref
-        .watch(hiveSecureStorageServiceProvider.notifier)
-        .get(_appLockStateKey);
+    final String? isLocked = await _secureStorageService!.get(_appLockStateKey);
     if (isLocked == null) return false;
 
     return isLocked == 'true';
@@ -56,9 +67,7 @@ class SecurityLocalDataSourceImpl extends _$SecurityLocalDataSourceImpl
   ///
   @override
   Future<int> getFailCount() async {
-    final String? failCount = await ref
-        .watch(hiveSecureStorageServiceProvider.notifier)
-        .get(_failCountKey);
+    final String? failCount = await _secureStorageService?.get(_failCountKey);
     if (failCount == null) return 0;
 
     return int.tryParse(failCount) ?? 0;
@@ -66,42 +75,40 @@ class SecurityLocalDataSourceImpl extends _$SecurityLocalDataSourceImpl
 
   @override
   Future<void> setFailCount(int count) async {
-    await ref.watch(hiveSecureStorageServiceProvider.notifier).set(
-          _failCountKey,
-          count.toString(),
-        );
+    return _secureStorageService!.set(
+      _failCountKey,
+      count.toString(),
+    );
   }
 
   @override
   Future<void> setLastCheckSuccess(String date) async {
-    await ref.watch(hiveSecureStorageServiceProvider.notifier).set(
-          _lastCheckSuccessKey,
-          date,
-        );
+    return _secureStorageService!.set(
+      _lastCheckSuccessKey,
+      date,
+    );
   }
 
   @override
   Future<DateTime> getLastCheckSuccess() async {
-    final String? lastCheckSuccess = await ref
-        .watch(hiveSecureStorageServiceProvider.notifier)
-        .get(_lastCheckSuccessKey);
+    final String? lastCheckSuccess = await _secureStorageService!.get(
+      _lastCheckSuccessKey,
+    );
     if (lastCheckSuccess == null) return DateTime.now();
 
-    return DateTime.parse(lastCheckSuccess);
+    return DateTime.tryParse(lastCheckSuccess) ?? DateTime.now();
   }
 
   @override
   Future<void> setLastKnownTime(String date) async {
-    await ref.watch(hiveSecureStorageServiceProvider.notifier).set(
-          _lastKnownTimeKey,
-          date,
-        );
+    return _secureStorageService!.set(
+      _lastKnownTimeKey,
+      date,
+    );
   }
 
   @override
   Future<String?> getLastKnownTime() async {
-    return ref
-        .watch(hiveSecureStorageServiceProvider.notifier)
-        .get(_lastKnownTimeKey);
+    return _secureStorageService!.get(_lastKnownTimeKey);
   }
 }

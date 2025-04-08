@@ -43,7 +43,7 @@ class ClientService extends _$ClientService {
   /// Load clients
   ///
   Future<ClientState> _loadClients() async {
-    log('Loading clients');
+    log('📚 Loading clients');
     final String? o = await _storage.get(_storageKey) as String?;
     if (o != null) {
       final List<dynamic> clients = jsonDecode(o) as List<dynamic>;
@@ -61,7 +61,7 @@ class ClientService extends _$ClientService {
   /// @param [os] order state
   ///
   void _save(ClientState os) {
-    log('Saving clients');
+    log('📚💾 Saving clients');
     if (os.clients.isEmpty) return;
     _storage.set(
       _storageKey,

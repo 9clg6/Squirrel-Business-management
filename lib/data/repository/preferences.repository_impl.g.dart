@@ -7,7 +7,7 @@ part of 'preferences.repository_impl.dart';
 // **************************************************************************
 
 String _$preferencesRepositoryImplHash() =>
-    r'3273badc07b590383ef4d59d8977d11414f8bfdd';
+    r'def94a55d99f251a458d9655150b4a5a325c6dc6';
 
 /// [PreferencesRepositoryImpl]
 ///

@@ -7,15 +7,17 @@ part of 'get_app_lock_state.use_case.dart';
 // **************************************************************************
 
 String _$getAppLockStateUseCaseHash() =>
-    r'f4c519888d7693d1a1696bb9eda3d24dc3183809';
+    r'782110aed58bed6cdce4575bf817962062511c25';
 
-/// Use case to get the app lock state
+/// Provider for GetAppLockStateUseCase
+/// @param [ref] ref
+/// @return [Future<bool>] if the app is locked
 ///
-/// Copied from [GetAppLockStateUseCase].
-@ProviderFor(GetAppLockStateUseCase)
-final getAppLockStateUseCaseProvider =
-    AutoDisposeAsyncNotifierProvider<GetAppLockStateUseCase, bool>.internal(
-  GetAppLockStateUseCase.new,
+///
+/// Copied from [getAppLockStateUseCase].
+@ProviderFor(getAppLockStateUseCase)
+final getAppLockStateUseCaseProvider = AutoDisposeFutureProvider<bool>.internal(
+  getAppLockStateUseCase,
   name: r'getAppLockStateUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
@@ -27,6 +29,8 @@ final getAppLockStateUseCaseProvider =
   },
 );
 
-typedef _$GetAppLockStateUseCase = AutoDisposeAsyncNotifier<bool>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GetAppLockStateUseCaseRef = AutoDisposeFutureProviderRef<bool>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -7,7 +7,7 @@ part of 'set_last_known_time.use_case.dart';
 // **************************************************************************
 
 String _$setLastKnownTimeUseCaseHash() =>
-    r'ae463ff9569504b7bb05d4f5b733e82101ae7eda';
+    r'e0bc6729b05062f69e4f0e3a2d2ee22840d6b4e6';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,38 +30,45 @@ class _SystemHash {
   }
 }
 
-abstract class _$SetLastKnownTimeUseCase
-    extends BuildlessAutoDisposeAsyncNotifier<void> {
-  late final DateTime date;
-
-  FutureOr<void> build(
-    DateTime date,
-  );
-}
-
-/// Use case to set the last known time
+/// Provider for SetLastKnownTimeUseCase
+/// @param [ref] ref
+/// @param date [DateTime] the date to set
+/// @return [Future<void>] the last known time
 ///
-/// Copied from [SetLastKnownTimeUseCase].
-@ProviderFor(SetLastKnownTimeUseCase)
+///
+/// Copied from [setLastKnownTimeUseCase].
+@ProviderFor(setLastKnownTimeUseCase)
 const setLastKnownTimeUseCaseProvider = SetLastKnownTimeUseCaseFamily();
 
-/// Use case to set the last known time
+/// Provider for SetLastKnownTimeUseCase
+/// @param [ref] ref
+/// @param date [DateTime] the date to set
+/// @return [Future<void>] the last known time
 ///
-/// Copied from [SetLastKnownTimeUseCase].
+///
+/// Copied from [setLastKnownTimeUseCase].
 class SetLastKnownTimeUseCaseFamily extends Family<AsyncValue<void>> {
-  /// Use case to set the last known time
+  /// Provider for SetLastKnownTimeUseCase
+  /// @param [ref] ref
+  /// @param date [DateTime] the date to set
+  /// @return [Future<void>] the last known time
   ///
-  /// Copied from [SetLastKnownTimeUseCase].
+  ///
+  /// Copied from [setLastKnownTimeUseCase].
   const SetLastKnownTimeUseCaseFamily();
 
-  /// Use case to set the last known time
+  /// Provider for SetLastKnownTimeUseCase
+  /// @param [ref] ref
+  /// @param date [DateTime] the date to set
+  /// @return [Future<void>] the last known time
   ///
-  /// Copied from [SetLastKnownTimeUseCase].
-  SetLastKnownTimeUseCaseProvider call(
-    DateTime date,
-  ) {
+  ///
+  /// Copied from [setLastKnownTimeUseCase].
+  SetLastKnownTimeUseCaseProvider call({
+    required DateTime date,
+  }) {
     return SetLastKnownTimeUseCaseProvider(
-      date,
+      date: date,
     );
   }
 
@@ -70,7 +77,7 @@ class SetLastKnownTimeUseCaseFamily extends Family<AsyncValue<void>> {
     covariant SetLastKnownTimeUseCaseProvider provider,
   ) {
     return call(
-      provider.date,
+      date: provider.date,
     );
   }
 
@@ -95,19 +102,28 @@ class SetLastKnownTimeUseCaseFamily extends Family<AsyncValue<void>> {
   String? get name => r'setLastKnownTimeUseCaseProvider';
 }
 
-/// Use case to set the last known time
+/// Provider for SetLastKnownTimeUseCase
+/// @param [ref] ref
+/// @param date [DateTime] the date to set
+/// @return [Future<void>] the last known time
 ///
-/// Copied from [SetLastKnownTimeUseCase].
-class SetLastKnownTimeUseCaseProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<SetLastKnownTimeUseCase,
-        void> {
-  /// Use case to set the last known time
+///
+/// Copied from [setLastKnownTimeUseCase].
+class SetLastKnownTimeUseCaseProvider extends AutoDisposeFutureProvider<void> {
+  /// Provider for SetLastKnownTimeUseCase
+  /// @param [ref] ref
+  /// @param date [DateTime] the date to set
+  /// @return [Future<void>] the last known time
   ///
-  /// Copied from [SetLastKnownTimeUseCase].
-  SetLastKnownTimeUseCaseProvider(
-    DateTime date,
-  ) : this._internal(
-          () => SetLastKnownTimeUseCase()..date = date,
+  ///
+  /// Copied from [setLastKnownTimeUseCase].
+  SetLastKnownTimeUseCaseProvider({
+    required DateTime date,
+  }) : this._internal(
+          (ref) => setLastKnownTimeUseCase(
+            ref as SetLastKnownTimeUseCaseRef,
+            date: date,
+          ),
           from: setLastKnownTimeUseCaseProvider,
           name: r'setLastKnownTimeUseCaseProvider',
           debugGetCreateSourceHash:
@@ -133,20 +149,13 @@ class SetLastKnownTimeUseCaseProvider
   final DateTime date;
 
   @override
-  FutureOr<void> runNotifierBuild(
-    covariant SetLastKnownTimeUseCase notifier,
+  Override overrideWith(
+    FutureOr<void> Function(SetLastKnownTimeUseCaseRef provider) create,
   ) {
-    return notifier.build(
-      date,
-    );
-  }
-
-  @override
-  Override overrideWith(SetLastKnownTimeUseCase Function() create) {
     return ProviderOverride(
       origin: this,
       override: SetLastKnownTimeUseCaseProvider._internal(
-        () => create()..date = date,
+        (ref) => create(ref as SetLastKnownTimeUseCaseRef),
         from: from,
         name: null,
         dependencies: null,
@@ -158,8 +167,7 @@ class SetLastKnownTimeUseCaseProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<SetLastKnownTimeUseCase, void>
-      createElement() {
+  AutoDisposeFutureProviderElement<void> createElement() {
     return _SetLastKnownTimeUseCaseProviderElement(this);
   }
 
@@ -179,14 +187,14 @@ class SetLastKnownTimeUseCaseProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SetLastKnownTimeUseCaseRef on AutoDisposeAsyncNotifierProviderRef<void> {
+mixin SetLastKnownTimeUseCaseRef on AutoDisposeFutureProviderRef<void> {
   /// The parameter `date` of this provider.
   DateTime get date;
 }
 
 class _SetLastKnownTimeUseCaseProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<SetLastKnownTimeUseCase,
-        void> with SetLastKnownTimeUseCaseRef {
+    extends AutoDisposeFutureProviderElement<void>
+    with SetLastKnownTimeUseCaseRef {
   _SetLastKnownTimeUseCaseProviderElement(super.provider);
 
   @override

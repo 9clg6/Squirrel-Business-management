@@ -5,9 +5,9 @@ import 'package:squirrel/domain/entities/login_result.entity.dart';
 abstract class AuthenticationRepository {
   /// Login
   /// @param [licenseKey] license key
-  /// @return [LoginResultEntity] login result entity
+  /// @return [LoginResult] login result entity
   ///
-  Future<LoginResultEntity> login(String licenseKey);
+  Future<LoginResult> login(String licenseKey);
 
   /// Check validity of license
   /// @param [licenseKey] license key

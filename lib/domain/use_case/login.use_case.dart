@@ -1,34 +1,63 @@
-import 'dart:developer';
-
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/data/repository/authentication.repository.impl.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
-import 'package:squirrel/domain/use_case/abstraction/use_case_abs.dart';
+import 'package:squirrel/domain/repositories/authentication.repository.dart';
+import 'package:squirrel/domain/use_case/future.usecases.dart';
+import 'package:squirrel/domain/use_case/results.usecases.dart';
 
 part 'login.use_case.g.dart';
 
-/// [LoginUseCase]
+/// Login Params
+class LoginUseCaseParams {
+  /// Constructor
+  /// @param [licenseKey] license key
+  ///
+  LoginUseCaseParams({required this.licenseKey});
+
+  /// License Key
+  final String licenseKey;
+}
+
+/// Login Use Case Implementation
+class LoginUseCase
+    extends FutureUseCaseWithParams<Future<LoginResult>, LoginUseCaseParams> {
+  // Constructor
+  /// @param [repository] repository
+  ///
+  LoginUseCase({
+    required AuthenticationRepository repository,
+  }) : _repository = repository;
+
+  /// Repository
+  final AuthenticationRepository _repository;
+
+  /// Execute Login Use Case
+  /// @param [params] params
+  /// @return [Future<LoginResult>] result
+  ///
+  @override
+  Future<Future<LoginResult>> invoke(LoginUseCaseParams params) async {
+    return _repository.login(params.licenseKey);
+  }
+}
+
+/// Login Use Case Provider 
+/// @param [ref] ref
+/// @param [params] params
+/// @return [ResultState<Future<LoginResult>>] result
+///
 @Riverpod(
   dependencies: <Object>[
     AuthenticationRepositoryImpl,
   ],
 )
-class LoginUseCase extends _$LoginUseCase
-    implements UseCaseWithParams<Future<LoginResultEntity>, String> {
-  @override
-  LoginUseCase build() {
-    log('🔌 Initializing LoginUseCase');
-    return LoginUseCase();
-  }
-
-  /// Login
-  /// @param [licenseKey] license key
-  /// @return [LoginResultEntity] login result entity
-  ///
-  @override
-  Future<LoginResultEntity> execute(String licenseKey) async {
-    return ref
-        .read(authenticationRepositoryImplProvider.notifier)
-        .login(licenseKey);
-  }
+Future<ResultState<Future<LoginResult>>> loginUseCase(
+  Ref ref,
+  LoginUseCaseParams params,
+) {
+  final AuthenticationRepository repository = ref.watch(
+    authenticationRepositoryImplProvider.notifier,
+  );
+  return LoginUseCase(repository: repository).execute(params);
 }

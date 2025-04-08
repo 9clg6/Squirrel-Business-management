@@ -25,7 +25,7 @@ class TodoViewModel extends _$TodoViewModel {
   @override
   TodoScreenState build() {
     if (!_isInitialized) {
-      _navigatorService = ref.read(navigatorServiceProvider.notifier);
+      _navigatorService = ref.watch(navigatorServiceProvider.notifier);
       _orderService = ref.watch(orderServiceProvider.notifier);
       _isInitialized = true;
     }

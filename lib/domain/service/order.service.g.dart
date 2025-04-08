@@ -6,7 +6,7 @@ part of 'order.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$orderServiceHash() => r'8e450b262fa8bb6bdc9bde510082e1a9e053a49c';
+String _$orderServiceHash() => r'051ab4bb943a4a685a83a99e0b6bb4c2c6613040';
 
 /// [OrderService]
 ///

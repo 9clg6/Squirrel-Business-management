@@ -234,7 +234,7 @@ class _OrderActionsRow extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final OrderDetailsViewModel viewModel =
-        ref.read(orderDetailsViewModelProvider(order).notifier);
+        ref.watch(orderDetailsViewModelProvider(order).notifier);
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.end,
@@ -378,7 +378,7 @@ class _ActionsHistory extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final OrderDetailsViewModel viewModel =
-        ref.read(orderDetailsViewModelProvider(order).notifier);
+        ref.watch(orderDetailsViewModelProvider(order).notifier);
     final OrderDetailsScreenState state =
         ref.watch(orderDetailsViewModelProvider(order));
     final Order? orderState = state.order;
@@ -762,7 +762,7 @@ class _SummaryOrder extends ConsumerWidget {
     final OrderDetailsScreenState state =
         ref.watch(orderDetailsViewModelProvider(order));
     final OrderDetailsViewModel viewModel =
-        ref.read(orderDetailsViewModelProvider(order).notifier);
+        ref.watch(orderDetailsViewModelProvider(order).notifier);
     final Order? orderState = state.order;
 
     return Container(
@@ -899,7 +899,7 @@ class _StatusRow extends ConsumerWidget {
     final OrderDetailsScreenState state =
         ref.watch(orderDetailsViewModelProvider(order));
     final OrderDetailsViewModel viewModel =
-        ref.read(orderDetailsViewModelProvider(order).notifier);
+        ref.watch(orderDetailsViewModelProvider(order).notifier);
     final Order? orderState = state.order;
 
     return Column(
@@ -940,7 +940,13 @@ class _StatusRow extends ConsumerWidget {
                                     ? orderState.status.color
                                     : colorScheme.surface,
                           ),
-                          child: Text(e.$2.name),
+                          child: TextVariant(
+                            e.$2.name,
+                            variantType: TextVariantType.titleSmall,
+                            color: isPreviousStatus || !isCurrentStatus
+                                ? colorScheme.onSurface
+                                : colorScheme.onPrimary,
+                          ),
                         ),
                       ),
                     ),

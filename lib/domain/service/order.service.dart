@@ -53,7 +53,7 @@ class OrderService extends _$OrderService {
   /// @return [Future<OrderState>] order state
   ///
   Future<OrderState> _loadOrders() async {
-    log('[OrderService] Loading orders');
+    log('[OrderService] 📚 Loading orders');
 
     try {
       final String? o = await _hiveService.get(ordersKey) as String?;
@@ -90,7 +90,7 @@ class OrderService extends _$OrderService {
   /// @return [void] void
   ///
   void _save(OrderState os) {
-    log('[OrderService] Saving orders');
+    log('[OrderService] 📚💾 Saving orders');
     if (os.orders.isEmpty) return;
     _hiveService.set(
       ordersKey,
@@ -103,7 +103,6 @@ class OrderService extends _$OrderService {
   /// @return [int] index of the order
   ///
   int _findOrder(Order order) {
-    log('findOrder');
     return state.value!.orders.indexWhere((Order o) => o.id == order.id);
   }
 
@@ -124,7 +123,7 @@ class OrderService extends _$OrderService {
         <Order>[updatedOrder],
       );
 
-    log('[OrderService] Updated orders');
+    log('[OrderService] 📚✅ Updated orders');
 
     state = AsyncData<OrderState>(
       state.value!.copyWith(
@@ -142,16 +141,16 @@ class OrderService extends _$OrderService {
   void updateOrderStatus(Order order, OrderStatus status) {
     final int indexOrder = _findOrder(order);
     if (indexOrder == -1) {
-      log('[OrderService] Order not found: ${order.id}');
+      log('[OrderService] 📚❌ Order not found: ${order.id}');
       return;
     }
 
     if (order.status == status) {
-      log('[OrderService] Same status, no update needed');
+      log('[OrderService] 📚 Same status, no update needed');
       return; // Éviter les mises à jour inutiles
     }
 
-    log('[OrderService] Updating status: ${order.status.name}'
+    log('[OrderService] 📚 Updating status: ${order.status.name}'
         ' -> ${status.name} for order ${order.shopName}');
     final Order updatedOrder = order.copyWith(status: status);
 
@@ -169,7 +168,7 @@ class OrderService extends _$OrderService {
     final Order updatedOrder = order.copyWith(
       priority: nextPriority,
     );
-    log('[OrderService] Updated priority: ${nextPriority.name}');
+    log('[OrderService] 📚✅ Updated priority: ${nextPriority.name}');
 
     _updateOrder(
       updatedOrder,
@@ -189,7 +188,7 @@ class OrderService extends _$OrderService {
       actions: <OrderAction>[...order.actions, orderAction],
     );
 
-    log('[OrderService] Added action: ${orderAction.date}');
+    log('[OrderService] 📚✅ Added action: ${orderAction.date}');
 
     _updateOrder(updatedOrder, indexOrder);
   }
@@ -201,7 +200,7 @@ class OrderService extends _$OrderService {
   void deleteOrderAction(OrderAction action, Order order) {
     final int indexOrder = _findOrder(order);
     if (indexOrder == -1) {
-      log('[OrderService] Order not found: ${order.id}');
+      log('[OrderService] 📚❌ Order not found: ${order.id}');
       return;
     }
 
@@ -209,7 +208,7 @@ class OrderService extends _$OrderService {
       actions: order.actions.where((OrderAction e) => e != action).toList(),
     );
 
-    log('[OrderService] Deleted action: ${action.date}');
+    log('[OrderService] 📚✅ Deleted action: ${action.date}');
 
     _updateOrder(updatedOrder, indexOrder);
   }
@@ -220,11 +219,11 @@ class OrderService extends _$OrderService {
   void deleteOrder(Order order) {
     final int indexOrder = _findOrder(order);
     if (indexOrder == -1) {
-      log('[OrderService] Order not found: ${order.id}');
+      log('[OrderService] 📚❌ Order not found: ${order.id}');
       return;
     }
 
-    log('[OrderService] Deleted order: ${order.shopName}');
+    log('[OrderService] 📚✅ Deleted order: ${order.shopName}');
 
     state = AsyncData<OrderState>(
       state.value!.copyWith(
@@ -241,7 +240,7 @@ class OrderService extends _$OrderService {
   void updateOrder(Order order) {
     final int indexOrder = _findOrderById(order.id);
     if (indexOrder == -1) {
-      log('[OrderService] Order not found: ${order.id}');
+      log('[OrderService] 📚❌ Order not found: ${order.id}');
       return;
     }
 
@@ -259,9 +258,9 @@ class OrderService extends _$OrderService {
           order.clientName,
           order,
         );
-        log('[OrderService] Created new client: ${clientToUse.name}');
+        log('[OrderService] 📚✅ Created new client: ${clientToUse.name}');
       } else {
-        log('[OrderService] Found existing client: ${clientToUse.name}');
+        log('[OrderService] 📚 Found existing client: ${clientToUse.name}');
       }
     } else {
       // Utiliser le client actuel, mais s'assurer d'avoir sa
@@ -279,7 +278,7 @@ class OrderService extends _$OrderService {
       indexOrder,
     );
 
-    log('[OrderService] Updated order for'
+    log('[OrderService] 📚✅ Updated order for'
         ' client: ${orderWithUpdatedClient.clientName}');
 
     // Mettre à jour les statistiques du client
@@ -298,7 +297,7 @@ class OrderService extends _$OrderService {
   int _findOrderById(String id) {
     final int index = state.value!.orders.indexWhere((Order o) => o.id == id);
     if (index == -1) {
-      log('[OrderService] Order not found: $id');
+      log('[OrderService] 📚❌ Order not found: $id');
     }
     return index;
   }
@@ -314,9 +313,9 @@ class OrderService extends _$OrderService {
         order.clientName,
         order,
       );
-      log('[OrderService] Created client: ${client.name}');
+      log('[OrderService] 📚✅ Created client: ${client.name}');
     } else {
-      log('[OrderService] Using existing client: ${client.name}');
+      log('[OrderService] 📚 Found existing client: ${client.name}');
     }
 
     _clientService.updateClientWithOrder(
@@ -324,8 +323,8 @@ class OrderService extends _$OrderService {
       order: order,
       isNewOrder: true,
     );
-    log('[OrderService] Updated client: ${client.name}');
-    log('[OrderService] Added order: ${order.shopName}');
+    log('[OrderService] 📚✅ Updated client: ${client.name}');
+    log('[OrderService] 📚✅ Added order: ${order.shopName}');
 
     state = AsyncData<OrderState>(
       state.value!.copyWith(

@@ -36,7 +36,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
     if (!_isInitialized) {
       _orderService = ref.watch(orderServiceProvider.notifier);
       _clientService = ref.watch(clientServiceProvider.notifier);
-      _dialogService = ref.read(dialogServiceProvider.notifier);
+      _dialogService = ref.watch(dialogServiceProvider.notifier);
       _isInitialized = true;
     }
 

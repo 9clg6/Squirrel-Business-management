@@ -1,14 +1,14 @@
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
 import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
 
-/// [LoginResultEntity]
-class LoginResultEntity {
+/// [LoginResult]
+class LoginResult {
   /// Constructor
   /// @param [valid] is valid
   /// @param [expirationDate] expiration date
   /// @param [licenseKey] license key
   ///
-  LoginResultEntity({
+  LoginResult({
     required this.valid,
     required this.expirationDate,
     required this.licenseKey,
@@ -16,12 +16,12 @@ class LoginResultEntity {
 
   /// From local model
   /// @param [localLicense] local license
-  /// @return [LoginResultEntity] login result entity
+  /// @return [LoginResult] login result entity
   ///
-  factory LoginResultEntity.fromLocalModel(
+  factory LoginResult.fromLocalModel(
     LoginResultLocalModel localLicense,
   ) {
-    return LoginResultEntity(
+    return LoginResult(
       valid: localLicense.valid,
       licenseKey: localLicense.licenseKey,
       expirationDate: localLicense.expirationDate,
@@ -30,12 +30,12 @@ class LoginResultEntity {
 
   /// From remote model
   /// @param [remoteModel] remote model
-  /// @return [LoginResultEntity] login result entity
+  /// @return [LoginResult] login result entity
   ///
-  factory LoginResultEntity.fromRemoteModel(
+  factory LoginResult.fromRemoteModel(
     LoginResultRemoteModel remoteModel,
   ) {
-    return LoginResultEntity(
+    return LoginResult(
       valid: remoteModel.valid,
       expirationDate: remoteModel.expirationDate,
       licenseKey: remoteModel.licenseKey,

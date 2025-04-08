@@ -13,9 +13,9 @@ import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
 import 'package:squirrel/domain/use_case/get_app_lock_state.use_case.dart';
 import 'package:squirrel/domain/use_case/get_fail_count.use_case.dart';
-import 'package:squirrel/domain/use_case/get_last_known_time.use_case.dart';
 import 'package:squirrel/domain/use_case/get_license.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
+import 'package:squirrel/domain/use_case/results.usecases.dart';
 import 'package:squirrel/domain/use_case/save_license.use_case.dart';
 import 'package:squirrel/domain/use_case/set_app_lock_state.use_case.dart';
 import 'package:squirrel/domain/use_case/set_fail_count.use_case.dart';
@@ -30,27 +30,15 @@ part 'auth.service.g.dart';
   keepAlive: true,
   dependencies: <Object>[
     RequestService,
-    LoginUseCase,
-    CheckValidityUseCase,
     DialogService,
     NavigatorService,
-    GetFailCountUseCase,
-    GetLastKnownTimeUseCase,
-    GetLicenseUseCase,
-    LoginUseCase,
-    GetAppLockStateUseCase,
-    SetFailCountUseCase,
-    SetLastCheckSuccessUseCase,
-    SetLastKnownTimeUseCase,
-    SetAppLockStateUseCase,
     HiveSecureStorageService,
-    SaveLicenseUseCase,
+    getFailCountUseCase,
   ],
 )
 class AuthService extends _$AuthService {
   static const int _maxFailedChecks = 3;
 
-  CheckValidityUseCase? _checkValidityUseCase;
   RequestService? _requestService;
   Timer? _timer;
   int _failedChecksCount = 0;
@@ -61,7 +49,6 @@ class AuthService extends _$AuthService {
   ///
   @override
   Future<AuthState> build() async {
-    // S'assurer que l'état est toujours initialisé avec une valeur par défaut
     if (!state.hasValue || state.value == null) {
       state = AsyncData<AuthState>(AuthState.initial(isInitialized: false));
     }
@@ -102,8 +89,7 @@ class AuthService extends _$AuthService {
   /// @return [Future<void>]
   ///
   Future<void> _initDependencies() async {
-    _requestService ??= ref.watch(requestServiceProvider.notifier);
-    _checkValidityUseCase ??= ref.watch(checkValidityUseCaseProvider.notifier);
+    _requestService ??= ref.read(requestServiceProvider.notifier);
     log('🔌✅ AuthService initialized');
   }
 
@@ -128,8 +114,8 @@ class AuthService extends _$AuthService {
         return;
       }
 
-      final LoginResultEntity? licenseResult =
-          await ref.watch(getLicenseUseCaseProvider.future);
+      final LoginResult? licenseResult =
+          await ref.read(getLicenseUseCaseProvider.future);
 
       log('🔐 License found: ${licenseResult?.licenseKey}');
 
@@ -161,75 +147,103 @@ class AuthService extends _$AuthService {
   }
 
   /// Check validity
-  /// @return [void]
+  /// @return [Future<bool>] true if validity is checked
   ///
-  Future<void> _checkValidity() async {
-    try {
-      log('🔐 Checking validity');
-      final LoginResultEntity? licenseResult =
-          await ref.watch(getLicenseUseCaseProvider.future);
+  Future<bool> _checkValidity() async {
+    log('🔐 Checking validity');
+    final LoginResult? licenseResult =
+        await ref.read(getLicenseUseCaseProvider.future);
 
-      if (licenseResult == null) return;
+    if (licenseResult == null) return false;
 
-      final bool hasReachedMaxFailedChecks =
-          _failedChecksCount >= _maxFailedChecks;
+    final bool hasReachedMaxFailedChecks =
+        _failedChecksCount >= _maxFailedChecks;
 
-      if (hasReachedMaxFailedChecks) {
-        log('🔐❌ Failed checks count reached max, locking');
-        await _lockApp();
-        return;
-      }
+    if (hasReachedMaxFailedChecks) {
+      log('🔐❌ Failed checks count reached max, locking');
+      await _lockApp();
+      return false;
+    }
 
-      final CheckValidityEntity result =
-          await _checkValidityUseCase!.execute(licenseResult.licenseKey);
+    final ResultState<Future<CheckValidityEntity>> checkValidityResult =
+        await ref.read(
+      checkValidityUseCaseProvider(
+        CheckValidityUseCaseParams(licenseKey: licenseResult.licenseKey),
+      ).future,
+    );
 
-      if (result.valid) {
+    checkValidityResult.when(
+      success: (Future<CheckValidityEntity> data) async {
+        final CheckValidityEntity r = await data;
+
         log('🔐✅ License valid, reset security');
         _failedChecksCount = 0;
-        await ref.watch(setFailCountUseCaseProvider(0).future);
-        await ref.watch(
+        await ref.read(
+          setFailCountUseCaseProvider(
+            count: 0,
+          ).future,
+        );
+        _isAppLocked = false;
+
+        await ref.read(
           setLastCheckSuccessUseCaseProvider(
-            DateTime.now().toIso8601String(),
+            date: DateTime.now().toIso8601String(),
           ).future,
         );
 
         _lastKnownTime = DateTime.now();
-        await ref.watch(
-          setLastKnownTimeUseCaseProvider(_lastKnownTime!).future,
+        await ref.read(
+          setLastKnownTimeUseCaseProvider(
+            date: _lastKnownTime!,
+          ).future,
         );
 
         _isAppLocked = false;
-        await ref.watch(setAppLockStateUseCaseProvider(false).future);
+        await ref.read(
+          setAppLockStateUseCaseProvider(
+            isLocked: false,
+          ).future,
+        );
 
         _setUserAuthenticated(
           true,
           licenseId: licenseResult.licenseKey,
-          expirationDate: result.expirationDate,
+          expirationDate: r.expirationDate,
         );
-      } else {
-        log('🔐❌ License invalid, handle failed check');
-        _setUserAuthenticated(
-          false,
-          isAppLocked: false,
-        );
-      }
-    } on Exception catch (e) {
-      await _handleFailedCheck(e);
-    }
+
+        return true;
+      },
+      failure: _handleFailedCheck,
+      otherwise: () {
+        return false;
+      },
+    );
+
+    return false;
   }
 
   /// Handle failed check
-  /// @return [Future<void>]
+  /// @return [Future<bool>]
   ///
-  Future<void> _handleFailedCheck(Exception e) async {
-    log('🔐❌ Error when checking validity: $e');
+  Future<bool> _handleFailedCheck(Exception e) async {
+    log('🔐❌ License invalid, handle failed check');
+    _setUserAuthenticated(
+      false,
+      isAppLocked: false,
+    );
     _failedChecksCount++;
 
-    await ref.watch(setFailCountUseCaseProvider(_failedChecksCount).future);
+    await ref.read(
+      setFailCountUseCaseProvider(
+        count: _failedChecksCount,
+      ).future,
+    );
 
     if (_failedChecksCount >= _maxFailedChecks) {
       await _lockApp();
     }
+
+    return false;
   }
 
   /// Lock app
@@ -241,7 +255,11 @@ class AuthService extends _$AuthService {
   ]) async {
     log('🔐 Locking app');
     _isAppLocked = true;
-    await ref.watch(setAppLockStateUseCaseProvider(true).future);
+    await ref.read(
+      setAppLockStateUseCaseProvider(
+        isLocked: true,
+      ).future,
+    );
 
     if (state.value == null) {
       state = AsyncData<AuthState>(
@@ -264,7 +282,7 @@ class AuthService extends _$AuthService {
   /// @return [Future<void>]
   ///
   Future<void> _loadFailedChecksCount() async {
-    log('🔌 Loading failed checks count');
+    log('🔌 Loading "failed checks" count');
     final int? count = await ref.read(getFailCountUseCaseProvider.future);
     log('🔌✅ Failed checks count loaded: $count');
     _failedChecksCount = count ?? 0;
@@ -275,7 +293,7 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _loadAppLockedState() async {
     log('🔌 Loading app locked state');
-    final bool? locked = await ref.watch(getAppLockStateUseCaseProvider.future);
+    final bool? locked = await ref.read(getAppLockStateUseCaseProvider.future);
     log('🔌✅ App locked state loaded: $locked');
     _isAppLocked = locked ?? false;
   }
@@ -286,7 +304,11 @@ class AuthService extends _$AuthService {
   Future<bool> _detectTimeTampering() async {
     if (_lastKnownTime == null) {
       _lastKnownTime = DateTime.now();
-      await ref.watch(setLastKnownTimeUseCaseProvider(_lastKnownTime!).future);
+      await ref.read(
+        setLastKnownTimeUseCaseProvider(
+          date: _lastKnownTime!,
+        ).future,
+      );
       return false;
     }
 
@@ -297,7 +319,11 @@ class AuthService extends _$AuthService {
     }
 
     _lastKnownTime = now;
-    await ref.watch(setLastKnownTimeUseCaseProvider(_lastKnownTime!).future);
+    await ref.read(
+      setLastKnownTimeUseCaseProvider(
+        date: _lastKnownTime!,
+      ).future,
+    );
 
     return false;
   }
@@ -382,57 +408,6 @@ class AuthService extends _$AuthService {
     );
   }
 
-  /// Check validity and save security data
-  /// This method is useful to reactivate the app after a lock
-  /// @return [Future<bool>] the verification result
-  ///
-  Future<bool> _checkValidityAndSaveSecurityData() async {
-    log('🔐 Checking validity and saving security data');
-    final LoginResultEntity? licenseResult =
-        await ref.watch(getLicenseUseCaseProvider.future);
-
-    if (licenseResult == null) return false;
-
-    try {
-      final CheckValidityEntity result = await _checkValidityUseCase!.execute(
-        licenseResult.licenseKey,
-      );
-
-      if (result.valid) {
-        _failedChecksCount = 0;
-
-        await ref.watch(setFailCountUseCaseProvider(0).future);
-        _isAppLocked = false;
-        await ref.watch(setAppLockStateUseCaseProvider(false).future);
-        _lastKnownTime = DateTime.now();
-
-        await ref.watch(
-          setLastKnownTimeUseCaseProvider(_lastKnownTime!).future,
-        );
-
-        await ref.watch(
-          setLastCheckSuccessUseCaseProvider(
-            DateTime.now().toIso8601String(),
-          ).future,
-        );
-
-        _setUserAuthenticated(
-          true,
-          licenseId: licenseResult.licenseKey,
-          expirationDate: result.expirationDate,
-        );
-
-        return true;
-      }
-      return false;
-    } on Exception catch (e) {
-      log('Error when getting license and saving security data: $e');
-      return false;
-    } finally {
-      log('🔐✅ Checking validity and saving security data finished');
-    }
-  }
-
   /// Login
   /// @param [licenseKey] license key
   /// @return [Future<bool>] login result
@@ -445,48 +420,37 @@ class AuthService extends _$AuthService {
     }
 
     if (_isAppLocked) {
-      return _checkValidityAndSaveSecurityData();
+      return _checkValidity();
     }
 
-    try {
-      _requestService?.addRequest(
-        Request(
-          name: 'Login',
-          description: "Connexion à l'application",
-          destination: 'Serveur de connexion',
-          parameters: <String, String>{
-            'licenseKey': licenseKey,
-          },
-          date: DateTime.now(),
-        ),
-      );
+    _requestService?.addRequest(
+      Request(
+        name: 'Login',
+        description: "Connexion à l'application",
+        destination: 'Serveur de connexion',
+        parameters: <String, String>{
+          'licenseKey': licenseKey,
+        },
+        date: DateTime.now(),
+      ),
+    );
 
-      final LoginResultEntity loginResult =
-          await ref.watch(loginUseCaseProvider.notifier).execute(licenseKey);
+    final ResultState<Future<LoginResult>> loginResult = await ref.read(
+      loginUseCaseProvider(
+        LoginUseCaseParams(licenseKey: licenseKey),
+      ).future,
+    );
 
-      if (loginResult.valid) {
-        log('🔐✅ Login successful');
-
-        await ref.watch(saveLicenseUseCaseProvider(loginResult).future);
-
-        _setUserAuthenticated(
-          true,
-          licenseId: licenseKey,
-          expirationDate: loginResult.expirationDate,
-        );
-
-        if (_timer == null || !_timer!.isActive) {
-          _startPeriodicCheck();
-        }
-      } else {
-        log('🔐❌ Login failed');
-      }
-
-      return loginResult.valid;
-    } on Exception catch (e) {
-      log('🔐❌ Error when logging in: $e');
-      return false;
-    }
+    return loginResult.when<Future<bool>>(
+      success: _handleSucessLogin,
+      failure: (Exception e) {
+        log('🔐❌ Error when logging in: $e');
+        return Future<bool>.value(false);
+      },
+      otherwise: () {
+        return Future<bool>.value(false);
+      },
+    );
   }
 
   /// Check if the app is currently locked
@@ -494,5 +458,24 @@ class AuthService extends _$AuthService {
   ///
   bool isAppLocked() {
     return _isAppLocked || (state.value?.isAppLocked ?? false);
+  }
+
+  Future<bool> _handleSucessLogin(Future<LoginResult> data) async {
+    log('🔐✅ Login successful');
+    final LoginResult loginResult = await data;
+
+    await ref.read(saveLicenseUseCaseProvider(license: loginResult).future);
+
+    _setUserAuthenticated(
+      true,
+      licenseId: loginResult.licenseKey,
+      expirationDate: loginResult.expirationDate,
+    );
+
+    if (_timer == null || !_timer!.isActive) {
+      _startPeriodicCheck();
+    }
+
+    return true;
   }
 }

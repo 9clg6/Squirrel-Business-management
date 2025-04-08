@@ -5,11 +5,11 @@ abstract class UserRepository {
   /// Get licence
   /// @return [Future<LoginResultEntity?>] login result entity
   ///
-  Future<LoginResultEntity?> getLicence();
+  Future<LoginResult?> getLicence();
 
   /// Save licence
   /// @param [loginResultEntity] login result entity
   /// @return [Future<void>] void
   ///
-  Future<void> saveLicense(LoginResultEntity loginResultEntity);
+  Future<void> saveLicense(LoginResult loginResultEntity);
 }

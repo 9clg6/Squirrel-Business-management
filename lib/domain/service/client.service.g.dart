@@ -6,7 +6,7 @@ part of 'client.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$clientServiceHash() => r'd132201a63bdd3b882d394d2a2c52926c8d1a64a';
+String _$clientServiceHash() => r'cfe88f49bb0189773bb0a6a77155b365a3434823';
 
 /// [ClientService]
 ///

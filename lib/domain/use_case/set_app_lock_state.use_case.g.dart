@@ -7,7 +7,7 @@ part of 'set_app_lock_state.use_case.dart';
 // **************************************************************************
 
 String _$setAppLockStateUseCaseHash() =>
-    r'd9a1493fa76d08328198391d90bfeefafea8a2b5';
+    r'c7ffc16aa10b575fec70bdba2f57cded05e187ea';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,38 +30,29 @@ class _SystemHash {
   }
 }
 
-abstract class _$SetAppLockStateUseCase
-    extends BuildlessAutoDisposeAsyncNotifier<void> {
-  late final bool isLocked;
-
-  FutureOr<void> build(
-    bool isLocked,
-  );
-}
-
-/// Use case to set the app lock state
+/// Provider for SetAppLockStateUseCase
 ///
-/// Copied from [SetAppLockStateUseCase].
-@ProviderFor(SetAppLockStateUseCase)
+/// Copied from [setAppLockStateUseCase].
+@ProviderFor(setAppLockStateUseCase)
 const setAppLockStateUseCaseProvider = SetAppLockStateUseCaseFamily();
 
-/// Use case to set the app lock state
+/// Provider for SetAppLockStateUseCase
 ///
-/// Copied from [SetAppLockStateUseCase].
+/// Copied from [setAppLockStateUseCase].
 class SetAppLockStateUseCaseFamily extends Family<AsyncValue<void>> {
-  /// Use case to set the app lock state
+  /// Provider for SetAppLockStateUseCase
   ///
-  /// Copied from [SetAppLockStateUseCase].
+  /// Copied from [setAppLockStateUseCase].
   const SetAppLockStateUseCaseFamily();
 
-  /// Use case to set the app lock state
+  /// Provider for SetAppLockStateUseCase
   ///
-  /// Copied from [SetAppLockStateUseCase].
-  SetAppLockStateUseCaseProvider call(
-    bool isLocked,
-  ) {
+  /// Copied from [setAppLockStateUseCase].
+  SetAppLockStateUseCaseProvider call({
+    required bool isLocked,
+  }) {
     return SetAppLockStateUseCaseProvider(
-      isLocked,
+      isLocked: isLocked,
     );
   }
 
@@ -70,7 +61,7 @@ class SetAppLockStateUseCaseFamily extends Family<AsyncValue<void>> {
     covariant SetAppLockStateUseCaseProvider provider,
   ) {
     return call(
-      provider.isLocked,
+      isLocked: provider.isLocked,
     );
   }
 
@@ -95,18 +86,20 @@ class SetAppLockStateUseCaseFamily extends Family<AsyncValue<void>> {
   String? get name => r'setAppLockStateUseCaseProvider';
 }
 
-/// Use case to set the app lock state
+/// Provider for SetAppLockStateUseCase
 ///
-/// Copied from [SetAppLockStateUseCase].
-class SetAppLockStateUseCaseProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<SetAppLockStateUseCase, void> {
-  /// Use case to set the app lock state
+/// Copied from [setAppLockStateUseCase].
+class SetAppLockStateUseCaseProvider extends AutoDisposeFutureProvider<void> {
+  /// Provider for SetAppLockStateUseCase
   ///
-  /// Copied from [SetAppLockStateUseCase].
-  SetAppLockStateUseCaseProvider(
-    bool isLocked,
-  ) : this._internal(
-          () => SetAppLockStateUseCase()..isLocked = isLocked,
+  /// Copied from [setAppLockStateUseCase].
+  SetAppLockStateUseCaseProvider({
+    required bool isLocked,
+  }) : this._internal(
+          (ref) => setAppLockStateUseCase(
+            ref as SetAppLockStateUseCaseRef,
+            isLocked: isLocked,
+          ),
           from: setAppLockStateUseCaseProvider,
           name: r'setAppLockStateUseCaseProvider',
           debugGetCreateSourceHash:
@@ -132,20 +125,13 @@ class SetAppLockStateUseCaseProvider
   final bool isLocked;
 
   @override
-  FutureOr<void> runNotifierBuild(
-    covariant SetAppLockStateUseCase notifier,
+  Override overrideWith(
+    FutureOr<void> Function(SetAppLockStateUseCaseRef provider) create,
   ) {
-    return notifier.build(
-      isLocked,
-    );
-  }
-
-  @override
-  Override overrideWith(SetAppLockStateUseCase Function() create) {
     return ProviderOverride(
       origin: this,
       override: SetAppLockStateUseCaseProvider._internal(
-        () => create()..isLocked = isLocked,
+        (ref) => create(ref as SetAppLockStateUseCaseRef),
         from: from,
         name: null,
         dependencies: null,
@@ -157,8 +143,7 @@ class SetAppLockStateUseCaseProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<SetAppLockStateUseCase, void>
-      createElement() {
+  AutoDisposeFutureProviderElement<void> createElement() {
     return _SetAppLockStateUseCaseProviderElement(this);
   }
 
@@ -179,14 +164,14 @@ class SetAppLockStateUseCaseProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SetAppLockStateUseCaseRef on AutoDisposeAsyncNotifierProviderRef<void> {
+mixin SetAppLockStateUseCaseRef on AutoDisposeFutureProviderRef<void> {
   /// The parameter `isLocked` of this provider.
   bool get isLocked;
 }
 
 class _SetAppLockStateUseCaseProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<SetAppLockStateUseCase,
-        void> with SetAppLockStateUseCaseRef {
+    extends AutoDisposeFutureProviderElement<void>
+    with SetAppLockStateUseCaseRef {
   _SetAppLockStateUseCaseProviderElement(super.provider);
 
   @override

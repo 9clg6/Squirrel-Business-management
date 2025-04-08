@@ -7,7 +7,7 @@ part of 'save_license.use_case.dart';
 // **************************************************************************
 
 String _$saveLicenseUseCaseHash() =>
-    r'2e85dbbd24a9c7693b46eedccf43dda29a98ac56';
+    r'576c69aa13fc5dde59dcbd34145d7400bac97277';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -30,38 +30,45 @@ class _SystemHash {
   }
 }
 
-abstract class _$SaveLicenseUseCase
-    extends BuildlessAutoDisposeAsyncNotifier<void> {
-  late final LoginResultEntity license;
-
-  FutureOr<void> build(
-    LoginResultEntity license,
-  );
-}
-
-/// [SaveLicenseUseCase]
+/// Provider for SaveLicenseUseCase
+/// @param [ref] ref
+/// @param [license] license
+/// @return [Future<void>] void
 ///
-/// Copied from [SaveLicenseUseCase].
-@ProviderFor(SaveLicenseUseCase)
+///
+/// Copied from [saveLicenseUseCase].
+@ProviderFor(saveLicenseUseCase)
 const saveLicenseUseCaseProvider = SaveLicenseUseCaseFamily();
 
-/// [SaveLicenseUseCase]
+/// Provider for SaveLicenseUseCase
+/// @param [ref] ref
+/// @param [license] license
+/// @return [Future<void>] void
 ///
-/// Copied from [SaveLicenseUseCase].
+///
+/// Copied from [saveLicenseUseCase].
 class SaveLicenseUseCaseFamily extends Family<AsyncValue<void>> {
-  /// [SaveLicenseUseCase]
+  /// Provider for SaveLicenseUseCase
+  /// @param [ref] ref
+  /// @param [license] license
+  /// @return [Future<void>] void
   ///
-  /// Copied from [SaveLicenseUseCase].
+  ///
+  /// Copied from [saveLicenseUseCase].
   const SaveLicenseUseCaseFamily();
 
-  /// [SaveLicenseUseCase]
+  /// Provider for SaveLicenseUseCase
+  /// @param [ref] ref
+  /// @param [license] license
+  /// @return [Future<void>] void
   ///
-  /// Copied from [SaveLicenseUseCase].
-  SaveLicenseUseCaseProvider call(
-    LoginResultEntity license,
-  ) {
+  ///
+  /// Copied from [saveLicenseUseCase].
+  SaveLicenseUseCaseProvider call({
+    required LoginResult license,
+  }) {
     return SaveLicenseUseCaseProvider(
-      license,
+      license: license,
     );
   }
 
@@ -70,7 +77,7 @@ class SaveLicenseUseCaseFamily extends Family<AsyncValue<void>> {
     covariant SaveLicenseUseCaseProvider provider,
   ) {
     return call(
-      provider.license,
+      license: provider.license,
     );
   }
 
@@ -95,18 +102,28 @@ class SaveLicenseUseCaseFamily extends Family<AsyncValue<void>> {
   String? get name => r'saveLicenseUseCaseProvider';
 }
 
-/// [SaveLicenseUseCase]
+/// Provider for SaveLicenseUseCase
+/// @param [ref] ref
+/// @param [license] license
+/// @return [Future<void>] void
 ///
-/// Copied from [SaveLicenseUseCase].
-class SaveLicenseUseCaseProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<SaveLicenseUseCase, void> {
-  /// [SaveLicenseUseCase]
+///
+/// Copied from [saveLicenseUseCase].
+class SaveLicenseUseCaseProvider extends AutoDisposeFutureProvider<void> {
+  /// Provider for SaveLicenseUseCase
+  /// @param [ref] ref
+  /// @param [license] license
+  /// @return [Future<void>] void
   ///
-  /// Copied from [SaveLicenseUseCase].
-  SaveLicenseUseCaseProvider(
-    LoginResultEntity license,
-  ) : this._internal(
-          () => SaveLicenseUseCase()..license = license,
+  ///
+  /// Copied from [saveLicenseUseCase].
+  SaveLicenseUseCaseProvider({
+    required LoginResult license,
+  }) : this._internal(
+          (ref) => saveLicenseUseCase(
+            ref as SaveLicenseUseCaseRef,
+            license: license,
+          ),
           from: saveLicenseUseCaseProvider,
           name: r'saveLicenseUseCaseProvider',
           debugGetCreateSourceHash:
@@ -129,23 +146,16 @@ class SaveLicenseUseCaseProvider
     required this.license,
   }) : super.internal();
 
-  final LoginResultEntity license;
+  final LoginResult license;
 
   @override
-  FutureOr<void> runNotifierBuild(
-    covariant SaveLicenseUseCase notifier,
+  Override overrideWith(
+    FutureOr<void> Function(SaveLicenseUseCaseRef provider) create,
   ) {
-    return notifier.build(
-      license,
-    );
-  }
-
-  @override
-  Override overrideWith(SaveLicenseUseCase Function() create) {
     return ProviderOverride(
       origin: this,
       override: SaveLicenseUseCaseProvider._internal(
-        () => create()..license = license,
+        (ref) => create(ref as SaveLicenseUseCaseRef),
         from: from,
         name: null,
         dependencies: null,
@@ -157,8 +167,7 @@ class SaveLicenseUseCaseProvider
   }
 
   @override
-  AutoDisposeAsyncNotifierProviderElement<SaveLicenseUseCase, void>
-      createElement() {
+  AutoDisposeFutureProviderElement<void> createElement() {
     return _SaveLicenseUseCaseProviderElement(this);
   }
 
@@ -178,19 +187,17 @@ class SaveLicenseUseCaseProvider
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-mixin SaveLicenseUseCaseRef on AutoDisposeAsyncNotifierProviderRef<void> {
+mixin SaveLicenseUseCaseRef on AutoDisposeFutureProviderRef<void> {
   /// The parameter `license` of this provider.
-  LoginResultEntity get license;
+  LoginResult get license;
 }
 
 class _SaveLicenseUseCaseProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<SaveLicenseUseCase, void>
-    with SaveLicenseUseCaseRef {
+    extends AutoDisposeFutureProviderElement<void> with SaveLicenseUseCaseRef {
   _SaveLicenseUseCaseProviderElement(super.provider);
 
   @override
-  LoginResultEntity get license =>
-      (origin as SaveLicenseUseCaseProvider).license;
+  LoginResult get license => (origin as SaveLicenseUseCaseProvider).license;
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
@@ -95,7 +96,7 @@ class TodoStatusColumn extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final TodoScreenState state = ref.watch(todoViewModelProvider);
-    final TodoViewModel viewModel = ref.read(todoViewModelProvider.notifier);
+    final TodoViewModel viewModel = ref.watch(todoViewModelProvider.notifier);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return Container(
@@ -188,7 +189,7 @@ class TodoItem extends ConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final TodoViewModel viewModel = ref.read(todoViewModelProvider.notifier);
+    final TodoViewModel viewModel = ref.watch(todoViewModelProvider.notifier);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
     return MouseRegion(
@@ -235,15 +236,16 @@ class TodoItem extends ConsumerWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       TextVariant(
-                        order.shopName,
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onSurface,
+                        order.shopName.capitalize,
+                        fontWeight: FontWeight.bold,
+                        color: colorScheme.onPrimary,
+                        variantType: TextVariantType.titleSmall,
                       ),
                       TextVariant(
-                        order.client?.name ?? '',
+                        order.client?.name.capitalize ?? '',
                         variantType: TextVariantType.labelSmall,
                         fontWeight: FontWeight.w400,
-                        color: colorScheme.onSurface,
+                        color: colorScheme.onPrimary,
                       ),
                     ],
                   ),

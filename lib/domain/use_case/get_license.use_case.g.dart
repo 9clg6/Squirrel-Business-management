@@ -6,15 +6,18 @@ part of 'get_license.use_case.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getLicenseUseCaseHash() => r'35b646ae157964a8ef0c14c6f09e4828c72b99be';
+String _$getLicenseUseCaseHash() => r'2fcb09d1f3b346d755fbe303eb5a09610d610a5d';
 
-/// [GetLicenseUseCase]
+/// Provider for GetLicenseUseCase
+/// @param [ref] ref
+/// @return [Future<LoginResult?>] login result entity
 ///
-/// Copied from [GetLicenseUseCase].
-@ProviderFor(GetLicenseUseCase)
-final getLicenseUseCaseProvider = AutoDisposeAsyncNotifierProvider<
-    GetLicenseUseCase, LoginResultEntity?>.internal(
-  GetLicenseUseCase.new,
+///
+/// Copied from [getLicenseUseCase].
+@ProviderFor(getLicenseUseCase)
+final getLicenseUseCaseProvider =
+    AutoDisposeFutureProvider<LoginResult?>.internal(
+  getLicenseUseCase,
   name: r'getLicenseUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
@@ -26,6 +29,8 @@ final getLicenseUseCaseProvider = AutoDisposeAsyncNotifierProvider<
   },
 );
 
-typedef _$GetLicenseUseCase = AutoDisposeAsyncNotifier<LoginResultEntity?>;
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef GetLicenseUseCaseRef = AutoDisposeFutureProviderRef<LoginResult?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -16,8 +16,8 @@ class AddOrderAction extends _$AddOrderAction {
   ///
   @override
   AddOrderActionViewState build() {
-    _dialogService = ref.read(dialogServiceProvider.notifier);
-    _navigatorService = ref.read(navigatorServiceProvider.notifier);
+    _dialogService = ref.watch(dialogServiceProvider.notifier);
+    _navigatorService = ref.watch(navigatorServiceProvider.notifier);
     return AddOrderActionViewState.initial();
   }
 

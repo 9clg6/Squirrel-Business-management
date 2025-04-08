@@ -162,21 +162,9 @@ Future<String?> _authRedirect(
   Ref ref,
   GoRouterState state,
 ) async {
-  final AsyncValue<AuthState> authState = ref.watch(authServiceProvider);
+  final AuthState authState = await ref.watch(authServiceProvider.future);
 
-  if (authState.isLoading) {
-    log('🔐 AuthService still loading - deferring navigation decision');
-    return null;
-  }
-
-  if (authState.hasError ||
-      authState.value == null ||
-      !authState.value!.isInitialized) {
-    log('🔐❌ AuthService not properly initialized or has error');
-    return RouterEnum.auth.path;
-  }
-
-  final bool isAuthenticated = authState.value?.isUserAuthenticated ?? false;
+  final bool isAuthenticated = authState.isUserAuthenticated;
   final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;
 
   if (!isAuthenticated && isAuthRoute) {

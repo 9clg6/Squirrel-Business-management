@@ -1,3 +1,4 @@
+import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
@@ -71,7 +72,7 @@ class _PinnedOrders extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
-    final Index viewModel = ref.read(indexProvider.notifier);
+    final Index viewModel = ref.watch(indexProvider.notifier);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     if (state.pinnedOrders.isEmpty) return const SizedBox();
@@ -148,7 +149,7 @@ class _PinnedOrders extends ConsumerWidget {
                           child: Hero(
                             tag: 'order-${order.id}',
                             child: TextVariant(
-                              order.client?.name ?? '',
+                              order.client?.name.capitalize ?? '',
                             ),
                           ),
                         ),
@@ -256,13 +257,13 @@ class _OrdersList extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final IndexScreenState state = ref.watch(indexProvider);
-    final Index viewModel = ref.read(indexProvider.notifier);
+    final Index viewModel = ref.watch(indexProvider.notifier);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
     final AsyncValue<BusinessTypeState> businessTypeState =
         ref.watch(businessTypeServiceProvider);
     final BusinessTypeService businessTypeNotifier =
-        ref.read(businessTypeServiceProvider.notifier);
+        ref.watch(businessTypeServiceProvider.notifier);
 
     return Container(
       decoration: BoxDecoration(
@@ -673,7 +674,7 @@ class _NextActionContainerState extends ConsumerState<_NextActionContainer> {
 
   @override
   Widget build(BuildContext context) {
-    final Index viewModel = ref.read(indexProvider.notifier);
+    final Index viewModel = ref.watch(indexProvider.notifier);
     final AsyncValue<OrderState> state = ref.watch(orderServiceProvider);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 

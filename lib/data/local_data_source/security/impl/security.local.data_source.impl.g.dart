@@ -7,13 +7,13 @@ part of 'security.local.data_source.impl.dart';
 // **************************************************************************
 
 String _$securityLocalDataSourceImplHash() =>
-    r'cff4ebe902ecd37155b43e8637cb929832459fdb';
+    r'f4cd49f4f031c25870d632f7f6de28cf0355b74a';
 
 /// [SecurityLocalDataSourceImpl]
 ///
 /// Copied from [SecurityLocalDataSourceImpl].
 @ProviderFor(SecurityLocalDataSourceImpl)
-final securityLocalDataSourceImplProvider = AutoDisposeNotifierProvider<
+final securityLocalDataSourceImplProvider = AutoDisposeAsyncNotifierProvider<
     SecurityLocalDataSourceImpl, SecurityLocalDataSourceImpl>.internal(
   SecurityLocalDataSourceImpl.new,
   name: r'securityLocalDataSourceImplProvider',
@@ -28,6 +28,6 @@ final securityLocalDataSourceImplProvider = AutoDisposeNotifierProvider<
 );
 
 typedef _$SecurityLocalDataSourceImpl
-    = AutoDisposeNotifier<SecurityLocalDataSourceImpl>;
+    = AutoDisposeAsyncNotifier<SecurityLocalDataSourceImpl>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

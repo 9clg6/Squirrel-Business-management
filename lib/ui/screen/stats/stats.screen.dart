@@ -111,7 +111,7 @@ class _OrdersByDayChartState extends ConsumerState<OrdersByDayChart> {
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final StatsScreenState state = ref.watch(statsViewModelProvider);
-    final StatsViewModel viewModel = ref.read(statsViewModelProvider.notifier);
+    final StatsViewModel viewModel = ref.watch(statsViewModelProvider.notifier);
     final DateTimeRange dateRange = state.dateRange;
 
     final String dateRangeString =
@@ -546,7 +546,7 @@ class _StatsChartState extends ConsumerState<StatsChart> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final StatsViewModel viewModel = ref.read(statsViewModelProvider.notifier);
+    final StatsViewModel viewModel = ref.watch(statsViewModelProvider.notifier);
     final StatsScreenState state = ref.watch(statsViewModelProvider);
 
     return Expanded(

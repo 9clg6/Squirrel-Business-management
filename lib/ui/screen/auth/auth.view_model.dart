@@ -31,7 +31,7 @@ class Auth extends _$Auth {
     if (!_isInitialized) {
       log('🔌 Initializing AuthViewModel');
       _dialogService = ref.watch(dialogServiceProvider.notifier);
-      _navigatorService = ref.read(navigatorServiceProvider.notifier);
+      _navigatorService = ref.watch(navigatorServiceProvider.notifier);
       _authService = ref.watch(authServiceProvider.notifier);
       _isInitialized = true;
     }

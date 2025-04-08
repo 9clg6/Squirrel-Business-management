@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
+import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// A card that displays the status of an order
 class StatusCard extends StatelessWidget {
@@ -30,7 +31,11 @@ class StatusCard extends StatelessWidget {
         color: status.color,
         borderRadius: BorderRadius.circular(20),
       ),
-      child: Text(status.name),
+      child: TextVariant(
+        status.name,
+        variantType: TextVariantType.labelMedium,
+        color: Theme.of(context).colorScheme.onPrimary,
+      ),
     );
   }
 }

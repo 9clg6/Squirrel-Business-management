@@ -22,7 +22,7 @@ class AddOrderActionScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     final TextTheme textTheme = Theme.of(context).textTheme;
-    final AddOrderAction viewModel = ref.read(addOrderActionProvider.notifier);
+    final AddOrderAction viewModel = ref.watch(addOrderActionProvider.notifier);
     final AddOrderActionViewState state = ref.watch(addOrderActionProvider);
 
     return Dialog(

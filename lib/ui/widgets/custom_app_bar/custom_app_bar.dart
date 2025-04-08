@@ -93,7 +93,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
             final AsyncValue<BusinessTypeState> bState =
                 ref.watch(businessTypeServiceProvider);
             final BusinessTypeService bVm =
-                ref.read(businessTypeServiceProvider.notifier);
+                ref.watch(businessTypeServiceProvider.notifier);
 
             return switch (bState) {
               AsyncData<BusinessTypeState>() => SizedBox(
@@ -166,7 +166,7 @@ class CustomAppBar extends ConsumerWidget implements PreferredSizeWidget {
         Consumer(
           builder: (BuildContext context, WidgetRef ref, Widget? child) {
             final RequestService requestServiceNotifier =
-                ref.read(requestServiceProvider.notifier);
+                ref.watch(requestServiceProvider.notifier);
             final RequestState requestService =
                 ref.watch(requestServiceProvider);
 

@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
@@ -30,8 +28,8 @@ class Index extends _$Index {
   @override
   IndexScreenState build() {
     if (!_isInitialized) {
-      _navigatorService = ref.read(navigatorServiceProvider.notifier);
-      _dialogService = ref.read(dialogServiceProvider.notifier);
+      _navigatorService = ref.watch(navigatorServiceProvider.notifier);
+      _dialogService = ref.watch(dialogServiceProvider.notifier);
       _orderService = ref.watch(orderServiceProvider.notifier);
 
       _isInitialized = true;
@@ -242,8 +240,6 @@ class Index extends _$Index {
   /// @param [state] state
   ///
   void _updateState(OrderState s) {
-    log('[Index] Updating state');
-
     state = state.copyWith(orders: s.runningOrder);
   }
 }

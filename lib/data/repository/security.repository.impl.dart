@@ -1,5 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/data/local_data_source/security/impl/security.local.data_source.impl.dart';
+import 'package:squirrel/data/local_data_source/security/security.local.data_source.dart';
 import 'package:squirrel/domain/repositories/security.repository.dart';
 
 part 'security.repository.impl.g.dart';
@@ -12,12 +13,24 @@ part 'security.repository.impl.g.dart';
 )
 class SecurityRepositoryImpl extends _$SecurityRepositoryImpl
     implements SecurityRepository {
+  /// Default constructor
+  SecurityRepositoryImpl();
+
+  /// Constructor
+  /// @param [_localDataSource] local data source
+  ///
+  SecurityRepositoryImpl._(this._localDataSource);
+
+  late final SecurityLocalDataSource _localDataSource;
+
   /// Build
   /// @return [Future<SecurityRepositoryImpl>] security repository impl
   ///
   @override
-  SecurityRepositoryImpl build() {
-    return SecurityRepositoryImpl();
+  Future<SecurityRepositoryImpl> build() async {
+    return SecurityRepositoryImpl._(
+      await ref.watch(securityLocalDataSourceImplProvider.future),
+    );
   }
 
   /// Set the app lock state
@@ -26,9 +39,7 @@ class SecurityRepositoryImpl extends _$SecurityRepositoryImpl
   ///
   @override
   Future<void> setAppLockState({required bool isLocked}) async {
-    await ref
-        .watch(securityLocalDataSourceImplProvider.notifier)
-        .setAppLockState(isLocked: isLocked);
+    await _localDataSource.setAppLockState(isLocked: isLocked);
   }
 
   /// Is the app locked
@@ -36,9 +47,7 @@ class SecurityRepositoryImpl extends _$SecurityRepositoryImpl
   ///
   @override
   Future<bool> isAppLocked() async {
-    return ref
-        .watch(securityLocalDataSourceImplProvider.notifier)
-        .getAppLockState();
+    return _localDataSource.getAppLockState();
   }
 
   /// Set the fail count
@@ -47,9 +56,7 @@ class SecurityRepositoryImpl extends _$SecurityRepositoryImpl
   ///
   @override
   Future<void> setFailCount(int count) async {
-    await ref
-        .watch(securityLocalDataSourceImplProvider.notifier)
-        .setFailCount(count);
+    await _localDataSource.setFailCount(count);
   }
 
   /// Get the fail count
@@ -57,9 +64,7 @@ class SecurityRepositoryImpl extends _$SecurityRepositoryImpl
   ///
   @override
   Future<int> getFailCount() async {
-    return ref
-        .watch(securityLocalDataSourceImplProvider.notifier)
-        .getFailCount();
+    return _localDataSource.getFailCount();
   }
 
   /// Set the last check success
@@ -68,33 +73,25 @@ class SecurityRepositoryImpl extends _$SecurityRepositoryImpl
   ///
   @override
   Future<void> setLastCheckSuccess(String date) async {
-    await ref
-        .watch(securityLocalDataSourceImplProvider.notifier)
-        .setLastCheckSuccess(date);
+    await _localDataSource.setLastCheckSuccess(date);
   }
 
   @override
   Future<DateTime> getLastCheckSuccess() async {
-    return ref
-        .watch(securityLocalDataSourceImplProvider.notifier)
-        .getLastCheckSuccess();
+    return _localDataSource.getLastCheckSuccess();
   }
 
   @override
   Future<void> setLastKnownTime(DateTime date) async {
-    await ref
-        .watch(securityLocalDataSourceImplProvider.notifier)
-        .setLastKnownTime(date.toIso8601String());
+    await _localDataSource.setLastKnownTime(date.toIso8601String());
   }
 
   @override
   Future<DateTime> getLastKnownTime() async {
-    final String? lastKnownTime = await ref
-        .watch(securityLocalDataSourceImplProvider.notifier)
-        .getLastKnownTime();
+    final String? lastKnownTime = await _localDataSource.getLastKnownTime();
 
     if (lastKnownTime == null) return DateTime.now();
 
-    return DateTime.parse(lastKnownTime);
+    return DateTime.tryParse(lastKnownTime) ?? DateTime.now();
   }
 }
