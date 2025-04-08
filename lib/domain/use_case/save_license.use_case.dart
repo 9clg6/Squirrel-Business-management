@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/user.repository.impl.dart';
+import 'package:squirrel/data/repository/user/user.repository.provider.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/repositories/user.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
@@ -34,17 +34,14 @@ class SaveLicenseUseCase
 /// @param [license] license
 /// @return [Future<void>] void
 ///
-@Riverpod(
-  dependencies: <Object>[
-    UserRepositoryImpl,
-  ],
-)
+@riverpod
 Future<void> saveLicenseUseCase(
   Ref ref, {
   required LoginResult license,
 }) async {
   final UserRepository repository = await ref.watch(
-    userRepositoryImplProvider.future,
+    userRepositoryProvider.future,
   );
+  
   return SaveLicenseUseCase(repository: repository).execute(license);
 }

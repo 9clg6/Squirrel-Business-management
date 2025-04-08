@@ -7,7 +7,7 @@ part of 'get_last_known_time.use_case.dart';
 // **************************************************************************
 
 String _$getLastKnownTimeUseCaseHash() =>
-    r'a6435598b8d9d58be305b453199e2badd8239c17';
+    r'99c8d809490b98cd88cd23f44cc9fe7eecbca9be';
 
 /// Provider for GetLastKnownTimeUseCase
 /// @param [ref] ref
@@ -23,11 +23,8 @@ final getLastKnownTimeUseCaseProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$getLastKnownTimeUseCaseHash,
-  dependencies: <ProviderOrFamily>[securityRepositoryImplProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    securityRepositoryImplProvider,
-    ...?securityRepositoryImplProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')

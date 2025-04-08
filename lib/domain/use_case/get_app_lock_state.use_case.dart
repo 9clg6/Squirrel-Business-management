@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/security.repository.impl.dart';
+import 'package:squirrel/data/repository/security/security.repository.provider.dart';
 import 'package:squirrel/domain/repositories/security.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
 
@@ -30,14 +30,11 @@ class GetAppLockStateUseCase implements BaseUseCase<Future<bool>> {
 /// @param [ref] ref
 /// @return [Future<bool>] if the app is locked
 ///
-@Riverpod(
-  dependencies: <Object>[
-    SecurityRepositoryImpl,
-  ],
-)
+@riverpod
 Future<bool> getAppLockStateUseCase(Ref ref) async {
   final SecurityRepository repository = await ref.watch(
     securityRepositoryImplProvider.future,
   );
+  
   return GetAppLockStateUseCase(repository: repository).execute();
 }

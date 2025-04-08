@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/preferences.repository_impl.dart';
+import 'package:squirrel/data/repository/preferences/preferences.repository.provider.dart';
 import 'package:squirrel/domain/repositories/preferences.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
 import 'package:squirrel/foundation/enums/theme_appareance.enum.dart';
@@ -32,9 +32,9 @@ class GetThemeUseCase implements BaseUseCase<Future<ThemeAppearance>> {
 /// @return [Future<ThemeAppearance>] result
 ///
 @riverpod
-Future<ThemeAppearance> getThemeUseCase(Ref ref) {
-  final PreferencesRepository repository = ref.watch(
-    preferencesRepositoryImplProvider,
+Future<ThemeAppearance> getThemeUseCase(Ref ref) async {
+  final PreferencesRepository repository = await ref.watch(
+    preferencesRepositoryImplProvider.future,
   );
   return GetThemeUseCase(repository: repository).execute();
 }

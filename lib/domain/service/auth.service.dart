@@ -15,6 +15,8 @@ import 'package:squirrel/domain/use_case/get_app_lock_state.use_case.dart';
 import 'package:squirrel/domain/use_case/get_fail_count.use_case.dart';
 import 'package:squirrel/domain/use_case/get_license.use_case.dart';
 import 'package:squirrel/domain/use_case/login.use_case.dart';
+import 'package:squirrel/domain/use_case/params/check_validity.use_case.params.dart';
+import 'package:squirrel/domain/use_case/params/login.use_case.params.dart';
 import 'package:squirrel/domain/use_case/results.usecases.dart';
 import 'package:squirrel/domain/use_case/save_license.use_case.dart';
 import 'package:squirrel/domain/use_case/set_app_lock_state.use_case.dart';

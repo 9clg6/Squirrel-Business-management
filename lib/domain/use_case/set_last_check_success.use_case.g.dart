@@ -7,7 +7,7 @@ part of 'set_last_check_success.use_case.dart';
 // **************************************************************************
 
 String _$setLastCheckSuccessUseCaseHash() =>
-    r'f58862478585abf4e61493ac73be689b4bd6e9b7';
+    r'186418b9a66812f30bf5b640a29ba497c3a0de1e';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -81,18 +81,12 @@ class SetLastCheckSuccessUseCaseFamily extends Family<AsyncValue<void>> {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    securityRepositoryImplProvider
-  ];
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    securityRepositoryImplProvider,
-    ...?securityRepositoryImplProvider.allTransitiveDependencies
-  };
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>

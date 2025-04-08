@@ -1,40 +1,16 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/local_data_source/preferences/impl/preferences_local.data_source.impl.dart';
 import 'package:squirrel/data/local_data_source/preferences/preferences_local.data_source.dart';
 import 'package:squirrel/domain/repositories/preferences.repository.dart';
 import 'package:squirrel/foundation/enums/theme_appareance.enum.dart';
 
-part 'preferences.repository_impl.g.dart';
-
 /// [PreferencesRepositoryImpl]
-@Riverpod(
-  dependencies: <Object>[
-    PreferencesLocalDataSourcesImpl,
-  ],
-)
-class PreferencesRepositoryImpl extends _$PreferencesRepositoryImpl
-    implements PreferencesRepository {
-  /// Constructor
-  ///
-  PreferencesRepositoryImpl();
-
+class PreferencesRepositoryImpl implements PreferencesRepository {
   /// Constructor
   /// @param [_localDataSource] preferences local data source
   ///
-  PreferencesRepositoryImpl._(this._localDataSource);
+  PreferencesRepositoryImpl(this._localDataSource);
 
   /// Preferences local data source
   late final PreferencesLocalDataSource _localDataSource;
-
-  /// Build
-  /// @return [PreferencesRepositoryImpl] preferences repository impl
-  ///
-  @override
-  PreferencesRepositoryImpl build() {
-    return PreferencesRepositoryImpl._(
-      ref.watch(preferencesLocalDataSourcesImplProvider),
-    );
-  }
 
   /// Change theme
   /// @param [newThemeAppearance] new theme appearance

@@ -7,7 +7,7 @@ part of 'set_last_known_time.use_case.dart';
 // **************************************************************************
 
 String _$setLastKnownTimeUseCaseHash() =>
-    r'e0bc6729b05062f69e4f0e3a2d2ee22840d6b4e6';
+    r'91f3c75651d8d36c345713e31ff317b227e3cafc';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -81,18 +81,12 @@ class SetLastKnownTimeUseCaseFamily extends Family<AsyncValue<void>> {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    securityRepositoryImplProvider
-  ];
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    securityRepositoryImplProvider,
-    ...?securityRepositoryImplProvider.allTransitiveDependencies
-  };
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>

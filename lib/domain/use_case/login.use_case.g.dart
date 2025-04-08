@@ -6,7 +6,7 @@ part of 'login.use_case.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$loginUseCaseHash() => r'57f109a2ebfe3b7cae5737d71f8ad31110537642';
+String _$loginUseCaseHash() => r'427d6a62940e5c58515064b41f033c8570f2f998';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -81,18 +81,12 @@ class LoginUseCaseFamily
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    authenticationRepositoryImplProvider
-  ];
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    authenticationRepositoryImplProvider,
-    ...?authenticationRepositoryImplProvider.allTransitiveDependencies
-  };
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>

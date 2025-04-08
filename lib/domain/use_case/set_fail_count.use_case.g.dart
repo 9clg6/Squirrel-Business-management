@@ -7,7 +7,7 @@ part of 'set_fail_count.use_case.dart';
 // **************************************************************************
 
 String _$setFailCountUseCaseHash() =>
-    r'18ed6a9e0dd5e61f701ee98cbfe41ae4bfa9f5ab';
+    r'2757acc470dc629b288c38cb2ec308b4decbb22a';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -81,18 +81,12 @@ class SetFailCountUseCaseFamily extends Family<AsyncValue<void>> {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    securityRepositoryImplProvider
-  ];
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    securityRepositoryImplProvider,
-    ...?securityRepositoryImplProvider.allTransitiveDependencies
-  };
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>

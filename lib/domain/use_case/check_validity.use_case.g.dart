@@ -7,7 +7,7 @@ part of 'check_validity.use_case.dart';
 // **************************************************************************
 
 String _$checkValidityUseCaseHash() =>
-    r'4017e82211d7d01093dd029008931c70ddb41e7f';
+    r'530e24d856ba9cc18c31886fd5d6de55d5e19b88';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -82,18 +82,12 @@ class CheckValidityUseCaseFamily
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    authenticationRepositoryImplProvider
-  ];
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    authenticationRepositoryImplProvider,
-    ...?authenticationRepositoryImplProvider.allTransitiveDependencies
-  };
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>

@@ -1,33 +1,32 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'get_app_lock_state.use_case.dart';
+part of 'preferences.repository.provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getAppLockStateUseCaseHash() =>
-    r'd661bcba9b59d77800449884200b9c72e9838253';
+String _$preferencesRepositoryImplHash() =>
+    r'88fcd34acf7e2a03c9c0ced05dabc2c776b296f5';
 
-/// Provider for GetAppLockStateUseCase
-/// @param [ref] ref
-/// @return [Future<bool>] if the app is locked
+/// [PreferencesRepositoryImpl]
 ///
-///
-/// Copied from [getAppLockStateUseCase].
-@ProviderFor(getAppLockStateUseCase)
-final getAppLockStateUseCaseProvider = AutoDisposeFutureProvider<bool>.internal(
-  getAppLockStateUseCase,
-  name: r'getAppLockStateUseCaseProvider',
+/// Copied from [preferencesRepositoryImpl].
+@ProviderFor(preferencesRepositoryImpl)
+final preferencesRepositoryImplProvider =
+    AutoDisposeFutureProvider<PreferencesRepository>.internal(
+  preferencesRepositoryImpl,
+  name: r'preferencesRepositoryImplProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$getAppLockStateUseCaseHash,
+      : _$preferencesRepositoryImplHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef GetAppLockStateUseCaseRef = AutoDisposeFutureProviderRef<bool>;
+typedef PreferencesRepositoryImplRef
+    = AutoDisposeFutureProviderRef<PreferencesRepository>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

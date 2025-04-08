@@ -6,7 +6,7 @@ part of 'get_license.use_case.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$getLicenseUseCaseHash() => r'2fcb09d1f3b346d755fbe303eb5a09610d610a5d';
+String _$getLicenseUseCaseHash() => r'f5d6db1a72ccb6c5f40b5db9424b672067aa49af';
 
 /// Provider for GetLicenseUseCase
 /// @param [ref] ref
@@ -22,11 +22,8 @@ final getLicenseUseCaseProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$getLicenseUseCaseHash,
-  dependencies: <ProviderOrFamily>[userRepositoryImplProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    userRepositoryImplProvider,
-    ...?userRepositoryImplProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')

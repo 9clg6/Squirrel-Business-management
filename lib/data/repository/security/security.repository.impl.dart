@@ -1,37 +1,14 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/local_data_source/security/impl/security.local.data_source.impl.dart';
 import 'package:squirrel/data/local_data_source/security/security.local.data_source.dart';
 import 'package:squirrel/domain/repositories/security.repository.dart';
 
-part 'security.repository.impl.g.dart';
-
 /// [SecurityRepositoryImpl]
-@Riverpod(
-  dependencies: <Object>[
-    SecurityLocalDataSourceImpl,
-  ],
-)
-class SecurityRepositoryImpl extends _$SecurityRepositoryImpl
-    implements SecurityRepository {
-  /// Default constructor
-  SecurityRepositoryImpl();
-
+class SecurityRepositoryImpl implements SecurityRepository {
   /// Constructor
   /// @param [_localDataSource] local data source
   ///
-  SecurityRepositoryImpl._(this._localDataSource);
+  SecurityRepositoryImpl(this._localDataSource);
 
-  late final SecurityLocalDataSource _localDataSource;
-
-  /// Build
-  /// @return [Future<SecurityRepositoryImpl>] security repository impl
-  ///
-  @override
-  Future<SecurityRepositoryImpl> build() async {
-    return SecurityRepositoryImpl._(
-      await ref.watch(securityLocalDataSourceImplProvider.future),
-    );
-  }
+  final SecurityLocalDataSource _localDataSource;
 
   /// Set the app lock state
   /// @param [isLocked] if the app is locked

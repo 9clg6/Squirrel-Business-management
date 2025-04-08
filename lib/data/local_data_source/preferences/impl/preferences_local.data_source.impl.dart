@@ -1,42 +1,18 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/data/local_data_source/preferences/preferences_local.data_source.dart';
-import 'package:squirrel/data/storage/hive_secure_storage.dart';
-
-part 'preferences_local.data_source.impl.g.dart';
+import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 
 /// [PreferencesLocalDataSourcesImpl]
-@Riverpod(
-  dependencies: <Object>[
-    HiveSecureStorage,
-  ],
-)
-class PreferencesLocalDataSourcesImpl extends _$PreferencesLocalDataSourcesImpl
-    implements PreferencesLocalDataSource {
-  /// Constructor
-  ///
-  PreferencesLocalDataSourcesImpl();
-
+class PreferencesLocalDataSourcesImpl implements PreferencesLocalDataSource {
   /// Constructor
   /// @param [_storage] hive secure storage
   ///
-  PreferencesLocalDataSourcesImpl._(this._storage);
+  PreferencesLocalDataSourcesImpl(this._storage);
 
   /// Hive secure storage
-  late final HiveSecureStorage _storage;
+  final HiveSecureStorageService _storage;
 
   /// Theme key
   static const String _themeKey = 'theme_appearance_key';
-
-  /// Build
-  /// @return [PreferencesLocalDataSourcesImpl] preferences
-  /// local data source impl
-  ///
-  @override
-  PreferencesLocalDataSourcesImpl build() {
-    return PreferencesLocalDataSourcesImpl._(
-      ref.watch(hiveSecureStorageProvider.notifier),
-    );
-  }
 
   /// Get current theme
   /// @return [Future<String?>] current theme

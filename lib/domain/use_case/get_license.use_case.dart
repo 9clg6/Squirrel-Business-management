@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/user.repository.impl.dart';
+import 'package:squirrel/data/repository/user/user.repository.provider.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/repositories/user.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
@@ -31,14 +31,10 @@ class GetLicenseUseCase implements BaseUseCase<Future<LoginResult?>> {
 /// @param [ref] ref
 /// @return [Future<LoginResult?>] login result entity
 ///
-@Riverpod(
-  dependencies: <Object>[
-    UserRepositoryImpl,
-  ],
-)
+@riverpod
 Future<LoginResult?> getLicenseUseCase(Ref ref) async {
   final UserRepository repository = await ref.watch(
-    userRepositoryImplProvider.future,
+    userRepositoryProvider.future,
   );
   
   return GetLicenseUseCase(repository: repository).execute();

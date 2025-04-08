@@ -1,23 +1,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/authentication.repository.impl.dart';
+import 'package:squirrel/data/repository/authentification/authentication.repository.provider.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/repositories/authentication.repository.dart';
 import 'package:squirrel/domain/use_case/future.usecases.dart';
+import 'package:squirrel/domain/use_case/params/login.use_case.params.dart';
 import 'package:squirrel/domain/use_case/results.usecases.dart';
 
 part 'login.use_case.g.dart';
 
-/// Login Params
-class LoginUseCaseParams {
-  /// Constructor
-  /// @param [licenseKey] license key
-  ///
-  LoginUseCaseParams({required this.licenseKey});
-
-  /// License Key
-  final String licenseKey;
-}
 
 /// Login Use Case Implementation
 class LoginUseCase
@@ -47,17 +38,13 @@ class LoginUseCase
 /// @param [params] params
 /// @return [ResultState<Future<LoginResult>>] result
 ///
-@Riverpod(
-  dependencies: <Object>[
-    AuthenticationRepositoryImpl,
-  ],
-)
+@riverpod
 Future<ResultState<Future<LoginResult>>> loginUseCase(
   Ref ref,
   LoginUseCaseParams params,
 ) {
   final AuthenticationRepository repository = ref.watch(
-    authenticationRepositoryImplProvider.notifier,
+    authenticationRepositoryImplProvider,
   );
   return LoginUseCase(repository: repository).execute(params);
 }

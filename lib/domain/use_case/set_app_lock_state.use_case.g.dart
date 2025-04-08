@@ -7,7 +7,7 @@ part of 'set_app_lock_state.use_case.dart';
 // **************************************************************************
 
 String _$setAppLockStateUseCaseHash() =>
-    r'c7ffc16aa10b575fec70bdba2f57cded05e187ea';
+    r'651d5a253f854597846e5fe409780a9fe92e4372';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -65,18 +65,12 @@ class SetAppLockStateUseCaseFamily extends Family<AsyncValue<void>> {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    securityRepositoryImplProvider
-  ];
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    securityRepositoryImplProvider,
-    ...?securityRepositoryImplProvider.allTransitiveDependencies
-  };
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>

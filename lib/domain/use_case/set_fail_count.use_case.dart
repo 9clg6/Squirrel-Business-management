@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/security.repository.impl.dart';
+import 'package:squirrel/data/repository/security/security.repository.provider.dart';
 import 'package:squirrel/domain/repositories/security.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
 
@@ -32,14 +32,11 @@ class SetFailCountUseCase implements BaseUseCaseWithParams<Future<void>, int> {
 /// @param [count] the count
 /// @return [Future<void>]
 ///
-@Riverpod(
-  dependencies: <Object>[
-    SecurityRepositoryImpl,
-  ],
-)
+@riverpod
 Future<void> setFailCountUseCase(Ref ref, {required int count}) async {
   final SecurityRepository repository = await ref.watch(
     securityRepositoryImplProvider.future,
   );
+
   return SetFailCountUseCase(repository: repository).execute(count);
 }

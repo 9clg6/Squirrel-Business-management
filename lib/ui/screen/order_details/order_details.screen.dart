@@ -1149,6 +1149,7 @@ class _OrderDetailAppBar extends StatelessWidget
       title: TextVariant(
         LocaleKeys.orderDetails.tr(),
         variantType: TextVariantType.titleMedium,
+        fontWeight: FontWeight.bold,
       ),
       leading: MouseRegion(
         cursor: SystemMouseCursors.click,

@@ -1,24 +1,12 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/data/local_data_source/security/security.local.data_source.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 
-part 'security.local.data_source.impl.g.dart';
-
 /// [SecurityLocalDataSourceImpl]
-@Riverpod(
-  dependencies: <Object>[
-    HiveSecureStorageService,
-  ],
-)
-class SecurityLocalDataSourceImpl extends _$SecurityLocalDataSourceImpl
-    implements SecurityLocalDataSource {
-  /// Default constructor
-  SecurityLocalDataSourceImpl();
-
+class SecurityLocalDataSourceImpl implements SecurityLocalDataSource {
   /// Constructor
   /// @param [_secureStorageService] secure storage service
   ///
-  SecurityLocalDataSourceImpl._(this._secureStorageService);
+  SecurityLocalDataSourceImpl(this._secureStorageService);
 
   static const String _appLockStateKey = 'appLockKey';
   static const String _failCountKey = 'failCountKey';
@@ -26,18 +14,6 @@ class SecurityLocalDataSourceImpl extends _$SecurityLocalDataSourceImpl
   static const String _lastKnownTimeKey = 'lastKnownTimeKey';
 
   late final HiveSecureStorageService? _secureStorageService;
-
-  /// Build
-  /// @return [Future<SecurityLocalDataSourceImpl>] security local data source
-  /// impl
-  ///
-  @override
-  Future<SecurityLocalDataSourceImpl> build() async {
-    final HiveSecureStorageService? secureStorageService =
-        await ref.watch(hiveSecureStorageServiceProvider.future);
-
-    return SecurityLocalDataSourceImpl._(secureStorageService);
-  }
 
   /// Set the app lock state
   /// @param [isLocked] if the app is locked

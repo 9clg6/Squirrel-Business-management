@@ -7,7 +7,7 @@ part of 'save_license.use_case.dart';
 // **************************************************************************
 
 String _$saveLicenseUseCaseHash() =>
-    r'576c69aa13fc5dde59dcbd34145d7400bac97277';
+    r'ca89849a044c26fad01c082cb3c435fa11a3ef15';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -81,18 +81,12 @@ class SaveLicenseUseCaseFamily extends Family<AsyncValue<void>> {
     );
   }
 
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
-    userRepositoryImplProvider
-  ];
+  static const Iterable<ProviderOrFamily>? _dependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => _dependencies;
 
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    userRepositoryImplProvider,
-    ...?userRepositoryImplProvider.allTransitiveDependencies
-  };
+  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
 
   @override
   Iterable<ProviderOrFamily>? get allTransitiveDependencies =>

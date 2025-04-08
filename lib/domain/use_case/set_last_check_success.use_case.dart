@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/security.repository.impl.dart';
+import 'package:squirrel/data/repository/security/security.repository.provider.dart';
 import 'package:squirrel/domain/repositories/security.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
 
@@ -8,7 +8,7 @@ part 'set_last_check_success.use_case.g.dart';
 
 /// Use case to set the last check success
 class SetLastCheckSuccessUseCase
-    implements BaseUseCaseWithParams<Future<void>, String>   {
+    implements BaseUseCaseWithParams<Future<void>, String> {
   /// Constructor
   /// @param [repository] Security Repository
   ///
@@ -33,11 +33,7 @@ class SetLastCheckSuccessUseCase
 /// @param [date] the date (as String)
 /// @return [Future<void>]
 ///
-@Riverpod(
-  dependencies: <Object>[
-    SecurityRepositoryImpl,
-  ],
-)
+@riverpod
 Future<void> setLastCheckSuccessUseCase(
   Ref ref, {
   required String date,
@@ -45,5 +41,6 @@ Future<void> setLastCheckSuccessUseCase(
   final SecurityRepository repository = await ref.watch(
     securityRepositoryImplProvider.future,
   );
+  
   return SetLastCheckSuccessUseCase(repository: repository).execute(date);
 }

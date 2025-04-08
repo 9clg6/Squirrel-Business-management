@@ -7,7 +7,7 @@ part of 'get_fail_count.use_case.dart';
 // **************************************************************************
 
 String _$getFailCountUseCaseHash() =>
-    r'2f467136efe19cebf94554a97086442a71f69f3d';
+    r'b33416c48e85671a1a0836633b04120ef9710668';
 
 /// Provider for GetFailCountUseCase
 /// @param [ref] ref
@@ -22,11 +22,8 @@ final getFailCountUseCaseProvider = AutoDisposeFutureProvider<int>.internal(
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$getFailCountUseCaseHash,
-  dependencies: <ProviderOrFamily>[securityRepositoryImplProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    securityRepositoryImplProvider,
-    ...?securityRepositoryImplProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')

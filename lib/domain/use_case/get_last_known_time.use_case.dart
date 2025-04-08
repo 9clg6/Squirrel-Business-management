@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/security.repository.impl.dart';
+import 'package:squirrel/data/repository/security/security.repository.provider.dart';
 import 'package:squirrel/domain/repositories/security.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
 
@@ -30,15 +30,12 @@ class GetLastKnownTimeUseCase implements BaseUseCase<Future<DateTime>> {
 /// @param [ref] ref
 /// @return [Future<DateTime>] the last known time
 ///
-@Riverpod(
-  dependencies: <Object>[
-    SecurityRepositoryImpl,
-  ],
-)
+@riverpod
 Future<DateTime> getLastKnownTimeUseCase(Ref ref) async {
   final SecurityRepository repository = await ref.watch(
     securityRepositoryImplProvider.future,
   );
+
   return GetLastKnownTimeUseCase(
     repository: repository,
   ).execute();

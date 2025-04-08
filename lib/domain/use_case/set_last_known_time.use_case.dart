@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/security.repository.impl.dart';
+import 'package:squirrel/data/repository/security/security.repository.provider.dart';
 import 'package:squirrel/domain/repositories/security.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
 
@@ -33,11 +33,7 @@ class SetLastKnownTimeUseCase
 /// @param date [DateTime] the date to set
 /// @return [Future<void>] the last known time
 ///
-@Riverpod(
-  dependencies: <Object>[
-    SecurityRepositoryImpl,
-  ],
-)
+@riverpod
 Future<void> setLastKnownTimeUseCase(
   Ref ref, {
   required DateTime date,
@@ -45,5 +41,6 @@ Future<void> setLastKnownTimeUseCase(
   final SecurityRepository repository = await ref.watch(
     securityRepositoryImplProvider.future,
   );
+
   return SetLastKnownTimeUseCase(repository: repository).execute(date);
 }

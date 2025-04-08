@@ -1,30 +1,21 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/data/model/remote/check_validity.remote_model.dart';
 import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
 import 'package:squirrel/data/remote_data_source/authentication.data_source.dart';
-import 'package:squirrel/data/remote_data_source/impl/authentication.data_source.impl.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/repositories/authentication.repository.dart';
 
-part 'authentication.repository.impl.g.dart';
-
 /// [AuthenticationRepositoryImpl]
-@Riverpod(
-  dependencies: <Object>[
-    AuthenticationDataSourceImpl,
-  ],
-)
-class AuthenticationRepositoryImpl extends _$AuthenticationRepositoryImpl
-    implements AuthenticationRepository {
+class AuthenticationRepositoryImpl implements AuthenticationRepository {
+  /// Constructor
+  /// @param [_authenticationDataSource] authentication data source
+  ///
+  AuthenticationRepositoryImpl(
+    this._authenticationDataSource,
+  );
+
   /// Authentication data source
   late final AuthenticationDataSource _authenticationDataSource;
-
-  @override
-  AuthenticationRepositoryImpl build() {
-    _authenticationDataSource = ref.watch(authenticationDataSourceImplProvider);
-    return AuthenticationRepositoryImpl();
-  }
 
   /// Login
   /// @param [licenseKey] license key
