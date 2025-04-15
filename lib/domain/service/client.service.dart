@@ -1,11 +1,11 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/state/client.state.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
@@ -32,7 +32,7 @@ class ClientService extends _$ClientService {
   @override
   Future<ClientState> build() async {
     if (!_isInitialized) {
-      log('🔌 Initializing ClientService');
+      LoggerService.instance.i('🔌 Initializing ClientService');
       _storage = ref.watch(hiveSecureStorageServiceProvider.notifier);
       _isInitialized = true;
     }
@@ -43,7 +43,7 @@ class ClientService extends _$ClientService {
   /// Load clients
   ///
   Future<ClientState> _loadClients() async {
-    log('📚 Loading clients');
+    LoggerService.instance.i('📚 Loading clients');
     final String? o = await _storage.get(_storageKey) as String?;
     if (o != null) {
       final List<dynamic> clients = jsonDecode(o) as List<dynamic>;
@@ -61,7 +61,7 @@ class ClientService extends _$ClientService {
   /// @param [os] order state
   ///
   void _save(ClientState os) {
-    log('📚💾 Saving clients');
+    LoggerService.instance.i('📚💾 Saving clients');
     if (os.clients.isEmpty) return;
     _storage.set(
       _storageKey,

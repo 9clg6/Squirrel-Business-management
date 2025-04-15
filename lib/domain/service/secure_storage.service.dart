@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:hive/hive.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 
 part 'secure_storage.service.g.dart';
 
@@ -40,7 +40,7 @@ class SecureStorageService extends _$SecureStorageService {
   Future<void> _initialize() async {
     if (_isInitialized) return;
 
-    log('🔌 Initializing SecureStorageService');
+    LoggerService.instance.i('[SecureStorageService] 🔌 Initializing');
 
     try {
       _cachedKey = await _storage.read(key: _encryptionKey);
@@ -50,13 +50,17 @@ class SecureStorageService extends _$SecureStorageService {
         final List<int> secureKey = Hive.generateSecureKey();
         _cachedKey = base64Encode(secureKey);
         await _storage.write(key: _encryptionKey, value: _cachedKey);
-        log('🔌 Nouvelle clé de chiffrement générée');
+        LoggerService.instance
+            .i('[SecureStorageService] 🔌 Nouvelle clé de chiffrement générée');
       }
 
       _isInitialized = true;
-      log('🔌 SecureStorageService initialized');
+      LoggerService.instance
+          .i('[SecureStorageService] 🔌 SecureStorageService initialized');
     } catch (e) {
-      log("Erreur lors de l'initialisation de SecureStorageService: $e");
+      LoggerService.instance.e(
+        "[SecureStorageService] 🔌 Erreur lors de l'initialisation de SecureStorageService: $e",
+      );
       rethrow;
     }
   }

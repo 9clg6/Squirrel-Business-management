@@ -1,11 +1,10 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/auth.state.dart';
 import 'package:squirrel/domain/state/request.state.dart';
@@ -168,17 +167,21 @@ Future<String?> _authRedirect(
   final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;
 
   if (!isAuthenticated && isAuthRoute) {
-    log('🔐❌ User is not authenticated and is on auth route');
+    LoggerService.instance
+        .e('[AuthService] 🔐❌ User is not authenticated and is on auth route');
     return null;
   }
 
   if (!isAuthenticated) {
-    log('🔐❌ User is not authenticated and is not on auth route');
+    LoggerService.instance.e(
+      '[AuthService] 🔐❌ User is not authenticated and is not on auth route',
+    );
     return RouterEnum.auth.path;
   }
 
   if (isAuthenticated && isAuthRoute) {
-    log('🔐✅ User is authenticated and is on auth route');
+    LoggerService.instance
+        .i('[AuthService] 🔐✅ User is authenticated and is on auth route');
     return RouterEnum.main.path;
   }
 

@@ -1,4 +1,5 @@
 import 'package:squirrel/application/config/app_config.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/foundation/utils/logger.util.dart';
 import 'package:squirrel/kernel.dart';
 
@@ -14,6 +15,7 @@ void main() async {
 
     /// Bootstrap the kernel
     await kernel.bootstrap();
+    await LoggerService.init();
 
     /// Run the kernel
     kernel.run();

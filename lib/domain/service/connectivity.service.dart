@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 
 part 'connectivity.service.g.dart';
 
@@ -19,11 +18,13 @@ class ConnectivityService extends _$ConnectivityService {
       }
 
       final ConnectivityResult connectivityResult = results.first;
-      log('Statut de la connexion: $connectivityResult');
+      LoggerService.instance.i('Statut de la connexion: $connectivityResult');
 
       return connectivityResult != ConnectivityResult.none;
     } on Exception catch (e) {
-      log('Erreur lors de la vérification de la connexion internet: $e');
+      LoggerService.instance.e(
+        'Erreur lors de la vérification de la connexion internet: $e',
+      );
       return false;
     }
   }

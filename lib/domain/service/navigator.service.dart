@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/routing/routing_key.dart';
 
@@ -24,6 +23,7 @@ class NavigatorService extends _$NavigatorService {
   /// @param [Order] order
   ///
   void navigateToDetails(Order order) {
+    LoggerService.instance.i('🌍 Navigating to details');
     routingKey.currentContext?.goNamed(
       RouterEnum.orderDetails.name,
       pathParameters: <String, String>{'orderId': order.id},
@@ -36,6 +36,7 @@ class NavigatorService extends _$NavigatorService {
   Future<void> navigateToHome() async {
     final BuildContext? context = routingKey.currentContext;
     if (context != null) {
+      LoggerService.instance.i('🌍 Navigating to home');
       context.goNamed(RouterEnum.main.name);
     }
   }
@@ -44,13 +45,14 @@ class NavigatorService extends _$NavigatorService {
   /// @param [OrderAction] result
   ///
   void navigateBack({OrderAction? result}) {
+    LoggerService.instance.i('🌍 Navigating back');
     routingKey.currentContext?.pop<OrderAction?>(result);
   }
 
   /// Navigate to auth
   ///
   void navigateToAuth() {
-    log('🌍 Navigating to auth');
+    LoggerService.instance.i('🌍 Navigating to auth');
     routingKey.currentContext?.replaceNamed(RouterEnum.auth.name);
   }
 }

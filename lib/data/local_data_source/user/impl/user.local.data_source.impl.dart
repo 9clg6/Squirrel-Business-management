@@ -1,9 +1,9 @@
 import 'dart:convert';
-import 'dart:developer';
 
 import 'package:squirrel/data/local_data_source/user/user.local.data_source.dart';
 import 'package:squirrel/data/model/local/login_result.local_model.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 
 /// [UserLocalDataSourceImpl]
 class UserLocalDataSourceImpl implements UserLocalDataSource {
@@ -25,16 +25,18 @@ class UserLocalDataSourceImpl implements UserLocalDataSource {
       final String? license = await _secureStorageService.get(_license);
 
       if (license == null) {
-        log('⚠️ No license found in secure storage');
+        LoggerService.instance.w('⚠️ No license found in secure storage');
         return null;
       }
 
-      log('✅ License found in secure storage, deserializing');
+      LoggerService.instance.i(
+        '✅ License found in secure storage, deserializing',
+      );
       return LoginResultLocalModel.fromJson(
         jsonDecode(license) as Map<String, dynamic>,
       );
     } on Exception catch (e) {
-      log('❌ Error while retrieving license: $e');
+      LoggerService.instance.e('❌ Error while retrieving license: $e');
       return null;
     }
   }

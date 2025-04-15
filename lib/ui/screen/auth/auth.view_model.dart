@@ -1,9 +1,9 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/service/auth.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/screen/auth/auth.view_state.dart';
@@ -29,7 +29,7 @@ class Auth extends _$Auth {
   @override
   AuthScreenState build() {
     if (!_isInitialized) {
-      log('🔌 Initializing AuthViewModel');
+      LoggerService.instance.i('[AuthViewModel] 🔌 Initializing');
       _dialogService = ref.watch(dialogServiceProvider.notifier);
       _navigatorService = ref.watch(navigatorServiceProvider.notifier);
       _authService = ref.watch(authServiceProvider.notifier);
@@ -52,12 +52,15 @@ class Auth extends _$Auth {
       if (useConditionsResult ?? false) {
         unawaited(_navigatorService.navigateToHome());
       } else if (useConditionsResult == null) {
-        log(
-          "Impossible d'afficher les conditions d'utilisation: contexte null",
+        LoggerService.instance.e(
+          "[AuthViewModel] 🔐❌ Impossible d'afficher les conditions d'utilisation: contexte null",
         );
         _dialogService.showError(LocaleKeys.impossibleToConnect.tr());
       }
     } else {
+      LoggerService.instance.e(
+        '[AuthViewModel] 🔐❌ Impossible de se connecter: $licenseKey',
+      );
       _dialogService.showError(LocaleKeys.impossibleToConnect.tr());
     }
     state = state.copyWith(loading: false);

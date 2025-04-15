@@ -1,10 +1,10 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:hive/hive.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/service/secure_storage.service.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
@@ -50,15 +50,18 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   Future<void> _initialize() async {
     if (_isInitialized) return;
 
-    log('🔌 Initializing HiveSecureStorageService');
+    LoggerService.instance.i('🔌 Initializing HiveSecureStorageService');
 
     try {
       _encryptionKey = await ref.watch(secureStorageServiceProvider.future);
       await _openBox();
       _isInitialized = true;
-      log('🔌 HiveSecureStorageService initialized successfully');
+      LoggerService.instance
+          .i('🔌 HiveSecureStorageService initialized successfully');
     } catch (e) {
-      log("Erreur lors de l'initialisation de HiveSecureStorageService: $e");
+      LoggerService.instance.e(
+        "Erreur lors de l'initialisation de HiveSecureStorageService: $e",
+      );
       rethrow;
     }
   }
@@ -83,7 +86,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   }
 
   Future<void> _handleCorruptedBox() async {
-    log('Suppression de la boîte corrompue');
+    LoggerService.instance.i('Suppression de la boîte corrompue');
     final Directory directory = await getApplicationDocumentsDirectory();
     final Directory boxPath = Directory('${directory.path}/hive/$_boxName');
     if (boxPath.existsSync()) {
@@ -113,7 +116,8 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
       final Box<String> box = await _ensureBox();
       return box.get(key);
     } on Exception catch (e) {
-      log('Erreur lors de la récupération de la donnée: $e');
+      LoggerService.instance
+          .e('Erreur lors de la récupération de la donnée: $e');
       return null;
     }
   }
@@ -125,7 +129,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
       final Box<String> box = await _ensureBox();
       await box.deleteFromDisk();
     } on Exception catch (e) {
-      log('Erreur lors de la suppression des données: $e');
+      LoggerService.instance.e('Erreur lors de la suppression des données: $e');
     }
   }
 
@@ -136,7 +140,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
       final Box<String> box = await _ensureBox();
       await box.clear();
     } on Exception catch (e) {
-      log('Erreur lors du nettoyage des données: $e');
+      LoggerService.instance.e('Erreur lors du nettoyage des données: $e');
     }
   }
 
@@ -147,7 +151,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
       final Box<String> box = await _ensureBox();
       return box.containsKey(key);
     } on Exception catch (e) {
-      log('Erreur lors de la vérification de la clé: $e');
+      LoggerService.instance.e('Erreur lors de la vérification de la clé: $e');
       return false;
     }
   }
@@ -159,7 +163,8 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
       final Box<String> box = await _ensureBox();
       return box.values.toList();
     } on Exception catch (e) {
-      log('Erreur lors de la récupération des données: $e');
+      LoggerService.instance
+          .e('Erreur lors de la récupération des données: $e');
       return <String?>[];
     }
   }
@@ -171,7 +176,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
       final Box<String> box = await _ensureBox();
       await box.delete(key);
     } on Exception catch (e) {
-      log('Erreur lors de la suppression de la clé: $e');
+      LoggerService.instance.e('Erreur lors de la suppression de la clé: $e');
     }
   }
 
@@ -182,7 +187,8 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
       final Box<String> box = await _ensureBox();
       await box.put(key, value);
     } on Exception catch (e) {
-      log("Erreur lors de l'enregistrement de la donnée: $e");
+      LoggerService.instance
+          .e("Erreur lors de l'enregistrement de la donnée: $e");
     }
   }
 }

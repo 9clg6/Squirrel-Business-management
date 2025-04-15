@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
@@ -7,6 +6,7 @@ import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/auth.state.dart';
@@ -64,7 +64,7 @@ class AuthService extends _$AuthService {
   /// @return [Future<void>]
   ///
   Future<void> _initializeServices() async {
-    log('🔌 Initializing AuthService');
+    LoggerService.instance.i('🔌 Initializing AuthService');
 
     if (!state.hasValue || state.value == null) {
       state = AsyncData<AuthState>(
@@ -84,7 +84,8 @@ class AuthService extends _$AuthService {
 
     _startPeriodicCheck();
 
-    log('🔌✅ AuthService fully initialized with auth state');
+    LoggerService.instance
+        .i('🔌✅ AuthService fully initialized with auth state');
   }
 
   /// Initialize dependencies
@@ -92,14 +93,14 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _initDependencies() async {
     _requestService ??= ref.watch(requestServiceProvider.notifier);
-    log('🔌✅ AuthService initialized');
+    LoggerService.instance.i('🔌✅ AuthService initialized');
   }
 
   /// Load user from local storage
   /// @return [Future<AuthState?>] auth state
   ///
   Future<void> loadUser() async {
-    log('🔐 Loading user');
+    LoggerService.instance.i('🔐 Loading user');
     try {
       if (_isAppLocked) {
         if (state.value == null) {
@@ -120,18 +121,21 @@ class AuthService extends _$AuthService {
         getLicenseUseCaseProvider.future,
       );
 
-      log('🔐 License found: ${licenseResult?.licenseKey}');
+      LoggerService.instance
+          .i('🔐 License found: ${licenseResult?.licenseKey}');
 
       if (licenseResult != null) {
         if (_failedChecksCount >= _maxFailedChecks) {
-          log('🔐❌ License found but failed checks count is too high, locking');
+          LoggerService.instance.e(
+            '🔐❌ License found but failed checks count is too high, locking',
+          );
           await _lockApp();
           return;
         }
 
         if (await _detectTimeTampering()) {
           await _lockApp(LocaleKeys.systemDateModified.tr());
-          log('🔐❌ System date modified, locking');
+          LoggerService.instance.e('🔐❌ System date modified, locking');
           return;
         }
         _setUserAuthenticated(
@@ -144,7 +148,7 @@ class AuthService extends _$AuthService {
         ref.watch(navigatorServiceProvider.notifier).navigateToAuth();
       }
     } on Exception catch (e) {
-      log('🔐❌ Error when loading user: $e');
+      LoggerService.instance.e('🔐❌ Error when loading user: $e');
       _setUserAuthenticated(false);
     }
   }
@@ -153,7 +157,7 @@ class AuthService extends _$AuthService {
   /// @return [Future<bool>] true if validity is checked
   ///
   Future<bool> _checkValidity() async {
-    log('🔐 Checking validity');
+    LoggerService.instance.i('🔐 Checking validity');
     final LoginResult? licenseResult =
         await ref.watch(getLicenseUseCaseProvider.future);
 
@@ -163,7 +167,7 @@ class AuthService extends _$AuthService {
         _failedChecksCount >= _maxFailedChecks;
 
     if (hasReachedMaxFailedChecks) {
-      log('🔐❌ Failed checks count reached max, locking');
+      LoggerService.instance.e('🔐❌ Failed checks count reached max, locking');
       await _lockApp();
       return false;
     }
@@ -179,7 +183,7 @@ class AuthService extends _$AuthService {
       success: (Future<CheckValidityEntity> data) async {
         final CheckValidityEntity r = await data;
 
-        log('🔐✅ License valid, reset security');
+        LoggerService.instance.i('🔐✅ License valid, reset security');
         _failedChecksCount = 0;
         await ref.watch(
           setFailCountUseCaseProvider(
@@ -229,7 +233,7 @@ class AuthService extends _$AuthService {
   /// @return [Future<bool>]
   ///
   Future<bool> _handleFailedCheck(Exception e) async {
-    log('🔐❌ License invalid, handle failed check');
+    LoggerService.instance.e('🔐❌ License invalid, handle failed check');
     _setUserAuthenticated(
       false,
       isAppLocked: false,
@@ -256,7 +260,7 @@ class AuthService extends _$AuthService {
   Future<void> _lockApp([
     String message = LocaleKeys.licenseValidationFailedTooManyTimes,
   ]) async {
-    log('🔐 Locking app');
+    LoggerService.instance.e('🔐 Locking app');
     _isAppLocked = true;
     await ref.watch(
       setAppLockStateUseCaseProvider(
@@ -276,7 +280,7 @@ class AuthService extends _$AuthService {
       );
     }
 
-    log('🔐✅ App locked');
+    LoggerService.instance.i('🔐✅ App locked');
 
     ref.watch(dialogServiceProvider.notifier).showError(message.tr());
   }
@@ -285,9 +289,9 @@ class AuthService extends _$AuthService {
   /// @return [Future<void>]
   ///
   Future<void> _loadFailedChecksCount() async {
-    log('🔌 Loading "failed checks" count');
+    LoggerService.instance.i('🔌 Loading "failed checks" count');
     final int? count = await ref.watch(getFailCountUseCaseProvider.future);
-    log('🔌✅ Failed checks count loaded: $count');
+    LoggerService.instance.i('🔌✅ Failed checks count loaded: $count');
     _failedChecksCount = count ?? 0;
   }
 
@@ -295,9 +299,9 @@ class AuthService extends _$AuthService {
   /// @return [Future<void>]
   ///
   Future<void> _loadAppLockedState() async {
-    log('🔌 Loading app locked state');
+    LoggerService.instance.i('🔌 Loading app locked state');
     final bool? locked = await ref.watch(getAppLockStateUseCaseProvider.future);
-    log('🔌✅ App locked state loaded: $locked');
+    LoggerService.instance.i('🔌✅ App locked state loaded: $locked');
     _isAppLocked = locked ?? false;
   }
 
@@ -336,7 +340,7 @@ class AuthService extends _$AuthService {
   ///
   void _startPeriodicCheck() {
     if (_timer?.isActive ?? false) return;
-    log('♻️ Starting periodic check');
+    LoggerService.instance.i('♻️ Starting periodic check');
 
     _timer = Timer.periodic(
       const Duration(hours: 1),
@@ -351,7 +355,8 @@ class AuthService extends _$AuthService {
   ///
   bool isLicenseExpiredLocally() {
     if (state.value?.expirationDate == null) {
-      log('🔐❌ License expired locally: no expiration date');
+      LoggerService.instance
+          .e('🔐❌ License expired locally: no expiration date');
       return true;
     }
 
@@ -369,7 +374,7 @@ class AuthService extends _$AuthService {
 
     final bool test = now.isAfter(endOfExpirationDay);
 
-    log('🔐 Is license expired locally: $test');
+    LoggerService.instance.i('🔐 Is license expired locally: $test');
     return test;
   }
 
@@ -389,8 +394,9 @@ class AuthService extends _$AuthService {
 
     final DateTime? localExpirationDate = expirationDate?.toUtc();
 
-    log('🔐✅ Setting $licenseId authenticated: $isAuthenticated with'
-        ' expiration date: $localExpirationDate');
+    LoggerService.instance
+        .i('🔐✅ Setting $licenseId authenticated: $isAuthenticated with'
+            ' expiration date: $localExpirationDate');
 
     state = AsyncData<AuthState>(
       state.hasValue
@@ -416,7 +422,7 @@ class AuthService extends _$AuthService {
   /// @return [Future<bool>] login result
   ///
   Future<bool> login(String licenseKey) async {
-    log('🔐 Start login');
+    LoggerService.instance.i('🔐 Start login');
 
     if ((state.value?.isInitialized ?? false) == false) {
       await _initializeServices();
@@ -447,7 +453,7 @@ class AuthService extends _$AuthService {
     return loginResult.when<Future<bool>>(
       success: _handleSucessLogin,
       failure: (Exception e) {
-        log('🔐❌ Error when logging in: $e');
+        LoggerService.instance.e('🔐❌ Error when logging in: $e');
         return Future<bool>.value(false);
       },
       otherwise: () {
@@ -464,7 +470,7 @@ class AuthService extends _$AuthService {
   }
 
   Future<bool> _handleSucessLogin(Future<LoginResult> data) async {
-    log('🔐✅ Login successful');
+    LoggerService.instance.i('🔐✅ Login successful');
     final LoginResult loginResult = await data;
 
     await ref.watch(

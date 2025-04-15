@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/state/request.state.dart';
 
 part 'request_service.g.dart';
@@ -16,7 +15,7 @@ class RequestService extends _$RequestService {
   ///
   @override
   RequestState build() {
-    log('🔌 Initializing RequestService');
+    LoggerService.instance.i('[RequestService] 🔌 Initializing');
     return RequestState.initial();
   }
 
@@ -30,12 +29,15 @@ class RequestService extends _$RequestService {
         request,
       ],
     );
-    log('Request added: ${request.name}');
+    LoggerService.instance
+        .i('[RequestService] 📚 Request added: ${request.name}');
   }
 
   /// Toggle request
   ///
   void toggleRequest() {
     state = state.copyWith(isRequestShow: !state.isRequestShow);
+    LoggerService.instance
+        .i('[RequestService] 📚 Toggle request: ${state.isRequestShow}');
   }
 }

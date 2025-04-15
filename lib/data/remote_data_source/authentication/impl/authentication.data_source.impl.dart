@@ -1,8 +1,7 @@
-import 'dart:developer';
-
 import 'package:squirrel/data/model/remote/check_validity.remote_model.dart';
 import 'package:squirrel/data/model/remote/login_result.remote_model.dart';
 import 'package:squirrel/data/remote_data_source/authentication/authentication.data_source.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// [AuthenticationDataSourceImpl]
@@ -47,7 +46,7 @@ class AuthenticationDataSourceImpl implements AuthenticationDataSource {
         result.data as Map<String, dynamic>,
       );
     } on Exception catch (e) {
-      log('Erreur détaillée dans login: $e');
+      LoggerService.instance.e('Erreur détaillée dans login: $e');
       return LoginResultRemoteModel(
         valid: false,
         licenseKey: '',
@@ -78,7 +77,7 @@ class AuthenticationDataSourceImpl implements AuthenticationDataSource {
         result.data as Map<String, dynamic>,
       );
     } on Exception catch (e) {
-      log('Erreur détaillée dans checkValidity: $e');
+      LoggerService.instance.e('Erreur détaillée dans checkValidity: $e');
       return CheckValidityRemoteModel(
         valid: false,
         expirationDate: DateTime.now(),

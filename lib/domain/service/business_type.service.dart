@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
+import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/enums/service_type.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
@@ -28,7 +27,7 @@ class BusinessTypeService extends _$BusinessTypeService {
   @override
   Future<BusinessTypeState> build() async {
     if (!_isInitialized) {
-      log('🔌 Initializing BusinessTypeService');
+      LoggerService.instance.i('🔌 Initializing BusinessTypeService');
       _storageService = ref.watch(hiveSecureStorageServiceProvider.notifier);
       _isInitialized = true;
     }
