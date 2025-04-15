@@ -1,66 +1,15 @@
-import 'dart:convert';
-
 import 'package:hive/hive.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/domain/service/secure_storage.service.dart';
 import 'package:squirrel/foundation/interfaces/storage.interface.dart';
 
-part 'hive_secure_storage.g.dart';
-
 /// [HiveSecureStorage]
-/// Use it when you want to save secured data that
-///  won't be backed up by the system.
-@Riverpod(
-  keepAlive: true,
-  dependencies: <Object>[
-    SecureStorageService,
-  ],
-)
-class HiveSecureStorage extends _$HiveSecureStorage
-    implements StorageInterface<String?> {
-  /// Constructor
-  ///
-  HiveSecureStorage();
-
+class HiveSecureStorage implements StorageInterface<String?> {
   /// Constructor
   /// @param [_box] box
   ///
-  HiveSecureStorage._(this._box);
+  HiveSecureStorage(this._box);
 
   /// Hive box
   late final Box<String> _box;
-
-  /// Box name
-  static String get _boxName => 'hive_local_storage';
-
-  /// Build
-  /// @return [Future<HiveSecureStorage>] hive secure storage
-  ///
-  @override
-  Future<HiveSecureStorage> build() async {
-    return HiveSecureStorage._(
-      await Hive.openBox<String>(
-        _boxName,
-        encryptionCipher: HiveAesCipher(
-          _keyFromString(ref.watch(secureStorageServiceProvider).value!),
-        ),
-      ),
-    );
-  }
-
-  /// Get list of int from [encryptionKey]
-  /// @param [encryptionKey] encryption key
-  /// @return [List<int>] list of int
-  ///
-  static List<int> _keyFromString(String encryptionKey) {
-    String key = encryptionKey;
-    if (key.length > 32) {
-      key = key.substring(0, 32);
-    } else if (key.length < 32) {
-      key = key + key.substring(0, 32 - key.length);
-    }
-    return utf8.encode(key);
-  }
 
   /// Get data from storage
   /// @param [key] key

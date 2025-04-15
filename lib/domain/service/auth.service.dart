@@ -10,20 +10,20 @@ import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
 import 'package:squirrel/domain/state/auth.state.dart';
-import 'package:squirrel/domain/use_case/check_validity.use_case.dart';
-import 'package:squirrel/domain/use_case/get_app_lock_state.use_case.dart';
-import 'package:squirrel/domain/use_case/get_fail_count.use_case.dart';
-import 'package:squirrel/domain/use_case/get_license.use_case.dart';
-import 'package:squirrel/domain/use_case/login.use_case.dart';
 import 'package:squirrel/domain/use_case/params/check_validity.use_case.params.dart';
 import 'package:squirrel/domain/use_case/params/login.use_case.params.dart';
 import 'package:squirrel/domain/use_case/results.usecases.dart';
-import 'package:squirrel/domain/use_case/save_license.use_case.dart';
-import 'package:squirrel/domain/use_case/set_app_lock_state.use_case.dart';
-import 'package:squirrel/domain/use_case/set_fail_count.use_case.dart';
-import 'package:squirrel/domain/use_case/set_last_check_success.use_case.dart';
-import 'package:squirrel/domain/use_case/set_last_known_time.use_case.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
+import 'package:squirrel/foundation/providers/usecases/check_validity.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/get_app_lock_state.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/get_fail_count.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/get_license.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/login.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/save_license.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/set_app_lock_state.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/set_fail_count.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/set_last_check_success.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/set_last_known_time.use_case.provider.dart';
 
 part 'auth.service.g.dart';
 
@@ -116,8 +116,9 @@ class AuthService extends _$AuthService {
         return;
       }
 
-      final LoginResult? licenseResult =
-          await ref.watch(getLicenseUseCaseProvider.future);
+      final LoginResult? licenseResult = await ref.watch(
+        getLicenseUseCaseProvider.future,
+      );
 
       log('🔐 License found: ${licenseResult?.licenseKey}');
 
@@ -466,7 +467,9 @@ class AuthService extends _$AuthService {
     log('🔐✅ Login successful');
     final LoginResult loginResult = await data;
 
-    await ref.watch(saveLicenseUseCaseProvider(license: loginResult).future);
+    await ref.watch(
+      saveLicenseUseCaseProvider(license: loginResult).future,
+    );
 
     _setUserAuthenticated(
       true,

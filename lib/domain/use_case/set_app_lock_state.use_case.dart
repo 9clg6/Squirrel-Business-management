@@ -1,10 +1,5 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/data/repository/security/security.repository.provider.dart';
 import 'package:squirrel/domain/repositories/security.repository.dart';
 import 'package:squirrel/domain/use_case/usecase.interfaces.dart';
-
-part 'set_app_lock_state.use_case.g.dart';
 
 /// Use case to set the app lock state
 class SetAppLockStateUseCase
@@ -24,19 +19,4 @@ class SetAppLockStateUseCase
   Future<void> execute(bool isLocked) async {
     return _repository.setAppLockState(isLocked: isLocked);
   }
-}
-
-/// Provider for SetAppLockStateUseCase
-@riverpod
-Future<void> setAppLockStateUseCase(
-  Ref ref, {
-  required bool isLocked,
-}) async {
-  final SecurityRepository repository = await ref.watch(
-    securityRepositoryImplProvider.future,
-  );
-
-  return SetAppLockStateUseCase(
-    repository: repository,
-  ).execute(isLocked);
 }
