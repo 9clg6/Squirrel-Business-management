@@ -6,7 +6,7 @@ part of 'auth.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authHash() => r'f2742f709847e37189078abbf1a288f783276d7b';
+String _$authHash() => r'86ed9b16ee9c15787c4a877870fafea5e425b297';
 
 /// [Auth]
 ///

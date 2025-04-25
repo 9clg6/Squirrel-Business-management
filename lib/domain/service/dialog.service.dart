@@ -1,7 +1,7 @@
 import 'package:calendar_date_picker2/calendar_date_picker2.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
@@ -9,23 +9,15 @@ import 'package:squirrel/foundation/routing/routing_key.dart';
 import 'package:squirrel/ui/dialog/client_details.dialog.dart';
 import 'package:squirrel/ui/dialog/confirmation_dialog.dart';
 import 'package:squirrel/ui/dialog/edit_or_create_order_dialog.dart';
+import 'package:squirrel/ui/dialog/export_key.dialog.dart';
+import 'package:squirrel/ui/dialog/import.dialog.dart';
 import 'package:squirrel/ui/dialog/select_client.dialog.dart';
 import 'package:squirrel/ui/dialog/use_conditions.dialog.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.screen.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
-part 'dialog.service.g.dart';
-
 /// The dialog service
-@riverpod
-class DialogService extends _$DialogService {
-  /// Build
-  ///
-  @override
-  DialogService build() {
-    return DialogService();
-  }
-
+class DialogService {
   /// Show add order action dialog
   /// @return The added order action
   ///
@@ -78,15 +70,32 @@ class DialogService extends _$DialogService {
   Future<void> showConfirmationDialog(
     String title,
     String message,
-    Null Function() onConfirm,
-  ) {
+    Null Function() onConfirm, {
+    bool doublePop = false,
+  }) {
     return showDialog<void>(
       context: routingKey.currentContext!,
       builder: (_) => ConfirmationDialog(
         title: title,
         message: message,
         onConfirm: onConfirm,
+        doublePop: doublePop,
       ),
+    );
+  }
+
+  /// Show import dialog
+  Future<(FilePickerResult?, String?, bool?)?>? showImportDialog() {
+    final BuildContext? context = routingKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.showEditOrderDialog()');
+      return null;
+    }
+
+    return showDialog<(FilePickerResult?, String?, bool?)>(
+      context: context,
+      builder: (_) => const ImportDialog(),
     );
   }
 
@@ -293,6 +302,23 @@ class DialogService extends _$DialogService {
     return showDialog<void>(
       context: context,
       builder: (_) => ClientDetailDialog(client: client),
+    );
+  }
+
+  /// Show export key dialog
+  /// @param key: The key to export
+  ///
+  Future<void> showExportKeyDialog({required String key}) async {
+    final BuildContext? context = routingKey.currentContext;
+
+    if (context == null) {
+      debugPrint('Context is null in DialogService.showExportKeyDialog()');
+      return;
+    }
+
+    return showDialog<void>(
+      context: context,
+      builder: (_) => ExportKeyDialog(exportKey: key),
     );
   }
 }

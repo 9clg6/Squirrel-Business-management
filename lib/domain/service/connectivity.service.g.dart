@@ -7,7 +7,7 @@ part of 'connectivity.service.dart';
 // **************************************************************************
 
 String _$connectivityServiceHash() =>
-    r'03ab27879f8187a78f8df0a8ff656ba213d13e61';
+    r'32e3b193f4ac996d2800d93d698b464f3dd4a980';
 
 /// Service pour gérer la connectivité réseau
 ///

@@ -13,6 +13,7 @@ class ConfirmationDialog extends StatelessWidget {
     required this.message,
     required this.onConfirm,
     super.key,
+    this.doublePop = false,
   });
 
   /// Title
@@ -23,6 +24,9 @@ class ConfirmationDialog extends StatelessWidget {
 
   /// On confirm
   final Null Function() onConfirm;
+
+  /// Double pop
+  final bool doublePop;
 
   /// Build
   ///
@@ -49,15 +53,14 @@ class ConfirmationDialog extends StatelessWidget {
                 size: 32,
               ),
               const SizedBox(height: 16),
-              Text(
+              TextVariant(
                 title,
-                style: Theme.of(context).textTheme.titleLarge,
+                variantType: TextVariantType.titleLarge,
               ),
               const SizedBox(height: 16),
-              Text(
+              TextVariant(
                 message,
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 22),
               Row(
@@ -77,9 +80,10 @@ class ConfirmationDialog extends StatelessWidget {
                   const SizedBox(width: 16),
                   InkWell(
                     onTap: () {
-                      context
-                        ..pop()
-                        ..pop();
+                      context.pop();
+                      if (doublePop) {
+                        context.pop();
+                      }
                       onConfirm();
                     },
                     child: Container(
@@ -92,6 +96,7 @@ class ConfirmationDialog extends StatelessWidget {
                       ),
                       child: TextVariant(
                         LocaleKeys.confirm.tr(),
+                        color: colorScheme.onPrimary,
                       ),
                     ),
                   ),

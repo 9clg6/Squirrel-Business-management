@@ -3,6 +3,7 @@ import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/service/client.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/state/client.state.dart';
+import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
 import 'package:squirrel/ui/screen/clients/clients.view_state.dart';
 
 part 'clients.view_model.g.dart';
@@ -23,7 +24,7 @@ class Clients extends _$Clients {
   @override
   ClientsScreenState build() {
     if (!_isInitialized) {
-      _dialogService = ref.watch(dialogServiceProvider.notifier);
+      _dialogService = ref.watch(dialogServiceProvider);
       _isInitialized = true;
     }
 

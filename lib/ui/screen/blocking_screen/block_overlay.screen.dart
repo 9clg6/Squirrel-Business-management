@@ -30,8 +30,8 @@ class BlockOverlayScreen extends ConsumerWidget {
         child: Stack(
           children: <Widget>[
             child,
-            switch (state) {
-              AsyncData<AuthState>(:final AuthState value) => value.isAppLocked
+            state.when(
+              data: (AuthState value) => value.isAppLocked
                   ? Positioned.fill(
                       child: ColoredBox(
                         color: colorScheme.primary,
@@ -43,8 +43,9 @@ class BlockOverlayScreen extends ConsumerWidget {
                       ),
                     )
                   : const SizedBox.shrink(),
-              _ => const SizedBox.shrink(),
-            },
+              error: (_, __) => const SizedBox.shrink(),
+              loading: () => const SizedBox.shrink(),
+            ),
           ],
         ),
       ),

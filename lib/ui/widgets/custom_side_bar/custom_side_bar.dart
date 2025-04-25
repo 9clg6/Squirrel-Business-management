@@ -1,11 +1,14 @@
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
 import 'package:sidebarx/sidebarx.dart';
-import 'package:squirrel/domain/service/dialog.service.dart';
+import 'package:squirrel/domain/service/import_export.service.dart';
 import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
+import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
+import 'package:squirrel/foundation/providers/service/import_export.provider.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
 /// Custom side bar
@@ -187,42 +190,90 @@ class _CustomSideBarState extends ConsumerState<CustomSideBar> {
                 ],
               ),
             ),
-            StreamBuilder<bool>(
-              stream: controller.extendStream,
-              builder: (BuildContext context, AsyncSnapshot<bool> snapshot) {
-                return InkWell(
-                  onTap: () => ref
-                      .watch(dialogServiceProvider.notifier)
-                      .showInComingDialog(),
-                  child: AnimatedContainer(
-                    duration: const Duration(seconds: 1),
-                    curve: Curves.easeInOut,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16,
-                      vertical: 5,
-                    ),
-                    decoration: BoxDecoration(
-                      color: colorScheme.primary,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: <Widget>[
-                        Icon(
-                          Icons.rocket_launch_rounded,
-                          color: colorScheme.onPrimary,
+            Row(
+              children: <Widget>[
+                StreamBuilder<bool>(
+                  stream: controller.extendStream,
+                  builder:
+                      (BuildContext context, AsyncSnapshot<bool> snapshot) {
+                    return InkWell(
+                      onTap: () =>
+                          ref.watch(dialogServiceProvider).showInComingDialog(),
+                      child: AnimatedContainer(
+                        duration: const Duration(seconds: 1),
+                        curve: Curves.easeInOut,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 5,
                         ),
-                        if (snapshot.data ?? false) ...<Widget>[
-                          const Gap(5),
-                          TextVariant(
-                            LocaleKeys.comingSoon.tr(),
-                            color: colorScheme.onPrimary,
-                          ),
-                        ],
-                      ],
-                    ),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary,
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          children: <Widget>[
+                            Icon(
+                              Icons.rocket_launch_rounded,
+                              color: colorScheme.onPrimary,
+                            ),
+                            if (snapshot.data ?? false) ...<Widget>[
+                              const Gap(5),
+                              TextVariant(
+                                LocaleKeys.comingSoon.tr(),
+                                color: colorScheme.onPrimary,
+                              ),
+                            ],
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+                const Gap(12),
+                IconButton(
+                  tooltip: 'Exporter les données',
+                  onPressed: () =>
+                      ref.watch(dialogServiceProvider).showConfirmationDialog(
+                    'Exporter les données',
+                    'Voulez-vous vraiment exporter les données ?',
+                    () {
+                      ref
+                          .watch(importExportServiceProvider.future)
+                          .then((ImportExportService importExportService) {
+                        importExportService.exportData();
+                      });
+                    },
                   ),
-                );
-              },
+                  icon: const Icon(Icons.file_upload),
+                ),
+                const Gap(12),
+                IconButton(
+                  tooltip: 'Importer les données',
+                  onPressed: () =>
+                      ref.watch(dialogServiceProvider).showConfirmationDialog(
+                    'Importer les données',
+                    'Pour importer les données, merci de choisir le fichier à importer et de saisir la clé de chiffrement',
+                    () {
+                      ref.watch(importExportServiceProvider.future).then(
+                          (ImportExportService importExportService) async {
+                        final (FilePickerResult?, String?, bool?)? data =
+                            await ref
+                                .watch(dialogServiceProvider)
+                                .showImportDialog();
+
+                        if (data != null) {
+                          await importExportService.importData(
+                            file: data.$1,
+                            key: data.$2,
+                            overrideData: data.$3,
+                          );
+                        }
+                      });
+                    },
+                  ),
+                  icon: const Icon(Icons.file_download),
+                ),
+              ],
             ),
             const Gap(12),
           ],

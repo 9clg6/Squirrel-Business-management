@@ -1,8 +1,8 @@
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:logger/logger.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:squirrel/foundation/constants/constants.dart';
 
 /// A service for logging messages
 class LoggerService {
@@ -34,13 +34,16 @@ class LoggerService {
   static Future<void> init() async {
     // --- File Logger Setup ---
     final Directory dir = await getApplicationDocumentsDirectory();
-    log('dir: ${dir.path}');
-    final File file = File('${dir.path}/$_logFileName');
+    final Directory createdDirectory =
+        await Directory('${dir.path}/$appFolderName').create(recursive: true);
+
+    final File file = File('${createdDirectory.path}/$_logFileName');
+
     final CustomFileLogger fileOutput = CustomFileLogger(file: file);
     final Logger fileLogger = Logger(
-      printer: SimpleFilePrinter(), // Use simple printer for file
+      printer: SimpleFilePrinter(),
       output: fileOutput,
-      level: Level.trace, // Log everything to file (or choose level)
+      level: Level.trace,
     );
 
     // --- Console Logger Setup ---
@@ -48,7 +51,7 @@ class LoggerService {
     final Logger consoleLogger = Logger(
       printer: PrettyPrinter(),
       output: consoleOutput,
-      level: Level.debug, // Log debug and above to console (or choose level)
+      level: Level.debug,
     );
 
     _instance = LoggerService._internal(consoleLogger, fileLogger);

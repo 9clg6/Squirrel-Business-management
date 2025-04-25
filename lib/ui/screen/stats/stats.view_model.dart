@@ -4,6 +4,7 @@ import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/enums/chart_type.enum.dart';
+import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
 import 'package:squirrel/ui/screen/stats/stats.view_state.dart';
 
 part 'stats.view_model.g.dart';
@@ -25,7 +26,7 @@ class StatsViewModel extends _$StatsViewModel {
   @override
   StatsScreenState build() {
     if (!_isInitialized) {
-      _dialogService = ref.watch(dialogServiceProvider.notifier);
+      _dialogService = ref.watch(dialogServiceProvider);
       _isInitialized = true;
     }
 

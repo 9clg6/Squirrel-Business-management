@@ -2,6 +2,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
+import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.view_state.dart';
 
 part 'add_order_action.view_model.g.dart';
@@ -16,8 +17,8 @@ class AddOrderAction extends _$AddOrderAction {
   ///
   @override
   AddOrderActionViewState build() {
-    _dialogService = ref.watch(dialogServiceProvider.notifier);
-    _navigatorService = ref.watch(navigatorServiceProvider.notifier);
+    _dialogService = ref.watch(dialogServiceProvider);
+    _navigatorService = ref.watch(navigatorServiceProvider);
     return AddOrderActionViewState.initial();
   }
 

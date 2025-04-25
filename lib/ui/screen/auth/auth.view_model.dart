@@ -6,6 +6,7 @@ import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
+import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
 import 'package:squirrel/ui/screen/auth/auth.view_state.dart';
 
 part 'auth.view_model.g.dart';
@@ -30,7 +31,7 @@ class Auth extends _$Auth {
   AuthScreenState build() {
     if (!_isInitialized) {
       LoggerService.instance.i('[AuthViewModel] 🔌 Initializing');
-      _dialogService = ref.watch(dialogServiceProvider.notifier);
+      _dialogService = ref.watch(dialogServiceProvider);
       _navigatorService = ref.watch(navigatorServiceProvider.notifier);
       _authService = ref.watch(authServiceProvider.notifier);
       _isInitialized = true;

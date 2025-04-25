@@ -6,7 +6,7 @@ part of 'navigator.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$navigatorServiceHash() => r'68788447e827b77905bf958932b06e6e1d13a339';
+String _$navigatorServiceHash() => r'65fbb43f166ca87680a5121a8b50e50aaeb2508a';
 
 /// Navigator service
 ///

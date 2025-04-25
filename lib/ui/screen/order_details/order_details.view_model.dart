@@ -9,6 +9,7 @@ import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
+import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
 import 'package:squirrel/ui/screen/order_details/order_details.view_state.dart';
 
 part 'order_details.view_model.g.dart';
@@ -36,7 +37,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
     if (!_isInitialized) {
       _orderService = ref.watch(orderServiceProvider.notifier);
       _clientService = ref.watch(clientServiceProvider.notifier);
-      _dialogService = ref.watch(dialogServiceProvider.notifier);
+      _dialogService = ref.watch(dialogServiceProvider);
       _isInitialized = true;
     }
 
@@ -115,6 +116,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
       () {
         _orderService.deleteOrder(state.order!);
       },
+      doublePop: true,
     );
   }
 

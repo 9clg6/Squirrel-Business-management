@@ -37,12 +37,12 @@ class ClientService extends _$ClientService {
       _isInitialized = true;
     }
 
-    return _loadClients();
+    return _loadClientsFromLocal();
   }
 
   /// Load clients
   ///
-  Future<ClientState> _loadClients() async {
+  Future<ClientState> _loadClientsFromLocal() async {
     LoggerService.instance.i('📚 Loading clients');
     final String? o = await _storage.get(_storageKey) as String?;
     if (o != null) {
@@ -57,6 +57,15 @@ class ClientService extends _$ClientService {
     return ClientState.initial();
   }
 
+  /// Load clients
+  /// @param [clients] clients
+  /// @return [void] void
+  ///
+  void loadClients(List<Client> clients) {
+    state = AsyncData<ClientState>(
+      state.value!.copyWith(clients: clients),
+    );
+  }
   /// Save orders
   /// @param [os] order state
   ///

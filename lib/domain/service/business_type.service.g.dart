@@ -7,7 +7,7 @@ part of 'business_type.service.dart';
 // **************************************************************************
 
 String _$businessTypeServiceHash() =>
-    r'2ac9f6aedf6b82fe0c51e85ac749e3cc058c15a1';
+    r'a4f948a68e1d4a34614da60bccc03684f19a1d52';
 
 /// [BusinessTypeService]
 ///

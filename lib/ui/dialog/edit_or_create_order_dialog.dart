@@ -6,10 +6,10 @@ import 'package:go_router/go_router.dart';
 import 'package:squirrel/domain/entities/client.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
-import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
 import 'package:squirrel/foundation/extensions/date_time.extension.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
+import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
 import 'package:squirrel/foundation/utils/util.dart';
 import 'package:squirrel/ui/widgets/help_text.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -201,7 +201,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             suffix: InkWell(
                               onTap: () async {
                                 final Client? client = await ref
-                                    .watch(dialogServiceProvider.notifier)
+                                    .watch(dialogServiceProvider)
                                     .showSelectClientDialog();
 
                                 if (client != null) {
@@ -259,7 +259,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             child: InkWell(
                               onTap: () async {
                                 final Client? client = await ref
-                                   .watch(dialogServiceProvider.notifier)
+                                    .watch(dialogServiceProvider)
                                     .showSelectClientDialog(
                                       isSponsor: true,
                                     );

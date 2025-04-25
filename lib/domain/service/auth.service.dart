@@ -4,7 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
-import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
@@ -14,6 +13,7 @@ import 'package:squirrel/domain/use_case/params/check_validity.use_case.params.d
 import 'package:squirrel/domain/use_case/params/login.use_case.params.dart';
 import 'package:squirrel/domain/use_case/results.usecases.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
+import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
 import 'package:squirrel/foundation/providers/usecases/check_validity.use_case.provider.dart';
 import 'package:squirrel/foundation/providers/usecases/get_app_lock_state.use_case.provider.dart';
 import 'package:squirrel/foundation/providers/usecases/get_fail_count.use_case.provider.dart';
@@ -32,7 +32,6 @@ part 'auth.service.g.dart';
   keepAlive: true,
   dependencies: <Object>[
     RequestService,
-    DialogService,
     NavigatorService,
     HiveSecureStorageService,
     getFailCountUseCase,
@@ -111,9 +110,10 @@ class AuthService extends _$AuthService {
           );
         }
 
-        ref.watch(dialogServiceProvider.notifier).showError(
+        ref.read(dialogServiceProvider).showError(
               LocaleKeys.appLocked.tr(),
             );
+
         return;
       }
 
@@ -282,7 +282,7 @@ class AuthService extends _$AuthService {
 
     LoggerService.instance.i('🔐✅ App locked');
 
-    ref.watch(dialogServiceProvider.notifier).showError(message.tr());
+    ref.watch(dialogServiceProvider).showError(message.tr());
   }
 
   /// Load failed checks count
