@@ -7,7 +7,7 @@ part of 'check_validity.use_case.provider.dart';
 // **************************************************************************
 
 String _$checkValidityUseCaseHash() =>
-    r'530e24d856ba9cc18c31886fd5d6de55d5e19b88';
+    r'1add9795680fbd20fca6deb5b7c306ad35336174';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -48,7 +48,7 @@ const checkValidityUseCaseProvider = CheckValidityUseCaseFamily();
 ///
 /// Copied from [checkValidityUseCase].
 class CheckValidityUseCaseFamily
-    extends Family<AsyncValue<ResultState<Future<CheckValidityEntity>>>> {
+    extends Family<AsyncValue<ResultState<CheckValidityEntity>>> {
   /// Check Validity Use Case Provider
   /// @param [ref] ref
   /// @param [params] params
@@ -104,8 +104,8 @@ class CheckValidityUseCaseFamily
 ///
 ///
 /// Copied from [checkValidityUseCase].
-class CheckValidityUseCaseProvider extends AutoDisposeFutureProvider<
-    ResultState<Future<CheckValidityEntity>>> {
+class CheckValidityUseCaseProvider
+    extends AutoDisposeFutureProvider<ResultState<CheckValidityEntity>> {
   /// Check Validity Use Case Provider
   /// @param [ref] ref
   /// @param [params] params
@@ -146,7 +146,7 @@ class CheckValidityUseCaseProvider extends AutoDisposeFutureProvider<
 
   @override
   Override overrideWith(
-    FutureOr<ResultState<Future<CheckValidityEntity>>> Function(
+    FutureOr<ResultState<CheckValidityEntity>> Function(
             CheckValidityUseCaseRef provider)
         create,
   ) {
@@ -165,7 +165,7 @@ class CheckValidityUseCaseProvider extends AutoDisposeFutureProvider<
   }
 
   @override
-  AutoDisposeFutureProviderElement<ResultState<Future<CheckValidityEntity>>>
+  AutoDisposeFutureProviderElement<ResultState<CheckValidityEntity>>
       createElement() {
     return _CheckValidityUseCaseProviderElement(this);
   }
@@ -187,14 +187,14 @@ class CheckValidityUseCaseProvider extends AutoDisposeFutureProvider<
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin CheckValidityUseCaseRef
-    on AutoDisposeFutureProviderRef<ResultState<Future<CheckValidityEntity>>> {
+    on AutoDisposeFutureProviderRef<ResultState<CheckValidityEntity>> {
   /// The parameter `params` of this provider.
   CheckValidityUseCaseParams get params;
 }
 
 class _CheckValidityUseCaseProviderElement
-    extends AutoDisposeFutureProviderElement<
-        ResultState<Future<CheckValidityEntity>>> with CheckValidityUseCaseRef {
+    extends AutoDisposeFutureProviderElement<ResultState<CheckValidityEntity>>
+    with CheckValidityUseCaseRef {
   _CheckValidityUseCaseProviderElement(super.provider);
 
   @override

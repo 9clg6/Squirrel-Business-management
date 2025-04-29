@@ -15,7 +15,7 @@ part 'check_validity.use_case.provider.g.dart';
 /// @return [ResultState<Future<CheckValidityEntity>>] result
 ///
 @riverpod
-Future<ResultState<Future<CheckValidityEntity>>> checkValidityUseCase(
+Future<ResultState<CheckValidityEntity>> checkValidityUseCase(
   Ref ref,
   CheckValidityUseCaseParams params,
 ) {

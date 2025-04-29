@@ -65,6 +65,7 @@ class ClientService extends _$ClientService {
     state = AsyncData<ClientState>(
       state.value!.copyWith(clients: clients),
     );
+    _save(state.requireValue);
   }
   /// Save orders
   /// @param [os] order state

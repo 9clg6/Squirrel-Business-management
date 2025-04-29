@@ -6,7 +6,7 @@ part of 'login.use_case.provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$loginUseCaseHash() => r'427d6a62940e5c58515064b41f033c8570f2f998';
+String _$loginUseCaseHash() => r'91d88f9dfe7e9d26ab3555c61bba0c3108800925';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -46,8 +46,7 @@ const loginUseCaseProvider = LoginUseCaseFamily();
 ///
 ///
 /// Copied from [loginUseCase].
-class LoginUseCaseFamily
-    extends Family<AsyncValue<ResultState<Future<LoginResult>>>> {
+class LoginUseCaseFamily extends Family<AsyncValue<ResultState<LoginResult>>> {
   /// Login Use Case Provider
   /// @param [ref] ref
   /// @param [params] params
@@ -104,7 +103,7 @@ class LoginUseCaseFamily
 ///
 /// Copied from [loginUseCase].
 class LoginUseCaseProvider
-    extends AutoDisposeFutureProvider<ResultState<Future<LoginResult>>> {
+    extends AutoDisposeFutureProvider<ResultState<LoginResult>> {
   /// Login Use Case Provider
   /// @param [ref] ref
   /// @param [params] params
@@ -145,8 +144,7 @@ class LoginUseCaseProvider
 
   @override
   Override overrideWith(
-    FutureOr<ResultState<Future<LoginResult>>> Function(
-            LoginUseCaseRef provider)
+    FutureOr<ResultState<LoginResult>> Function(LoginUseCaseRef provider)
         create,
   ) {
     return ProviderOverride(
@@ -164,8 +162,7 @@ class LoginUseCaseProvider
   }
 
   @override
-  AutoDisposeFutureProviderElement<ResultState<Future<LoginResult>>>
-      createElement() {
+  AutoDisposeFutureProviderElement<ResultState<LoginResult>> createElement() {
     return _LoginUseCaseProviderElement(this);
   }
 
@@ -186,13 +183,13 @@ class LoginUseCaseProvider
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 mixin LoginUseCaseRef
-    on AutoDisposeFutureProviderRef<ResultState<Future<LoginResult>>> {
+    on AutoDisposeFutureProviderRef<ResultState<LoginResult>> {
   /// The parameter `params` of this provider.
   LoginUseCaseParams get params;
 }
 
 class _LoginUseCaseProviderElement
-    extends AutoDisposeFutureProviderElement<ResultState<Future<LoginResult>>>
+    extends AutoDisposeFutureProviderElement<ResultState<LoginResult>>
     with LoginUseCaseRef {
   _LoginUseCaseProviderElement(super.provider);
 

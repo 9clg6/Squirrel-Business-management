@@ -5,7 +5,7 @@ import 'package:squirrel/domain/use_case/params/login.use_case.params.dart';
 
 /// Login Use Case Implementation
 class LoginUseCase
-    extends FutureUseCaseWithParams<Future<LoginResult>, LoginUseCaseParams> {
+    extends FutureUseCaseWithParams<LoginResult, LoginUseCaseParams> {
   // Constructor
   /// @param [repository] repository
   ///
@@ -21,7 +21,7 @@ class LoginUseCase
   /// @return [Future<LoginResult>] result
   ///
   @override
-  Future<Future<LoginResult>> invoke(LoginUseCaseParams params) async {
+  Future<LoginResult> invoke(LoginUseCaseParams params) async {
     return _repository.login(params.licenseKey);
   }
 }

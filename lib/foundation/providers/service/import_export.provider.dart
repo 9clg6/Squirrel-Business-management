@@ -61,9 +61,16 @@ Future<Map<String, List<Map<String, dynamic>>>> _mergeData({
 }) async {
   final Map<String, List<Map<String, dynamic>>> data =
       <String, List<Map<String, dynamic>>>{
-    'orders': orderState.orders.map((Order order) => order.toJson()).toList(),
-    'clients':
-        clientState.clients.map((Client client) => client.toJson()).toList(),
+    'orders': orderState.orders
+        .map(
+          (Order order) => order.toJson(),
+        )
+        .toList(),
+    'clients': clientState.clients
+        .map(
+          (Client client) => client.toJson(),
+        )
+        .toList(),
   };
   return data;
 }

@@ -172,7 +172,7 @@ class AuthService extends _$AuthService {
       return false;
     }
 
-    final ResultState<Future<CheckValidityEntity>> checkValidityResult =
+    final ResultState<CheckValidityEntity> checkValidityResult =
         await ref.watch(
       checkValidityUseCaseProvider(
         CheckValidityUseCaseParams(licenseKey: licenseResult.licenseKey),
@@ -180,9 +180,7 @@ class AuthService extends _$AuthService {
     );
 
     checkValidityResult.when(
-      success: (Future<CheckValidityEntity> data) async {
-        final CheckValidityEntity r = await data;
-
+      success: (CheckValidityEntity data) async {
         LoggerService.instance.i('🔐✅ License valid, reset security');
         _failedChecksCount = 0;
         await ref.watch(
@@ -215,7 +213,7 @@ class AuthService extends _$AuthService {
         _setUserAuthenticated(
           true,
           licenseId: licenseResult.licenseKey,
-          expirationDate: r.expirationDate,
+          expirationDate: data.expirationDate,
         );
 
         return true;
@@ -444,7 +442,7 @@ class AuthService extends _$AuthService {
       ),
     );
 
-    final ResultState<Future<LoginResult>> loginResult = await ref.watch(
+    final ResultState<LoginResult> loginResult = await ref.watch(
       loginUseCaseProvider(
         LoginUseCaseParams(licenseKey: licenseKey),
       ).future,
@@ -469,18 +467,17 @@ class AuthService extends _$AuthService {
     return _isAppLocked || (state.value?.isAppLocked ?? false);
   }
 
-  Future<bool> _handleSucessLogin(Future<LoginResult> data) async {
+  Future<bool> _handleSucessLogin(LoginResult data) async {
     LoggerService.instance.i('🔐✅ Login successful');
-    final LoginResult loginResult = await data;
 
     await ref.watch(
-      saveLicenseUseCaseProvider(license: loginResult).future,
+      saveLicenseUseCaseProvider(license: data).future,
     );
 
     _setUserAuthenticated(
       true,
-      licenseId: loginResult.licenseKey,
-      expirationDate: loginResult.expirationDate,
+      licenseId: data.licenseKey,
+      expirationDate: data.expirationDate,
     );
 
     if (_timer == null || !_timer!.isActive) {

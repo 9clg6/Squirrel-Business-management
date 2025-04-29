@@ -3,10 +3,9 @@ import 'package:squirrel/domain/repositories/authentication.repository.dart';
 import 'package:squirrel/domain/use_case/future.usecases.dart';
 import 'package:squirrel/domain/use_case/params/check_validity.use_case.params.dart';
 
-
 /// [CheckValidityUseCase]
-class CheckValidityUseCase extends FutureUseCaseWithParams<
-    Future<CheckValidityEntity>, CheckValidityUseCaseParams> {
+class CheckValidityUseCase extends FutureUseCaseWithParams<CheckValidityEntity,
+    CheckValidityUseCaseParams> {
   /// Constructeur
   /// @param [repository] repository
   ///
@@ -22,7 +21,7 @@ class CheckValidityUseCase extends FutureUseCaseWithParams<
   /// @return [Future<CheckValidityEntity>] result
   ///
   @override
-  Future<Future<CheckValidityEntity>> invoke(
+  Future<CheckValidityEntity> invoke(
     CheckValidityUseCaseParams params,
   ) async {
     return _repository.checkValidity(params.licenseKey);

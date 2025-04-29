@@ -95,6 +95,7 @@ class OrderService extends _$OrderService {
         orders: orders,
       ),
     );
+    _save(state.requireValue);
   }
 
   /// Save orders

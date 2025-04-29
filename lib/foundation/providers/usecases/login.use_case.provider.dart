@@ -15,7 +15,7 @@ part 'login.use_case.provider.g.dart';
 /// @return [ResultState<Future<LoginResult>>] result
 ///
 @riverpod
-Future<ResultState<Future<LoginResult>>> loginUseCase(
+Future<ResultState<LoginResult>> loginUseCase(
   Ref ref,
   LoginUseCaseParams params,
 ) {

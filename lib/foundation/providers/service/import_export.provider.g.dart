@@ -7,7 +7,7 @@ part of 'import_export.provider.dart';
 // **************************************************************************
 
 String _$importExportServiceHash() =>
-    r'944297274975f7c723f9a69041c15a57591311ba';
+    r'90b1decd160bf75efbe5be14580ab1204e47ef5d';
 
 /// Import export service provider
 /// @param ref: The ref object
