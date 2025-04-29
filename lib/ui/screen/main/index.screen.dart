@@ -149,7 +149,7 @@ class _PinnedOrders extends ConsumerWidget {
                           child: Hero(
                             tag: 'order-${order.id}',
                             child: TextVariant(
-                              order.client?.name.capitalize ?? '',
+                              order.customer?.name.capitalize ?? '',
                             ),
                           ),
                         ),
@@ -440,7 +440,7 @@ class _OrdersList extends ConsumerWidget {
                                     padding:
                                         const EdgeInsets.symmetric(vertical: 8),
                                     child: TextVariant(
-                                      order.client?.name.capitalize ?? '',
+                                      order.customer?.name.capitalize ?? '',
                                     ),
                                   ),
                                 ),

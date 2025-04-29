@@ -26,7 +26,7 @@ enum RouterEnum {
   planner('/planner', 'planner'),
 
   /// Clients
-  clients('/clients', 'clients'),
+  customers('/customers', 'clients'),
 
   /// History
   history('/history', 'history'),

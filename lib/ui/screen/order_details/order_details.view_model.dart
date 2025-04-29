@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
-import 'package:squirrel/domain/service/client.service.dart';
+import 'package:squirrel/domain/service/customer.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
@@ -19,12 +19,12 @@ part 'order_details.view_model.g.dart';
   keepAlive: true,
   dependencies: <Object>[
     OrderService,
-    ClientService,
+    CustomerService,
   ],
 )
 class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   late final OrderService _orderService;
-  late final ClientService _clientService;
+  late final CustomerService _customerService;
   late final DialogService _dialogService;
   bool _isInitialized = false;
 
@@ -36,7 +36,7 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   OrderDetailsScreenState build(Order o) {
     if (!_isInitialized) {
       _orderService = ref.watch(orderServiceProvider.notifier);
-      _clientService = ref.watch(clientServiceProvider.notifier);
+      _customerService = ref.watch(customerServiceProvider.notifier);
       _dialogService = ref.watch(dialogServiceProvider);
       _isInitialized = true;
     }
@@ -54,16 +54,16 @@ class OrderDetailsViewModel extends _$OrderDetailsViewModel {
     return OrderDetailsScreenState.initial(order: o);
   }
 
-  /// Get client by id
+  /// Get customer by id
   /// @param [id] id
-  /// @return [Client] client
+  /// @return [Customer] customer
   ///
-  Client getClientById(String id) {
+  Customer getCustomerById(String id) {
     try {
-      return _clientService.getClientById(id);
+      return _customerService.getcustomerById(id);
     } on Exception catch (_) {
-      // Si aucun client n'est trouvé, retourner un client par défaut
-      return Client(
+      // Si aucun customer n'est trouvé, retourner un customer par défaut
+      return Customer(
         name: 'Client inconnu',
       );
     }

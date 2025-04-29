@@ -3,15 +3,15 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/foundation/routing/routing_key.dart';
-import 'package:squirrel/ui/dialog/client_details.dialog.dart';
 import 'package:squirrel/ui/dialog/confirmation_dialog.dart';
+import 'package:squirrel/ui/dialog/customer_details.dialog.dart';
 import 'package:squirrel/ui/dialog/edit_or_create_order_dialog.dart';
 import 'package:squirrel/ui/dialog/export_key.dialog.dart';
 import 'package:squirrel/ui/dialog/import.dialog.dart';
-import 'package:squirrel/ui/dialog/select_client.dialog.dart';
+import 'package:squirrel/ui/dialog/select_customer.dialog.dart';
 import 'package:squirrel/ui/dialog/use_conditions.dialog.dart';
 import 'package:squirrel/ui/screen/add_order_action/add_order_action.screen.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -268,40 +268,42 @@ class DialogService {
     );
   }
 
-  /// Show select client dialog
-  /// @return The selected client
+  /// Show select customer dialog
+  /// @return The selected customer
   ///
-  Future<Client?> showSelectClientDialog({
+  Future<Customer?> showSelectCustomerDialog({
     bool isSponsor = false,
   }) async {
     final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
-      debugPrint('Context is null in DialogService.showSelectClientDialog()');
+      debugPrint('Context is null in DialogService.showSelectCustomerDialog()');
       return null;
     }
 
-    return showDialog<Client>(
+    return showDialog<Customer>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => SelectClientDialog(isSponsor: isSponsor),
+      builder: (_) => SelectCustomerDialog(isSponsor: isSponsor),
     );
   }
 
-  /// Show client details dialog
-  /// @param client: The client to show
+  /// Show customer details dialog
+  /// @param customer: The customer to show
   ///
-  Future<void> showClientDetailsDialog(Client client) async {
+  Future<void> showCustomerDetailsDialog(Customer customer) async {
     final BuildContext? context = routingKey.currentContext;
 
     if (context == null) {
-      debugPrint('Context is null in DialogService.showClientDetailsDialog()');
+      debugPrint(
+        'Context is null in DialogService.showCustomerDetailsDialog()',
+      );
       return;
     }
 
     return showDialog<void>(
       context: context,
-      builder: (_) => ClientDetailDialog(client: client),
+      builder: (_) => CustomerDetailDialog(customer: customer),
     );
   }
 

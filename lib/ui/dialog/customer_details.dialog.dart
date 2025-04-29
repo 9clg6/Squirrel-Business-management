@@ -1,30 +1,30 @@
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/foundation/localizations/localizations.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
-/// Client details dialog
-class ClientDetailDialog extends StatefulWidget {
+/// Customer details dialog
+class CustomerDetailDialog extends StatefulWidget {
   /// Public constructor
-  /// @param client: The client to show
+  /// @param customer: The customer to show
   ///
-  const ClientDetailDialog({
-    required this.client,
+  const CustomerDetailDialog({
+    required this.customer,
     super.key,
   });
 
-  /// The client to show
-  final Client client;
+  /// The customer to show
+  final Customer customer;
 
   /// Build
   ///
   @override
-  State<ClientDetailDialog> createState() => _ClientDetailDialogState();
+  State<CustomerDetailDialog> createState() => _CustomerDetailDialogState();
 }
 
-/// Client details dialog state
-class _ClientDetailDialogState extends State<ClientDetailDialog> {
+/// Customer details dialog state
+class _CustomerDetailDialogState extends State<CustomerDetailDialog> {
   /// Build
   /// @param context: The build context
   /// @return The widget
@@ -52,7 +52,7 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               TextVariant(
-                widget.client.name.capitalize,
+                widget.customer.name.capitalize,
                 variantType: TextVariantType.headlineSmall,
                 color: colorScheme.onSurface,
               ),
@@ -65,7 +65,7 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
                     label: 'Total des commandes',
                     value: LocaleKeys.priceWithSymbol.tr(
                       args: <String>[
-                        widget.client.orderTotalAmount.toStringAsFixed(2),
+                        widget.customer.orderTotalAmount.toStringAsFixed(2),
                       ],
                     ),
                   ),
@@ -73,39 +73,39 @@ class _ClientDetailDialogState extends State<ClientDetailDialog> {
                     label: 'Commission totale',
                     value: LocaleKeys.priceWithSymbol.tr(
                       args: <String>[
-                        widget.client.commissionTotalAmount.toStringAsFixed(2),
+                        widget.customer.commissionTotalAmount.toStringAsFixed(2),
                       ],
                     ),
                   ),
                   _StatCard(
                     label: 'Quantité de commandes',
-                    value: '${widget.client.orderQuantity}',
+                    value: '${widget.customer.orderQuantity}',
                   ),
                   _StatCard(
                     label: 'Quantité de parrainages',
-                    value: '${widget.client.sponsorshipQuantity}',
+                    value: '${widget.customer.sponsorshipQuantity}',
                   ),
                 ],
               ),
               const SizedBox(height: 20),
-              if (widget.client.lastOrderDate != null) ...<Widget>[
+              if (widget.customer.lastOrderDate != null) ...<Widget>[
                 TextVariant(
                   LocaleKeys.lastDateOrder.tr(),
                   color: colorScheme.onSurface,
                 ),
                 TextVariant(
-                  dateFormat.format(widget.client.lastOrderDate!),
+                  dateFormat.format(widget.customer.lastOrderDate!),
                   color: colorScheme.onSurface,
                 ),
               ],
               const SizedBox(height: 12),
-              if (widget.client.firstOrderDate != null) ...<Widget>[
+              if (widget.customer.firstOrderDate != null) ...<Widget>[
                 TextVariant(
                   LocaleKeys.firstDateOrder.tr(),
                   color: colorScheme.onSurface,
                 ),
                 TextVariant(
-                  dateFormat.format(widget.client.firstOrderDate!),
+                  dateFormat.format(widget.customer.firstOrderDate!),
                   color: colorScheme.onSurface,
                 ),
               ],

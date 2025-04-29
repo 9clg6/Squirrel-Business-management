@@ -4,12 +4,12 @@ import 'package:json_annotation/json_annotation.dart';
 import 'package:squirrel/domain/mixin/serializable.mixin.dart';
 import 'package:uuid/uuid.dart';
 
-part 'client.entity.g.dart';
+part 'customer.entity.g.dart';
 
-/// [Client]
+/// [Customer]
 @CopyWith()
 @JsonSerializable()
-class Client with EquatableMixin, SerializableMixin {
+class Customer with EquatableMixin, SerializableMixin {
   /// Constructor
   /// @param id: String
   /// @param name: String
@@ -21,7 +21,7 @@ class Client with EquatableMixin, SerializableMixin {
   /// @param lastOrderDate: DateTime?
   /// @param firstOrderDate: DateTime?
   ///
-  Client({
+  Customer({
     required this.name,
     String? id,
     this.socialsName,
@@ -35,10 +35,11 @@ class Client with EquatableMixin, SerializableMixin {
 
   /// From json
   /// @param [json] json
-  /// @return [Client] client
+  /// @return [Customer] customer
   ///
   @override
-  factory Client.fromJson(Map<String, dynamic> json) => _$ClientFromJson(json);
+  factory Customer.fromJson(Map<String, dynamic> json) =>
+      _$CustomerFromJson(json);
 
   /// Id
   final String id;
@@ -86,5 +87,5 @@ class Client with EquatableMixin, SerializableMixin {
   /// @return [Map<String, dynamic>] json
   ///
   @override
-  Map<String, dynamic> toJson() => _$ClientToJson(this);
+  Map<String, dynamic> toJson() => _$CustomerToJson(this);
 }

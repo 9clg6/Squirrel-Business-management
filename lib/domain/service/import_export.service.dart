@@ -4,7 +4,7 @@ import 'dart:typed_data';
 
 import 'package:encrypt/encrypt.dart' as enc;
 import 'package:file_picker/file_picker.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/logger.service.dart';
@@ -36,7 +36,10 @@ class ImportExportService {
   final Map<String, List<Map<String, dynamic>>> dataToExport;
 
   /// On import success
-  final Null Function(List<Order> orders, List<Client> clients) onImportSuccess;
+  final Null Function(
+    List<Order> orders,
+    List<Customer> customers,
+  ) onImportSuccess;
 
   /// Exporte les données vers un fichier JSON chiffré.
   ///
@@ -167,16 +170,16 @@ class ImportExportService {
               .toList() ??
           <Order>[];
 
-      final List<Client> clients = (data['clients'] as List<dynamic>?)
+      final List<Customer> customers = (data['clients'] as List<dynamic>?)
               ?.map(
                 (dynamic clientJson) =>
-                    Client.fromJson(clientJson as Map<String, dynamic>),
+                    Customer.fromJson(clientJson as Map<String, dynamic>),
               )
               .toList() ??
-          <Client>[];
+          <Customer>[];
 
-      onImportSuccess(orders, clients);
-      return <String, dynamic>{'orders': orders, 'clients': clients};
+      onImportSuccess(orders, customers);
+      return <String, dynamic>{'orders': orders, 'clients': customers};
     } catch (e) {
       LoggerService.instance.e("Erreur lors de l'importation déchiffrée: $e");
       rethrow;

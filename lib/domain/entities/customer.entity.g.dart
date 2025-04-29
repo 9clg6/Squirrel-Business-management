@@ -1,37 +1,37 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'client.entity.dart';
+part of 'customer.entity.dart';
 
 // **************************************************************************
 // CopyWithGenerator
 // **************************************************************************
 
-abstract class _$ClientCWProxy {
-  Client name(String name);
+abstract class _$CustomerCWProxy {
+  Customer name(String name);
 
-  Client id(String? id);
+  Customer id(String? id);
 
-  Client socialsName(String? socialsName);
+  Customer socialsName(String? socialsName);
 
-  Client orderTotalAmount(double orderTotalAmount);
+  Customer orderTotalAmount(double orderTotalAmount);
 
-  Client commissionTotalAmount(double commissionTotalAmount);
+  Customer commissionTotalAmount(double commissionTotalAmount);
 
-  Client orderQuantity(int orderQuantity);
+  Customer orderQuantity(int orderQuantity);
 
-  Client sponsorshipQuantity(int sponsorshipQuantity);
+  Customer sponsorshipQuantity(int sponsorshipQuantity);
 
-  Client lastOrderDate(DateTime? lastOrderDate);
+  Customer lastOrderDate(DateTime? lastOrderDate);
 
-  Client firstOrderDate(DateTime? firstOrderDate);
+  Customer firstOrderDate(DateTime? firstOrderDate);
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Client(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Customer(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
   /// ```dart
-  /// Client(...).copyWith(id: 12, name: "My name")
+  /// Customer(...).copyWith(id: 12, name: "My name")
   /// ````
-  Client call({
+  Customer call({
     String? name,
     String? id,
     String? socialsName,
@@ -44,53 +44,54 @@ abstract class _$ClientCWProxy {
   });
 }
 
-/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfClient.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfClient.copyWith.fieldName(...)`
-class _$ClientCWProxyImpl implements _$ClientCWProxy {
-  const _$ClientCWProxyImpl(this._value);
+/// Proxy class for `copyWith` functionality. This is a callable class and can be used as follows: `instanceOfCustomer.copyWith(...)`. Additionally contains functions for specific fields e.g. `instanceOfCustomer.copyWith.fieldName(...)`
+class _$CustomerCWProxyImpl implements _$CustomerCWProxy {
+  const _$CustomerCWProxyImpl(this._value);
 
-  final Client _value;
-
-  @override
-  Client name(String name) => this(name: name);
+  final Customer _value;
 
   @override
-  Client id(String? id) => this(id: id);
+  Customer name(String name) => this(name: name);
 
   @override
-  Client socialsName(String? socialsName) => this(socialsName: socialsName);
+  Customer id(String? id) => this(id: id);
 
   @override
-  Client orderTotalAmount(double orderTotalAmount) =>
+  Customer socialsName(String? socialsName) => this(socialsName: socialsName);
+
+  @override
+  Customer orderTotalAmount(double orderTotalAmount) =>
       this(orderTotalAmount: orderTotalAmount);
 
   @override
-  Client commissionTotalAmount(double commissionTotalAmount) =>
+  Customer commissionTotalAmount(double commissionTotalAmount) =>
       this(commissionTotalAmount: commissionTotalAmount);
 
   @override
-  Client orderQuantity(int orderQuantity) => this(orderQuantity: orderQuantity);
+  Customer orderQuantity(int orderQuantity) =>
+      this(orderQuantity: orderQuantity);
 
   @override
-  Client sponsorshipQuantity(int sponsorshipQuantity) =>
+  Customer sponsorshipQuantity(int sponsorshipQuantity) =>
       this(sponsorshipQuantity: sponsorshipQuantity);
 
   @override
-  Client lastOrderDate(DateTime? lastOrderDate) =>
+  Customer lastOrderDate(DateTime? lastOrderDate) =>
       this(lastOrderDate: lastOrderDate);
 
   @override
-  Client firstOrderDate(DateTime? firstOrderDate) =>
+  Customer firstOrderDate(DateTime? firstOrderDate) =>
       this(firstOrderDate: firstOrderDate);
 
   @override
 
-  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Client(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
+  /// This function **does support** nullification of nullable fields. All `null` values passed to `non-nullable` fields will be ignored. You can also use `Customer(...).copyWith.fieldName(...)` to override fields one at a time with nullification support.
   ///
   /// Usage
   /// ```dart
-  /// Client(...).copyWith(id: 12, name: "My name")
+  /// Customer(...).copyWith(id: 12, name: "My name")
   /// ````
-  Client call({
+  Customer call({
     Object? name = const $CopyWithPlaceholder(),
     Object? id = const $CopyWithPlaceholder(),
     Object? socialsName = const $CopyWithPlaceholder(),
@@ -101,7 +102,7 @@ class _$ClientCWProxyImpl implements _$ClientCWProxy {
     Object? lastOrderDate = const $CopyWithPlaceholder(),
     Object? firstOrderDate = const $CopyWithPlaceholder(),
   }) {
-    return Client(
+    return Customer(
       name: name == const $CopyWithPlaceholder() || name == null
           ? _value.name
           // ignore: cast_nullable_to_non_nullable
@@ -148,17 +149,17 @@ class _$ClientCWProxyImpl implements _$ClientCWProxy {
   }
 }
 
-extension $ClientCopyWith on Client {
-  /// Returns a callable class that can be used as follows: `instanceOfClient.copyWith(...)` or like so:`instanceOfClient.copyWith.fieldName(...)`.
+extension $CustomerCopyWith on Customer {
+  /// Returns a callable class that can be used as follows: `instanceOfCustomer.copyWith(...)` or like so:`instanceOfCustomer.copyWith.fieldName(...)`.
   // ignore: library_private_types_in_public_api
-  _$ClientCWProxy get copyWith => _$ClientCWProxyImpl(this);
+  _$CustomerCWProxy get copyWith => _$CustomerCWProxyImpl(this);
 }
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Client _$ClientFromJson(Map<String, dynamic> json) => Client(
+Customer _$CustomerFromJson(Map<String, dynamic> json) => Customer(
       name: json['name'] as String,
       id: json['id'] as String?,
       socialsName: json['socialsName'] as String?,
@@ -175,7 +176,7 @@ Client _$ClientFromJson(Map<String, dynamic> json) => Client(
           : DateTime.parse(json['firstOrderDate'] as String),
     );
 
-Map<String, dynamic> _$ClientToJson(Client instance) => <String, dynamic>{
+Map<String, dynamic> _$CustomerToJson(Customer instance) => <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'socialsName': instance.socialsName,

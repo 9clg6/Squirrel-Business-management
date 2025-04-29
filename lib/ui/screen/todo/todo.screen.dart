@@ -278,7 +278,7 @@ class TodoItem extends ConsumerWidget {
                         variantType: TextVariantType.titleSmall,
                       ),
                       TextVariant(
-                        order.client?.name.capitalize ?? '',
+                        order.customer?.name.capitalize ?? '',
                         variantType: TextVariantType.labelSmall,
                         fontWeight: FontWeight.w400,
                         color: colorScheme.onPrimary,

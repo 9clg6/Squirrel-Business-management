@@ -1044,7 +1044,7 @@ class _OrderDetailHeader extends ConsumerWidget {
       ),
       child: Row(
         children: <Widget>[
-          _ClientInfoCard(order),
+          _CustomerInfoCard(order),
           Expanded(
             flex: 5,
             child: Row(
@@ -1052,23 +1052,24 @@ class _OrderDetailHeader extends ConsumerWidget {
               children: <Widget>[
                 _StatsCard(
                   subtitle: LocaleKeys.numberOfOrders.tr(),
-                  title: orderState.client?.orderQuantity.toString() ?? '',
+                  title: orderState.customer?.orderQuantity.toString() ?? '',
                 ),
                 const SizedBox(width: 10),
                 _StatsCard(
                   subtitle: LocaleKeys.sponsorship.tr(),
                   title:
-                      orderState.client?.sponsorshipQuantity.toString() ?? '',
+                      orderState.customer?.sponsorshipQuantity.toString() ?? '',
                 ),
                 const SizedBox(width: 10),
                 _StatsCard(
                   subtitle: LocaleKeys.totalAmount.tr(),
-                  title: orderState.client?.orderTotalAmount.toString() ?? '',
+                  title: orderState.customer?.orderTotalAmount.toString() ?? '',
                 ),
                 const SizedBox(width: 10),
                 _StatsCard(
                   subtitle: LocaleKeys.firstOrder.tr(),
-                  title: orderState.client?.firstOrderDate?.toDDMMYYYY() ?? '',
+                  title:
+                      orderState.customer?.firstOrderDate?.toDDMMYYYY() ?? '',
                 ),
               ],
             ),
@@ -1079,11 +1080,11 @@ class _OrderDetailHeader extends ConsumerWidget {
   }
 }
 
-class _ClientInfoCard extends ConsumerWidget {
+class _CustomerInfoCard extends ConsumerWidget {
   /// Constructor
   /// @param [order] order
   ///
-  const _ClientInfoCard(
+  const _CustomerInfoCard(
     this.order,
   );
 
@@ -1106,7 +1107,7 @@ class _ClientInfoCard extends ConsumerWidget {
         title: Hero(
           tag: 'order-${orderState?.id}',
           child: TextVariant(
-            (orderState?.client?.name ?? '').capitalize,
+            (orderState?.customer?.name ?? '').capitalize,
             variantType: TextVariantType.titleMedium,
             fontWeight: FontWeight.bold,
           ),
@@ -1115,7 +1116,7 @@ class _ClientInfoCard extends ConsumerWidget {
           backgroundColor: colorScheme.primary,
           radius: 25,
           child: TextVariant(
-            (orderState?.client?.name[0] ?? '').capitalize,
+            (orderState?.customer?.name[0] ?? '').capitalize,
             variantType: TextVariantType.titleLarge,
             color: colorScheme.onPrimary,
           ),

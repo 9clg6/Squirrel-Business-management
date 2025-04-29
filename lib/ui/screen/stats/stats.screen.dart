@@ -412,7 +412,7 @@ class RowQuickStats extends ConsumerWidget {
                         (Map<String, Map<String, dynamic>> map, Order order) =>
                             map
                               ..update(
-                                order.client?.name.capitalize ?? '',
+                                order.customer?.name.capitalize ?? '',
                                 (Map<String, dynamic> value) =>
                                     <String, double>{
                                   'count': (value['count'] as double) + 1,
@@ -491,7 +491,7 @@ class RowQuickStats extends ConsumerWidget {
                         <String, int>{},
                         (Map<String, int> map, Order order) => map
                           ..update(
-                            order.client?.name.capitalize ?? '',
+                            order.customer?.name.capitalize ?? '',
                             (int value) => value + 1,
                             ifAbsent: () => 1,
                           ),

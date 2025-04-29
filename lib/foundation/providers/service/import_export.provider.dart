@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
-import 'package:squirrel/domain/service/client.service.dart';
+import 'package:squirrel/domain/service/customer.service.dart';
 import 'package:squirrel/domain/service/dialog.service.dart';
 import 'package:squirrel/domain/service/import_export.service.dart';
 import 'package:squirrel/domain/service/order.service.dart';
-import 'package:squirrel/domain/state/client.state.dart';
+import 'package:squirrel/domain/state/customer.state.dart';
 import 'package:squirrel/domain/state/order.state.dart';
 import 'package:squirrel/foundation/constants/constants.dart';
 import 'package:squirrel/foundation/providers/service/dialog.service.provider.dart';
@@ -31,23 +31,23 @@ Future<ImportExportService> importExportService(Ref ref) async {
 
   final OrderService orderService =
       await ref.watch(orderServiceProvider.notifier);
-  final ClientService clientService =
-      await ref.watch(clientServiceProvider.notifier);
+  final CustomerService customerService =
+      await ref.watch(customerServiceProvider.notifier);
   final DialogService dialogService = await ref.watch(dialogServiceProvider);
 
   final OrderState orderState = await ref.watch(orderServiceProvider.future);
-  final ClientState clientState = await ref.watch(clientServiceProvider.future);
+  final CustomerState customerState = await ref.watch(customerServiceProvider.future);
 
   return ImportExportService(
     file: File('${createdDirectory.path}/export.json'),
     dataToExport: await _mergeData(
       orderState: orderState,
-      clientState: clientState,
+      customerState: customerState,
     ),
     dialogService: dialogService,
-    onImportSuccess: (List<Order> orders, List<Client> clients) {
+    onImportSuccess: (List<Order> orders, List<Customer> customers) {
       orderService.loadOrders(orders);
-      clientService.loadClients(clients);
+      customerService.loadCustomers(customers);
     },
   );
 }
@@ -57,7 +57,7 @@ Future<ImportExportService> importExportService(Ref ref) async {
 ///
 Future<Map<String, List<Map<String, dynamic>>>> _mergeData({
   required OrderState orderState,
-  required ClientState clientState,
+  required CustomerState customerState,
 }) async {
   final Map<String, List<Map<String, dynamic>>> data =
       <String, List<Map<String, dynamic>>>{
@@ -66,9 +66,9 @@ Future<Map<String, List<Map<String, dynamic>>>> _mergeData({
           (Order order) => order.toJson(),
         )
         .toList(),
-    'clients': clientState.clients
+    'customers': customerState.customers
         .map(
-          (Client client) => client.toJson(),
+          (Customer customer) => customer.toJson(),
         )
         .toList(),
   };

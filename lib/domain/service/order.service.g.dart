@@ -6,7 +6,7 @@ part of 'order.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$orderServiceHash() => r'2f7b3431140aac109cec8e1ef7a11c6091d415cf';
+String _$orderServiceHash() => r'07a256829bbf5cbcc06f530c867c248c5c1a06fb';
 
 /// [OrderService]
 ///
@@ -20,13 +20,13 @@ final orderServiceProvider =
       const bool.fromEnvironment('dart.vm.product') ? null : _$orderServiceHash,
   dependencies: <ProviderOrFamily>[
     hiveSecureStorageServiceProvider,
-    clientServiceProvider
+    customerServiceProvider
   ],
   allTransitiveDependencies: <ProviderOrFamily>{
     hiveSecureStorageServiceProvider,
     ...?hiveSecureStorageServiceProvider.allTransitiveDependencies,
-    clientServiceProvider,
-    ...?clientServiceProvider.allTransitiveDependencies
+    customerServiceProvider,
+    ...?customerServiceProvider.allTransitiveDependencies
   },
 );
 

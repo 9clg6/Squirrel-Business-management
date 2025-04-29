@@ -7,7 +7,7 @@ part of 'order_details.view_model.dart';
 // **************************************************************************
 
 String _$orderDetailsViewModelHash() =>
-    r'dc472da20c232c29aa624fb3264eeedd1ff6ed8c';
+    r'032c94fcbb7373fb7ecd9f06663698664357454c';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -76,7 +76,7 @@ class OrderDetailsViewModelFamily extends Family<OrderDetailsScreenState> {
 
   static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>[
     orderServiceProvider,
-    clientServiceProvider
+    customerServiceProvider
   ];
 
   @override
@@ -86,8 +86,8 @@ class OrderDetailsViewModelFamily extends Family<OrderDetailsScreenState> {
       <ProviderOrFamily>{
     orderServiceProvider,
     ...?orderServiceProvider.allTransitiveDependencies,
-    clientServiceProvider,
-    ...?clientServiceProvider.allTransitiveDependencies
+    customerServiceProvider,
+    ...?customerServiceProvider.allTransitiveDependencies
   };
 
   @override

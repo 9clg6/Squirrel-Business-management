@@ -170,7 +170,7 @@ class _OrdersList extends ConsumerWidget {
                                         vertical: 8,
                                       ),
                                       child: TextVariant(
-                                        order.client?.name.capitalize ?? '',
+                                        order.customer?.name.capitalize ?? '',
                                       ),
                                     ),
                                   ),

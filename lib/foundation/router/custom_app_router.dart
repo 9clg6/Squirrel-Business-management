@@ -11,7 +11,7 @@ import 'package:squirrel/domain/state/request.state.dart';
 import 'package:squirrel/foundation/enums/router.enum.dart';
 import 'package:squirrel/foundation/routing/routing_key.dart';
 import 'package:squirrel/ui/screen/auth/auth.screen.dart';
-import 'package:squirrel/ui/screen/clients/clients.screen.dart';
+import 'package:squirrel/ui/screen/customers/customers.screen.dart';
 import 'package:squirrel/ui/screen/history/history.screen.dart';
 import 'package:squirrel/ui/screen/main/index.screen.dart';
 import 'package:squirrel/ui/screen/order_details/order_details.screen.dart';
@@ -125,13 +125,13 @@ GoRouter router(Ref ref) {
               ),
             ],
           ),
-          // Branche 4 - Clients
+          // Branche 4 - Customers
           StatefulShellBranch(
             routes: <RouteBase>[
               GoRoute(
-                path: RouterEnum.clients.path,
-                name: RouterEnum.clients.name,
-                builder: (_, __) => const ClientsScreen(),
+                path: RouterEnum.customers.path,
+                name: RouterEnum.customers.name,
+                builder: (_, __) => const CustomersScreen(),
               ),
             ],
           ),

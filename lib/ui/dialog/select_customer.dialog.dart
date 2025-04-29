@@ -2,18 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
-import 'package:squirrel/domain/service/client.service.dart';
-import 'package:squirrel/domain/state/client.state.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
+import 'package:squirrel/domain/service/customer.service.dart';
+import 'package:squirrel/domain/state/customer.state.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
 
-/// Select client dialog
+/// Select customer dialog
 ///
-class SelectClientDialog extends ConsumerStatefulWidget {
+class SelectCustomerDialog extends ConsumerStatefulWidget {
   /// Constructor
   /// @param super.key
   ///
-  const SelectClientDialog({
+  const SelectCustomerDialog({
     super.key,
     this.isSponsor = false,
   });
@@ -22,13 +22,14 @@ class SelectClientDialog extends ConsumerStatefulWidget {
   final bool isSponsor;
 
   /// Create state
-  /// @return State<SelectClientDialog>
+  /// @return State<SelectcustomerDialog>
   ///
   @override
-  ConsumerState<SelectClientDialog> createState() => _SelectClientDialogState();
+  ConsumerState<SelectCustomerDialog> createState() =>
+      _SelectcustomerDialogState();
 }
 
-class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
+class _SelectcustomerDialogState extends ConsumerState<SelectCustomerDialog> {
   /// Build
   /// @param context
   /// @return Widget
@@ -36,7 +37,8 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
   @override
   Widget build(BuildContext context) {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
-    final AsyncValue<ClientState> clients = ref.watch(clientServiceProvider);
+    final AsyncValue<CustomerState> customers =
+        ref.watch(customerServiceProvider);
 
     return Dialog(
       child: Padding(
@@ -45,18 +47,18 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
           width: 400,
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: switch (clients) {
-              AsyncData<ClientState>(:final ClientState value) => <Widget>[
+            children: switch (customers) {
+              AsyncData<CustomerState>(:final CustomerState value) => <Widget>[
                   TextVariant(
                     widget.isSponsor
                         ? 'Sélectionner un parrain'
-                        : 'Sélectionner un client',
+                        : 'Sélectionner un customer',
                     variantType: TextVariantType.titleMedium,
                   ),
                   const Gap(6),
                   if (widget.isSponsor)
                     const TextVariant(
-                      "Un parrain ne peut être qu'un client existant",
+                      "Un parrain ne peut être qu'un customer existant",
                       variantType: TextVariantType.bodySmall,
                     ),
                   const Gap(12),
@@ -65,10 +67,10 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
                     color: colorScheme.outline.withValues(alpha: 0.5),
                   ),
                   const Gap(12),
-                  ...value.clients.map(
-                    (Client client) => _ClientItem(
-                      client: client,
-                      isLast: value.clients.last == client,
+                  ...value.customers.map(
+                    (Customer customer) => _customerItem(
+                      customer: customer,
+                      isLast: value.customers.last == customer,
                     ),
                   ),
                   const Gap(12),
@@ -93,16 +95,16 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
                     ),
                   ),
                 ],
-              AsyncError<ClientState>(:final Object error) => <Widget>[
+              AsyncError<CustomerState>(:final Object error) => <Widget>[
                   TextVariant(
                     error.toString(),
                   ),
                 ],
-              AsyncLoading<ClientState>() => <Widget>[
+              AsyncLoading<CustomerState>() => <Widget>[
                   const CircularProgressIndicator(),
                 ],
-              AsyncValue<ClientState>() => <Widget>[
-                  const Text('Aucun client trouvé'),
+              AsyncValue<CustomerState>() => <Widget>[
+                  const Text('Aucun customer trouvé'),
                 ],
             },
           ),
@@ -112,32 +114,32 @@ class _SelectClientDialogState extends ConsumerState<SelectClientDialog> {
   }
 }
 
-/// Client item
+/// customer item
 ///
-class _ClientItem extends StatefulWidget {
+class _customerItem extends StatefulWidget {
   /// Constructor
-  /// @param client
+  /// @param customer
   /// @param isLast
   ///
-  const _ClientItem({
-    required this.client,
+  const _customerItem({
+    required this.customer,
     required this.isLast,
   });
 
-  /// Client
-  final Client client;
+  /// customer
+  final Customer customer;
 
   /// Is last
   final bool isLast;
 
   /// Create state
-  /// @return State<_ClientItem>
+  /// @return State<_customerItem>
   ///
   @override
-  State<_ClientItem> createState() => _ClientItemState();
+  State<_customerItem> createState() => _customerItemState();
 }
 
-class _ClientItemState extends State<_ClientItem> {
+class _customerItemState extends State<_customerItem> {
   /// Is hovered
   bool isHovered = false;
 
@@ -150,7 +152,7 @@ class _ClientItemState extends State<_ClientItem> {
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
     return InkWell(
       onTap: () {
-        context.pop(widget.client);
+        context.pop(widget.customer);
       },
       child: SizedBox(
         width: double.infinity,
@@ -163,7 +165,7 @@ class _ClientItemState extends State<_ClientItem> {
               decoration: BoxDecoration(
                 color: isHovered ? colorScheme.primary : null,
               ),
-              child: Text(widget.client.name),
+              child: Text(widget.customer.name),
             ),
             if (!widget.isLast)
               Divider(

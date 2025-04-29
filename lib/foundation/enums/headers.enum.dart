@@ -1,7 +1,7 @@
 /// Headers
 enum Headers {
   /// Client
-  client(label: 'Client'),
+  customer(label: 'Client'),
 
   /// Status
   status(label: 'Statut'),

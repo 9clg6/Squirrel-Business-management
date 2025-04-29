@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
-import 'package:squirrel/domain/service/client.service.dart';
+import 'package:squirrel/domain/service/customer.service.dart';
 import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/state/order.state.dart';
@@ -19,15 +19,15 @@ part 'order.service.g.dart';
   keepAlive: true,
   dependencies: <Object>[
     HiveSecureStorageService,
-    ClientService,
+    CustomerService,
   ],
 )
 class OrderService extends _$OrderService {
   /// Hive service
   late final StorageInterface<dynamic> _hiveService;
 
-  /// Client service
-  late final ClientService _clientService;
+  /// customer service
+  late final CustomerService _customerService;
 
   /// Orders key
   static const String ordersKey = 'orders';
@@ -43,7 +43,7 @@ class OrderService extends _$OrderService {
     if (!_isInitialized) {
       LoggerService.instance.i('🔌 Initializing OrderService');
       _hiveService = ref.watch(hiveSecureStorageServiceProvider.notifier);
-      _clientService = ref.watch(clientServiceProvider.notifier);
+      _customerService = ref.watch(customerServiceProvider.notifier);
       _isInitialized = true;
     }
     return _loadOrdersFromLocal();
@@ -258,46 +258,46 @@ class OrderService extends _$OrderService {
       return;
     }
 
-    // Récupérer le client correspondant au clientName, ou utiliser
+    // Récupérer le customer correspondant au customerName, ou utiliser
     // celui déjà présent
-    Client? clientToUse;
+    Customer? customerToUse;
 
-    // Si le nom du client a changé, chercher le nouveau client par son nom
-    if (order.client == null || order.client!.name != order.clientName) {
-      clientToUse = _clientService.getClientByName(order.clientName);
+    // Si le nom du customer a changé, chercher le nouveau customer par son nom
+    if (order.customer == null || order.customer!.name != order.customerName) {
+      customerToUse = _customerService.getCustomerByName(order.customerName);
 
-      // Si aucun client avec ce nom n'existe, en créer un nouveau
-      if (clientToUse == null) {
-        clientToUse = _clientService.createClientWithOrder(
-          order.clientName,
+      // Si aucun customer avec ce nom n'existe, en créer un nouveau
+      if (customerToUse == null) {
+        customerToUse = _customerService.createCustomerWithOrder(
+          order.customerName,
           order,
         );
-        LoggerService.instance.i('📚✅ Created new client');
+        LoggerService.instance.i('📚✅ Created new customer');
       } else {
-        LoggerService.instance.i('📚 Found existing client');
+        LoggerService.instance.i('📚 Found existing customer');
       }
     } else {
-      // Utiliser le client actuel, mais s'assurer d'avoir sa
+      // Utiliser le customer actuel, mais s'assurer d'avoir sa
       // version la plus récente
-      clientToUse = _clientService.getClientById(order.client!.id);
+      customerToUse = _customerService.getcustomerById(order.customer!.id);
     }
 
-    // Mettre à jour la commande avec le client associé
-    final Order orderWithUpdatedClient = order.copyWith(
-      client: clientToUse,
+    // Mettre à jour la commande avec le customer associé
+    final Order orderWithUpdatedcustomer = order.copyWith(
+      customer: customerToUse,
     );
 
     _updateOrder(
-      orderWithUpdatedClient,
+      orderWithUpdatedcustomer,
       indexOrder,
     );
 
     LoggerService.instance.i('📚✅ Updated order');
 
-    // Mettre à jour les statistiques du client
-    _clientService.updateClientWithOrder(
-      clientToUse,
-      order: orderWithUpdatedClient,
+    // Mettre à jour les statistiques du customer
+    _customerService.updateCustomerWithOrder(
+      customerToUse,
+      order: orderWithUpdatedcustomer,
       isNewOrder: false,
     );
   }
@@ -319,31 +319,31 @@ class OrderService extends _$OrderService {
   /// @param [order] order
   ///
   void addOrder(Order order) {
-    Client? client = _clientService.getClientByName(order.clientName);
+    Customer? customer = _customerService.getCustomerByName(order.customerName);
 
-    if (client == null) {
-      client = _clientService.createClientWithOrder(
-        order.clientName,
+    if (customer == null) {
+      customer = _customerService.createCustomerWithOrder(
+        order.customerName,
         order,
       );
-      LoggerService.instance.i('📚✅ Created client');
+      LoggerService.instance.i('📚✅ Created customer');
     } else {
-      LoggerService.instance.i('📚 Found existing client');
+      LoggerService.instance.i('📚 Found existing customer');
     }
 
-    _clientService.updateClientWithOrder(
-      client,
+    _customerService.updateCustomerWithOrder(
+      customer,
       order: order,
       isNewOrder: true,
     );
-    LoggerService.instance.i('📚✅ Updated client');
+    LoggerService.instance.i('📚✅ Updated customer');
     LoggerService.instance.i('📚✅ Added order');
 
     state = AsyncData<OrderState>(
       state.value!.copyWith(
         orders: <Order>[
           ...state.value!.orders,
-          order.copyWith(client: client),
+          order.copyWith(customer: customer),
         ],
       ),
     );

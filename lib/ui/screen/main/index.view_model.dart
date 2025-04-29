@@ -174,10 +174,10 @@ class Index extends _$Index {
     final List<Order> orders = state.orders
       ..sort((Order a, Order b) {
         switch (selectedHeader) {
-          case Headers.client:
+          case Headers.customer:
             return ascending
-                ? a.client!.id.compareTo(b.client!.id)
-                : b.client!.id.compareTo(a.client!.id);
+                ? a.customer!.id.compareTo(b.customer!.id)
+                : b.customer!.id.compareTo(a.customer!.id);
           case Headers.status:
             return ascending
                 ? a.status.index.compareTo(b.status.index)

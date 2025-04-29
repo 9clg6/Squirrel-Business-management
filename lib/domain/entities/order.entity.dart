@@ -3,7 +3,7 @@ import 'package:copy_with_extension/copy_with_extension.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:squirrel/domain/entities/action.entity.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/domain/mixin/serializable.mixin.dart';
 import 'package:squirrel/foundation/enums/ordrer_status.enum.dart';
 import 'package:squirrel/foundation/enums/priority.enum.dart';
@@ -17,8 +17,8 @@ part 'order.entity.g.dart';
 class Order with EquatableMixin, SerializableMixin {
   /// Constructor
   /// @param id: Id of the order
-  /// @param client: Client of the order
-  /// @param clientName: Name of the client
+  /// @param customer: customer of the order
+  /// @param customerName: Name of the customer
   /// @param sponsor: Sponsor of the order
   /// @param intermediaryContact: Intermediary contact of the order
   /// @param internalProcessingFee: Internal processing fee of the order
@@ -36,8 +36,8 @@ class Order with EquatableMixin, SerializableMixin {
   /// @param priority: Priority of the order
   ///
   Order({
-    required this.client,
-    required this.clientName,
+    required this.customer,
+    required this.customerName,
     required this.intermediaryContact,
     required this.internalProcessingFee,
     required this.trackId,
@@ -60,8 +60,8 @@ class Order with EquatableMixin, SerializableMixin {
   /// Empty order
   ///
   factory Order.empty() => Order(
-        client: null,
-        clientName: '',
+        customer: null,
+        customerName: '',
         intermediaryContact: '',
         internalProcessingFee: 0,
         trackId: '',
@@ -87,11 +87,11 @@ class Order with EquatableMixin, SerializableMixin {
   /// Id
   final String id;
 
-  /// Client
-  final Client? client;
+  /// customer
+  final Customer? customer;
 
-  /// Client name
-  final String clientName;
+  /// customer name
+  final String customerName;
 
   /// Sponsor
   final String? sponsor;
@@ -174,8 +174,8 @@ class Order with EquatableMixin, SerializableMixin {
   @override
   List<Object?> get props => <Object?>[
         id,
-        client,
-        clientName,
+        customer,
+        customerName,
         sponsor,
         intermediaryContact,
         startDate,

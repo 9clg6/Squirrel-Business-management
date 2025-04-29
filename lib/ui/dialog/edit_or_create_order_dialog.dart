@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:gap/gap.dart';
 import 'package:go_router/go_router.dart';
-import 'package:squirrel/domain/entities/client.entity.dart';
+import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
 import 'package:squirrel/domain/service/business_type.service.dart';
 import 'package:squirrel/domain/state/business_type.state.dart';
@@ -79,8 +79,8 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
   /// Order intermediary controller
   late final TextEditingController intermediaryController;
 
-  /// Order client controller
-  late final TextEditingController clientController;
+  /// Order clicustent controller
+  late final TextEditingController customerController;
 
   /// Order comment controller
   late final TextEditingController commentController;
@@ -98,7 +98,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
   late bool hasMentor = widget.order?.sponsor != null;
 
   /// Sponsor
-  Client? sponsor;
+  Customer? sponsor;
 
   /// Is hovering sponsor
   late bool _isHoveringSponsor = false;
@@ -130,7 +130,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
     methodController = TextEditingController(text: widget.order?.method);
     intermediaryController =
         TextEditingController(text: widget.order?.intermediaryContact);
-    clientController = TextEditingController(text: widget.order?.client?.name);
+    customerController = TextEditingController(text: widget.order?.customer?.name);
     commentController = TextEditingController(text: widget.order?.note);
     mentorController = TextEditingController(text: widget.order?.sponsor);
     formKey = GlobalKey<FormState>();
@@ -195,18 +195,18 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                     Column(
                       children: <Widget>[
                         TextFormField(
-                          controller: clientController,
+                          controller: customerController,
                           decoration: InputDecoration(
                             labelText: LocaleKeys.clientName.tr(),
                             suffix: InkWell(
                               onTap: () async {
-                                final Client? client = await ref
+                                final Customer? customer = await ref
                                     .watch(dialogServiceProvider)
-                                    .showSelectClientDialog();
+                                    .showSelectCustomerDialog();
 
-                                if (client != null) {
+                                if (customer != null) {
                                   setState(() {
-                                    clientController.text = client.name;
+                                    customerController.text = customer.name;
                                   });
                                 }
                               },
@@ -258,14 +258,14 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
                             },
                             child: InkWell(
                               onTap: () async {
-                                final Client? client = await ref
+                                final Customer? customer = await ref
                                     .watch(dialogServiceProvider)
-                                    .showSelectClientDialog(
+                                    .showSelectCustomerDialog(
                                       isSponsor: true,
                                     );
 
                                 setState(() {
-                                  sponsor = client;
+                                  sponsor = customer;
                                   hasMentor = sponsor != null;
                                 });
                               },
@@ -565,7 +565,7 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
 
                             context.pop<Order>(
                               order?.copyWith(
-                                clientName: clientController.text,
+                                customerName: customerController.text,
                                 intermediaryContact:
                                     intermediaryController.text,
                                 price: price,
