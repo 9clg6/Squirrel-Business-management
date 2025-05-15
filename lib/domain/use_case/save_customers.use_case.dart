@@ -7,15 +7,17 @@ class SaveCustomersUseCase
     extends FutureUseCaseWithParams<void, SaveCustomersParam> {
   /// Constructor
   /// @param customersRepository : customers repo
-  SaveCustomersUseCase({required this.customersRepository});
+  SaveCustomersUseCase({
+    required this.customerRepository,
+  });
 
   /// Customers repo
-  final CustomerRepository customersRepository;
+  final CustomerRepository customerRepository;
 
   /// Invoke
   ///
   @override
   Future<void> invoke(SaveCustomersParam params) {
-    return customersRepository.saveCustomers(params);
+    return customerRepository.saveCustomers(params);
   }
 }

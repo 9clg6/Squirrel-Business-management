@@ -6,7 +6,7 @@ part of 'request_service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$requestServiceHash() => r'ebcdd9112dddef80be6f5901535878cd8df948b5';
+String _$requestServiceHash() => r'46ce6cdb264a74d4d246b2e3bff071ef56131dcc';
 
 /// [RequestService]
 ///
@@ -19,8 +19,8 @@ final requestServiceProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$requestServiceHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$RequestService = Notifier<RequestState>;

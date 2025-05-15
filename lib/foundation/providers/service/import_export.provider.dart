@@ -36,7 +36,8 @@ Future<ImportExportService> importExportService(Ref ref) async {
   final DialogService dialogService = await ref.watch(dialogServiceProvider);
 
   final OrderState orderState = await ref.watch(orderServiceProvider.future);
-  final CustomerState customerState = await ref.watch(customerServiceProvider.future);
+  final CustomerState customerState =
+      await ref.watch(customerServiceProvider.future);
 
   return ImportExportService(
     file: File('${createdDirectory.path}/export.json'),

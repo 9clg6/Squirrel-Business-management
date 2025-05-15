@@ -12,9 +12,6 @@ part 'stats.view_model.g.dart';
 /// [StatsViewModel]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[
-    OrderService,
-  ],
 )
 class StatsViewModel extends _$StatsViewModel {
   bool _isInitialized = false;

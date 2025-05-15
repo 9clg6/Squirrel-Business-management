@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars w
+
 import 'dart:async';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,9 +16,6 @@ part 'auth.view_model.g.dart';
 /// [Auth]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[
-    AuthService,
-  ],
 )
 class Auth extends _$Auth {
   late final DialogService _dialogService;

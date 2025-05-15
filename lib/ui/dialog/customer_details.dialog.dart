@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars w
+
 import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:squirrel/domain/entities/customer.entity.dart';
@@ -73,7 +75,8 @@ class _CustomerDetailDialogState extends State<CustomerDetailDialog> {
                     label: 'Commission totale',
                     value: LocaleKeys.priceWithSymbol.tr(
                       args: <String>[
-                        widget.customer.commissionTotalAmount.toStringAsFixed(2),
+                        widget.customer.commissionTotalAmount
+                            .toStringAsFixed(2),
                       ],
                     ),
                   ),

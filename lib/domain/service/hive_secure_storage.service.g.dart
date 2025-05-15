@@ -7,7 +7,7 @@ part of 'hive_secure_storage.service.dart';
 // **************************************************************************
 
 String _$hiveSecureStorageServiceHash() =>
-    r'3a49be0b4f29b5a3ace7dbe51dc27a38fb49dc5d';
+    r'5a2c8c43c535bd9a5b39ba8abef08a99d99555d9';
 
 /// Use it when you want to save secured data that won't
 ///  be backed up by the system.
@@ -21,11 +21,8 @@ final hiveSecureStorageServiceProvider = AsyncNotifierProvider<
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$hiveSecureStorageServiceHash,
-  dependencies: <ProviderOrFamily>[secureStorageServiceProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    secureStorageServiceProvider,
-    ...?secureStorageServiceProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$HiveSecureStorageService = AsyncNotifier<HiveSecureStorageService>;

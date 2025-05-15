@@ -131,70 +131,75 @@ class TodoStatusColumn extends ConsumerWidget {
   ///
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final TodoScreenState state = ref.watch(todoViewModelProvider);
+    final AsyncValue<TodoScreenState> state = ref.watch(todoViewModelProvider);
     final TodoViewModel viewModel = ref.watch(todoViewModelProvider.notifier);
     final ColorScheme colorScheme = Theme.of(context).colorScheme;
 
-    return Container(
-      width: (parentSize / orderStatusLength) - paddingWidth,
-      decoration: BoxDecoration(
-        color: colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: colorScheme.outline.withValues(alpha: .2),
+    return state.when(
+      error: (_, __) =>
+          const TextVariant('Error', variantType: TextVariantType.labelMedium),
+      loading: () => const CircularProgressIndicator(),
+      data: (TodoScreenState data) => Container(
+        width: (parentSize / orderStatusLength) - paddingWidth,
+        decoration: BoxDecoration(
+          color: colorScheme.surface,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: colorScheme.outline.withValues(alpha: .2),
+          ),
         ),
-      ),
-      child: DragTarget<Order>(
-        onAcceptWithDetails: (DragTargetDetails<Order> data) {
-          if (data.data.status != status) {
-            viewModel.updateOrderStatus(
-              data.data,
-              status,
-            );
-          }
-        },
-        builder: (_, List<Order?> candidateData, __) {
-          return Container(
-            decoration: BoxDecoration(
-              color: candidateData.isNotEmpty
-                  ? colorScheme.surface.withValues(alpha: .8)
-                  : colorScheme.surface,
-              borderRadius: BorderRadius.circular(20),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                vertical: 12,
-                horizontal: 12,
+        child: DragTarget<Order>(
+          onAcceptWithDetails: (DragTargetDetails<Order> data) {
+            if (data.data.status != status) {
+              viewModel.updateOrderStatus(
+                data.data,
+                status,
+              );
+            }
+          },
+          builder: (_, List<Order?> candidateData, __) {
+            return Container(
+              decoration: BoxDecoration(
+                color: candidateData.isNotEmpty
+                    ? colorScheme.surface.withValues(alpha: .8)
+                    : colorScheme.surface,
+                borderRadius: BorderRadius.circular(20),
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: <Widget>[
-                  SizedBox(
-                    height: 40,
-                    child: Center(
-                      child: TextVariant(
-                        status.name,
-                        variantType: TextVariantType.labelMedium,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                  Divider(
-                    color: colorScheme.outline,
-                    height: 24,
-                    thickness: 0.5,
-                  ),
-                  ...state.orders.where((Order o) => o.status == status).map(
-                        (Order e) => TodoItem(
-                          status: status,
-                          order: e,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 12,
+                  horizontal: 12,
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    SizedBox(
+                      height: 40,
+                      child: Center(
+                        child: TextVariant(
+                          status.name,
+                          variantType: TextVariantType.labelMedium,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
-                ],
+                    ),
+                    Divider(
+                      color: colorScheme.outline,
+                      height: 24,
+                      thickness: 0.5,
+                    ),
+                    ...data.orders.where((Order o) => o.status == status).map(
+                          (Order e) => TodoItem(
+                            status: status,
+                            order: e,
+                          ),
+                        ),
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

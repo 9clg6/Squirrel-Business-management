@@ -1,25 +1,18 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/customer.entity.dart';
 import 'package:squirrel/domain/entities/order.entity.dart';
-import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/state/customer.state.dart';
-import 'package:squirrel/foundation/interfaces/storage.interface.dart';
+import 'package:squirrel/domain/use_case/params/save_clients.param.dart';
+import 'package:squirrel/foundation/providers/usecases/get_local_customers.use_case.provider.dart';
+import 'package:squirrel/foundation/providers/usecases/save_customer.use_case.provider.dart';
 
 part 'customer.service.g.dart';
 
 /// [CustomerService]
 @Riverpod(keepAlive: true)
 class CustomerService extends _$CustomerService {
-  /// Storage
-  late final StorageInterface<dynamic> _storage;
-
-  /// Storage key
-  static const String _storageKey = 'customers';
-
   bool _isInitialized = false;
 
   /// Build
@@ -28,7 +21,6 @@ class CustomerService extends _$CustomerService {
   Future<CustomerState> build() async {
     if (!_isInitialized) {
       LoggerService.instance.i('🔌 Initializing CustomerService');
-      _storage = ref.watch(hiveSecureStorageServiceProvider.notifier);
       _isInitialized = true;
     }
 
@@ -39,17 +31,10 @@ class CustomerService extends _$CustomerService {
   ///
   Future<CustomerState> _loadCustomersFromLocal() async {
     LoggerService.instance.i('📚 Loading customers');
-    final String? o = await _storage.get(_storageKey) as String?;
-    if (o != null) {
-      final List<dynamic> customers = jsonDecode(o) as List<dynamic>;
-
-      return CustomerState.initial(
-        customers: customers
-            .map((dynamic e) => Customer.fromJson(e as Map<String, dynamic>))
-            .toList(),
-      );
-    }
-    return CustomerState.initial();
+    return CustomerState.initial(
+      customers: await ref.read(getLocalCustomersUseCaseProvider.future) ??
+          <Customer>[],
+    );
   }
 
   /// Load customers
@@ -69,15 +54,9 @@ class CustomerService extends _$CustomerService {
   void _save(CustomerState os) {
     LoggerService.instance.i('📚💾 Saving customers');
     if (os.customers.isEmpty) return;
-    _storage.set(
-      _storageKey,
-      jsonEncode(
-        os.customers
-            .map(
-              (Customer e) => e.toJson(),
-            )
-            .toList(),
-      ),
+    ref.watch(
+      saveCustomersUseCaseProvider(param: SaveCustomersParam(os.customers))
+          .future,
     );
   }
 

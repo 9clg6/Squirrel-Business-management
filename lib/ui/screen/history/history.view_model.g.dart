@@ -6,7 +6,7 @@ part of 'history.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$historyHash() => r'773474d9ca6abe386778eff989dcb3341e28749e';
+String _$historyHash() => r'5b98fa1930afa004b06e95045b383629b5750678';
 
 /// [History]
 ///
@@ -17,11 +17,8 @@ final historyProvider = NotifierProvider<History, HistoryState>.internal(
   name: r'historyProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$historyHash,
-  dependencies: <ProviderOrFamily>[orderServiceProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    orderServiceProvider,
-    ...?orderServiceProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$History = Notifier<HistoryState>;

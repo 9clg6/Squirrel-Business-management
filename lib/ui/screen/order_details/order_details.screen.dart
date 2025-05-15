@@ -1091,7 +1091,7 @@ class _CustomerInfoCard extends ConsumerWidget {
   /// Order
   final Order order;
 
-  /// Builds the client info card
+  /// Builds the customer info card
   /// @param [context] context
   /// @return [Widget] widget
   ///

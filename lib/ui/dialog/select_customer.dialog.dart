@@ -68,7 +68,7 @@ class _SelectcustomerDialogState extends ConsumerState<SelectCustomerDialog> {
                   ),
                   const Gap(12),
                   ...value.customers.map(
-                    (Customer customer) => _customerItem(
+                    (Customer customer) => _CustomerItem(
                       customer: customer,
                       isLast: value.customers.last == customer,
                     ),
@@ -116,12 +116,12 @@ class _SelectcustomerDialogState extends ConsumerState<SelectCustomerDialog> {
 
 /// customer item
 ///
-class _customerItem extends StatefulWidget {
+class _CustomerItem extends StatefulWidget {
   /// Constructor
   /// @param customer
   /// @param isLast
   ///
-  const _customerItem({
+  const _CustomerItem({
     required this.customer,
     required this.isLast,
   });
@@ -136,10 +136,10 @@ class _customerItem extends StatefulWidget {
   /// @return State<_customerItem>
   ///
   @override
-  State<_customerItem> createState() => _customerItemState();
+  State<_CustomerItem> createState() => _CustomerItemState();
 }
 
-class _customerItemState extends State<_customerItem> {
+class _CustomerItemState extends State<_CustomerItem> {
   /// Is hovered
   bool isHovered = false;
 

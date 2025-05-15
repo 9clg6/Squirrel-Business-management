@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars no
+
 import 'dart:convert';
 import 'dart:io';
 
@@ -13,70 +15,66 @@ part 'hive_secure_storage.service.g.dart';
 /// [HiveSecureStorageService]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[
-    SecureStorageService,
-  ],
 )
 
 /// Use it when you want to save secured data that won't
 ///  be backed up by the system.
 class HiveSecureStorageService extends _$HiveSecureStorageService
     implements StorageInterface<String?> {
+  /// Default constructor
+  ///
+  HiveSecureStorageService();
+
+  /// Constructor
+  /// @param [String] encryptionKey
+  ///
+  HiveSecureStorageService.withKey(this._encryptionKey);
+
   /// Box
   Box<String>? _box;
 
   /// Box name
   static const String _boxName = 'hive_local_storage';
 
-  /// Is initialized
-  bool _isInitialized = false;
-
   /// Encryption key
-  String? _encryptionKey;
+  late final String _encryptionKey;
 
   /// Build
   /// @return [Future<HiveSecureStorageService>] hive secure storage service
   ///
   @override
   Future<HiveSecureStorageService> build() async {
-    if (_isInitialized && _box != null) {
-      return this;
-    }
+    LoggerService.instance.i('🔌 Construction de HiveSecureStorageService');
 
+    // Récupération de la clé de chiffrement
+    _encryptionKey = await ref.watch(secureStorageServiceProvider.future);
+
+    // Initialisation explicite
     await _initialize();
+
+    // Ouverture explicite de la box après initialisation
+    await _openBox();
+
     return this;
   }
 
   Future<void> _initialize() async {
-    if (_isInitialized) return;
-
-    LoggerService.instance.i('🔌 Initializing HiveSecureStorageService');
-
-    try {
-      _encryptionKey = await ref.watch(secureStorageServiceProvider.future);
-      await _openBox();
-      _isInitialized = true;
-      LoggerService.instance
-          .i('🔌 HiveSecureStorageService initialized successfully');
-    } catch (e) {
-      LoggerService.instance.e(
-        "Erreur lors de l'initialisation de HiveSecureStorageService: $e",
-      );
-      rethrow;
-    }
+    LoggerService.instance.i('🔌 Initialisation de HiveSecureStorageService');
+    // Ici, tu peux ajouter d'autres logiques d'initialisation si nécessaire
   }
 
   Future<void> _openBox() async {
     if (_box != null && _box!.isOpen) return;
 
+    LoggerService.instance.i('💡 Ouverture de la box $_boxName');
     try {
       _box = await Hive.openBox<String>(
         _boxName,
-        encryptionCipher: HiveAesCipher(
-          base64Decode(_encryptionKey!),
-        ),
+        encryptionCipher: HiveAesCipher(base64Decode(_encryptionKey)),
       );
+      LoggerService.instance.i('✅ Box $_boxName ouverte avec succès');
     } catch (e) {
+      LoggerService.instance.e("❌ Erreur lors de l'ouverture de la box : $e");
       if (e.toString().contains('corrupted')) {
         await _handleCorruptedBox();
       } else {
@@ -86,25 +84,24 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   }
 
   Future<void> _handleCorruptedBox() async {
-    LoggerService.instance.i('Suppression de la boîte corrompue');
+    LoggerService.instance
+        .w('⚠️ Box corrompue détectée, suppression en cours...');
     final Directory directory = await getApplicationDocumentsDirectory();
     final Directory boxPath = Directory('${directory.path}/hive/$_boxName');
     if (boxPath.existsSync()) {
       boxPath.deleteSync(recursive: true);
+      LoggerService.instance.i('✅ Box corrompue supprimée');
     }
-
-    _box = await Hive.openBox<String>(
-      _boxName,
-      encryptionCipher: HiveAesCipher(
-        base64Decode(_encryptionKey!),
-      ),
-    );
+    // Réessayer d'ouvrir la box après suppression
+    await _openBox();
   }
 
   /// Ensure box is initialized and return it
   Future<Box<String>> _ensureBox() async {
-    if (!_isInitialized || _box == null || !_box!.isOpen) {
-      await _initialize();
+    if (_box == null || !_box!.isOpen) {
+      LoggerService.instance
+          .w('⚠️ Box non ouverte, tentative de réouverture...');
+      await _openBox();
     }
     return _box!;
   }
@@ -113,6 +110,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<String?> get(String key) async {
     try {
+      LoggerService.instance.i('Getting data from storage');
       final Box<String> box = await _ensureBox();
       return box.get(key);
     } on Exception catch (e) {
@@ -126,6 +124,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<void> deleteAll() async {
     try {
+      LoggerService.instance.i('Deleting all data from storage');
       final Box<String> box = await _ensureBox();
       await box.deleteFromDisk();
     } on Exception catch (e) {
@@ -137,6 +136,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<void> clearAll() async {
     try {
+      LoggerService.instance.i('Clearing all data from storage');
       final Box<String> box = await _ensureBox();
       await box.clear();
     } on Exception catch (e) {
@@ -148,6 +148,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<bool> contains(String key) async {
     try {
+      LoggerService.instance.i('Checking if key exists');
       final Box<String> box = await _ensureBox();
       return box.containsKey(key);
     } on Exception catch (e) {
@@ -160,6 +161,7 @@ class HiveSecureStorageService extends _$HiveSecureStorageService
   @override
   Future<List<String?>> getAll() async {
     try {
+      LoggerService.instance.i('Getting all data from storage');
       final Box<String> box = await _ensureBox();
       return box.values.toList();
     } on Exception catch (e) {

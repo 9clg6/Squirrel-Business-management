@@ -17,10 +17,6 @@ part 'order_details.view_model.g.dart';
 /// [OrderDetailsViewModel]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[
-    OrderService,
-    CustomerService,
-  ],
 )
 class OrderDetailsViewModel extends _$OrderDetailsViewModel {
   late final OrderService _orderService;

@@ -1,33 +1,33 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'hive_secure_storage.provider.dart';
+part of 'get_local_customers.use_case.provider.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$hiveSecureStorageHash() => r'564a62f14418d549614fb6664514abd97c88416b';
+String _$getLocalCustomersUseCaseHash() =>
+    r'14083dc5933c1ba9cc808a2ed9bb14fe60e39262';
 
-/// [HiveSecureStorage] provider
-/// @param [ref] ref
-/// @return [Future<HiveSecureStorage>] hive secure storage
+/// Load customers use case
+/// @paran ref : ref
 ///
-///
-/// Copied from [hiveSecureStorage].
-@ProviderFor(hiveSecureStorage)
-final hiveSecureStorageProvider =
-    AutoDisposeFutureProvider<HiveSecureStorage>.internal(
-  hiveSecureStorage,
-  name: r'hiveSecureStorageProvider',
+/// Copied from [getLocalCustomersUseCase].
+@ProviderFor(getLocalCustomersUseCase)
+final getLocalCustomersUseCaseProvider =
+    AutoDisposeFutureProvider<List<Customer>?>.internal(
+  getLocalCustomersUseCase,
+  name: r'getLocalCustomersUseCaseProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$hiveSecureStorageHash,
+      : _$getLocalCustomersUseCaseHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef HiveSecureStorageRef = AutoDisposeFutureProviderRef<HiveSecureStorage>;
+typedef GetLocalCustomersUseCaseRef
+    = AutoDisposeFutureProviderRef<List<Customer>?>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

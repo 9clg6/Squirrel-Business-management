@@ -17,10 +17,6 @@ part 'order.service.g.dart';
 /// [OrderService]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[
-    HiveSecureStorageService,
-    CustomerService,
-  ],
 )
 class OrderService extends _$OrderService {
   /// Hive service
@@ -42,7 +38,7 @@ class OrderService extends _$OrderService {
   Future<OrderState> build() async {
     if (!_isInitialized) {
       LoggerService.instance.i('🔌 Initializing OrderService');
-      _hiveService = ref.watch(hiveSecureStorageServiceProvider.notifier);
+      _hiveService = await ref.watch(hiveSecureStorageServiceProvider.future);
       _customerService = ref.watch(customerServiceProvider.notifier);
       _isInitialized = true;
     }

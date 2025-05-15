@@ -130,7 +130,8 @@ class _EditOrAddOrderDialogState extends ConsumerState<EditOrAddOrderDialog> {
     methodController = TextEditingController(text: widget.order?.method);
     intermediaryController =
         TextEditingController(text: widget.order?.intermediaryContact);
-    customerController = TextEditingController(text: widget.order?.customer?.name);
+    customerController =
+        TextEditingController(text: widget.order?.customer?.name);
     commentController = TextEditingController(text: widget.order?.note);
     mentorController = TextEditingController(text: widget.order?.sponsor);
     formKey = GlobalKey<FormState>();

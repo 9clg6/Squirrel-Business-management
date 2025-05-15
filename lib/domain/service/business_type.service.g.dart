@@ -7,7 +7,7 @@ part of 'business_type.service.dart';
 // **************************************************************************
 
 String _$businessTypeServiceHash() =>
-    r'a4f948a68e1d4a34614da60bccc03684f19a1d52';
+    r'4a387b018c9a7b9edfc88450a8b370ccd168a8b5';
 
 /// [BusinessTypeService]
 ///
@@ -20,11 +20,8 @@ final businessTypeServiceProvider = AutoDisposeAsyncNotifierProvider<
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$businessTypeServiceHash,
-  dependencies: <ProviderOrFamily>[hiveSecureStorageServiceProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    hiveSecureStorageServiceProvider,
-    ...?hiveSecureStorageServiceProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$BusinessTypeService = AutoDisposeAsyncNotifier<BusinessTypeState>;

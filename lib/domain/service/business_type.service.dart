@@ -9,9 +9,6 @@ part 'business_type.service.g.dart';
 
 /// [BusinessTypeService]
 @Riverpod(
-  dependencies: <Object>[
-    HiveSecureStorageService,
-  ],
 )
 class BusinessTypeService extends _$BusinessTypeService {
   /// Key for secure storage

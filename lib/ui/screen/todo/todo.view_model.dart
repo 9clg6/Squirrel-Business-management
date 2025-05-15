@@ -11,9 +11,6 @@ part 'todo.view_model.g.dart';
 /// [TodoViewModel]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[
-    OrderService,
-  ],
 )
 class TodoViewModel extends _$TodoViewModel {
   bool _isInitialized = false;
@@ -23,7 +20,7 @@ class TodoViewModel extends _$TodoViewModel {
   /// Build
   ///
   @override
-  TodoScreenState build() {
+  Future<TodoScreenState> build() async {
     if (!_isInitialized) {
       _navigatorService = ref.watch(navigatorServiceProvider.notifier);
       _orderService = ref.watch(orderServiceProvider.notifier);
@@ -35,7 +32,7 @@ class TodoViewModel extends _$TodoViewModel {
     });
 
     return TodoScreenState.initial(
-      ref.watch(orderServiceProvider).value!.orders,
+      (await ref.watch(orderServiceProvider.future)).orders,
       loading: ref.watch(orderServiceProvider).value!.isLoading,
     );
   }
@@ -61,8 +58,10 @@ class TodoViewModel extends _$TodoViewModel {
   /// @param [orderState] order state
   ///
   void _updateState(OrderState orderState) {
-    state = state.copyWith(
-      orders: orderState.orders,
+    state = AsyncData<TodoScreenState>(
+      state.value!.copyWith(
+        orders: orderState.orders,
+      ),
     );
   }
 }

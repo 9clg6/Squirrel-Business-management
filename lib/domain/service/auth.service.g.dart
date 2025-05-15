@@ -6,7 +6,7 @@ part of 'auth.service.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authServiceHash() => r'e100cb9033ec2ed65d336843ac746a1f6044e0bb';
+String _$authServiceHash() => r'553c41ed7f1d20f264e843327825a4a4e944b81a';
 
 /// [AuthService]
 ///
@@ -18,22 +18,8 @@ final authServiceProvider =
   name: r'authServiceProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$authServiceHash,
-  dependencies: <ProviderOrFamily>{
-    requestServiceProvider,
-    navigatorServiceProvider,
-    hiveSecureStorageServiceProvider,
-    getFailCountUseCaseProvider
-  },
-  allTransitiveDependencies: <ProviderOrFamily>{
-    requestServiceProvider,
-    ...?requestServiceProvider.allTransitiveDependencies,
-    navigatorServiceProvider,
-    ...?navigatorServiceProvider.allTransitiveDependencies,
-    hiveSecureStorageServiceProvider,
-    ...?hiveSecureStorageServiceProvider.allTransitiveDependencies,
-    getFailCountUseCaseProvider,
-    ...?getFailCountUseCaseProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$AuthService = AsyncNotifier<AuthState>;

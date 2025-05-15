@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars w
+
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:squirrel/ui/widgets/text_variant.dart';
@@ -56,7 +58,6 @@ class ExportKeyDialog extends StatelessWidget {
                   color: colorScheme.onSurface,
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  
                 ),
                 textAlign: TextAlign.center,
               ),

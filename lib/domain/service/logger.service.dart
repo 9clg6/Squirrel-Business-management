@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars w
+
 import 'dart:io';
 
 import 'package:logger/logger.dart';

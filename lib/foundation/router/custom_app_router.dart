@@ -27,10 +27,6 @@ part 'custom_app_router.g.dart';
 /// Custom app router
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[
-    AuthService,
-    RequestService,
-  ],
 )
 GoRouter router(Ref ref) {
   return GoRouter(
@@ -161,7 +157,7 @@ Future<String?> _authRedirect(
   Ref ref,
   GoRouterState state,
 ) async {
-  final AuthState authState = await ref.watch(authServiceProvider.future);
+  final AuthState authState = await ref.read(authServiceProvider.future);
 
   final bool isAuthenticated = authState.isUserAuthenticated;
   final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;

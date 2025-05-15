@@ -6,7 +6,7 @@ part of 'auth.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$authHash() => r'86ed9b16ee9c15787c4a877870fafea5e425b297';
+String _$authHash() => r'7d5a26a3f4b74da369c4d6bfb1815fb0cbaaa9a0';
 
 /// [Auth]
 ///
@@ -17,11 +17,8 @@ final authProvider = NotifierProvider<Auth, AuthScreenState>.internal(
   name: r'authProvider',
   debugGetCreateSourceHash:
       const bool.fromEnvironment('dart.vm.product') ? null : _$authHash,
-  dependencies: <ProviderOrFamily>[authServiceProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    authServiceProvider,
-    ...?authServiceProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$Auth = Notifier<AuthScreenState>;

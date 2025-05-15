@@ -8,7 +8,6 @@ part 'request_service.g.dart';
 /// [RequestService]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[],
 )
 class RequestService extends _$RequestService {
   /// Build

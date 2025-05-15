@@ -6,26 +6,23 @@ part of 'todo.view_model.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$todoViewModelHash() => r'ed76bc8bac8a7688366366f631553aea086a3023';
+String _$todoViewModelHash() => r'76914b8edf056296a735a92b00204a7a976e2bcf';
 
 /// [TodoViewModel]
 ///
 /// Copied from [TodoViewModel].
 @ProviderFor(TodoViewModel)
 final todoViewModelProvider =
-    NotifierProvider<TodoViewModel, TodoScreenState>.internal(
+    AsyncNotifierProvider<TodoViewModel, TodoScreenState>.internal(
   TodoViewModel.new,
   name: r'todoViewModelProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$todoViewModelHash,
-  dependencies: <ProviderOrFamily>[orderServiceProvider],
-  allTransitiveDependencies: <ProviderOrFamily>{
-    orderServiceProvider,
-    ...?orderServiceProvider.allTransitiveDependencies
-  },
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
-typedef _$TodoViewModel = Notifier<TodoScreenState>;
+typedef _$TodoViewModel = AsyncNotifier<TodoScreenState>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

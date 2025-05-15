@@ -1,3 +1,5 @@
+// ignore_for_file: lines_longer_than_80_chars w
+
 import 'dart:convert';
 
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
@@ -10,7 +12,6 @@ part 'secure_storage.service.g.dart';
 /// [SecureStorageService]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[],
 )
 class SecureStorageService extends _$SecureStorageService {
   /// Encrypted key

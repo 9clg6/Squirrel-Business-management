@@ -7,7 +7,7 @@ part of 'secure_storage.service.dart';
 // **************************************************************************
 
 String _$secureStorageServiceHash() =>
-    r'326182296eaf7ccea0225e6166c3f74ea78cbbe2';
+    r'554c3edf0b4ba4bf32aee624b0317e3ac671c9da';
 
 /// [SecureStorageService]
 ///
@@ -20,8 +20,8 @@ final secureStorageServiceProvider =
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
       : _$secureStorageServiceHash,
-  dependencies: const <ProviderOrFamily>[],
-  allTransitiveDependencies: const <ProviderOrFamily>{},
+  dependencies: null,
+  allTransitiveDependencies: null,
 );
 
 typedef _$SecureStorageService = AsyncNotifier<String>;

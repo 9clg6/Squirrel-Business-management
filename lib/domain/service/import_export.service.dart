@@ -135,6 +135,7 @@ class ImportExportService {
       // Vérifier si la longueur de la clé décodée est correcte
       if (originalKey.bytes.length != _keyLength) {
         throw ArgumentError(
+          // ignore: lines_longer_than_80_chars w
           'Clé de déchiffrement invalide. La longueur attendue est $_keyLength bytes.',
         );
       }

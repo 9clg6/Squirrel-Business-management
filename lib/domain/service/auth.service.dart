@@ -4,7 +4,6 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:squirrel/domain/entities/check_validity.entity.dart';
 import 'package:squirrel/domain/entities/login_result.entity.dart';
 import 'package:squirrel/domain/entities/request.entity.dart';
-import 'package:squirrel/domain/service/hive_secure_storage.service.dart';
 import 'package:squirrel/domain/service/logger.service.dart';
 import 'package:squirrel/domain/service/navigator.service.dart';
 import 'package:squirrel/domain/service/request_service.dart';
@@ -30,12 +29,6 @@ part 'auth.service.g.dart';
 /// [AuthService]
 @Riverpod(
   keepAlive: true,
-  dependencies: <Object>[
-    RequestService,
-    NavigatorService,
-    HiveSecureStorageService,
-    getFailCountUseCase,
-  ],
 )
 class AuthService extends _$AuthService {
   static const int _maxFailedChecks = 3;
