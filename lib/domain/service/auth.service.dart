@@ -85,7 +85,6 @@ class AuthService extends _$AuthService {
   ///
   Future<void> _initDependencies() async {
     _requestService ??= ref.watch(requestServiceProvider.notifier);
-    LoggerService.instance.i('🔌✅ AuthService initialized');
   }
 
   /// Load user from local storage

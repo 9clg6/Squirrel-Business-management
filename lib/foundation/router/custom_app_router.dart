@@ -29,6 +29,22 @@ part 'custom_app_router.g.dart';
   keepAlive: true,
 )
 GoRouter router(Ref ref) {
+  ref.listen(authServiceProvider, (_, AsyncValue<AuthState> next) {
+    next.when(
+      data: (AuthState data) {
+        final GoRouter router = ref.read(routerProvider);
+        
+        if (data.isUserAuthenticated == true &&
+            router.state.path == RouterEnum.auth.path) {
+          LoggerService.instance.i('🔐✅ User is auth, move to main');
+          router.pushReplacement(RouterEnum.main.path);
+        }
+      },
+      error: (_, __) {},
+      loading: () {},
+    );
+  });
+
   return GoRouter(
     debugLogDiagnostics: true,
     navigatorKey: routingKey,
@@ -157,7 +173,7 @@ Future<String?> _authRedirect(
   Ref ref,
   GoRouterState state,
 ) async {
-  final AuthState authState = await ref.read(authServiceProvider.future);
+  final AuthState authState = await ref.watch(authServiceProvider.future);
 
   final bool isAuthenticated = authState.isUserAuthenticated;
   final bool isAuthRoute = state.matchedLocation == RouterEnum.auth.path;
