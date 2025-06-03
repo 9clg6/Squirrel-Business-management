@@ -63,7 +63,7 @@ class Kernel {
     await EasyLocalization.ensureInitialized();
 
     await windowManager.ensureInitialized();
-    
+
     const WindowOptions windowOptions = WindowOptions(
       center: true,
       skipTaskbar: false,
@@ -73,6 +73,7 @@ class Kernel {
       await windowManager.show();
       await windowManager.focus();
       await windowManager.maximize();
+      await windowManager.setMinimumSize(const Size(1024, 768));
     });
 
     await dotenv.load();

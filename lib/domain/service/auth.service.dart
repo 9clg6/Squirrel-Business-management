@@ -116,7 +116,10 @@ class AuthService extends _$AuthService {
       LoggerService.instance
           .i('🔐 License found: ${licenseResult?.licenseKey}');
 
-      if (licenseResult != null) {
+      if (licenseResult != null &&
+          licenseResult.licenseKey.isNotEmpty &&
+          licenseResult.expirationDate != null &&
+          licenseResult.valid == true) {
         if (_failedChecksCount >= _maxFailedChecks) {
           LoggerService.instance.e(
             '🔐❌ License found but failed checks count is too high, locking',
@@ -136,6 +139,7 @@ class AuthService extends _$AuthService {
           expirationDate: licenseResult.expirationDate,
         );
       } else {
+        LoggerService.instance.e('🔐❌ Invalid or missing license data');
         _setUserAuthenticated(false);
         ref.watch(navigatorServiceProvider.notifier).navigateToAuth();
       }
@@ -171,7 +175,7 @@ class AuthService extends _$AuthService {
       ).future,
     );
 
-    checkValidityResult.when(
+    final bool result = await checkValidityResult.when(
       success: (CheckValidityEntity data) async {
         LoggerService.instance.i('🔐✅ License valid, reset security');
         _failedChecksCount = 0;
@@ -195,7 +199,6 @@ class AuthService extends _$AuthService {
           ).future,
         );
 
-        _isAppLocked = false;
         await ref.watch(
           setAppLockStateUseCaseProvider(
             isLocked: false,
@@ -210,13 +213,11 @@ class AuthService extends _$AuthService {
 
         return true;
       },
-      failure: _handleFailedCheck,
-      otherwise: () {
-        return false;
-      },
+      failure: (Exception e) async => _handleFailedCheck(e),
+      otherwise: () async => false,
     );
 
-    return false;
+    return result;
   }
 
   /// Handle failed check
@@ -441,12 +442,21 @@ class AuthService extends _$AuthService {
     );
 
     return loginResult.when<Future<bool>>(
-      success: _handleSucessLogin,
+      success: (LoginResult data) async {
+        if (data.licenseKey.isEmpty ||
+            data.expirationDate == null ||
+            data.valid == false) {
+          LoggerService.instance.e('🔐❌ Login response invalid: missing data');
+          return false;
+        }
+        return _handleSucessLogin(data);
+      },
       failure: (Exception e) {
         LoggerService.instance.e('🔐❌ Error when logging in: $e');
         return Future<bool>.value(false);
       },
       otherwise: () {
+        LoggerService.instance.e('🔐❌ Login failed: unknown error');
         return Future<bool>.value(false);
       },
     );

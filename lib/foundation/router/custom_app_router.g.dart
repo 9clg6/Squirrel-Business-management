@@ -6,7 +6,7 @@ part of 'custom_app_router.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$routerHash() => r'fe8793c1d4e1efb8497986aa8553c7e8aa716bca';
+String _$routerHash() => r'43a218b36747d03d3d8d04575baa1b140302ff44';
 
 /// Custom app router
 ///

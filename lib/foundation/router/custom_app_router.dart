@@ -32,12 +32,13 @@ GoRouter router(Ref ref) {
   ref.listen(authServiceProvider, (_, AsyncValue<AuthState> next) {
     next.when(
       data: (AuthState data) {
-        final GoRouter router = ref.read(routerProvider);
-        
+        final NavigatorState? navigator = routingKey.currentState;
+
         if (data.isUserAuthenticated == true &&
-            router.state.path == RouterEnum.auth.path) {
+            navigator != null &&
+            navigator.canPop()) {
           LoggerService.instance.i('🔐✅ User is auth, move to main');
-          router.pushReplacement(RouterEnum.main.path);
+          navigator.pushReplacementNamed(RouterEnum.main.name);
         }
       },
       error: (_, __) {},
